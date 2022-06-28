@@ -2,8 +2,8 @@
 
 # To Do
 
-[x] babel
-[x] webpack
-[ ] React
-[ ] TS
-[ ] 기타 패키지
+- [x] babel
+- [x] webpack
+- [ ] React
+- [ ] TS
+- [ ] 기타 패키지
