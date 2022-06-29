@@ -4,6 +4,10 @@
 
 - [x] babel
 - [x] webpack
-- [ ] React
-- [ ] TS
+- [x] React
+- [x] TS
 - [ ] 기타 패키지
+  - [ ] eslint, prettier
+  - [ ] styled-components
+  - [ ] react-router-dom v6
+  - [ ] storybook
