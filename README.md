@@ -8,6 +8,6 @@
 - [x] TS
 - [ ] 기타 패키지
   - [x] eslint, prettier
-  - [ ] styled-components
-  - [ ] react-router-dom v6
+  - [x] styled-components
+  - [x] react-router-dom v6
   - [ ] storybook
