@@ -6,8 +6,9 @@
 - [x] webpack
 - [x] React
 - [x] TS
-- [ ] 기타 패키지
+- [x] 기타 패키지
   - [x] eslint, prettier
   - [x] styled-components
   - [x] react-router-dom v6
-  - [ ] storybook
+  - [x] storybook
+  - [x] axios
