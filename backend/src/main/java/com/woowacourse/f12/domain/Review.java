@@ -1,17 +1,22 @@
 package com.woowacourse.f12.domain;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "review")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 public class Review {
 
@@ -27,6 +32,10 @@ public class Review {
 
     @Column(name = "rating")
     private int rating;
+
+    @CreatedDate
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     protected Review() {
     }
