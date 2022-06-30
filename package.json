@@ -46,6 +46,7 @@
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "html-webpack-plugin": "^5.5.0",
+    "msw": "^0.42.3",
     "prettier": "^2.7.1",
     "sass": "^1.53.0",
     "sass-loader": "^13.0.2",
@@ -61,5 +62,8 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "styled-components": "^5.3.5"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }
