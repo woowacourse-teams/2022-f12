@@ -1,4 +1,4 @@
-package com.woowacourse.f12.keyboard.exception;
+package com.woowacourse.f12.exception;
 
 import java.util.NoSuchElementException;
 

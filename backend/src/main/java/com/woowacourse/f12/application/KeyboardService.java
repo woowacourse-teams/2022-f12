@@ -1,9 +1,9 @@
-package com.woowacourse.f12.keyboard.application;
+package com.woowacourse.f12.application;
 
-import com.woowacourse.f12.keyboard.domain.Keyboard;
-import com.woowacourse.f12.keyboard.domain.KeyboardRepository;
-import com.woowacourse.f12.keyboard.dto.response.KeyboardResponse;
-import com.woowacourse.f12.keyboard.exception.KeyboardNotFoundException;
+import com.woowacourse.f12.domain.Keyboard;
+import com.woowacourse.f12.domain.KeyboardRepository;
+import com.woowacourse.f12.dto.response.KeyboardResponse;
+import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

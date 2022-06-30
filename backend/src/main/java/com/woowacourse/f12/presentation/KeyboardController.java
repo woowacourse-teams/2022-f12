@@ -1,7 +1,7 @@
-package com.woowacourse.f12.keyboard.presentation;
+package com.woowacourse.f12.presentation;
 
-import com.woowacourse.f12.keyboard.application.KeyboardService;
-import com.woowacourse.f12.keyboard.dto.response.KeyboardResponse;
+import com.woowacourse.f12.application.KeyboardService;
+import com.woowacourse.f12.dto.response.KeyboardResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

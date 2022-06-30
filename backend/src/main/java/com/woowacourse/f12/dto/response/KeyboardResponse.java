@@ -1,6 +1,6 @@
-package com.woowacourse.f12.keyboard.dto.response;
+package com.woowacourse.f12.dto.response;
 
-import com.woowacourse.f12.keyboard.domain.Keyboard;
+import com.woowacourse.f12.domain.Keyboard;
 import lombok.Getter;
 
 @Getter

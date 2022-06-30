@@ -1,4 +1,4 @@
-package com.woowacourse.f12.keyboard.application;
+package com.woowacourse.f12.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -7,10 +7,10 @@ import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import com.woowacourse.f12.keyboard.domain.Keyboard;
-import com.woowacourse.f12.keyboard.domain.KeyboardRepository;
-import com.woowacourse.f12.keyboard.dto.response.KeyboardResponse;
-import com.woowacourse.f12.keyboard.exception.KeyboardNotFoundException;
+import com.woowacourse.f12.domain.Keyboard;
+import com.woowacourse.f12.domain.KeyboardRepository;
+import com.woowacourse.f12.dto.response.KeyboardResponse;
+import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
