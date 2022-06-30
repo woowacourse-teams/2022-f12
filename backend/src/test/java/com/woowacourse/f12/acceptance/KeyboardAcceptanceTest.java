@@ -1,11 +1,11 @@
-package com.woowacourse.f12.keyboard.acceptance;
+package com.woowacourse.f12.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.woowacourse.f12.keyboard.domain.Keyboard;
-import com.woowacourse.f12.keyboard.domain.KeyboardRepository;
-import com.woowacourse.f12.keyboard.dto.response.KeyboardResponse;
+import com.woowacourse.f12.domain.Keyboard;
+import com.woowacourse.f12.domain.KeyboardRepository;
+import com.woowacourse.f12.dto.response.KeyboardResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

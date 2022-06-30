@@ -1,4 +1,4 @@
-package com.woowacourse.f12.keyboard.domain;
+package com.woowacourse.f12.domain;
 
 import java.util.Objects;
 import javax.persistence.Column;
