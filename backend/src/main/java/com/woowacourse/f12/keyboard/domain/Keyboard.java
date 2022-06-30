@@ -26,8 +26,6 @@ public class Keyboard {
 
     }
 
-    ;
-
     @Builder
     private Keyboard(final Long id, final String name) {
         this.id = id;
