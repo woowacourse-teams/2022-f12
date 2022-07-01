@@ -2,8 +2,11 @@ package com.woowacourse.f12.presentation;
 
 import com.woowacourse.f12.application.ReviewService;
 import com.woowacourse.f12.dto.request.ReviewRequest;
+import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import java.net.URI;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +27,14 @@ public class ReviewController {
     public ResponseEntity<Void> create(@PathVariable final Long productId,
                                        @RequestBody final ReviewRequest reviewRequest) {
         final Long id = reviewService.save(productId, reviewRequest);
-
         return ResponseEntity.created(URI.create("/api/v1/reviews/" + id))
                 .build();
+    }
+
+    @GetMapping("/{productId}/reviews")
+    public ResponseEntity<ReviewPageResponse> showPageByProductId(@PathVariable final Long productId,
+                                                                  final Pageable pageable) {
+        final ReviewPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, pageable);
+        return ResponseEntity.ok(reviewPageResponse);
     }
 }
