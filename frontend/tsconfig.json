@@ -2,8 +2,9 @@
   "compilerOptions": {
     "target": "es5",
     "module": "es2015",
+    "moduleResolution": "node",
     "jsx": "react-jsx",
     "esModuleInterop": true
   },
-  "include": ["src"]
+  "include": ["src", "src/index.d.ts"]
 }
