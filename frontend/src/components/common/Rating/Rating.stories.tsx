@@ -1,4 +1,5 @@
 import Rating from './Rating';
+import { ComponentStory } from '@storybook/react';
 
 export default {
   component: Rating,
@@ -7,5 +8,5 @@ export default {
 
 const Template = (args) => <Rating {...args} />;
 
-export const Defaults = Template.bind({});
-Defaults.args = { rating: '5.00' };
+export const Defaults: ComponentStory<typeof Rating> = Template.bind({});
+Defaults.args = { rating: 5 };
