@@ -1,5 +1,6 @@
 package com.woowacourse.f12.domain;
 
+import com.woowacourse.f12.exception.InvalidRatingValueException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -20,6 +21,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 public class Review {
 
+    private static final int MINIMUM_RATING = 1;
+    private static final int MAXIMUM_RATING = 5;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,10 +46,17 @@ public class Review {
 
     @Builder
     private Review(final Long id, final Long productId, final String content, final int rating) {
+        validateRating(rating);
         this.id = id;
         this.productId = productId;
         this.content = content;
         this.rating = rating;
+    }
+
+    private void validateRating(final int rating) {
+        if (rating < MINIMUM_RATING || rating > MAXIMUM_RATING) {
+            throw new InvalidRatingValueException();
+        }
     }
 
     @Override
