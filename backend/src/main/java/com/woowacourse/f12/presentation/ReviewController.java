@@ -37,4 +37,10 @@ public class ReviewController {
         final ReviewPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, pageable);
         return ResponseEntity.ok(reviewPageResponse);
     }
+
+    @GetMapping("/reviews")
+    public ResponseEntity<ReviewPageResponse> showPage(final Pageable pageable) {
+        final ReviewPageResponse reviewPageResponse = reviewService.findPage(pageable);
+        return ResponseEntity.ok(reviewPageResponse);
+    }
 }

@@ -23,7 +23,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 키보드가_저장되어있고_키보드에_대한_리뷰를_작성한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다();
+        Keyboard keyboard = 키보드를_저장한다("키보드");
 
         // when
         ExtractableResponse<Response> response = 키보드에_대한_리뷰를_작성한다(keyboard, 5);
@@ -38,7 +38,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 특정_제품_리뷰_목록을_최신순으로_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다();
+        Keyboard keyboard = 키보드를_저장한다("키보드");
         키보드에_대한_리뷰를_작성한다(keyboard, 5);
         Long reviewId = Long.parseLong(키보드에_대한_리뷰를_작성한다(keyboard, 5)
                 .header("Location")
@@ -62,7 +62,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 특정_제품_리뷰_목록을_평점순으로_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다();
+        Keyboard keyboard = 키보드를_저장한다("키보드");
         키보드에_대한_리뷰를_작성한다(keyboard, 4);
         Long reviewId = Long.parseLong(키보드에_대한_리뷰를_작성한다(keyboard, 5)
                 .header("Location")
@@ -83,9 +83,35 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Keyboard 키보드를_저장한다() {
+    @Test
+    void 전체_리뷰_목록을_최신순으로_조회한다() {
+        // given
+        Keyboard keyboard1 = 키보드를_저장한다("키보드1");
+        Keyboard keyboard2 = 키보드를_저장한다("키보드2");
+        Long reviewId1 = Long.parseLong(키보드에_대한_리뷰를_작성한다(keyboard1, 4)
+                .header("Location")
+                .split("/")[4]);
+        Long reviewId2 = Long.parseLong(키보드에_대한_리뷰를_작성한다(keyboard2, 4)
+                .header("Location")
+                .split("/")[4]);
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/keyboards/reviews?page=0&size=2&sort=createdAt,desc");
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(ReviewPageResponse.class).isHasNext()).isFalse(),
+                () -> assertThat(response.as(ReviewPageResponse.class).getReviews())
+                        .extracting("id")
+                        .containsExactly(reviewId2, reviewId1)
+        );
+    }
+
+    private Keyboard 키보드를_저장한다(final String name) {
         Keyboard keyboard = Keyboard.builder()
-                .name("키보드")
+                .name(name)
                 .build();
         keyboardRepository.save(keyboard);
         return keyboard;
