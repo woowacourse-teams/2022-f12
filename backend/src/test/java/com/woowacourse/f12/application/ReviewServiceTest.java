@@ -41,6 +41,7 @@ class ReviewServiceTest {
         given(reviewRepository.save(reviewRequest.toReview(productId)))
                 .willReturn(Review.builder()
                         .id(1L)
+                        .rating(5)
                         .build());
 
         // when
