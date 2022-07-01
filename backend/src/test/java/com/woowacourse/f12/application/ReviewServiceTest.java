@@ -54,7 +54,7 @@ class ReviewServiceTest {
     }
 
     @Test
-    void 리뷰_목록을_조회한다() {
+    void 특정_제품에_대한_리뷰_목록을_조회한다() {
         // given
         Long productId = 1L;
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));

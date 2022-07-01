@@ -19,12 +19,12 @@ class ReviewRepositoryTest {
     private ReviewRepository reviewRepository;
 
     @Test
-    void 특정_제품의_리뷰_목록을_페이징하여_조회한다() {
+    void 특정_제품의_리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
         Long productId = 1L;
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        Review review1 = reviewRepository.save(리뷰_저장(1L, "내용1", 5));
-        Review review2 = reviewRepository.save(리뷰_저장(1L, "내용2", 5));
+        reviewRepository.save(리뷰_저장(1L, "내용1", 5));
+        Review review = reviewRepository.save(리뷰_저장(1L, "내용2", 5));
 
         // when
         Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
@@ -33,10 +33,31 @@ class ReviewRepositoryTest {
         assertAll(
                 () -> assertThat(page).hasSize(1)
                         .extracting("id")
-                        .containsOnly(review2.getId()),
+                        .containsOnly(review.getId()),
                 () -> assertThat(page.hasNext()).isTrue()
         );
     }
+
+    @Test
+    void 특정_제품의_리뷰_목록을_평점순으로_페이징하여_조회한다() {
+        // given
+        Long productId = 1L;
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("rating")));
+        Review review = reviewRepository.save(리뷰_저장(1L, "내용1", 5));
+        reviewRepository.save(리뷰_저장(1L, "내용2", 4));
+
+        // when
+        Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(page).hasSize(1)
+                        .extracting("id")
+                        .containsOnly(review.getId()),
+                () -> assertThat(page.hasNext()).isTrue()
+        );
+    }
+
 
     private Review 리뷰_저장(Long productId, String content, int rating) {
         return Review.builder()
