@@ -30,4 +30,9 @@ public class ReviewService {
         final Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
         return ReviewPageResponse.from(page);
     }
+
+    public ReviewPageResponse findPage(final Pageable pageable) {
+        final Slice<Review> page = reviewRepository.findPageBy(pageable);
+        return ReviewPageResponse.from(page);
+    }
 }

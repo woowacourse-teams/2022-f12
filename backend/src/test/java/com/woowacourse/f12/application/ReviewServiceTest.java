@@ -78,6 +78,33 @@ class ReviewServiceTest {
         );
     }
 
+    @Test
+    void 전체_리뷰_목록을_조회한다() {
+        // given
+        Long product1Id = 1L;
+        Long product2Id = 2L;
+        Pageable pageable = PageRequest.of(0, 2, Sort.by(Order.desc("createdAt")));
+        Slice<Review> slice = new SliceImpl<>(List.of(
+                리뷰_저장(3L, product2Id, "내용", 5),
+                리뷰_저장(2L, product1Id, "내용", 5)
+        ), pageable, true);
+
+        given(reviewRepository.findPageBy(pageable))
+                .willReturn(slice);
+
+        // when
+        ReviewPageResponse reviewPageResponse = reviewService.findPage(pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(reviewPageResponse.getReviews()).hasSize(2)
+                        .extracting("id")
+                        .containsExactly(3L, 2L),
+                () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
+                () -> verify(reviewRepository).findPageBy(pageable)
+        );
+    }
+
     private Review 리뷰_저장(Long id, Long productId, String content, int rating) {
         return Review.builder()
                 .id(id)
