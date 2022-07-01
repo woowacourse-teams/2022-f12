@@ -1,14 +1,12 @@
-# 프론트엔드 프로젝트 기본 설정
+# Sprint 1 요구사항
 
-# To Do
+## Step 1
 
-- [x] babel
-- [x] webpack
-- [x] React
-- [x] TS
-- [x] 기타 패키지
-  - [x] eslint, prettier
-  - [x] styled-components
-  - [x] react-router-dom v6
-  - [x] storybook
-  - [x] axios
+작은 단위의 컴포넌트를 구현한다.
+
+- [x] 평점 컴포넌트를 구현한다.
+- [ ] 프로필 컴포넌트를 구현한다.
+- [ ] 리뷰 카드 컴포넌트를 구현한다.
+- [ ] 상품 요약 카드 컴포넌트를 구현한다.
+- [ ] 상품 상세 카드 컴포넌트를 구현한다.
+- [ ] 각 컴포넌트의 스토리를 작성한다.
