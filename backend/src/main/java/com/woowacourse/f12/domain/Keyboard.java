@@ -23,7 +23,6 @@ public class Keyboard {
     private String name;
 
     protected Keyboard() {
-
     }
 
     @Builder

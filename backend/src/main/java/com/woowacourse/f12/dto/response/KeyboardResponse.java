@@ -10,7 +10,6 @@ public class KeyboardResponse {
     private String name;
 
     private KeyboardResponse() {
-
     }
 
     private KeyboardResponse(final Long id, final String name) {

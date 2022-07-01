@@ -1,38 +1,22 @@
 package com.woowacourse.f12.acceptance;
 
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
 import com.woowacourse.f12.dto.response.KeyboardResponse;
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-class KeyboardAcceptanceTest {
-
-    @LocalServerPort
-    private int port;
+class KeyboardAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private KeyboardRepository keyboardRepository;
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
-    }
 
     @Test
     void 키보드_단일_제품_조회한다() {
@@ -56,13 +40,5 @@ class KeyboardAcceptanceTest {
                 .build();
         keyboardRepository.save(keyboard);
         return keyboard;
-    }
-
-    private ExtractableResponse<Response> GET_요청을_보낸다(final String url) {
-        return RestAssured.given().log().all()
-                .when()
-                .get(url)
-                .then().log().all()
-                .extract();
     }
 }
