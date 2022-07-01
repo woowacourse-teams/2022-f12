@@ -6,7 +6,7 @@ export default {
   title: 'Rating',
 };
 
-const Template = (args) => <Rating {...args} />;
+const Template: ComponentStory<typeof Rating> = (args) => <Rating {...args} />;
 
 export const Defaults: ComponentStory<typeof Rating> = Template.bind({});
 Defaults.args = { rating: 5 };
