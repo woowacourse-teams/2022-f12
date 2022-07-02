@@ -7,7 +7,7 @@ export const Container = styled.article`
   border-radius: 0.375rem;
   padding: 1rem;
   min-width: 30rem;
-  box-shadow: 0 0.35rem 0.7rem -0.2rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0.35rem 0.7rem -0.2rem rgba(0, 0, 0, 0.3);
 `;
 
 export const Wrapper = styled.div`
