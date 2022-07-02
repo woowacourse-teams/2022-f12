@@ -4,7 +4,7 @@ import sampleKeyboard from './sample_keyboard.jpg';
 
 export default {
   component: ProductCard,
-  title: 'ProductCard',
+  title: 'Components/ProductCard',
 };
 
 const Template: ComponentStory<typeof ProductCard> = (args) => (

@@ -4,7 +4,7 @@ import sampleKeyboard from './sample_keyboard.jpg';
 
 export default {
   component: ProductListSection,
-  title: 'ProductListSection',
+  title: 'Section/ProductListSection',
 };
 
 const mockData = [

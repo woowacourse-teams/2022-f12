@@ -3,7 +3,7 @@ import { ComponentStory } from '@storybook/react';
 
 export default {
   component: Rating,
-  title: 'Rating',
+  title: 'Components/Rating',
 };
 
 const Template: ComponentStory<typeof Rating> = (args) => <Rating {...args} />;

@@ -4,7 +4,7 @@ import sampleProfileImage from './sample_profile.jpg';
 
 export default {
   component: ReviewListSection,
-  title: 'ReviewListSection',
+  title: 'Section/ReviewListSection',
 };
 
 const mockData = [

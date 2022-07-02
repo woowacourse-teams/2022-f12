@@ -4,7 +4,7 @@ import { ComponentStory } from '@storybook/react';
 
 export default {
   component: UserNameTag,
-  title: 'UserNameTag',
+  title: 'Components/UserNameTag',
 };
 
 const Template: ComponentStory<typeof UserNameTag> = (args) => (

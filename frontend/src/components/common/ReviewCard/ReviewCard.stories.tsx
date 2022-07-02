@@ -5,7 +5,7 @@ import sampleProfileImage from './sample_profile.jpg';
 
 export default {
   component: ReviewCard,
-  title: 'ReviewCard',
+  title: 'Components/ReviewCard',
 };
 
 const Template: ComponentStory<typeof ReviewCard> = (args) => (

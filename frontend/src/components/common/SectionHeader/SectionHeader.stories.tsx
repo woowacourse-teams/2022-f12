@@ -3,7 +3,7 @@ import { ComponentStory } from '@storybook/react';
 
 export default {
   component: SectionHeader,
-  title: 'SectionHeader',
+  title: 'Components/SectionHeader',
 };
 
 const Template: ComponentStory<typeof SectionHeader> = () => (
