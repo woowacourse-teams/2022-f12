@@ -3,7 +3,7 @@ import * as S from './ProductCard.style';
 import sampleKeyboard from './sample_keyboard.jpg';
 
 type Props = {
-  productImage: string;
+  productImage?: string;
   name: string;
   rating: number;
 };

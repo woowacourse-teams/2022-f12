@@ -1,7 +1,6 @@
 import ProductCard from './ProductCard';
 import { ComponentStory } from '@storybook/react';
 import sampleKeyboard from './sample_keyboard.jpg';
-import sero from './sero-sample.jpg';
 
 export default {
   component: ProductCard,
