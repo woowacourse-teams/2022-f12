@@ -6,9 +6,9 @@ export const Container = styled.div`
   justify-content: space-between;
   width: 12rem;
   height: 12rem;
-  border: 0.05rem solid black;
   border-radius: 0.375rem;
   padding: 1rem;
+  box-shadow: 0 0.35rem 0.7rem -0.2rem rgba(0, 0, 0, 0.5);
 `;
 
 export const Image = styled.img`
