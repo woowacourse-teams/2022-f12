@@ -3,15 +3,16 @@ import * as S from './Rating.style';
 
 export type Props = {
   rating: number;
+  size?: 'small' | 'medium' | 'large';
 };
 
-function Rating({ rating }: Props) {
+function Rating({ rating, size = 'small' }: Props) {
   return (
     <S.Container>
-      <S.Unit>
-        <Heart width="14" height="14" />
+      <S.Unit size={size}>
+        <Heart />
       </S.Unit>
-      <S.Value>{rating.toFixed(2)}</S.Value>
+      <S.Value size={size}>{rating.toFixed(2)}</S.Value>
     </S.Container>
   );
 }
