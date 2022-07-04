@@ -23,6 +23,9 @@ public class Keyboard {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
+
     @Formula("(SELECT COUNT(1) FROM review r WHERE r.product_id = id)")
     private int reviewCount;
 
@@ -33,9 +36,10 @@ public class Keyboard {
     }
 
     @Builder
-    private Keyboard(final Long id, final String name) {
+    private Keyboard(final Long id, final String name, final String imageUrl) {
         this.id = id;
         this.name = name;
+        this.imageUrl = imageUrl;
     }
 
     @Override
