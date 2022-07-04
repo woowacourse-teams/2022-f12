@@ -1,5 +1,7 @@
 package com.woowacourse.f12.domain;
 
+import com.woowacourse.f12.exception.BlankContentException;
+import com.woowacourse.f12.exception.InvalidContentLengthException;
 import com.woowacourse.f12.exception.InvalidRatingValueException;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -23,7 +25,8 @@ public class Review {
 
     private static final int MINIMUM_RATING = 1;
     private static final int MAXIMUM_RATING = 5;
-    
+    private static final int MAXIMUM_CONTENT_LENGTH = 1000;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,7 +34,7 @@ public class Review {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(name = "content")
+    @Column(name = "content", length = MAXIMUM_CONTENT_LENGTH)
     private String content;
 
     @Column(name = "rating")
@@ -47,10 +50,20 @@ public class Review {
     @Builder
     private Review(final Long id, final Long productId, final String content, final int rating) {
         validateRating(rating);
+        validateContent(content);
         this.id = id;
         this.productId = productId;
         this.content = content;
         this.rating = rating;
+    }
+
+    private void validateContent(final String content) {
+        if (content.isBlank()) {
+            throw new BlankContentException();
+        }
+        if (content.length() > MAXIMUM_CONTENT_LENGTH) {
+            throw new InvalidContentLengthException(MAXIMUM_CONTENT_LENGTH);
+        }
     }
 
     private void validateRating(final int rating) {
