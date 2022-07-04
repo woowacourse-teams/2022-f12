@@ -4,7 +4,9 @@ import HeaderLogo from './HeaderLogo.svg';
 function Header() {
   return (
     <S.Container>
-      <HeaderLogo />
+      <S.LogoImageContainer to="/">
+        <HeaderLogo />
+      </S.LogoImageContainer>
     </S.Container>
   );
 }

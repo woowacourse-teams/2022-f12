@@ -1,15 +1,9 @@
-import Home from './pages/Home/Home';
-import Product from './pages/Product/Product';
-import Products from './pages/Products/Products';
+import { useRoutes } from 'react-router-dom';
+import { PAGES } from './pages';
 
 function App() {
-  return (
-    <div>
-      <Home />
-      <Products />
-      <Product />
-    </div>
-  );
+  const pages = useRoutes(PAGES);
+  return pages;
 }
 
 export default App;

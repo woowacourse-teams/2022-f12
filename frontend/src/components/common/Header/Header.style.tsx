@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Container = styled.header`
@@ -8,4 +9,4 @@ export const Container = styled.header`
   top: 0;
 `;
 
-export const LogoImage = styled.img``;
+export const LogoImageContainer = styled(Link)``;
