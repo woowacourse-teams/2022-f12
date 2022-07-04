@@ -1,0 +1,31 @@
+package com.woowacourse.f12.dto.response;
+
+import com.woowacourse.f12.domain.Keyboard;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.Getter;
+import org.springframework.data.domain.Slice;
+
+@Getter
+public class KeyboardPageResponse {
+
+    private boolean hasNext;
+    private List<KeyboardResponse> keyboards;
+
+    private KeyboardPageResponse() {
+    }
+
+    private KeyboardPageResponse(final boolean hasNext,
+                                 final List<KeyboardResponse> keyboards) {
+        this.hasNext = hasNext;
+        this.keyboards = keyboards;
+    }
+
+    public static KeyboardPageResponse from(final Slice<Keyboard> slice) {
+        final List<KeyboardResponse> keyboards = slice.getContent()
+                .stream()
+                .map(KeyboardResponse::from)
+                .collect(Collectors.toList());
+        return new KeyboardPageResponse(slice.hasNext(), keyboards);
+    }
+}

@@ -26,8 +26,8 @@ public class Keyboard {
     @Formula("(SELECT COUNT(1) FROM review r WHERE r.product_id = id)")
     private int reviewCount;
 
-    @Formula("(SELECT AVG(r.rating) FROM review r WHERE r.product_id = id)")
-    private Double rating;
+    @Formula("(SELECT IFNULL(AVG(r.rating), 0) FROM review r WHERE r.product_id = id)")
+    private double rating;
 
     protected Keyboard() {
     }
