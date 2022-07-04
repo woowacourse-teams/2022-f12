@@ -1,5 +1,6 @@
 package com.woowacourse.f12.config;
 
+import com.woowacourse.f12.presentation.CustomPageableHandlerArgumentResolver;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

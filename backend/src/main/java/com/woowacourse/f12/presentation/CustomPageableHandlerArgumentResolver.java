@@ -1,4 +1,4 @@
-package com.woowacourse.f12.config;
+package com.woowacourse.f12.presentation;
 
 import com.woowacourse.f12.exception.InvalidPageSizeException;
 import org.springframework.core.MethodParameter;
