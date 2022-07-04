@@ -42,6 +42,7 @@ class ReviewServiceTest {
                 .willReturn(Review.builder()
                         .id(1L)
                         .rating(5)
+                        .content("내용")
                         .build());
 
         // when

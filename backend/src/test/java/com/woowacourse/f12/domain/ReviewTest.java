@@ -3,10 +3,12 @@ package com.woowacourse.f12.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.woowacourse.f12.exception.BlankContentException;
 import com.woowacourse.f12.exception.InvalidContentLengthException;
 import com.woowacourse.f12.exception.InvalidRatingValueException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ReviewTest {
@@ -61,5 +63,17 @@ class ReviewTest {
                 .content(invalidContent)
                 .build())
                 .isExactlyInstanceOf(InvalidContentLengthException.class);
+    }
+
+    @ParameterizedTest
+    @EmptySource
+    @ValueSource(strings = " ")
+    void 리뷰_내용이_EMPTY_BLANK(String invalidContent) {
+        // given, when, then
+        assertThatThrownBy(() -> Review.builder()
+                .rating(5)
+                .content(invalidContent)
+                .build())
+                .isExactlyInstanceOf(BlankContentException.class);
     }
 }

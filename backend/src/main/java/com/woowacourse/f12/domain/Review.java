@@ -1,5 +1,6 @@
 package com.woowacourse.f12.domain;
 
+import com.woowacourse.f12.exception.BlankContentException;
 import com.woowacourse.f12.exception.InvalidContentLengthException;
 import com.woowacourse.f12.exception.InvalidRatingValueException;
 import java.time.LocalDateTime;
@@ -33,7 +34,7 @@ public class Review {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(name = "content")
+    @Column(name = "content", length = MAXIMUM_CONTENT_LENGTH)
     private String content;
 
     @Column(name = "rating")
@@ -57,6 +58,9 @@ public class Review {
     }
 
     private void validateContent(final String content) {
+        if (content.isBlank()) {
+            throw new BlankContentException();
+        }
         if (content.length() > MAXIMUM_CONTENT_LENGTH) {
             throw new InvalidContentLengthException(MAXIMUM_CONTENT_LENGTH);
         }
