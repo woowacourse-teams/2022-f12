@@ -1,9 +1,9 @@
 declare module '*.jpg' {
-  const value: any;
+  const value: string;
   export = value;
 }
 
 declare module '*.svg' {
-  const value: any;
+  const value: React.FC;
   export = value;
 }

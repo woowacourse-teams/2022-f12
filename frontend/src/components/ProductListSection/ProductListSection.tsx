@@ -10,13 +10,8 @@ type Props = {
 
 function ProductListSection({ data }: Props) {
   const productCardList = data.map(({ id, productImage, name, rating }) => (
-    <Link to="/">
-      <ProductCard
-        key={id}
-        productImage={productImage}
-        name={name}
-        rating={rating}
-      />
+    <Link to="/" key={id}>
+      <ProductCard productImage={productImage} name={name} rating={rating} />
     </Link>
   ));
 

@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.tsx',
   mode: process.env.production === 'true' ? 'production' : 'development',
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -14,12 +14,7 @@ module.exports = {
       {
         test: /\.(js|jsx|ts|tsx)$/,
         exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env'],
-          },
-        },
+        use: 'babel-loader',
       },
       {
         test: /\.s?css$/,

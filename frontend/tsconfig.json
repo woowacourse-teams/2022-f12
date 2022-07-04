@@ -6,5 +6,5 @@
     "jsx": "react-jsx",
     "esModuleInterop": true
   },
-  "include": ["src", "src/index.d.ts"]
+  "include": ["src", "./src/custom.d.ts"]
 }
