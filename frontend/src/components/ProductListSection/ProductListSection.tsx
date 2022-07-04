@@ -4,6 +4,7 @@ import ProductCard from '../common/ProductCard/ProductCard';
 import SectionHeader from '../common/SectionHeader/SectionHeader';
 
 import * as S from './ProductListSection.style';
+import ROUTES from '../../constants/routes';
 
 type Props = {
   title: string;
@@ -13,7 +14,7 @@ type Props = {
 
 function ProductListSection({ title, addOn, data }: Props) {
   const productCardList = data.map(({ id, productImage, name, rating }) => (
-    <Link to="/" key={id}>
+    <Link to={ROUTES.PRODUCT} key={id}>
       <ProductCard productImage={productImage} name={name} rating={rating} />
     </Link>
   ));
