@@ -8,15 +8,18 @@ public class KeyboardResponse {
 
     private Long id;
     private String name;
+    private String imageUrl;
     private int reviewCount;
     private double rating;
 
     private KeyboardResponse() {
     }
 
-    private KeyboardResponse(final Long id, final String name, final int reviewCount, final double rating) {
+    private KeyboardResponse(final Long id, final String name, final String imageUrl, final int reviewCount,
+                             final double rating) {
         this.id = id;
         this.name = name;
+        this.imageUrl = imageUrl;
         this.reviewCount = reviewCount;
         this.rating = rating;
     }
@@ -25,6 +28,7 @@ public class KeyboardResponse {
         return new KeyboardResponse(
                 keyboard.getId(),
                 keyboard.getName(),
+                keyboard.getImageUrl(),
                 keyboard.getReviewCount(),
                 keyboard.getRating()
         );
