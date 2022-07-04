@@ -52,6 +52,7 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'public'),
     },
+    open: true,
     historyApiFallback: true,
     compress: true,
     port: 3000,
