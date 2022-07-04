@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.config.JpaConfig;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -23,6 +25,29 @@ class KeyboardRepositoryTest {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Test
+    void 키보드를_단일_조회_한다() {
+        // given
+        Keyboard keyboard = 키보드_저장("키보드");
+        리뷰_저장(keyboard.getId(), "리뷰내용", 4);
+        리뷰_저장(keyboard.getId(), "리뷰내용", 5);
+        entityManager.flush();
+        entityManager.refresh(keyboard);
+
+        // when
+        Keyboard savedKeyboard = keyboardRepository.findById(keyboard.getId())
+                .orElseThrow(IllegalArgumentException::new);
+
+        // then
+        assertAll(
+                () -> assertThat(savedKeyboard.getRating()).isEqualTo(4.5),
+                () -> assertThat(savedKeyboard.getReviewCount()).isEqualTo(2)
+        );
+    }
 
     @Test
     void 키보드_전체_목록을_페이징하여_조회한다() {
