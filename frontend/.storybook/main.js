@@ -5,6 +5,18 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
   ],
+  webpackFinal: async (config) => {
+    const rules = config.module.rules;
+    const fileLoaderRule = rules.find((rule) => rule.test.test('.svg'));
+    fileLoaderRule.exclude = /\.svg$/;
+
+    rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    });
+
+    return config;
+  },
   framework: '@storybook/react',
   core: {
     builder: '@storybook/builder-webpack5',
