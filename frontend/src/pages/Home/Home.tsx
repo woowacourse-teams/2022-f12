@@ -1,10 +1,13 @@
 import CustomLink from '../../components/common/CustomLink/CustomLink';
 import ProductListSection from '../../components/ProductListSection/ProductListSection';
 import ReviewListSection from '../../components/ReviewListSection/ReviewListSection';
+import ROUTES from '../../constants/routes';
 import { products, reviews } from './mockData';
 
 function Home() {
-  const moreProductsLink = <CustomLink to="products">+더보기</CustomLink>;
+  const moreProductsLink = (
+    <CustomLink to={ROUTES.PRODUCTS}>+더보기</CustomLink>
+  );
   return (
     <>
       <ProductListSection
