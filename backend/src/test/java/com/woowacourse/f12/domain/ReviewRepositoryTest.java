@@ -26,8 +26,8 @@ class ReviewRepositoryTest {
         // given
         Long productId = 1L;
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        reviewRepository.save(리뷰_저장(1L, "내용1", 5));
-        Review review = reviewRepository.save(리뷰_저장(1L, "내용2", 5));
+        리뷰_저장(productId, "내용1", 5);
+        Review review = 리뷰_저장(productId, "내용2", 5);
 
         // when
         Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
@@ -46,8 +46,8 @@ class ReviewRepositoryTest {
         // given
         Long productId = 1L;
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("rating")));
-        Review review = reviewRepository.save(리뷰_저장(1L, "내용1", 5));
-        reviewRepository.save(리뷰_저장(1L, "내용2", 4));
+        Review review = 리뷰_저장(productId, "내용1", 5);
+        리뷰_저장(productId, "내용2", 4);
 
         // when
         Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
@@ -64,10 +64,9 @@ class ReviewRepositoryTest {
     @Test
     void 리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
-        Long productId = 1L;
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        reviewRepository.save(리뷰_저장(1L, "내용1", 5));
-        Review review = reviewRepository.save(리뷰_저장(2L, "내용2", 4));
+        리뷰_저장(1L, "내용1", 5);
+        Review review = 리뷰_저장(2L, "내용2", 4);
 
         // when
         Slice<Review> page = reviewRepository.findPageBy(pageable);
@@ -82,10 +81,10 @@ class ReviewRepositoryTest {
     }
 
     private Review 리뷰_저장(Long productId, String content, int rating) {
-        return Review.builder()
+        return reviewRepository.save(Review.builder()
                 .productId(productId)
                 .content(content)
                 .rating(rating)
-                .build();
+                .build());
     }
 }

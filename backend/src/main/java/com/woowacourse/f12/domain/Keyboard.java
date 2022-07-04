@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.Formula;
 
 @Entity
 @Table(name = "keyboard")
@@ -21,6 +22,12 @@ public class Keyboard {
 
     @Column(name = "name")
     private String name;
+
+    @Formula("(SELECT COUNT(1) FROM review r WHERE r.product_id = id)")
+    private int reviewCount;
+
+    @Formula("(SELECT IFNULL(AVG(r.rating), 0) FROM review r WHERE r.product_id = id)")
+    private double rating;
 
     protected Keyboard() {
     }

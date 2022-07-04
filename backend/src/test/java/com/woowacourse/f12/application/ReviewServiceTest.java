@@ -60,7 +60,7 @@ class ReviewServiceTest {
         Long productId = 1L;
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
         Slice<Review> slice = new SliceImpl<>(List.of(
-                리뷰_저장(2L, productId, "내용", 5)
+                리뷰_생성(2L, productId, "내용", 5)
         ), pageable, true);
 
         given(reviewRepository.findPageByProductId(productId, pageable))
@@ -86,8 +86,8 @@ class ReviewServiceTest {
         Long product2Id = 2L;
         Pageable pageable = PageRequest.of(0, 2, Sort.by(Order.desc("createdAt")));
         Slice<Review> slice = new SliceImpl<>(List.of(
-                리뷰_저장(3L, product2Id, "내용", 5),
-                리뷰_저장(2L, product1Id, "내용", 5)
+                리뷰_생성(3L, product2Id, "내용", 5),
+                리뷰_생성(2L, product1Id, "내용", 5)
         ), pageable, true);
 
         given(reviewRepository.findPageBy(pageable))
@@ -106,7 +106,7 @@ class ReviewServiceTest {
         );
     }
 
-    private Review 리뷰_저장(Long id, Long productId, String content, int rating) {
+    private Review 리뷰_생성(Long id, Long productId, String content, int rating) {
         return Review.builder()
                 .id(id)
                 .productId(productId)
