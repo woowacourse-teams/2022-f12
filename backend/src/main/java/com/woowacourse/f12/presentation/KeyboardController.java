@@ -1,7 +1,9 @@
 package com.woowacourse.f12.presentation;
 
 import com.woowacourse.f12.application.KeyboardService;
+import com.woowacourse.f12.dto.response.KeyboardPageResponse;
 import com.woowacourse.f12.dto.response.KeyboardResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,11 @@ public class KeyboardController {
 
     public KeyboardController(final KeyboardService keyboardService) {
         this.keyboardService = keyboardService;
+    }
+
+    @GetMapping
+    public ResponseEntity<KeyboardPageResponse> showPage(final Pageable pageable) {
+        return ResponseEntity.ok().body(keyboardService.findPage(pageable));
     }
 
     @GetMapping("/{id}")
