@@ -6,7 +6,7 @@ export const Container = styled.article`
   flex-direction: column;
   border-radius: 0.375rem;
   padding: 1rem;
-  min-width: 30rem;
+  min-width: 25rem;
   box-shadow: 0 0.35rem 0.7rem -0.2rem rgba(0, 0, 0, 0.3);
 `;
 
