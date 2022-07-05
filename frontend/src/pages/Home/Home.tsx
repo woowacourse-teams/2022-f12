@@ -27,7 +27,7 @@ function Home() {
 
   const [reviews, getNextPage] = useGetMany<Reviews>({
     url: '/api/v1/reviews/',
-    size: 6,
+    size: 4,
   });
 
   const moreProductsLink = (
@@ -41,7 +41,7 @@ function Home() {
         data={!!keyboards && keyboards}
         addOn={moreProductsLink}
       />
-      <ReviewListSection data={reviews} />
+      <ReviewListSection data={reviews} getNextPage={getNextPage} />
     </>
   );
 }

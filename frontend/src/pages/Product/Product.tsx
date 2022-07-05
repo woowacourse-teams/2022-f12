@@ -40,7 +40,7 @@ function Product() {
           />
           <S.Wrapper>
             <ReviewForm />
-            <ReviewListSection data={reviews} />
+            <ReviewListSection data={reviews} getNextPage={getNextPage} />
           </S.Wrapper>
         </S.Container>
       </>

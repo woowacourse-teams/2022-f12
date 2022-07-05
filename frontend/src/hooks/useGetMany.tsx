@@ -23,12 +23,17 @@ function useGetMany<T>({
 }: Props): [T[], () => void] {
   const [data, setData] = useState<T[]>([]);
 
-  const [page, setPage] = useState<number>(0);
-  const [hasNextPage, setHasNextPage] = useState<boolean>(true);
+  const [page, setPage] = useState(0);
+  const [hasNextPage, setHasNextPage] = useState(true);
   const [nextPageTrigger, setNextPageTrigger] = useState(0);
 
+  const [isLoading, setLoading] = useState(false);
+
   const fetchData = async () => {
-    if (!hasNextPage) return;
+    if (!hasNextPage || isLoading) return;
+
+    setLoading(true);
+
     const {
       data: { hasNext, items },
     }: AxiosResponse<Data<T>> = await axios.get(url, {
@@ -61,6 +66,9 @@ function useGetMany<T>({
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [nextPageTrigger, sort]);
 

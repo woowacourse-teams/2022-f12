@@ -37,12 +37,15 @@ const getReviews = (req, res, ctx) => {
 };
 
 const getReviewsByProductId = (req, res, ctx) => {
-  const page = req.url.searchParams.get('page');
-  const size = req.url.searchParams.get('size');
+  const page = Number(req.url.searchParams.get('page'));
+  const size = Number(req.url.searchParams.get('size'));
+
+  const startIndex = page * size;
+  const endIndex = (page + 1) * size;
 
   const response = {
     hasNext: page < 2,
-    items: reviews.slice(0, size),
+    items: reviews.slice(startIndex, endIndex),
   };
 
   return res(ctx.status(200), ctx.json(response));

@@ -13,7 +13,7 @@ const options = [
 type Product = {
   id: number;
   name: string;
-  productImage: string;
+  imageUrl: string;
   rating: number;
 };
 
@@ -29,6 +29,7 @@ function Products() {
     <ProductListSection
       title={'인기 있는 상품'}
       data={!!keyboards && keyboards}
+      getNextPage={getNextPage}
       addOn={<Select value={sort} setValue={setSort} options={options} />}
     />
   );
