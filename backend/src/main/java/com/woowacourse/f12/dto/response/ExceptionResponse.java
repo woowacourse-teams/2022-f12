@@ -17,4 +17,8 @@ public class ExceptionResponse {
     public static ExceptionResponse from(final Exception e) {
         return new ExceptionResponse(e.getMessage());
     }
+
+    public static ExceptionResponse from(final String message) {
+        return new ExceptionResponse(message);
+    }
 }
