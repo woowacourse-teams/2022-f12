@@ -7,23 +7,27 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.Formula;
 
 @Entity
-@Table(name = "keyboard")
+@Table(name = "keyboard", uniqueConstraints = {
+        @UniqueConstraint(name = "NAME_UNIQUE", columnNames = {"name"})})
 @Getter
 public class Keyboard {
+
+    private static final int MAXIMUM_IMAGE_URL_LENGTH = 65535;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url", nullable = false, length = MAXIMUM_IMAGE_URL_LENGTH)
     private String imageUrl;
 
     @Formula("(SELECT COUNT(1) FROM review r WHERE r.product_id = id)")
