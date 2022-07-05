@@ -34,14 +34,14 @@ public class Review {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(name = "content", length = MAXIMUM_CONTENT_LENGTH)
+    @Column(name = "content", nullable = false, length = MAXIMUM_CONTENT_LENGTH)
     private String content;
 
-    @Column(name = "rating")
+    @Column(name = "rating", nullable = false)
     private int rating;
 
     @CreatedDate
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     protected Review() {
