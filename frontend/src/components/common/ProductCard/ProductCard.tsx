@@ -1,6 +1,5 @@
 import Rating from '../Rating/Rating';
 import * as S from './ProductCard.style';
-import sampleKeyboard from './sample_keyboard.jpg';
 
 type Props = {
   productImage?: string;
@@ -8,7 +7,7 @@ type Props = {
   rating: number;
 };
 
-function ProductCard({ productImage = sampleKeyboard, name, rating }: Props) {
+function ProductCard({ productImage, name, rating }: Props) {
   return (
     <S.Container>
       <S.Image src={productImage} />

@@ -18,12 +18,9 @@ export const Form = styled.form`
 export const Textarea = styled.textarea`
   resize: none;
   padding: 1rem;
-  height: 3rem;
   line-height: 1.5;
 
-  &:focus {
-    height: 5rem;
-  }
+  height: 5rem;
 `;
 
 export const SubmitButton = styled.button`
