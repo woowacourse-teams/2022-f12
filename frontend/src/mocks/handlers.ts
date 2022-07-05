@@ -42,7 +42,7 @@ const getReviewsByProductId = (req, res, ctx) => {
 
   const response = {
     hasNext: page < 2,
-    reviews: [reviews.slice(0, size)],
+    items: reviews.slice(0, size),
   };
 
   return res(ctx.status(200), ctx.json(response));

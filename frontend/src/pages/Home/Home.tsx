@@ -7,7 +7,7 @@ import useGetMany from '../../hooks/useGetMany';
 type Product = {
   id: number;
   name: string;
-  productImage: string;
+  imageUrl: string;
   rating: number;
 };
 
