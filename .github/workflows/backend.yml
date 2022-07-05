@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'backend/**'
-  pull-request:
+  pull_request:
     paths:
       - 'backend/**'
 
@@ -26,7 +26,7 @@ jobs:
           distribution: 'temurin'
   
       - name: grant execute permission for gradlew
-        uses: chmod +x gradlew
+        run: chmod +x gradlew
       
       - name: gradle build
-        uses: ./gradlew build
+        run: ./gradlew build
