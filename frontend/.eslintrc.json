@@ -17,5 +17,8 @@
     "plugin:react/jsx-runtime",
     "plugin:react-hooks/recommended",
     "prettier"
-  ]
+  ],
+  "rules": {
+    "react-hooks/exhaustive-deps": 0
+  }
 }

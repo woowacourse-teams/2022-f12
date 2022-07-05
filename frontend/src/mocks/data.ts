@@ -4,21 +4,21 @@ import sampleProfile from './sample_profile.jpg';
 export const products = [
   {
     id: 1,
-    name: '예쁜 키보드',
+    name: '예쁜 키보드1',
     imageUrl: sampleKeyboard,
     rating: 5,
     reviewCount: 6,
   },
   {
     id: 2,
-    name: '예쁜 키보드',
+    name: '예쁜 키보드2',
     imageUrl: sampleKeyboard,
     rating: 5,
     reviewCount: 6,
   },
   {
     id: 3,
-    name: '예쁜 키보드',
+    name: '예쁜 키보드3',
     imageUrl: sampleKeyboard,
     rating: 5,
     reviewCount: 6,

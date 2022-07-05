@@ -13,11 +13,13 @@ type Props = {
 };
 
 function ProductListSection({ title, addOn, data }: Props) {
-  const productCardList = data.map(({ id, productImage, name, rating }) => (
-    <Link to={ROUTES.PRODUCT} key={id}>
-      <ProductCard productImage={productImage} name={name} rating={rating} />
-    </Link>
-  ));
+  const productCardList =
+    data &&
+    data.map(({ id, productImage, name, rating }) => (
+      <Link to={ROUTES.PRODUCT} key={id}>
+        <ProductCard productImage={productImage} name={name} rating={rating} />
+      </Link>
+    ));
 
   return (
     <S.Container>
