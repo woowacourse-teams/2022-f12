@@ -1,0 +1,5 @@
+= Keyboard API
+
+=== 키보드 단일 상품 조회
+
+operation::keyboards-get[snippets='http-request,http-response']
