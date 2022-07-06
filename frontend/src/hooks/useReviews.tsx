@@ -34,6 +34,7 @@ function useReviews({ size, productId }: Props): ReturnType {
         ? `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`
         : `${ENDPOINTS.REVIEWS}`,
     size,
+    sort: 'createdAt,desc',
   });
 
   const postReview = usePost<ReviewInput>({

@@ -2,6 +2,7 @@ import { rest } from 'msw';
 import { BASE_URL, ENDPOINTS } from '../constants/api';
 import { products, reviews } from './data';
 
+// 상품 목록 조회
 const getKeyboards = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
@@ -15,6 +16,7 @@ const getKeyboards = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response));
 };
 
+// 상품 상세 조회
 const getKeyboard = (req, res, ctx) => {
   const { id } = req.params;
 
@@ -23,6 +25,7 @@ const getKeyboard = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response));
 };
 
+// 전체 리뷰 목록 조회
 const getReviews = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
@@ -37,6 +40,7 @@ const getReviews = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response));
 };
 
+// 상품 별 리뷰 목록 조회
 const getReviewsByProductId = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
@@ -52,6 +56,7 @@ const getReviewsByProductId = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response));
 };
 
+// 리뷰 작성
 const postReviewByProductId = (req, res, ctx) => {
   return res(ctx.status(201));
 };

@@ -8,9 +8,8 @@ type Props = {
 
 function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
   const postData = async (body: T) => {
-    await axiosInstance.post(url, {
+    await axiosInstance.post(url, body, {
       headers,
-      data: body,
     });
   };
 

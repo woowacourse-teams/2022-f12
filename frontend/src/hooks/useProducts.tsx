@@ -1,7 +1,7 @@
 import useGetMany from './api/useGetMany';
 import { ENDPOINTS } from '../constants/api';
 
-type Sort = 'default' | 'rating' | 'reviewCount';
+type Sort = 'default' | 'rating,desc' | 'reviewCount,desc';
 
 type Props = {
   size: number;
