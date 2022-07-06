@@ -18,7 +18,7 @@ function ProductListSection({ title, addOn, data, getNextPage }: Props) {
   const productCardList =
     data &&
     data.map(({ id, imageUrl, name, rating }) => (
-      <Link to={ROUTES.PRODUCT} key={id}>
+      <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
         <ProductCard productImage={imageUrl} name={name} rating={rating} />
       </Link>
     ));
@@ -30,9 +30,13 @@ function ProductListSection({ title, addOn, data, getNextPage }: Props) {
         {addOn}
       </SectionHeader>
       <S.Wrapper>
-        <InfiniteScroll handleContentLoad={getNextPage}>
-          {productCardList}
-        </InfiniteScroll>
+        {getNextPage !== undefined ? (
+          <InfiniteScroll handleContentLoad={getNextPage}>
+            {productCardList}
+          </InfiniteScroll>
+        ) : (
+          productCardList
+        )}
       </S.Wrapper>
     </S.Container>
   );

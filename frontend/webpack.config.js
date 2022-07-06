@@ -8,6 +8,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.[hash].js',
     clean: true,
+    publicPath: '/',
   },
   module: {
     rules: [
@@ -53,7 +54,7 @@ module.exports = {
       directory: path.join(__dirname, 'public'),
     },
     open: true,
-    historyApiFallback: true,
+    historyApiFallback: { index: '/' },
     compress: true,
     port: 3000,
   },

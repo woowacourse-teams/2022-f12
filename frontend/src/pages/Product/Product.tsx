@@ -5,13 +5,16 @@ import ReviewForm from '../../components/common/ReviewForm/ReviewForm';
 import ReviewListSection from '../../components/ReviewListSection/ReviewListSection';
 import useReviews from '../../hooks/useReviews';
 import useProduct from '../../hooks/useProduct';
+import { useParams } from 'react-router-dom';
 
 function Product() {
-  const product = useProduct({ productId: 1 });
+  const { productId: id } = useParams();
+  const productId = Number(id);
 
+  const product = useProduct({ productId: Number(productId) });
   const [reviews, getNextPage, postReview] = useReviews({
     size: 6,
-    productId: 1,
+    productId,
   });
 
   const handleReviewSubmit = async (reviewInput: ReviewInput) => {

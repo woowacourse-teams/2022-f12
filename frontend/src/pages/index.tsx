@@ -10,7 +10,7 @@ export const PAGES = [
     children: [
       { path: ROUTES.HOME, element: <Home /> },
       { path: ROUTES.PRODUCTS, element: <Products /> },
-      { path: ROUTES.PRODUCT, element: <Product /> },
+      { path: `${ROUTES.PRODUCT}/:productId`, element: <Product /> },
     ],
   },
 ];
