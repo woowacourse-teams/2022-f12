@@ -26,15 +26,13 @@ function useGetMany<T>({
 
   const [page, setPage] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(true);
+
   const [nextPageTrigger, setNextPageTrigger] = useState(0);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   const [isLoading, setLoading] = useState(false);
 
   const fetchData = async () => {
-    if (!hasNextPage || isLoading) return;
-
-    setLoading(true);
-
     const {
       data: { hasNext, items },
     }: AxiosResponse<Data<T>> = await axiosInstance.get(url, {
@@ -47,23 +45,33 @@ function useGetMany<T>({
       },
     });
 
-    if (hasNext) {
-      setPage((prevPage) => prevPage + 1);
-    } else {
-      setHasNextPage(false);
-    }
-
-    return items;
+    return { hasNext, items };
   };
 
   const getNextPage = () => {
     setNextPageTrigger((prevTrigger) => prevTrigger + 1);
   };
 
+  const refetch = () => {
+    setRefetchTrigger((prevTrigger) => prevTrigger + 1);
+  };
+
   useEffect(() => {
+    if (!hasNextPage || isLoading) return;
+
+    setLoading(true);
+
     fetchData()
-      .then((data) => {
-        !!data && setData((prevData) => [...prevData, ...data]);
+      .then(({ hasNext, items }) => {
+        !!items && setData((prevData) => [...prevData, ...items]);
+        return hasNext;
+      })
+      .then((hasNext) => {
+        if (hasNext) {
+          setPage((prevPage) => prevPage + 1);
+        } else {
+          setHasNextPage(false);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -71,7 +79,14 @@ function useGetMany<T>({
       .finally(() => {
         setLoading(false);
       });
-  }, [nextPageTrigger, sort]);
+  }, [nextPageTrigger, refetchTrigger]);
+
+  useEffect(() => {
+    setPage(0);
+    setHasNextPage(true);
+    setData([]);
+    refetch();
+  }, [sort]);
 
   return [data, getNextPage];
 }
