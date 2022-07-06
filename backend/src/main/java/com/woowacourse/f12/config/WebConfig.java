@@ -1,6 +1,6 @@
 package com.woowacourse.f12.config;
 
-import com.woowacourse.f12.presentation.CustomPageableHandlerArgumentResolver;
+import com.woowacourse.f12.presentation.CustomPageableHandlerMethodArgumentResolver;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -15,9 +15,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
-        CustomPageableHandlerArgumentResolver customPageableHandlerArgumentResolver = new CustomPageableHandlerArgumentResolver();
-        customPageableHandlerArgumentResolver.setMaxPageSize(150);
-        resolvers.add(customPageableHandlerArgumentResolver);
+        final CustomPageableHandlerMethodArgumentResolver customPageableHandlerMethodArgumentResolver = new CustomPageableHandlerMethodArgumentResolver();
+        customPageableHandlerMethodArgumentResolver.setMaxPageSize(150);
+        resolvers.add(customPageableHandlerMethodArgumentResolver);
     }
 
     @Override
