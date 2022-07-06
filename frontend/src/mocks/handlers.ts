@@ -20,7 +20,9 @@ const getKeyboards = (req, res, ctx) => {
 const getKeyboard = (req, res, ctx) => {
   const { id } = req.params;
 
-  const response = products[Number(id) + 1];
+  const response = products.find(
+    ({ id: productId }) => productId === Number(id)
+  );
 
   return res(ctx.status(200), ctx.json(response));
 };

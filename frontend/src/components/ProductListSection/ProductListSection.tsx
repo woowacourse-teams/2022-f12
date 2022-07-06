@@ -18,7 +18,7 @@ function ProductListSection({ title, addOn, data, getNextPage }: Props) {
   const productCardList =
     data &&
     data.map(({ id, imageUrl, name, rating }) => (
-      <Link to={ROUTES.PRODUCT} key={id}>
+      <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
         <ProductCard productImage={imageUrl} name={name} rating={rating} />
       </Link>
     ));
