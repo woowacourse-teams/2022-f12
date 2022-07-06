@@ -97,7 +97,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
-                "/api/v1/keyboards/reviews?page=0&size=2&sort=createdAt,desc");
+                "/api/v1/reviews?page=0&size=2&sort=createdAt,desc");
 
         // then
         assertAll(

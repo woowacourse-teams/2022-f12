@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/keyboards")
+@RequestMapping("/api/v1")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -23,7 +23,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping("/{productId}/reviews")
+    @PostMapping("/keyboards/{productId}/reviews")
     public ResponseEntity<Void> create(@PathVariable final Long productId,
                                        @RequestBody final ReviewRequest reviewRequest) {
         final Long id = reviewService.save(productId, reviewRequest);
@@ -31,7 +31,7 @@ public class ReviewController {
                 .build();
     }
 
-    @GetMapping("/{productId}/reviews")
+    @GetMapping("/keyboards/{productId}/reviews")
     public ResponseEntity<ReviewPageResponse> showPageByProductId(@PathVariable final Long productId,
                                                                   final Pageable pageable) {
         final ReviewPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, pageable);
