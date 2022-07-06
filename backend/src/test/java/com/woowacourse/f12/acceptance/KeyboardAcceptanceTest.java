@@ -49,7 +49,7 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(KeyboardPageResponse.class).getKeyboards())
+                () -> assertThat(response.as(KeyboardPageResponse.class).getItems())
                         .extracting("id")
                         .containsExactly(keyboard.getId()),
                 () -> assertThat(response.as(KeyboardPageResponse.class).isHasNext()).isTrue()
@@ -71,7 +71,7 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(KeyboardPageResponse.class).getKeyboards())
+                () -> assertThat(response.as(KeyboardPageResponse.class).getItems())
                         .extracting("id")
                         .containsExactly(keyboard1.getId()),
                 () -> assertThat(response.as(KeyboardPageResponse.class).isHasNext()).isTrue()
@@ -93,7 +93,7 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(KeyboardPageResponse.class).getKeyboards())
+                () -> assertThat(response.as(KeyboardPageResponse.class).getItems())
                         .extracting("id")
                         .containsExactly(keyboard2.getId()),
                 () -> assertThat(response.as(KeyboardPageResponse.class).isHasNext()).isTrue()

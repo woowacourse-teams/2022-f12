@@ -48,13 +48,15 @@ public class Review {
     }
 
     @Builder
-    private Review(final Long id, final Long productId, final String content, final int rating) {
-        validateRating(rating);
+    private Review(final Long id, final Long productId, final String content, final int rating,
+                   final LocalDateTime createdAt) {
         validateContent(content);
+        validateRating(rating);
         this.id = id;
         this.productId = productId;
         this.content = content;
         this.rating = rating;
+        this.createdAt = createdAt;
     }
 
     private void validateContent(final String content) {

@@ -52,7 +52,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         ReviewPageResponse reviewPageResponse = response.as(ReviewPageResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(reviewPageResponse.getReviews())
+                () -> assertThat(reviewPageResponse.getItems())
                         .extracting("id")
                         .containsExactly(reviewId),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue()
@@ -76,7 +76,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         ReviewPageResponse reviewPageResponse = response.as(ReviewPageResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(reviewPageResponse.getReviews())
+                () -> assertThat(reviewPageResponse.getItems())
                         .extracting("id")
                         .containsExactly(reviewId),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue()
@@ -103,7 +103,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(ReviewPageResponse.class).isHasNext()).isFalse(),
-                () -> assertThat(response.as(ReviewPageResponse.class).getReviews())
+                () -> assertThat(response.as(ReviewPageResponse.class).getItems())
                         .extracting("id")
                         .containsExactly(reviewId2, reviewId1)
         );
