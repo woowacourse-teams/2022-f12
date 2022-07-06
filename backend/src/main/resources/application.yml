@@ -1,8 +1,15 @@
 spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/f12;MODE=MySQL
+    username: sa
+    password:
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   h2:
     console:
       enabled: true
