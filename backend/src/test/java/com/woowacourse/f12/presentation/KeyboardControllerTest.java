@@ -90,7 +90,7 @@ class KeyboardControllerTest {
     void 키보드_단일_조회_실패_존재_하지_않는_아이디() throws Exception {
         // given
         given(keyboardService.findById(anyLong()))
-                .willThrow(KeyboardNotFoundException.class);
+                .willThrow(new KeyboardNotFoundException());
 
         // when
         mockMvc.perform(get("/api/v1/keyboards/0"))
