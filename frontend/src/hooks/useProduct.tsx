@@ -1,13 +1,6 @@
 import useGetOne from './api/useGetOne';
 import { ENDPOINTS } from '../constants/api';
 
-type Product = {
-  id: number;
-  name: string;
-  imageUrl: string;
-  rating: number;
-};
-
 type Props = {
   productId: number;
 };

@@ -1,13 +1,6 @@
 import useGetMany from './api/useGetMany';
 import { ENDPOINTS } from '../constants/api';
 
-type Product = {
-  id: number;
-  name: string;
-  imageUrl: string;
-  rating: number;
-};
-
 type Sort = 'default' | 'rating' | 'reviewCount';
 
 type Props = {

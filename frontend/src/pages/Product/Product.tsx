@@ -6,11 +6,6 @@ import ReviewListSection from '../../components/ReviewListSection/ReviewListSect
 import useReviews from '../../hooks/useReviews';
 import useProduct from '../../hooks/useProduct';
 
-type ReviewInput = {
-  content: string;
-  rating: number;
-};
-
 function Product() {
   const product = useProduct({ productId: 1 });
 

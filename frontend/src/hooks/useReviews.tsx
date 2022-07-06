@@ -2,43 +2,20 @@ import useGetMany from './api/useGetMany';
 import usePost from './api/usePost';
 import { ENDPOINTS } from '../constants/api';
 
-type Reviews = {
-  id: number;
-  profileImage: string;
-  username: string;
-  rating: number;
-  content: string;
-};
-
+type PropsWithoutProductId = { size: number };
+type PropsWithProductId = PropsWithoutProductId & { productId: number };
 type Props = {
   size: number;
   productId?: number;
 };
 
-type PropsWithoutProductId = {
-  size: number;
-};
-
-type PropsWithProductId = {
-  size: number;
-  productId: number;
-};
-
-type ReviewInput = {
-  content: string;
-  rating: number;
-};
-
-type ReturnTypeWithoutProductId = [Reviews[], () => void];
-
+type ReturnTypeWithoutProductId = [Review[], () => void];
 type ReturnTypeWithProductId = [
-  Reviews[],
-  () => void,
+  ...ReturnTypeWithoutProductId,
   (reviewInput: ReviewInput) => Promise<void>
 ];
-
 type ReturnType = [
-  Reviews[],
+  Review[],
   () => void,
   ((reviewInput: ReviewInput) => Promise<void>)?
 ];
@@ -46,14 +23,12 @@ type ReturnType = [
 function useReviews({
   size,
 }: PropsWithoutProductId): ReturnTypeWithoutProductId;
-
 function useReviews({
   size,
   productId,
 }: PropsWithProductId): ReturnTypeWithProductId;
-
 function useReviews({ size, productId }: Props): ReturnType {
-  const [reviews, getNextPage] = useGetMany<Reviews>({
+  const [reviews, getNextPage] = useGetMany<Review>({
     url:
       productId !== undefined
         ? `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`
