@@ -2,33 +2,12 @@ import CustomLink from '../../components/common/CustomLink/CustomLink';
 import ProductListSection from '../../components/ProductListSection/ProductListSection';
 import ReviewListSection from '../../components/ReviewListSection/ReviewListSection';
 import ROUTES from '../../constants/routes';
-import useGetMany from '../../hooks/api/useGetMany';
-
-type Product = {
-  id: number;
-  name: string;
-  imageUrl: string;
-  rating: number;
-};
-
-type Reviews = {
-  id: number;
-  profileImage: string;
-  username: string;
-  rating: number;
-  content: string;
-};
+import useProducts from '../../hooks/useProducts';
+import useReviews from '../../hooks/useReviews';
 
 function Home() {
-  const [keyboards] = useGetMany<Product>({
-    url: '/api/v1/keyboards',
-    size: 5,
-  });
-
-  const [reviews, getNextPage] = useGetMany<Reviews>({
-    url: '/api/v1/reviews/',
-    size: 4,
-  });
+  const [keyboards] = useProducts({ size: 5 });
+  const [reviews, getNextPage] = useReviews({ size: 4 });
 
   const moreProductsLink = (
     <CustomLink to={ROUTES.PRODUCTS}>+더보기</CustomLink>

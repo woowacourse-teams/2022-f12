@@ -11,7 +11,7 @@ type Sort = 'default' | 'rating' | 'reviewCount';
 
 type Props = {
   size: number;
-  sort: Sort;
+  sort?: Sort;
 };
 
 type ReturnType = [Product[], () => void];
