@@ -139,7 +139,7 @@ class ReviewControllerTest {
                 .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_1))));
 
         // when
-        mockMvc.perform(get("/api/v1/keyboards/reviews?size=150&page=0&sort=rating,desc"))
+        mockMvc.perform(get("/api/v1/reviews?size=150&page=0&sort=rating,desc"))
                 .andExpect(status().isOk())
                 .andDo(print());
 
