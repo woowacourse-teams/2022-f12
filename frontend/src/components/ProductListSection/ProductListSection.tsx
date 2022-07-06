@@ -30,9 +30,13 @@ function ProductListSection({ title, addOn, data, getNextPage }: Props) {
         {addOn}
       </SectionHeader>
       <S.Wrapper>
-        <InfiniteScroll handleContentLoad={getNextPage}>
-          {productCardList}
-        </InfiniteScroll>
+        {getNextPage !== undefined ? (
+          <InfiniteScroll handleContentLoad={getNextPage}>
+            {productCardList}
+          </InfiniteScroll>
+        ) : (
+          productCardList
+        )}
       </S.Wrapper>
     </S.Container>
   );
