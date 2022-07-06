@@ -3,9 +3,9 @@ import * as S from './Product.style';
 
 import ReviewForm from '../../components/common/ReviewForm/ReviewForm';
 import ReviewListSection from '../../components/ReviewListSection/ReviewListSection';
-import useGetOne from '../../hooks/useGetOne';
-import useGetMany from '../../hooks/useGetMany';
-import usePost from '../../hooks/usePost';
+import useGetOne from '../../hooks/api/useGetOne';
+import useGetMany from '../../hooks/api/useGetMany';
+import usePost from '../../hooks/api/usePost';
 
 type Product = {
   id: number;

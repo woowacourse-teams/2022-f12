@@ -2,7 +2,7 @@ import CustomLink from '../../components/common/CustomLink/CustomLink';
 import ProductListSection from '../../components/ProductListSection/ProductListSection';
 import ReviewListSection from '../../components/ReviewListSection/ReviewListSection';
 import ROUTES from '../../constants/routes';
-import useGetMany from '../../hooks/useGetMany';
+import useGetMany from '../../hooks/api/useGetMany';
 
 type Product = {
   id: number;
