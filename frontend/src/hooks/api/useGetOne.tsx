@@ -1,5 +1,6 @@
-import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios';
+import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
+import axiosInstance from './axiosInstance';
 
 type Props = {
   url: string;
@@ -10,7 +11,7 @@ function useGetOne<T>({ url, headers }: Props): T {
   const [data, setData] = useState<null | T>(null);
 
   const fetchData = async () => {
-    const { data }: AxiosResponse<T> = await axios.get(url, {
+    const { data }: AxiosResponse<T> = await axiosInstance.get(url, {
       headers,
     });
 

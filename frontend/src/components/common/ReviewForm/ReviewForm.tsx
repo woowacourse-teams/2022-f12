@@ -2,11 +2,6 @@ import React, { useState } from 'react';
 import RatingInput from '../RatingInput/RatingInput';
 import * as S from './ReviewForm.style';
 
-type ReviewInput = {
-  content: string;
-  rating: number;
-};
-
 type Props = {
   handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
 };

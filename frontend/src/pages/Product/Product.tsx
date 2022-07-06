@@ -3,40 +3,15 @@ import * as S from './Product.style';
 
 import ReviewForm from '../../components/common/ReviewForm/ReviewForm';
 import ReviewListSection from '../../components/ReviewListSection/ReviewListSection';
-import useGetOne from '../../hooks/useGetOne';
-import useGetMany from '../../hooks/useGetMany';
-import usePost from '../../hooks/usePost';
-
-type Product = {
-  id: number;
-  name: string;
-  imageUrl: string;
-  rating: number;
-};
-
-type Review = {
-  id: number;
-  profileImage: string;
-  username: string;
-  rating: number;
-  content: string;
-};
-
-type ReviewInput = {
-  content: string;
-  rating: number;
-};
+import useReviews from '../../hooks/useReviews';
+import useProduct from '../../hooks/useProduct';
 
 function Product() {
-  const product = useGetOne<Product>({ url: '/api/v1/keyboards/1' });
+  const product = useProduct({ productId: 1 });
 
-  const [reviews, getNextPage] = useGetMany<Review>({
-    url: '/api/v1/keyboards/1/reviews',
+  const [reviews, getNextPage, postReview] = useReviews({
     size: 6,
-  });
-
-  const postReview = usePost<ReviewInput>({
-    url: '/api/v1/keyboards/1/reviews',
+    productId: 1,
   });
 
   const handleReviewSubmit = async (reviewInput: ReviewInput) => {

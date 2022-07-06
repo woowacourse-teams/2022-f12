@@ -1,5 +1,6 @@
-import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios';
+import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
+import axiosInstance from './axiosInstance';
 
 type Props = {
   url: string;
@@ -36,7 +37,7 @@ function useGetMany<T>({
 
     const {
       data: { hasNext, items },
-    }: AxiosResponse<Data<T>> = await axios.get(url, {
+    }: AxiosResponse<Data<T>> = await axiosInstance.get(url, {
       data: body,
       headers,
       params: {
