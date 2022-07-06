@@ -3,15 +3,8 @@ import * as S from './Product.style';
 
 import ReviewForm from '../../components/common/ReviewForm/ReviewForm';
 import ReviewListSection from '../../components/ReviewListSection/ReviewListSection';
-import useGetOne from '../../hooks/api/useGetOne';
 import useReviews from '../../hooks/useReviews';
-
-type Product = {
-  id: number;
-  name: string;
-  imageUrl: string;
-  rating: number;
-};
+import useProduct from '../../hooks/useProduct';
 
 type ReviewInput = {
   content: string;
@@ -19,7 +12,7 @@ type ReviewInput = {
 };
 
 function Product() {
-  const product = useGetOne<Product>({ url: '/api/v1/keyboards/1' });
+  const product = useProduct({ productId: 1 });
 
   const [reviews, getNextPage, postReview] = useReviews({
     size: 6,
