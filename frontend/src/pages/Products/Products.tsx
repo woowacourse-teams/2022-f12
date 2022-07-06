@@ -6,7 +6,7 @@ import useProducts from '../../hooks/useProducts';
 
 type Option = { value: string; text: string };
 
-type Sort = 'default' | 'rating' | 'reviewCount';
+type Sort = 'default' | 'rating,desc' | 'reviewCount,desc';
 type SortText = '기본 순' | '평점 높은 순' | '리뷰 많은 순';
 
 interface ProductSortOption extends Option {
@@ -16,8 +16,8 @@ interface ProductSortOption extends Option {
 
 const options: ProductSortOption[] = [
   { value: 'default', text: '기본 순' },
-  { value: 'rating', text: '평점 높은 순' },
-  { value: 'reviewCount', text: '리뷰 많은 순' },
+  { value: 'rating,desc', text: '평점 높은 순' },
+  { value: 'reviewCount,desc', text: '리뷰 많은 순' },
 ];
 
 const DefaultSort = options[1];
