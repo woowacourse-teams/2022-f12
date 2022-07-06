@@ -10,6 +10,7 @@ import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.domain.ReviewRepository;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -113,6 +114,7 @@ class ReviewServiceTest {
                 .productId(productId)
                 .content(content)
                 .rating(rating)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }
