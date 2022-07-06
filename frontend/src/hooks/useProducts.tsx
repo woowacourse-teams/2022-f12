@@ -1,5 +1,5 @@
 import useGetMany from './api/useGetMany';
-import { BASE_URL, ENDPOINTS } from '../constants/api';
+import { ENDPOINTS } from '../constants/api';
 
 type Product = {
   id: number;
@@ -19,7 +19,7 @@ type ReturnType = [Product[], () => void];
 
 function useProducts({ size, sort }: Props): ReturnType {
   const [products, getNextPage] = useGetMany<Product>({
-    url: `${BASE_URL}${ENDPOINTS.PRODUCTS}`,
+    url: `${ENDPOINTS.PRODUCTS}`,
     size,
     sort,
   });

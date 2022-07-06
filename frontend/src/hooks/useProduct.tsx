@@ -1,5 +1,5 @@
 import useGetOne from './api/useGetOne';
-import { BASE_URL, ENDPOINTS } from '../constants/api';
+import { ENDPOINTS } from '../constants/api';
 
 type Product = {
   id: number;
@@ -14,7 +14,7 @@ type Props = {
 
 function useProduct({ productId }: Props): Product {
   const product = useGetOne<Product>({
-    url: `${BASE_URL}${ENDPOINTS.PRODUCT(productId)}`,
+    url: `${ENDPOINTS.PRODUCT(productId)}`,
   });
 
   return product;
