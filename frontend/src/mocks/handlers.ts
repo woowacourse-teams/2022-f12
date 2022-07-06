@@ -1,4 +1,5 @@
 import { rest } from 'msw';
+import { BASE_URL, ENDPOINTS } from '../constants/api';
 import { products, reviews } from './data';
 
 const getKeyboards = (req, res, ctx) => {
@@ -55,10 +56,19 @@ const postReviewByProductId = (req, res, ctx) => {
   return res(ctx.status(201));
 };
 
+BASE_URL;
+ENDPOINTS;
+
 export const handlers = [
-  rest.get('api/v1/keyboards', getKeyboards),
-  rest.get('api/v1/keyboards/:id', getKeyboard),
-  rest.get('api/v1/reviews', getReviews),
-  rest.get('api/v1/keyboards/:id/reviews', getReviewsByProductId),
-  rest.post('api/v1/keyboards/:id/reviews', postReviewByProductId),
+  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
+  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
+  rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS}`, getReviews),
+  rest.get(
+    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
+    getReviewsByProductId
+  ),
+  rest.post(
+    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
+    postReviewByProductId
+  ),
 ];

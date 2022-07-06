@@ -1,5 +1,6 @@
 import useGetMany from './api/useGetMany';
 import usePost from './api/usePost';
+import { BASE_URL, ENDPOINTS } from '../constants/api';
 
 type Reviews = {
   id: number;
@@ -55,13 +56,13 @@ function useReviews({ size, productId }: Props): ReturnType {
   const [reviews, getNextPage] = useGetMany<Reviews>({
     url:
       productId !== undefined
-        ? `/api/v1/keyboards/${productId}/reviews`
-        : '/api/v1/reviews/',
+        ? `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`
+        : `${BASE_URL}${ENDPOINTS.REVIEWS}`,
     size,
   });
 
   const postReview = usePost<ReviewInput>({
-    url: '/api/v1/keyboards/1/reviews',
+    url: `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`,
   });
 
   return [reviews, getNextPage, productId !== undefined && postReview];
