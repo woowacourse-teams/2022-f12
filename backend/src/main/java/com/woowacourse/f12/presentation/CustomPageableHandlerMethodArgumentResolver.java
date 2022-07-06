@@ -8,7 +8,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-public class CustomPageableHandlerArgumentResolver extends PageableHandlerMethodArgumentResolver {
+public class CustomPageableHandlerMethodArgumentResolver extends PageableHandlerMethodArgumentResolver {
 
     private static final int MAX_SIZE = 150;
 
