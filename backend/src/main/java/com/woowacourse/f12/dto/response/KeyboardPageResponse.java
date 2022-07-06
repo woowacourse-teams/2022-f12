@@ -10,15 +10,14 @@ import org.springframework.data.domain.Slice;
 public class KeyboardPageResponse {
 
     private boolean hasNext;
-    private List<KeyboardResponse> keyboards;
+    private List<KeyboardResponse> items;
 
     private KeyboardPageResponse() {
     }
 
-    private KeyboardPageResponse(final boolean hasNext,
-                                 final List<KeyboardResponse> keyboards) {
+    private KeyboardPageResponse(final boolean hasNext, final List<KeyboardResponse> items) {
         this.hasNext = hasNext;
-        this.keyboards = keyboards;
+        this.items = items;
     }
 
     public static KeyboardPageResponse from(final Slice<Keyboard> slice) {

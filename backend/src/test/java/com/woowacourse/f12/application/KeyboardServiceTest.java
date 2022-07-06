@@ -80,7 +80,7 @@ class KeyboardServiceTest {
         assertAll(
                 () -> verify(keyboardRepository).findPageBy(any(Pageable.class)),
                 () -> assertThat(keyboardPageResponse.isHasNext()).isFalse(),
-                () -> assertThat(keyboardPageResponse.getKeyboards()).hasSize(1)
+                () -> assertThat(keyboardPageResponse.getItems()).hasSize(1)
         );
     }
 

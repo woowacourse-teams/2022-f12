@@ -10,11 +10,11 @@ import org.springframework.data.domain.Slice;
 public class ReviewPageResponse {
 
     private final boolean hasNext;
-    private final List<ReviewResponse> reviews;
+    private final List<ReviewResponse> items;
 
-    private ReviewPageResponse(final boolean hasNext, final List<ReviewResponse> reviews) {
+    private ReviewPageResponse(final boolean hasNext, final List<ReviewResponse> items) {
         this.hasNext = hasNext;
-        this.reviews = reviews;
+        this.items = items;
     }
 
     public static ReviewPageResponse from(Slice<Review> slice) {

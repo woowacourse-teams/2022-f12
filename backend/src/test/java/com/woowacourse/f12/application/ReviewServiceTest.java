@@ -72,7 +72,7 @@ class ReviewServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(reviewPageResponse.getReviews()).hasSize(1)
+                () -> assertThat(reviewPageResponse.getItems()).hasSize(1)
                         .extracting("id")
                         .containsExactly(2L),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
@@ -99,7 +99,7 @@ class ReviewServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(reviewPageResponse.getReviews()).hasSize(2)
+                () -> assertThat(reviewPageResponse.getItems()).hasSize(2)
                         .extracting("id")
                         .containsExactly(3L, 2L),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
