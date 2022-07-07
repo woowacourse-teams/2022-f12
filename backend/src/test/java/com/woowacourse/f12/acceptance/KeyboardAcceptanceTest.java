@@ -2,6 +2,8 @@ package com.woowacourse.f12.acceptance;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.POST_요청을_보낸다;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -24,7 +26,7 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
     @Test
     void 키보드_단일_제품_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다("키보드", "이미지 URL");
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/keyboards/" + keyboard.getId());
@@ -40,8 +42,8 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
     @Test
     void 키보드_목록을_페이징하여_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다("키보드1", "이미지 URL");
-        키보드를_저장한다("키보드2", "이미지 URL");
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        키보드를_저장한다(KEYBOARD_2.생성());
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/keyboards?page=0&size=1");
@@ -59,8 +61,8 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
     @Test
     void 키보드_목록을_리뷰가_많은_순서로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드를_저장한다("키보드1", "이미지 URL");
-        Keyboard keyboard2 = 키보드를_저장한다("키보드2", "이미지 URL");
+        Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성());
+        Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성());
         키보드에_대한_리뷰를_작성한다(keyboard1, 5);
         키보드에_대한_리뷰를_작성한다(keyboard1, 4);
         키보드에_대한_리뷰를_작성한다(keyboard2, 3);
@@ -81,8 +83,8 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
     @Test
     void 키보드_목록을_평점_높은_순서로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드를_저장한다("키보드1", "이미지 URL");
-        Keyboard keyboard2 = 키보드를_저장한다("키보드2", "이미지 URL");
+        Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성());
+        Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성());
         키보드에_대한_리뷰를_작성한다(keyboard1, 5);
         키보드에_대한_리뷰를_작성한다(keyboard1, 1);
         키보드에_대한_리뷰를_작성한다(keyboard2, 4);
@@ -100,13 +102,8 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Keyboard 키보드를_저장한다(String name, String imageUrl) {
-        Keyboard keyboard = Keyboard.builder()
-                .name(name)
-                .imageUrl(imageUrl)
-                .build();
-        keyboardRepository.save(keyboard);
-        return keyboard;
+    private Keyboard 키보드를_저장한다(Keyboard keyboard) {
+        return keyboardRepository.save(keyboard);
     }
 
     private ExtractableResponse<Response> 키보드에_대한_리뷰를_작성한다(final Keyboard keyboard, final int rating) {

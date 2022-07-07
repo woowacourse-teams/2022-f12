@@ -1,5 +1,7 @@
 package com.woowacourse.f12.domain;
 
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -32,7 +34,7 @@ class KeyboardRepositoryTest {
     @Test
     void 키보드를_단일_조회_한다() {
         // given
-        Keyboard keyboard = 키보드_저장("키보드", "이미지 URL");
+        Keyboard keyboard = 키보드_저장(KEYBOARD_1.생성());
         리뷰_저장(keyboard.getId(), "리뷰내용", 4);
         리뷰_저장(keyboard.getId(), "리뷰내용", 5);
         entityManager.flush();
@@ -52,8 +54,8 @@ class KeyboardRepositoryTest {
     @Test
     void 키보드_전체_목록을_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드_저장("키보드1", "이미지 URL");
-        Keyboard keyboard2 = 키보드_저장("키보드2", "이미지 URL");
+        Keyboard keyboard1 = 키보드_저장(KEYBOARD_1.생성());
+        Keyboard keyboard2 = 키보드_저장(KEYBOARD_2.생성());
         Pageable pageable = PageRequest.of(0, 1);
 
         // when
@@ -69,8 +71,8 @@ class KeyboardRepositoryTest {
     @Test
     void 키보드_전체_목록을_리뷰_많은_순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드_저장("키보드1", "이미지 URL");
-        Keyboard keyboard2 = 키보드_저장("키보드2", "이미지 URL");
+        Keyboard keyboard1 = 키보드_저장(KEYBOARD_1.생성());
+        Keyboard keyboard2 = 키보드_저장(KEYBOARD_2.생성());
 
         리뷰_저장(keyboard1.getId(), "내용", 5);
         리뷰_저장(keyboard2.getId(), "내용", 5);
@@ -91,8 +93,8 @@ class KeyboardRepositoryTest {
     @Test
     void 키보드_전체_목록을_평균_평점_순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드_저장("키보드1", "이미지 URL");
-        Keyboard keyboard2 = 키보드_저장("키보드2", "이미지 URL");
+        Keyboard keyboard2 = 키보드_저장(KEYBOARD_1.생성());
+        Keyboard keyboard1 = 키보드_저장(KEYBOARD_2.생성());
 
         리뷰_저장(keyboard1.getId(), "내용", 2);
         리뷰_저장(keyboard1.getId(), "내용", 1);
@@ -111,12 +113,8 @@ class KeyboardRepositoryTest {
         );
     }
 
-    private Keyboard 키보드_저장(String name, String imageUrl) {
-        return keyboardRepository.save(Keyboard.builder()
-                .name(name)
-                .imageUrl(imageUrl)
-                .build()
-        );
+    private Keyboard 키보드_저장(Keyboard keyboard) {
+        return keyboardRepository.save(keyboard);
     }
 
     private Review 리뷰_저장(Long productId, String content, int rating) {

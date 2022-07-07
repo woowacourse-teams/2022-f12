@@ -2,6 +2,8 @@ package com.woowacourse.f12.acceptance;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.POST_요청을_보낸다;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -23,7 +25,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 키보드가_저장되어있고_키보드에_대한_리뷰를_작성한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다("키보드", "이미지 URL");
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
 
         // when
         ExtractableResponse<Response> response = 키보드에_대한_리뷰를_작성한다(keyboard, 5);
@@ -38,7 +40,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 특정_제품_리뷰_목록을_최신순으로_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다("키보드", "이미지 URL");
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
         키보드에_대한_리뷰를_작성한다(keyboard, 5);
         Long reviewId = Long.parseLong(키보드에_대한_리뷰를_작성한다(keyboard, 5)
                 .header("Location")
@@ -62,7 +64,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 특정_제품_리뷰_목록을_평점순으로_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다("키보드", "이미지 URL");
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
         키보드에_대한_리뷰를_작성한다(keyboard, 4);
         Long reviewId = Long.parseLong(키보드에_대한_리뷰를_작성한다(keyboard, 5)
                 .header("Location")
@@ -86,8 +88,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 전체_리뷰_목록을_최신순으로_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드를_저장한다("키보드1", "이미지 URL");
-        Keyboard keyboard2 = 키보드를_저장한다("키보드2", "이미지 URL");
+        Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성());
+        Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성());
         Long reviewId1 = Long.parseLong(키보드에_대한_리뷰를_작성한다(keyboard1, 4)
                 .header("Location")
                 .split("/")[4]);
@@ -109,13 +111,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Keyboard 키보드를_저장한다(String name, String imageUrl) {
-        Keyboard keyboard = Keyboard.builder()
-                .name(name)
-                .imageUrl(imageUrl)
-                .build();
-        keyboardRepository.save(keyboard);
-        return keyboard;
+    private Keyboard 키보드를_저장한다(Keyboard keyboard) {
+        return keyboardRepository.save(keyboard);
     }
 
     private ExtractableResponse<Response> 키보드에_대한_리뷰를_작성한다(final Keyboard keyboard, final int rating) {
