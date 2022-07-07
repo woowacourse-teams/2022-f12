@@ -1,5 +1,6 @@
 package com.woowacourse.f12.presentation;
 
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
@@ -9,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woowacourse.f12.application.KeyboardService;
-import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.dto.response.KeyboardPageResponse;
 import com.woowacourse.f12.dto.response.KeyboardResponse;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
@@ -27,12 +27,6 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(KeyboardController.class)
 class KeyboardControllerTest {
 
-    private static final Keyboard KEYBOARD_1 = Keyboard.builder()
-            .id(1L)
-            .name("키보드")
-            .imageUrl("url")
-            .build();
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -43,7 +37,7 @@ class KeyboardControllerTest {
     void 키보드_목록_페이지_조회_성공() throws Exception {
         // given
         given(keyboardService.findPage(any(Pageable.class)))
-                .willReturn(KeyboardPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1))));
+                .willReturn(KeyboardPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
 
         // when
         mockMvc.perform(get("/api/v1/keyboards?page=0&size=150&sort=rating,desc"))
@@ -58,15 +52,15 @@ class KeyboardControllerTest {
     void 키보드_단일_조회_성공() throws Exception {
         // given
         given(keyboardService.findById(anyLong()))
-                .willReturn(KeyboardResponse.from(KEYBOARD_1));
+                .willReturn(KeyboardResponse.from(KEYBOARD_1.생성(1L)));
 
         // when
-        mockMvc.perform(get("/api/v1/keyboards/" + KEYBOARD_1.getId()))
+        mockMvc.perform(get("/api/v1/keyboards/" + 1L))
                 .andExpect(status().isOk())
                 .andDo(print());
 
         // then
-        verify(keyboardService).findById(KEYBOARD_1.getId());
+        verify(keyboardService).findById(1L);
     }
 
     @Test

@@ -1,13 +1,15 @@
 package com.woowacourse.f12.acceptance;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.POST_요청을_보낸다;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
-import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -23,10 +25,10 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 키보드가_저장되어있고_키보드에_대한_리뷰를_작성한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다("키보드", "이미지 URL");
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
 
         // when
-        ExtractableResponse<Response> response = 키보드에_대한_리뷰를_작성한다(keyboard, 5);
+        ExtractableResponse<Response> response = REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId());
 
         // then
         assertAll(
@@ -38,11 +40,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 특정_제품_리뷰_목록을_최신순으로_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다("키보드", "이미지 URL");
-        키보드에_대한_리뷰를_작성한다(keyboard, 5);
-        Long reviewId = Long.parseLong(키보드에_대한_리뷰를_작성한다(keyboard, 5)
-                .header("Location")
-                .split("/")[4]);
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId());
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId()));
 
         // when
         String url = "/api/v1/keyboards/" + keyboard.getId() + "/reviews?size=1&page=0&sort=createdAt,desc";
@@ -62,11 +62,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 특정_제품_리뷰_목록을_평점순으로_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다("키보드", "이미지 URL");
-        키보드에_대한_리뷰를_작성한다(keyboard, 4);
-        Long reviewId = Long.parseLong(키보드에_대한_리뷰를_작성한다(keyboard, 5)
-                .header("Location")
-                .split("/")[4]);
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        REVIEW_RATING_4.작성_요청을_보낸다(keyboard.getId());
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId()));
 
         // when
         String url = "/api/v1/keyboards/" + keyboard.getId() + "/reviews?size=1&page=0&sort=rating,desc";
@@ -86,14 +84,10 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 전체_리뷰_목록을_최신순으로_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드를_저장한다("키보드1", "이미지 URL");
-        Keyboard keyboard2 = 키보드를_저장한다("키보드2", "이미지 URL");
-        Long reviewId1 = Long.parseLong(키보드에_대한_리뷰를_작성한다(keyboard1, 4)
-                .header("Location")
-                .split("/")[4]);
-        Long reviewId2 = Long.parseLong(키보드에_대한_리뷰를_작성한다(keyboard2, 4)
-                .header("Location")
-                .split("/")[4]);
+        Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성());
+        Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성());
+        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(keyboard1.getId()));
+        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(keyboard2.getId()));
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -109,18 +103,13 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Keyboard 키보드를_저장한다(String name, String imageUrl) {
-        Keyboard keyboard = Keyboard.builder()
-                .name(name)
-                .imageUrl(imageUrl)
-                .build();
-        keyboardRepository.save(keyboard);
-        return keyboard;
+    private long Location_헤더에서_id값을_꺼낸다(final ExtractableResponse<Response> REVIEW_RATING_4) {
+        return Long.parseLong(REVIEW_RATING_4
+                .header("Location")
+                .split("/")[4]);
     }
 
-    private ExtractableResponse<Response> 키보드에_대한_리뷰를_작성한다(final Keyboard keyboard, final int rating) {
-        ReviewRequest reviewRequest = new ReviewRequest("리뷰 내용", rating);
-        String url = "/api/v1/keyboards/" + keyboard.getId() + "/reviews";
-        return POST_요청을_보낸다(url, reviewRequest);
+    private Keyboard 키보드를_저장한다(Keyboard keyboard) {
+        return keyboardRepository.save(keyboard);
     }
 }

@@ -1,5 +1,6 @@
 package com.woowacourse.f12.application;
 
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,7 +37,7 @@ class KeyboardServiceTest {
     @Test
     void id_값으로_키보드를_조회한다() {
         // given
-        Keyboard keyboard = 키보드_생성();
+        Keyboard keyboard = KEYBOARD_1.생성(1L);
 
         given(keyboardRepository.findById(anyLong()))
                 .willReturn(Optional.ofNullable(keyboard));
@@ -47,7 +48,7 @@ class KeyboardServiceTest {
         assertAll(
                 () -> verify(keyboardRepository).findById(1L),
                 () -> assertThat(keyboardResponse.getId()).isEqualTo(1L),
-                () -> assertThat(keyboardResponse.getName()).isEqualTo("키보드")
+                () -> assertThat(keyboardResponse.getName()).isEqualTo("키보드1")
         );
     }
 
@@ -70,7 +71,7 @@ class KeyboardServiceTest {
         Pageable pageable = PageRequest.of(0, 1);
         given(keyboardRepository.findPageBy(any(Pageable.class)))
                 .willReturn(new SliceImpl<>(List.of(
-                        키보드_생성()
+                        KEYBOARD_1.생성(1L)
                 ), pageable, false));
 
         // when
@@ -82,12 +83,5 @@ class KeyboardServiceTest {
                 () -> assertThat(keyboardPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(keyboardPageResponse.getItems()).hasSize(1)
         );
-    }
-
-    private Keyboard 키보드_생성() {
-        return Keyboard.builder()
-                .id(1L)
-                .name("키보드")
-                .build();
     }
 }

@@ -1,5 +1,11 @@
 package com.woowacourse.f12.domain;
 
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_2;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -32,9 +38,9 @@ class KeyboardRepositoryTest {
     @Test
     void 키보드를_단일_조회_한다() {
         // given
-        Keyboard keyboard = 키보드_저장("키보드", "이미지 URL");
-        리뷰_저장(keyboard.getId(), "리뷰내용", 4);
-        리뷰_저장(keyboard.getId(), "리뷰내용", 5);
+        Keyboard keyboard = 키보드_저장(KEYBOARD_1.생성());
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard.getId()));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard.getId()));
         entityManager.flush();
         entityManager.refresh(keyboard);
 
@@ -52,8 +58,8 @@ class KeyboardRepositoryTest {
     @Test
     void 키보드_전체_목록을_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드_저장("키보드1", "이미지 URL");
-        Keyboard keyboard2 = 키보드_저장("키보드2", "이미지 URL");
+        Keyboard keyboard1 = 키보드_저장(KEYBOARD_1.생성());
+        키보드_저장(KEYBOARD_2.생성());
         Pageable pageable = PageRequest.of(0, 1);
 
         // when
@@ -69,12 +75,12 @@ class KeyboardRepositoryTest {
     @Test
     void 키보드_전체_목록을_리뷰_많은_순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드_저장("키보드1", "이미지 URL");
-        Keyboard keyboard2 = 키보드_저장("키보드2", "이미지 URL");
+        Keyboard keyboard1 = 키보드_저장(KEYBOARD_1.생성());
+        Keyboard keyboard2 = 키보드_저장(KEYBOARD_2.생성());
 
-        리뷰_저장(keyboard1.getId(), "내용", 5);
-        리뷰_저장(keyboard2.getId(), "내용", 5);
-        리뷰_저장(keyboard2.getId(), "내용", 5);
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1.getId()));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard2.getId()));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard2.getId()));
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("reviewCount")));
 
@@ -91,13 +97,13 @@ class KeyboardRepositoryTest {
     @Test
     void 키보드_전체_목록을_평균_평점_순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드_저장("키보드1", "이미지 URL");
-        Keyboard keyboard2 = 키보드_저장("키보드2", "이미지 URL");
+        Keyboard keyboard2 = 키보드_저장(KEYBOARD_1.생성());
+        Keyboard keyboard1 = 키보드_저장(KEYBOARD_2.생성());
 
-        리뷰_저장(keyboard1.getId(), "내용", 2);
-        리뷰_저장(keyboard1.getId(), "내용", 1);
-        리뷰_저장(keyboard2.getId(), "내용", 5);
-        리뷰_저장(keyboard2.getId(), "내용", 4);
+        리뷰_저장(REVIEW_RATING_2.작성(keyboard1.getId()));
+        리뷰_저장(REVIEW_RATING_1.작성(keyboard1.getId()));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard2.getId()));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard2.getId()));
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating")));
 
@@ -111,19 +117,11 @@ class KeyboardRepositoryTest {
         );
     }
 
-    private Keyboard 키보드_저장(String name, String imageUrl) {
-        return keyboardRepository.save(Keyboard.builder()
-                .name(name)
-                .imageUrl(imageUrl)
-                .build()
-        );
+    private Keyboard 키보드_저장(Keyboard keyboard) {
+        return keyboardRepository.save(keyboard);
     }
 
-    private Review 리뷰_저장(Long productId, String content, int rating) {
-        return reviewRepository.save(Review.builder()
-                .productId(productId)
-                .content(content)
-                .rating(rating)
-                .build());
+    private Review 리뷰_저장(Review review) {
+        return reviewRepository.save(review);
     }
 }

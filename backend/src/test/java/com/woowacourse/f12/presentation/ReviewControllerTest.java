@@ -1,5 +1,6 @@
 package com.woowacourse.f12.presentation;
 
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
@@ -12,14 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.ReviewService;
-import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.exception.BlankContentException;
 import com.woowacourse.f12.exception.InvalidContentLengthException;
 import com.woowacourse.f12.exception.InvalidRatingValueException;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +35,6 @@ import org.springframework.test.web.servlet.MockMvc;
 class ReviewControllerTest {
 
     private static final long PRODUCT_ID = 1L;
-    private static final Review REVIEW_1 = Review.builder()
-            .rating(5)
-            .content("content")
-            .productId(PRODUCT_ID)
-            .createdAt(LocalDateTime.now())
-            .build();
 
     @Autowired
     private MockMvc mockMvc;
@@ -156,7 +149,7 @@ class ReviewControllerTest {
     void 전체_리뷰_페이지_조회_성공() throws Exception {
         // given
         given(reviewService.findPage(any(Pageable.class)))
-                .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_1))));
+                .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, PRODUCT_ID)))));
 
         // when
         mockMvc.perform(get("/api/v1/reviews?size=150&page=0&sort=rating,desc"))
@@ -171,7 +164,7 @@ class ReviewControllerTest {
     void 특정_상품의_리뷰_페이지_조회() throws Exception {
         // given
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
-                .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_1))));
+                .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, PRODUCT_ID)))));
 
         // when
         mockMvc.perform(get("/api/v1/keyboards/" + PRODUCT_ID + "/reviews?size=150&page=0&sort=rating,desc"))
