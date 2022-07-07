@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.section`
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 `;
 
 export const Title = styled.h1`
@@ -30,4 +31,5 @@ export const SubmitButton = styled.button`
   background-color: #f6bebe;
   border-radius: 0.3rem;
   border: none;
+  cursor: pointer;
 `;

@@ -12,5 +12,5 @@ export const Container = styled.main`
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 0.55;
+  width: 65%;
 `;

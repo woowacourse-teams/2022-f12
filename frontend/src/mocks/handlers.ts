@@ -51,8 +51,8 @@ const getReviewsByProductId = (req, res, ctx) => {
   const endIndex = (page + 1) * size;
 
   const response = {
-    hasNext: page < 2,
-    items: reviews.slice(startIndex, endIndex),
+    hasNext: false,
+    items: reviews.slice(0, 2),
   };
 
   return res(ctx.status(200), ctx.json(response));
