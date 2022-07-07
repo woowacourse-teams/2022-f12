@@ -3,7 +3,6 @@ package com.woowacourse.f12.presentation;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -53,22 +52,6 @@ class KeyboardControllerTest {
 
         // then
         verify(keyboardService).findPage(PageRequest.of(0, 150, Sort.by("rating").descending()));
-    }
-
-    @Test
-    void 키보드_목록_페이지_조회_실패_최대_페이징_크기_초과() throws Exception {
-        // given
-        given(keyboardService.findPage(any(Pageable.class)))
-                .willReturn(KeyboardPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1))));
-
-        // when
-        mockMvc.perform(get("/api/v1/keyboards?page=0&size=151&sort=rating,desc"))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
-
-        // then
-        verify(keyboardService, times(0))
-                .findPage(PageRequest.of(0, 151, Sort.by("rating").descending()));
     }
 
     @Test
