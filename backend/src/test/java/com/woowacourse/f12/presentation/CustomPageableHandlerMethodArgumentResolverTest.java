@@ -45,4 +45,20 @@ public class CustomPageableHandlerMethodArgumentResolverTest {
         verify(keyboardService, times(0))
                 .findPage(PageRequest.of(0, 151, Sort.by("rating").descending()));
     }
+
+    @Test
+    void 페이징_성공_페이징_값_지정_안할_경우_기본값으로_페이징() throws Exception {
+        // given
+        given(keyboardService.findPage(any(Pageable.class)))
+                .willReturn(KeyboardPageResponse.from(new SliceImpl<>(List.of())));
+
+        // when
+        mockMvc.perform(get("/api/v1/keyboards"))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(keyboardService, times(0))
+                .findPage(PageRequest.of(0, 151, Sort.by("rating").descending()));
+    }
 }
