@@ -32,7 +32,11 @@ function Product() {
           />
           <S.Wrapper>
             <ReviewForm handleSubmit={handleReviewSubmit} />
-            <ReviewListSection data={reviews} getNextPage={getNextPage} />
+            <ReviewListSection
+              columns={2}
+              data={reviews}
+              getNextPage={getNextPage}
+            />
           </S.Wrapper>
         </S.Container>
       </>

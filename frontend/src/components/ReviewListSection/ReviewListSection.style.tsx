@@ -11,9 +11,9 @@ export const Title = styled.h1`
   font-size: 1.2rem;
 `;
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ columns: number }>`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: ${({ columns }) => `repeat(${columns}, 1fr)`};
   gap: 2rem 1rem;
   justify-items: center;
   overflow: scroll;
