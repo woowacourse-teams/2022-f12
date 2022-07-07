@@ -1,5 +1,6 @@
 package com.woowacourse.f12.application;
 
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -14,7 +15,6 @@ import com.woowacourse.f12.domain.ReviewRepository;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,11 +49,7 @@ class ReviewServiceTest {
         given(keyboardRepository.existsById(productId))
                 .willReturn(true);
         given(reviewRepository.save(reviewRequest.toReview(productId)))
-                .willReturn(Review.builder()
-                        .id(1L)
-                        .rating(5)
-                        .content("내용")
-                        .build());
+                .willReturn(REVIEW_RATING_5.작성(1L, productId));
 
         // when
         Long reviewId = reviewService.save(productId, reviewRequest);
@@ -90,7 +86,7 @@ class ReviewServiceTest {
         Long productId = 1L;
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
         Slice<Review> slice = new SliceImpl<>(List.of(
-                리뷰_생성(2L, productId, "내용", 5)
+                REVIEW_RATING_5.작성(1L, productId)
         ), pageable, true);
 
         given(keyboardRepository.existsById(productId))
@@ -105,7 +101,7 @@ class ReviewServiceTest {
         assertAll(
                 () -> assertThat(reviewPageResponse.getItems()).hasSize(1)
                         .extracting("id")
-                        .containsExactly(2L),
+                        .containsExactly(1L),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
                 () -> verify(keyboardRepository).existsById(productId),
                 () -> verify(reviewRepository).findPageByProductId(productId, pageable)
@@ -134,8 +130,8 @@ class ReviewServiceTest {
         Long product2Id = 2L;
         Pageable pageable = PageRequest.of(0, 2, Sort.by(Order.desc("createdAt")));
         Slice<Review> slice = new SliceImpl<>(List.of(
-                리뷰_생성(3L, product2Id, "내용", 5),
-                리뷰_생성(2L, product1Id, "내용", 5)
+                REVIEW_RATING_5.작성(3L, product1Id),
+                REVIEW_RATING_5.작성(2L, product2Id)
         ), pageable, true);
 
         given(reviewRepository.findPageBy(pageable))
@@ -152,15 +148,5 @@ class ReviewServiceTest {
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
                 () -> verify(reviewRepository).findPageBy(pageable)
         );
-    }
-
-    private Review 리뷰_생성(Long id, Long productId, String content, int rating) {
-        return Review.builder()
-                .id(id)
-                .productId(productId)
-                .content(content)
-                .rating(rating)
-                .createdAt(LocalDateTime.now())
-                .build();
     }
 }

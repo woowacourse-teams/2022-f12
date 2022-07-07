@@ -1,5 +1,7 @@
 package com.woowacourse.f12.domain;
 
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.data.domain.Sort.Order.desc;
@@ -26,8 +28,8 @@ class ReviewRepositoryTest {
         // given
         Long productId = 1L;
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        리뷰_저장(productId, "내용1", 5);
-        Review review = 리뷰_저장(productId, "내용2", 5);
+        리뷰_저장(REVIEW_RATING_5.작성(productId));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(productId));
 
         // when
         Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
@@ -46,8 +48,8 @@ class ReviewRepositoryTest {
         // given
         Long productId = 1L;
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("rating")));
-        Review review = 리뷰_저장(productId, "내용1", 5);
-        리뷰_저장(productId, "내용2", 4);
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(productId));
+        리뷰_저장(REVIEW_RATING_4.작성(productId));
 
         // when
         Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
@@ -65,8 +67,8 @@ class ReviewRepositoryTest {
     void 리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        리뷰_저장(1L, "내용1", 5);
-        Review review = 리뷰_저장(2L, "내용2", 4);
+        리뷰_저장(REVIEW_RATING_5.작성(1L));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(2L));
 
         // when
         Slice<Review> page = reviewRepository.findPageBy(pageable);
@@ -80,11 +82,7 @@ class ReviewRepositoryTest {
         );
     }
 
-    private Review 리뷰_저장(Long productId, String content, int rating) {
-        return reviewRepository.save(Review.builder()
-                .productId(productId)
-                .content(content)
-                .rating(rating)
-                .build());
+    private Review 리뷰_저장(Review review) {
+        return reviewRepository.save(review);
     }
 }
