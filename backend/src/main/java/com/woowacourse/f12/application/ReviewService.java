@@ -27,7 +27,6 @@ public class ReviewService {
     public Long save(final Long productId, final ReviewRequest reviewRequest) {
         validateKeyboardExists(productId);
         final Review review = reviewRequest.toReview(productId);
-        validateKeyboardExists(productId);
         return reviewRepository.save(review)
                 .getId();
     }
@@ -39,6 +38,7 @@ public class ReviewService {
     }
 
     public ReviewPageResponse findPageByProductId(final Long productId, final Pageable pageable) {
+        validateKeyboardExists(productId);
         final Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
         return ReviewPageResponse.from(page);
     }

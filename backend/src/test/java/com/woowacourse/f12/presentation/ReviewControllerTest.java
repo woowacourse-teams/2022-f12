@@ -181,4 +181,19 @@ class ReviewControllerTest {
         // then
         verify(reviewService).findPageByProductId(PRODUCT_ID, PageRequest.of(0, 150, Sort.by("rating").descending()));
     }
+
+    @Test
+    void 특정_상품의_리뷰_페이지_조회_실패_상품_존재_하지않음() throws Exception {
+        // given
+        given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
+                .willThrow(new KeyboardNotFoundException());
+
+        // when
+        mockMvc.perform(get("/api/v1/keyboards/" + 0L + "/reviews?size=150&page=0&sort=rating,desc"))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        verify(reviewService).findPageByProductId(0L, PageRequest.of(0, 150, Sort.by("rating").descending()));
+    }
 }

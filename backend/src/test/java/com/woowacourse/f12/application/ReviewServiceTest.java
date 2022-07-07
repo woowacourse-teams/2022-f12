@@ -107,6 +107,21 @@ class ReviewServiceTest {
     }
 
     @Test
+    void 존재하지_않는_제품에_대한_리뷰_목록을_조회하면_예외가_발생한다() {
+        // given
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
+        given(keyboardRepository.existsById(0L))
+                .willReturn(false);
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.findPageByProductId(0L, pageable))
+                        .isExactlyInstanceOf(KeyboardNotFoundException.class),
+                () -> verify(keyboardRepository).existsById(0L)
+        );
+    }
+
+    @Test
     void 전체_리뷰_목록을_조회한다() {
         // given
         Long product1Id = 1L;
