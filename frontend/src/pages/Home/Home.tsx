@@ -7,7 +7,7 @@ import useReviews from '../../hooks/useReviews';
 
 function Home() {
   const [keyboards] = useProducts({ size: 5, sort: 'rating,desc' });
-  const [reviews, getNextPage] = useReviews({ size: 4 });
+  const [reviews, getNextPage] = useReviews({ size: 6 });
 
   const moreProductsLink = (
     <CustomLink to={ROUTES.PRODUCTS}>+더보기</CustomLink>

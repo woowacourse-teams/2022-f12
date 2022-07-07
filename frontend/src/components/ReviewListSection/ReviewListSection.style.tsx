@@ -13,7 +13,7 @@ export const Title = styled.h1`
 
 export const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem 1rem;
   justify-items: center;
   overflow: scroll;
