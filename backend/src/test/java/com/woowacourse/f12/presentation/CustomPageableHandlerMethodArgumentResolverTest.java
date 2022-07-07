@@ -58,7 +58,7 @@ public class CustomPageableHandlerMethodArgumentResolverTest {
                 .andDo(print());
 
         // then
-        verify(keyboardService, times(0))
-                .findPage(PageRequest.of(0, 151, Sort.by("rating").descending()));
+        verify(keyboardService)
+                .findPage(PageRequest.of(0, 20));
     }
 }
