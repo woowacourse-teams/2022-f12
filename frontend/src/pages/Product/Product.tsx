@@ -26,7 +26,7 @@ function Product() {
       <>
         <S.Container>
           <ProductDetail
-            productImage={product.imageUrl}
+            imageUrl={product.imageUrl}
             name={product.name}
             rating={product.rating}
           />
