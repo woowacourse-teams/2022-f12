@@ -4,8 +4,8 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 0.5rem;
   width: 12rem;
-  height: 12rem;
   border-radius: 0.375rem;
   padding: 1rem;
   box-shadow: 0 0.35rem 0.7rem -0.2rem rgba(0, 0, 0, 0.3);
@@ -13,7 +13,7 @@ export const Container = styled.div`
 
 export const Image = styled.img`
   width: 100%;
-  height: 10rem;
+  height: 8rem;
   object-fit: cover;
 `;
 

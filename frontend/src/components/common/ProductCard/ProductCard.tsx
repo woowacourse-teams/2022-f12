@@ -11,10 +11,8 @@ function ProductCard({ productImage, name, rating }: Props) {
   return (
     <S.Container>
       <S.Image src={productImage} />
-      <S.Wrapper>
-        <S.Name>{name}</S.Name>
-        <Rating rating={rating} />
-      </S.Wrapper>
+      <S.Name>{name}</S.Name>
+      <Rating rating={rating} />
     </S.Container>
   );
 }

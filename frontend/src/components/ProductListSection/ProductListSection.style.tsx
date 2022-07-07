@@ -14,10 +14,5 @@ export const Title = styled.h1`
 export const CustomLink = styled(Link)``;
 
 export const Wrapper = styled.div`
-  display: grid;
-  justify-items: center;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1rem;
-
-  width: 100%;
+  margin: 1rem auto 0 auto;
 `;
