@@ -46,6 +46,8 @@ class ReviewServiceTest {
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
         Long productId = 1L;
 
+        given(keyboardRepository.existsById(productId))
+                .willReturn(true);
         given(reviewRepository.save(reviewRequest.toReview(productId)))
                 .willReturn(Review.builder()
                         .id(1L)
@@ -59,6 +61,7 @@ class ReviewServiceTest {
         // then
         assertAll(
                 () -> assertThat(reviewId).isEqualTo(1L),
+                () -> verify(keyboardRepository).existsById(productId),
                 () -> verify(reviewRepository).save(any(Review.class))
         );
     }
@@ -90,6 +93,8 @@ class ReviewServiceTest {
                 리뷰_생성(2L, productId, "내용", 5)
         ), pageable, true);
 
+        given(keyboardRepository.existsById(productId))
+                .willReturn(true);
         given(reviewRepository.findPageByProductId(productId, pageable))
                 .willReturn(slice);
 
@@ -102,6 +107,7 @@ class ReviewServiceTest {
                         .extracting("id")
                         .containsExactly(2L),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
+                () -> verify(keyboardRepository).existsById(productId),
                 () -> verify(reviewRepository).findPageByProductId(productId, pageable)
         );
     }
