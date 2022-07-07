@@ -5,15 +5,24 @@ import * as S from './Masonry.style';
 type Props = { columnCount: number; children: React.ReactNode };
 
 function Masonry({ columnCount, children }: Props) {
-  const columnArray = Array.from({
-    length: columnCount,
-  }).reduce<React.ReactNode[][]>((acc) => [...acc, []], []);
+  const childrenArray = React.Children.toArray(children);
 
-  React.Children.forEach(children, (child, index) => {
-    columnArray[index % columnCount].push(child);
-  });
+  const childrenComponents = childrenArray.reduce<React.ReactNode[][]>(
+    (acc, child, index) => {
+      const column = index % columnCount;
+      const currentArray = [...acc];
+      if (currentArray[column] === undefined) {
+        currentArray.push([child]);
+      } else {
+        currentArray[column].push(child);
+      }
 
-  const childColumns = columnArray.map((column: React.ReactNode[], index) => {
+      return currentArray;
+    },
+    []
+  );
+
+  const childColumns = childrenComponents.map((column, index) => {
     return <S.Column key={index}>{column}</S.Column>;
   });
 
