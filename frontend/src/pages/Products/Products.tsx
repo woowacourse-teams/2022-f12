@@ -31,7 +31,7 @@ function Products() {
 
   return (
     <ProductListSection
-      title={'인기 있는 상품'}
+      title={'모든 상품 목록'}
       data={!!keyboards && keyboards}
       getNextPage={getNextPage}
       addOn={<Select value={sort} setValue={setSort} options={options} />}
