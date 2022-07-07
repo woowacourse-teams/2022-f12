@@ -6,6 +6,7 @@ import SectionHeader from '../common/SectionHeader/SectionHeader';
 import * as S from './ProductListSection.style';
 import ROUTES from '../../constants/routes';
 import InfiniteScroll from '../common/InfiniteScroll/InfiniteScroll';
+import Masonry from '../common/Masonry/Masonry';
 
 type Props = {
   title: string;
@@ -33,10 +34,10 @@ function ProductListSection({ title, addOn, data, getNextPage }: Props) {
         <S.Wrapper>
           {getNextPage !== undefined ? (
             <InfiniteScroll handleContentLoad={getNextPage}>
-              {productCardList}
+              <Masonry columnCount={5}>{productCardList}</Masonry>
             </InfiniteScroll>
           ) : (
-            productCardList
+            <Masonry columnCount={5}>{productCardList}</Masonry>
           )}
         </S.Wrapper>
       </S.Container>
