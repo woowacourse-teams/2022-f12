@@ -1,15 +1,19 @@
 package com.woowacourse.f12.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.woowacourse.f12.domain.KeyboardRepository;
 import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.domain.ReviewRepository;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
+import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -29,6 +33,9 @@ class ReviewServiceTest {
 
     @Mock
     private ReviewRepository reviewRepository;
+
+    @Mock
+    private KeyboardRepository keyboardRepository;
 
     @InjectMocks
     private ReviewService reviewService;
@@ -53,6 +60,24 @@ class ReviewServiceTest {
         assertAll(
                 () -> assertThat(reviewId).isEqualTo(1L),
                 () -> verify(reviewRepository).save(any(Review.class))
+        );
+    }
+
+    @Test
+    void 존재하지_않는_제품_리뷰_등록하면_예외가_발생한다() {
+        // given
+        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
+        Long productId = 1L;
+
+        given(keyboardRepository.existsById(productId))
+                .willReturn(false);
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.save(1L, reviewRequest))
+                        .isExactlyInstanceOf(KeyboardNotFoundException.class),
+                () -> verify(keyboardRepository).existsById(productId),
+                () -> verify(reviewRepository, times(0)).save(any(Review.class))
         );
     }
 

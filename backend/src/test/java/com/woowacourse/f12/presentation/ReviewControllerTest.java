@@ -18,6 +18,7 @@ import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.exception.BlankContentException;
 import com.woowacourse.f12.exception.InvalidContentLengthException;
 import com.woowacourse.f12.exception.InvalidRatingValueException;
+import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -130,6 +131,25 @@ class ReviewControllerTest {
 
         // then
         verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class));
+    }
+
+    @Test
+    void 리뷰_생성_실패_제품이_존재하지_않음() throws Exception {
+        // given
+        given(reviewService.save(anyLong(), any(ReviewRequest.class)))
+                .willThrow(new KeyboardNotFoundException());
+        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
+
+        // when
+        mockMvc.perform(
+                        post("/api/v1/keyboards/" + 0L + "/reviews")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(reviewRequest))
+                ).andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        verify(reviewService).save(eq(0L), any(ReviewRequest.class));
     }
 
     @Test
