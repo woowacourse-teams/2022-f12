@@ -18,6 +18,7 @@ import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.exception.BlankContentException;
 import com.woowacourse.f12.exception.InvalidContentLengthException;
 import com.woowacourse.f12.exception.InvalidRatingValueException;
+import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -133,6 +134,25 @@ class ReviewControllerTest {
     }
 
     @Test
+    void 리뷰_생성_실패_제품이_존재하지_않음() throws Exception {
+        // given
+        given(reviewService.save(anyLong(), any(ReviewRequest.class)))
+                .willThrow(new KeyboardNotFoundException());
+        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
+
+        // when
+        mockMvc.perform(
+                        post("/api/v1/keyboards/" + 0L + "/reviews")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(reviewRequest))
+                ).andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        verify(reviewService).save(eq(0L), any(ReviewRequest.class));
+    }
+
+    @Test
     void 전체_리뷰_페이지_조회_성공() throws Exception {
         // given
         given(reviewService.findPage(any(Pageable.class)))
@@ -160,5 +180,20 @@ class ReviewControllerTest {
 
         // then
         verify(reviewService).findPageByProductId(PRODUCT_ID, PageRequest.of(0, 150, Sort.by("rating").descending()));
+    }
+
+    @Test
+    void 특정_상품의_리뷰_페이지_조회_실패_상품_존재_하지않음() throws Exception {
+        // given
+        given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
+                .willThrow(new KeyboardNotFoundException());
+
+        // when
+        mockMvc.perform(get("/api/v1/keyboards/" + 0L + "/reviews?size=150&page=0&sort=rating,desc"))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        verify(reviewService).findPageByProductId(0L, PageRequest.of(0, 150, Sort.by("rating").descending()));
     }
 }
