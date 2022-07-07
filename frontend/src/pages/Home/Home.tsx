@@ -20,7 +20,7 @@ function Home() {
         data={!!keyboards && keyboards}
         addOn={moreProductsLink}
       />
-      <ReviewListSection data={reviews} getNextPage={getNextPage} />
+      <ReviewListSection columns={3} data={reviews} getNextPage={getNextPage} />
     </>
   );
 }

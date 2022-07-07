@@ -4,17 +4,12 @@ import SectionHeader from '../common/SectionHeader/SectionHeader';
 import * as S from './ReviewListSection.style';
 
 type Props = {
-  data: {
-    id: number;
-    profileImage: string;
-    username: string;
-    rating: number;
-    content: string;
-  }[];
+  columns: number;
+  data: Review[];
   getNextPage: () => void;
 };
 
-function ReviewListSection({ data, getNextPage }: Props) {
+function ReviewListSection({ columns, data, getNextPage }: Props) {
   const reviewCardList = data.map(
     ({ id, profileImage, username, rating, content }) => (
       <ReviewCard
@@ -31,7 +26,7 @@ function ReviewListSection({ data, getNextPage }: Props) {
       <SectionHeader>
         <S.Title>최근 후기</S.Title>
       </SectionHeader>
-      <S.Wrapper>
+      <S.Wrapper columns={columns}>
         <InfiniteScroll handleContentLoad={getNextPage}>
           {reviewCardList}
         </InfiniteScroll>
