@@ -1,5 +1,4 @@
 import Select from './Select';
-import { ComponentStory } from '@storybook/react';
 import { useState } from 'react';
 
 export default {
@@ -13,12 +12,9 @@ const options = [
   { value: 'reviewCount', text: '리뷰 많은 순' },
 ];
 
-const Template: ComponentStory<typeof Select> = () => {
-  const [value, setValue] = useState<string>(options[0].value);
+const Template = () => {
+  const [value, setValue] = useState(options[0].value);
   return <Select value={value} setValue={setValue} options={options} />;
 };
 
-export const Defaults: ComponentStory<typeof Select> = Template.bind(
-  {}
-) as ComponentStory<typeof Select>;
-Defaults.args = {};
+export const Default = () => <Template />;

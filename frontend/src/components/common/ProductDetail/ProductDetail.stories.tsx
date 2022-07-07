@@ -1,7 +1,7 @@
 import ProductDetail from './ProductDetail';
 import { ComponentStory } from '@storybook/react';
-import sampleKeyboard from './sample_keyboard.jpg';
 import styled from 'styled-components';
+import { products } from '../../../mocks/data';
 
 export default {
   component: ProductDetail,
@@ -18,9 +18,6 @@ const Template: ComponentStory<typeof ProductDetail> = (args) => (
   </Container>
 );
 
-export const Defaults: ComponentStory<typeof ProductDetail> = Template.bind({});
-Defaults.args = {
-  productImage: sampleKeyboard,
-  name: '예쁜 키보드',
-  rating: 5,
-};
+const defaultArgs = products[0];
+
+export const Default = () => <Template {...defaultArgs} />;

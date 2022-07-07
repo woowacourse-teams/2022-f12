@@ -2,15 +2,15 @@ import Rating from '../Rating/Rating';
 import * as S from './ProductDetail.style';
 
 type Props = {
-  productImage?: string;
+  imageUrl?: string;
   name: string;
   rating: number;
 };
 
-function ProductDetail({ productImage, name, rating }: Props) {
+function ProductDetail({ imageUrl, name, rating }: Props) {
   return (
     <S.Container>
-      <S.Image src={productImage} />
+      <S.Image src={imageUrl} />
       <S.Wrapper>
         <S.Name>{name}</S.Name>
         <Rating size="large" rating={rating} />

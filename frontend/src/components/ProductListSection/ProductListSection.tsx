@@ -10,7 +10,7 @@ import Masonry from '../common/Masonry/Masonry';
 
 type Props = {
   title: string;
-  addOn: React.ReactNode;
+  addOn?: React.ReactNode;
   data: { id: number; imageUrl: string; name: string; rating: number }[];
   getNextPage?: () => void;
 };
