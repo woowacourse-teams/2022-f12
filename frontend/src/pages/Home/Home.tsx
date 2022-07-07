@@ -6,7 +6,7 @@ import useProducts from '../../hooks/useProducts';
 import useReviews from '../../hooks/useReviews';
 
 function Home() {
-  const [keyboards] = useProducts({ size: 5 });
+  const [keyboards] = useProducts({ size: 5, sort: 'rating,desc' });
   const [reviews, getNextPage] = useReviews({ size: 4 });
 
   const moreProductsLink = (

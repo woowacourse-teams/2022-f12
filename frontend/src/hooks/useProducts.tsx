@@ -14,7 +14,7 @@ function useProducts({ size, sort }: Props): ReturnType {
   const [products, getNextPage] = useGetMany<Product>({
     url: `${ENDPOINTS.PRODUCTS}`,
     size,
-    sort,
+    sort: sort === 'default' ? undefined : sort,
   });
 
   return [products, getNextPage];
