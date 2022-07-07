@@ -9,13 +9,14 @@ if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./mocks/browser');
   worker.start({
     onUnhandledRequest(req) {
-      if (!req.url.pathname.startsWith('http://localhost:3000/')) {
-        console.warn(
-          'Found an unhandled %s request to %s',
-          req.method,
-          req.url.href
-        );
-      }
+      const urlPath = req.url.pathname;
+
+      if (!urlPath.startsWith('http://localhost:8080')) return;
+      console.warn(
+        'Found an unhandled %s request to %s',
+        req.method,
+        req.url.href
+      );
     },
   });
 }

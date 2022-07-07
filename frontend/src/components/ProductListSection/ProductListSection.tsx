@@ -24,21 +24,23 @@ function ProductListSection({ title, addOn, data, getNextPage }: Props) {
     ));
 
   return (
-    <S.Container>
-      <SectionHeader>
-        <S.Title>{title}</S.Title>
-        {addOn}
-      </SectionHeader>
-      <S.Wrapper>
-        {getNextPage !== undefined ? (
-          <InfiniteScroll handleContentLoad={getNextPage}>
-            {productCardList}
-          </InfiniteScroll>
-        ) : (
-          productCardList
-        )}
-      </S.Wrapper>
-    </S.Container>
+    data.length !== 0 && (
+      <S.Container>
+        <SectionHeader>
+          <S.Title>{title}</S.Title>
+          {addOn}
+        </SectionHeader>
+        <S.Wrapper>
+          {getNextPage !== undefined ? (
+            <InfiniteScroll handleContentLoad={getNextPage}>
+              {productCardList}
+            </InfiniteScroll>
+          ) : (
+            productCardList
+          )}
+        </S.Wrapper>
+      </S.Container>
+    )
   );
 }
 
