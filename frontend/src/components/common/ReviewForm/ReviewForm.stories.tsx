@@ -1,13 +1,19 @@
 import ReviewForm from './ReviewForm';
 import { ComponentStory } from '@storybook/react';
 
-import sampleProfileImage from './sample_profile.jpg';
-
 export default {
   component: ReviewForm,
   title: 'Components/ReviewForm',
 };
 
-const Template: ComponentStory<typeof ReviewForm> = () => <ReviewForm />;
+const Template: ComponentStory<typeof ReviewForm> = (args) => (
+  <ReviewForm {...args} />
+);
 
-export const Defaults: ComponentStory<typeof ReviewForm> = Template.bind({});
+const handleSubmit = async () => {
+  await new Promise(() => {
+    alert('제출이 완료 되었습니다.');
+  });
+};
+
+export const Default = () => <Template handleSubmit={handleSubmit} />;

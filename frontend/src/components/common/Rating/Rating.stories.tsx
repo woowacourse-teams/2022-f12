@@ -8,5 +8,4 @@ export default {
 
 const Template: ComponentStory<typeof Rating> = (args) => <Rating {...args} />;
 
-export const Defaults: ComponentStory<typeof Rating> = Template.bind({});
-Defaults.args = { rating: 5 };
+export const Default = () => <Template rating={5} />;

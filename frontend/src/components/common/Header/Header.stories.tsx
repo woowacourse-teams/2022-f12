@@ -8,5 +8,4 @@ export default {
 
 const Template: ComponentStory<typeof Header> = () => <Header />;
 
-export const Defaults: ComponentStory<typeof Header> = Template.bind({});
-Defaults.args = {};
+export const Default = () => <Template />;

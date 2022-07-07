@@ -1,7 +1,6 @@
 import Rating from '../Rating/Rating';
 import UserNameTag from '../UserNameTag/UserNameTag';
 
-import sampleProfileImage from './sample_profile.jpg';
 import * as S from './ReviewCard.style';
 
 type Props = {
@@ -11,12 +10,7 @@ type Props = {
   content: string;
 };
 
-function ReviewCard({
-  profileImage = sampleProfileImage,
-  username,
-  rating,
-  content,
-}: Props) {
+function ReviewCard({ profileImage, username, rating, content }: Props) {
   return (
     <S.Container>
       <S.Wrapper>

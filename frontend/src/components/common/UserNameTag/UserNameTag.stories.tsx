@@ -1,5 +1,5 @@
 import UserNameTag from './UserNameTag';
-import profileImage from '../ReviewCard/sample_profile.jpg';
+import profileImage from '../../../mocks/sample_profile.jpg';
 import { ComponentStory } from '@storybook/react';
 
 export default {
@@ -11,8 +11,9 @@ const Template: ComponentStory<typeof UserNameTag> = (args) => (
   <UserNameTag {...args} />
 );
 
-export const Defaults: ComponentStory<typeof UserNameTag> = Template.bind({});
-Defaults.args = {
+const defaultArgs = {
   profileImage,
   username: '인도 아저씨',
 };
+
+export const Default = () => <Template {...defaultArgs} />;
