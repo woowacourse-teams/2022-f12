@@ -1,5 +1,5 @@
 import { AxiosRequestHeaders } from 'axios';
-import axiosInstance from './axiosInstance';
+import axiosInstance from '@/hooks/api/axiosInstance';
 
 type Props = {
   url: string;

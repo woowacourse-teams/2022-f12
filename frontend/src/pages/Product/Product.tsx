@@ -1,10 +1,10 @@
-import ProductDetail from '../../components/common/ProductDetail/ProductDetail';
-import * as S from './Product.style';
+import ProductDetail from '@/components/common/ProductDetail/ProductDetail';
+import * as S from '@/pages/Product/Product.style';
 
-import ReviewForm from '../../components/common/ReviewForm/ReviewForm';
-import ReviewListSection from '../../components/ReviewListSection/ReviewListSection';
-import useReviews from '../../hooks/useReviews';
-import useProduct from '../../hooks/useProduct';
+import ReviewForm from '@/components/common/ReviewForm/ReviewForm';
+import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
+import useReviews from '@/hooks/useReviews';
+import useProduct from '@/hooks/useProduct';
 import { useParams } from 'react-router-dom';
 
 function Product() {

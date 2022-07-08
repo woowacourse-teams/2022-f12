@@ -1,9 +1,9 @@
-import CustomLink from '../../components/common/CustomLink/CustomLink';
-import ProductListSection from '../../components/ProductListSection/ProductListSection';
-import ReviewListSection from '../../components/ReviewListSection/ReviewListSection';
-import ROUTES from '../../constants/routes';
-import useProducts from '../../hooks/useProducts';
-import useReviews from '../../hooks/useReviews';
+import CustomLink from '@/components/common/CustomLink/CustomLink';
+import ProductListSection from '@/components/ProductListSection/ProductListSection';
+import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
+import ROUTES from '@/constants/routes';
+import useProducts from '@/hooks/useProducts';
+import useReviews from '@/hooks/useReviews';
 
 function Home() {
   const [keyboards] = useProducts({ size: 5, sort: 'rating,desc' });

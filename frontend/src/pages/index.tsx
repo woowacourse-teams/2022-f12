@@ -1,8 +1,8 @@
-import PageLayout from './common/PageLayout/PageLayout';
-import Home from './Home/Home';
-import Product from './Product/Product';
-import Products from './Products/Products';
-import ROUTES from '../constants/routes';
+import PageLayout from '@/pages/common/PageLayout/PageLayout';
+import Home from '@/pages/Home/Home';
+import Product from '@/pages/Product/Product';
+import Products from '@/pages/Products/Products';
+import ROUTES from '@/constants/routes';
 
 export const PAGES = [
   {

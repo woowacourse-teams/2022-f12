@@ -1,3 +1,5 @@
+const { resolve } = require('path');
+
 module.exports = {
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [
@@ -14,6 +16,11 @@ module.exports = {
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
+
+    const alias = {
+      '@': resolve(__dirname, '../src/'),
+    };
+    config.resolve.alias = Object.assign(config.resolve.alias, alias);
 
     return config;
   },

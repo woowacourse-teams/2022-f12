@@ -61,8 +61,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx'],
     alias: {
-      // 추후 사용
-      // Components: path.resolve(__dirname, "./src/components"),
+      '@': path.resolve(__dirname, 'src'),
     },
   },
 };
