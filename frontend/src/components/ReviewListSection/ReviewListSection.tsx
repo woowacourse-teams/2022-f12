@@ -1,6 +1,6 @@
 import InfiniteScroll from '../common/InfiniteScroll/InfiniteScroll';
 import ReviewCard from '../common/ReviewCard/ReviewCard';
-import SectionHeader from '../common/SectionHeader/SectionHeader';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import * as S from './ReviewListSection.style';
 
 type Props = {

@@ -1,6 +1,6 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
-import axiosInstance from './axiosInstance';
+import axiosInstance from '@/hooks/api/axiosInstance';
 
 type Props = {
   url: string;

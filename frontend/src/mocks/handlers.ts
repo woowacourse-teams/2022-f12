@@ -1,6 +1,6 @@
 import { rest } from 'msw';
 import { BASE_URL, ENDPOINTS } from '../constants/api';
-import { products, reviews } from './data';
+import { products, reviews } from '@/mocks/data';
 
 // 상품 목록 조회
 const getKeyboards = (req, res, ctx) => {

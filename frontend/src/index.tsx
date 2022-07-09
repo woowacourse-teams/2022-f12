@@ -1,12 +1,12 @@
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import ResetCss from './style/ResetCss';
-import App from './App';
+import ResetCss from '@/style/ResetCss';
+import App from '@/App';
 
 /* eslint-disable */
 
 if (process.env.NODE_ENV === 'development') {
-  const { worker } = require('./mocks/browser');
+  const { worker } = require('@/mocks/browser');
   worker.start({
     onUnhandledRequest(req) {
       const urlPath = req.url.pathname;

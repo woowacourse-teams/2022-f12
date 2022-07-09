@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import ProductListSection from '../../components/ProductListSection/ProductListSection';
-import Select from '../../components/common/Select/Select';
-import useProducts from '../../hooks/useProducts';
+import ProductListSection from '@/components/ProductListSection/ProductListSection';
+import Select from '@/components/common/Select/Select';
+import useProducts from '@/hooks/useProducts';
 
 type Option = { value: string; text: string };
 

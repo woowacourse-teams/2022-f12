@@ -4,7 +4,11 @@
     "module": "es2015",
     "moduleResolution": "node",
     "jsx": "react-jsx",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["src", "./src/custom.d.ts"]
 }

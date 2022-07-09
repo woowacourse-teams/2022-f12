@@ -1,6 +1,6 @@
-import useGetMany from './api/useGetMany';
-import usePost from './api/usePost';
-import { ENDPOINTS } from '../constants/api';
+import useGetMany from '@/hooks/api//useGetMany';
+import usePost from '@/hooks/api//usePost';
+import { ENDPOINTS } from '@/constants/api';
 
 type PropsWithoutProductId = { size: number };
 type PropsWithProductId = PropsWithoutProductId & { productId: number };

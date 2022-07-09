@@ -1,5 +1,5 @@
-import useGetMany from './api/useGetMany';
-import { ENDPOINTS } from '../constants/api';
+import useGetMany from '@/hooks/api/useGetMany';
+import { ENDPOINTS } from '@/constants/api';
 
 type Sort = 'default' | 'rating,desc' | 'reviewCount,desc';
 
