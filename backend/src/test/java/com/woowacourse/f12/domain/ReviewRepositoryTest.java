@@ -1,5 +1,7 @@
 package com.woowacourse.f12.domain;
 
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,16 +25,19 @@ class ReviewRepositoryTest {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private KeyboardRepository keyboardRepository;
+
     @Test
     void 특정_제품의_리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
-        Long productId = 1L;
+        Keyboard keyboard = keyboardRepository.save(KEYBOARD_1.생성());
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        리뷰_저장(REVIEW_RATING_5.작성(productId));
-        Review review = 리뷰_저장(REVIEW_RATING_5.작성(productId));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard));
 
         // when
-        Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
+        Slice<Review> page = reviewRepository.findPageByProductId(keyboard.getId(), pageable);
 
         // then
         assertAll(
@@ -46,13 +51,13 @@ class ReviewRepositoryTest {
     @Test
     void 특정_제품의_리뷰_목록을_평점순으로_페이징하여_조회한다() {
         // given
-        Long productId = 1L;
+        Keyboard keyboard = keyboardRepository.save(KEYBOARD_1.생성());
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("rating")));
-        Review review = 리뷰_저장(REVIEW_RATING_5.작성(productId));
-        리뷰_저장(REVIEW_RATING_4.작성(productId));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard));
 
         // when
-        Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
+        Slice<Review> page = reviewRepository.findPageByProductId(keyboard.getId(), pageable);
 
         // then
         assertAll(
@@ -66,9 +71,11 @@ class ReviewRepositoryTest {
     @Test
     void 리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
+        Keyboard keyboard1 = keyboardRepository.save(KEYBOARD_1.생성());
+        Keyboard keyboard2 = keyboardRepository.save(KEYBOARD_2.생성());
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        리뷰_저장(REVIEW_RATING_5.작성(1L));
-        Review review = 리뷰_저장(REVIEW_RATING_5.작성(2L));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard2));
 
         // when
         Slice<Review> page = reviewRepository.findPageBy(pageable);

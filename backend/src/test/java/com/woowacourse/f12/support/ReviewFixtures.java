@@ -1,6 +1,7 @@
 package com.woowacourse.f12.support;
 
 import com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil;
+import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import io.restassured.response.ExtractableResponse;
@@ -24,14 +25,14 @@ public enum ReviewFixtures {
         this.rating = rating;
     }
 
-    public Review 작성(Long productId) {
-        return 작성(null, productId);
+    public Review 작성(Keyboard keyboard) {
+        return 작성(null, keyboard);
     }
 
-    public Review 작성(Long reviewId, Long productId) {
+    public Review 작성(Long reviewId, Keyboard keyboard) {
         return Review.builder()
                 .id(reviewId)
-                .productId(productId)
+                .keyboard(keyboard)
                 .content(this.content)
                 .rating(this.rating)
                 .createdAt(LocalDateTime.now())
