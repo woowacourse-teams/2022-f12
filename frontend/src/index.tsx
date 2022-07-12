@@ -4,6 +4,7 @@ import ResetCss from '@/style/ResetCss';
 import App from '@/App';
 import { ThemeProvider } from 'styled-components';
 import theme from '@/style/theme';
+import GlobalStyles from '@/style/GlobalStyles';
 
 /* eslint-disable */
 
@@ -29,6 +30,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>
     <ResetCss />
+    <GlobalStyles />
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <App />
