@@ -1,5 +1,6 @@
 package com.woowacourse.f12.application;
 
+import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
 import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.domain.ReviewRepository;
@@ -25,22 +26,23 @@ public class ReviewService {
 
     @Transactional
     public Long save(final Long productId, final ReviewRequest reviewRequest) {
-        validateKeyboardExists(productId);
-        final Review review = reviewRequest.toReview(productId);
+        final Keyboard keyboard = keyboardRepository.findById(productId)
+                .orElseThrow(KeyboardNotFoundException::new);
+        final Review review = reviewRequest.toReview(keyboard);
         return reviewRepository.save(review)
                 .getId();
-    }
-
-    private void validateKeyboardExists(final Long productId) {
-        if (!keyboardRepository.existsById(productId)) {
-            throw new KeyboardNotFoundException();
-        }
     }
 
     public ReviewPageResponse findPageByProductId(final Long productId, final Pageable pageable) {
         validateKeyboardExists(productId);
         final Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
         return ReviewPageResponse.from(page);
+    }
+
+    private void validateKeyboardExists(final Long productId) {
+        if (!keyboardRepository.existsById(productId)) {
+            throw new KeyboardNotFoundException();
+        }
     }
 
     public ReviewPageResponse findPage(final Pageable pageable) {

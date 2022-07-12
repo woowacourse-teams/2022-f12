@@ -25,7 +25,7 @@ public class ReviewResponse {
     }
 
     public static ReviewResponse from(final Review review) {
-        return new ReviewResponse(review.getId(), review.getProductId(), review.getContent(), review.getRating(),
+        return new ReviewResponse(review.getId(), review.getKeyboard().getId(), review.getContent(), review.getRating(),
                 review.getCreatedAt().toString());
     }
 }
