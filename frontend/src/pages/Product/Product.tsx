@@ -6,6 +6,7 @@ import ReviewListSection from '@/components/ReviewListSection/ReviewListSection'
 import useReviews from '@/hooks/useReviews';
 import useProduct from '@/hooks/useProduct';
 import { useParams } from 'react-router-dom';
+import StickyWrapper from '@/components/common/StickyWrapper/StickyWrapper';
 
 function Product() {
   const { productId: id } = useParams();
@@ -25,11 +26,13 @@ function Product() {
     !!product && (
       <>
         <S.Container>
-          <ProductDetail
-            imageUrl={product.imageUrl}
-            name={product.name}
-            rating={product.rating}
-          />
+          <StickyWrapper>
+            <ProductDetail
+              imageUrl={product.imageUrl}
+              name={product.name}
+              rating={product.rating}
+            />
+          </StickyWrapper>
           <S.Wrapper>
             <ReviewForm handleSubmit={handleReviewSubmit} />
             <ReviewListSection
