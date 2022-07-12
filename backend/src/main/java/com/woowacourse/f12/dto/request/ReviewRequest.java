@@ -1,5 +1,6 @@
 package com.woowacourse.f12.dto.request;
 
+import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.Review;
 import lombok.Getter;
 
@@ -17,9 +18,9 @@ public class ReviewRequest {
         this.rating = rating;
     }
 
-    public Review toReview(final Long productId) {
+    public Review toReview(final Keyboard keyboard) {
         return Review.builder()
-                .productId(productId)
+                .keyboard(keyboard)
                 .content(this.content)
                 .rating(this.rating)
                 .build();

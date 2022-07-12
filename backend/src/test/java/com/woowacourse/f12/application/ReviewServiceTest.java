@@ -1,5 +1,7 @@
 package com.woowacourse.f12.application;
 
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -9,6 +11,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
 import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.domain.ReviewRepository;
@@ -16,6 +19,7 @@ import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,11 +49,11 @@ class ReviewServiceTest {
         // given
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
         Long productId = 1L;
-
-        given(keyboardRepository.existsById(productId))
-                .willReturn(true);
-        given(reviewRepository.save(reviewRequest.toReview(productId)))
-                .willReturn(REVIEW_RATING_5.작성(1L, productId));
+        Keyboard keyboard = KEYBOARD_1.생성(productId);
+        given(keyboardRepository.findById(productId))
+                .willReturn(Optional.of(keyboard));
+        given(reviewRepository.save(reviewRequest.toReview(keyboard)))
+                .willReturn(REVIEW_RATING_5.작성(1L, keyboard));
 
         // when
         Long reviewId = reviewService.save(productId, reviewRequest);
@@ -57,7 +61,7 @@ class ReviewServiceTest {
         // then
         assertAll(
                 () -> assertThat(reviewId).isEqualTo(1L),
-                () -> verify(keyboardRepository).existsById(productId),
+                () -> verify(keyboardRepository).findById(productId),
                 () -> verify(reviewRepository).save(any(Review.class))
         );
     }
@@ -68,14 +72,14 @@ class ReviewServiceTest {
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
         Long productId = 1L;
 
-        given(keyboardRepository.existsById(productId))
-                .willReturn(false);
+        given(keyboardRepository.findById(productId))
+                .willReturn(Optional.empty());
 
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> reviewService.save(1L, reviewRequest))
                         .isExactlyInstanceOf(KeyboardNotFoundException.class),
-                () -> verify(keyboardRepository).existsById(productId),
+                () -> verify(keyboardRepository).findById(productId),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
         );
     }
@@ -84,9 +88,10 @@ class ReviewServiceTest {
     void 특정_제품에_대한_리뷰_목록을_조회한다() {
         // given
         Long productId = 1L;
+        Keyboard keyboard = KEYBOARD_1.생성();
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
         Slice<Review> slice = new SliceImpl<>(List.of(
-                REVIEW_RATING_5.작성(1L, productId)
+                REVIEW_RATING_5.작성(1L, keyboard)
         ), pageable, true);
 
         given(keyboardRepository.existsById(productId))
@@ -126,12 +131,10 @@ class ReviewServiceTest {
     @Test
     void 전체_리뷰_목록을_조회한다() {
         // given
-        Long product1Id = 1L;
-        Long product2Id = 2L;
         Pageable pageable = PageRequest.of(0, 2, Sort.by(Order.desc("createdAt")));
         Slice<Review> slice = new SliceImpl<>(List.of(
-                REVIEW_RATING_5.작성(3L, product1Id),
-                REVIEW_RATING_5.작성(2L, product2Id)
+                REVIEW_RATING_5.작성(3L, KEYBOARD_1.생성()),
+                REVIEW_RATING_5.작성(2L, KEYBOARD_2.생성())
         ), pageable, true);
 
         given(reviewRepository.findPageBy(pageable))
