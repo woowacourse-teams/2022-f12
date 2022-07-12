@@ -16,7 +16,7 @@ export const Nav = styled.nav`
   position: sticky;
   top: 0;
   left: 0;
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.colors.white};
 
   &::after {
     position: absolute;
