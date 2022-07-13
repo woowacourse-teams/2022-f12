@@ -47,6 +47,22 @@ public class CustomPageableHandlerMethodArgumentResolverTest {
     }
 
     @Test
+    void 페이징_실패_페이징_크기_숫자_형식_아님() throws Exception {
+        // given
+        given(keyboardService.findPage(any(Pageable.class)))
+                .willReturn(KeyboardPageResponse.from(new SliceImpl<>(List.of())));
+
+        // when
+        mockMvc.perform(get("/api/v1/keyboards?page=0&size=abc&sort=rating,desc"))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        // then
+        verify(keyboardService, times(0))
+                .findPage(any(Pageable.class));
+    }
+
+    @Test
     void 페이징_성공_페이징_값_지정_안할_경우_기본값으로_페이징() throws Exception {
         // given
         given(keyboardService.findPage(any(Pageable.class)))
