@@ -17,6 +17,7 @@ import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.domain.ReviewRepository;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -141,14 +142,14 @@ class ReviewServiceTest {
                 .willReturn(slice);
 
         // when
-        ReviewPageResponse reviewPageResponse = reviewService.findPage(pageable);
+        ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPage(pageable);
 
         // then
         assertAll(
-                () -> assertThat(reviewPageResponse.getItems()).hasSize(2)
+                () -> assertThat(reviewWithProductPageResponse.getItems()).hasSize(2)
                         .extracting("id")
                         .containsExactly(3L, 2L),
-                () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
+                () -> assertThat(reviewWithProductPageResponse.isHasNext()).isTrue(),
                 () -> verify(reviewRepository).findPageBy(pageable)
         );
     }
