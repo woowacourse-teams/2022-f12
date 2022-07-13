@@ -1,5 +1,6 @@
 package com.woowacourse.f12.presentation;
 
+import com.woowacourse.f12.exception.InvalidPageNumberFormatException;
 import com.woowacourse.f12.exception.InvalidPageSizeException;
 import com.woowacourse.f12.exception.InvalidPageSizeFormatException;
 import java.util.Objects;
@@ -25,9 +26,21 @@ public class CustomPageableHandlerMethodArgumentResolver extends PageableHandler
     @Override
     public Pageable resolveArgument(final MethodParameter methodParameter, final ModelAndViewContainer mavContainer,
                                     final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
+        final String pageArgument = webRequest.getParameter("page");
+        validatePage(pageArgument);
         final String sizeArgument = webRequest.getParameter("size");
         validateSize(sizeArgument);
         return super.resolveArgument(methodParameter, mavContainer, webRequest, binderFactory);
+    }
+
+    private void validatePage(final String pageArgument) {
+        if (Objects.isNull(pageArgument)) {
+            return;
+        }
+        final Matcher matcher = NUMBER_PATTERN.matcher(pageArgument);
+        if (!matcher.matches()) {
+            throw new InvalidPageNumberFormatException();
+        }
     }
 
     private void validateSize(final String sizeArgument) {
