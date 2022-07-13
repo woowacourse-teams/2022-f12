@@ -1,8 +1,8 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.1'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'org.asciidoctor.convert' version '1.5.9.2'
-	id 'java'
+    id 'org.springframework.boot' version '2.7.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com.woowacourse'
@@ -10,62 +10,60 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    asciidoctorExtensions
 }
 
 repositories {
-	mavenCentral()
-}
-
-ext {
-	set('snippetsDir', file("build/generated-snippets"))
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  	implementation 'org.springframework.boot:spring-boot-starter-web'
+	  implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2'
 
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	// jwt
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	// rest-assured
-	testImplementation 'io.rest-assured:rest-assured:4.4.0'
-	testImplementation 'io.rest-assured:spring-mock-mvc:4.4.0'
+    // rest-assured
+    testImplementation 'io.rest-assured:rest-assured:4.4.0'
 
-	// rest-docs
-	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.5.RELEASE'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+    // rest-docs
+    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    outputs.dir snippetsDir
+    useJUnitPlatform()
 }
 
 tasks.named('asciidoctor') {
-	inputs.dir snippetsDir
-	dependsOn test
+    configurations 'asciidoctorExtensions'
+    inputs.dir snippetsDir
+    dependsOn test
 }
 
 task copyDocument(type: Copy) {
-	dependsOn asciidoctor
+    dependsOn asciidoctor
 
-	from file("build/asciidoc/html5/index.html")
-	into file("src/main/resources/static")
+    from file("${asciidoctor.outputDir}")
+    into file("src/main/resources/static")
 }
 
 bootJar {
-	dependsOn copyDocument
+    dependsOn copyDocument
 }
