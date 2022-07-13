@@ -4,6 +4,7 @@ import com.woowacourse.f12.application.ReviewService;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import java.net.URI;
+import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ public class ReviewController {
 
     @PostMapping("/keyboards/{productId}/reviews")
     public ResponseEntity<Void> create(@PathVariable final Long productId,
-                                       @RequestBody final ReviewRequest reviewRequest) {
+                                       @Valid @RequestBody final ReviewRequest reviewRequest) {
         final Long id = reviewService.save(productId, reviewRequest);
         return ResponseEntity.created(URI.create("/api/v1/reviews/" + id))
                 .build();
