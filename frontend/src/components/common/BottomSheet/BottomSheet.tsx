@@ -3,13 +3,13 @@ import * as S from '@/components/common/BottomSheet/BottomSheet.style';
 
 type Props = {
   container?: Element | DocumentFragment;
-  closeHandler: () => void;
+  handleClose: () => void;
 };
 
-function BottomSheet({ children, closeHandler }: PropsWithChildren<Props>) {
+function BottomSheet({ children, handleClose }: PropsWithChildren<Props>) {
   return (
     <S.Container>
-      <S.Backdrop onClick={closeHandler} />
+      <S.Backdrop onClick={handleClose} />
       <S.Content>{children}</S.Content>
     </S.Container>
   );

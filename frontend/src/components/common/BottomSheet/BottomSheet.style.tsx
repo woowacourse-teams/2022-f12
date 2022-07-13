@@ -22,13 +22,10 @@ export const Backdrop = styled.div`
 
 export const Content = styled.section`
   width: 100%;
-  height: max-content;
-  min-height: 200px;
+  padding: 10%;
 
   position: relative;
   z-index: 2;
-
-  padding: 1rem;
 
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
