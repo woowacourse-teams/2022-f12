@@ -2,9 +2,15 @@ name: backend
 
 on:
   push:
+    branches:
+      - main
+      - release
     paths:
       - 'backend/**'
   pull_request:
+    branches:
+      - main
+      - release
     paths:
       - 'backend/**'
 
