@@ -33,6 +33,7 @@ function ReviewForm({ handleSubmit }: Props) {
     e.preventDefault();
     if (!validateReviewInput()) {
       alert('모든 항목을 작성해주세요');
+      throw Error('항목이 누락됨');
     }
 
     handleSubmit({ content, rating })
@@ -40,7 +41,7 @@ function ReviewForm({ handleSubmit }: Props) {
         resetForm();
       })
       .catch((error) => {
-        console.log(error);
+        throw error;
       });
   };
 

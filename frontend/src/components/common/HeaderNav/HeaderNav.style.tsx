@@ -17,6 +17,7 @@ export const Nav = styled.nav`
   top: 0;
   left: 0;
   background-color: ${({ theme }) => theme.colors.white};
+  z-index: 1;
 
   &::after {
     position: absolute;

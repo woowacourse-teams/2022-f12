@@ -5,7 +5,7 @@ export const Container = styled.section`
   flex-direction: column;
   justify-content: flex-end;
 
-  position: absolute;
+  position: sticky;
   bottom: 0;
   left: 0;
 
