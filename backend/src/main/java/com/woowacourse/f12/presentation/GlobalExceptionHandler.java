@@ -6,6 +6,8 @@ import com.woowacourse.f12.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String REQUEST_DATA_FORMAT_ERROR_MESSAGE = "요청으로 넘어온 값이 형식에 맞지 않습니다.";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "서버 오류가 발생했습니다";
 
     @ExceptionHandler(NotFoundException.class)
@@ -25,8 +28,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ExceptionResponse.from(e));
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException() {
+        return ResponseEntity.badRequest().body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ExceptionResponse> handleValidationException(
+            final MethodArgumentNotValidException exception) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        exception.getBindingResult().getAllErrors().forEach((error) -> stringBuilder.append(error.getDefaultMessage())
+                .append(System.lineSeparator()));
+        return ResponseEntity.badRequest().body(ExceptionResponse.from(stringBuilder.toString()));
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleUnhandledException(Exception e) {
+    public ResponseEntity<ExceptionResponse> handleUnhandledException(final Exception e) {
         log.error("[ERROR]", e);
         return ResponseEntity.internalServerError().body(ExceptionResponse.from(INTERNAL_SERVER_ERROR_MESSAGE));
     }
