@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
@@ -96,8 +97,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(ReviewPageResponse.class).isHasNext()).isFalse(),
-                () -> assertThat(response.as(ReviewPageResponse.class).getItems())
+                () -> assertThat(response.as(ReviewWithProductPageResponse.class).isHasNext()).isFalse(),
+                () -> assertThat(response.as(ReviewWithProductPageResponse.class).getItems())
                         .extracting("id")
                         .containsExactly(reviewId2, reviewId1)
         );
