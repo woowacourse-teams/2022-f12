@@ -1,6 +1,7 @@
 package com.woowacourse.f12.application;
 
 import com.woowacourse.f12.dto.request.GitHubTokenRequest;
+import com.woowacourse.f12.dto.response.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.GitHubTokenResponse;
 import com.woowacourse.f12.exception.GitHubServerException;
 import com.woowacourse.f12.exception.InvalidGitHubLoginException;
@@ -51,6 +52,24 @@ public class GitHubOauthClient {
                     throw new GitHubServerException();
                 })
                 .bodyToMono(GitHubTokenResponse.class)
+                .blockOptional()
+                .orElseThrow(InvalidGitHubLoginException::new);
+    }
+
+    public GitHubProfileResponse getProfile(final String accessToken) {
+        final WebClient webClient = WebClient.builder()
+                .baseUrl(profileUrl)
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "token " + accessToken)
+                .build();
+        return webClient.get()
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, clientResponse -> {
+                    throw new InvalidGitHubLoginException();
+                })
+                .onStatus(HttpStatus::is5xxServerError, clientResponse -> {
+                    throw new GitHubServerException();
+                })
+                .bodyToMono(GitHubProfileResponse.class)
                 .blockOptional()
                 .orElseThrow(InvalidGitHubLoginException::new);
     }

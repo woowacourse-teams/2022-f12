@@ -16,4 +16,4 @@ github:
     secret: secret
   url:
     accessToken: http://localhost:8888/login/oauth/access_token
-    user: http://localhost:8888/user/user
+    user: http://localhost:8888/user
