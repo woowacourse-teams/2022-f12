@@ -23,7 +23,6 @@ function ReviewCard({
   content,
 }: Props) {
   return (
-    // {product && '상품정보 넣어주세요~~~!'}
     <S.OuterContainer>
       {product && (
         <S.ProductArea>
