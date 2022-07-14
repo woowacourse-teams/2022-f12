@@ -1,9 +1,5 @@
-= Keyboard API
-
-:doctype: book
-:toc: left
-:toclevels: 2
-:sectlinks:
+[[Keyboard]]
+== Keyboard API
 
 === 키보드 단일 상품 조회
 
