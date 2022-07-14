@@ -40,8 +40,9 @@ export const SelectButton = styled.button`
   cursor: pointer;
   box-shadow: 8px 8px 3px -3px #cfcfcf;
 
-  &:first-child {
+  &:focus {
     background-color: #f6bebe;
+    box-shadow: none;
   }
 `;
 
@@ -58,6 +59,19 @@ export const ConfirmButton = styled.button`
 
 export const EditButton = styled(ConfirmButton)`
   background-color: #faf9f9;
+`;
+
+export const ConfirmInfo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f6bebe;
+  width: 280px;
+  height: 50px;
+  border-radius: 8px;
+  border: 1px solid #cfcfcf;
+  font-size: 1rem;
+  box-shadow: 8px 8px 3px -3px #cfcfcf;
 `;
 
 export const FlexRowWrapper = styled.div`
