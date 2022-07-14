@@ -2,6 +2,9 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import ResetCss from '@/style/ResetCss';
 import App from '@/App';
+import { ThemeProvider } from 'styled-components';
+import theme from '@/style/theme';
+import GlobalStyles from '@/style/GlobalStyles';
 
 /* eslint-disable */
 
@@ -26,9 +29,12 @@ if (process.env.NODE_ENV === 'development') {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>
-    <ResetCss />
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <ResetCss />
+      <GlobalStyles />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ThemeProvider>
   </>
 );

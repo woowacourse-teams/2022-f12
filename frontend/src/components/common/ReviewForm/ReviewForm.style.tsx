@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.section`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 2rem;
 `;
 
 export const Title = styled.h1`
@@ -16,12 +16,23 @@ export const Form = styled.form`
   gap: 1rem;
 `;
 
+export const Label = styled.label`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+export const LabelTop = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const Textarea = styled.textarea`
   resize: none;
   padding: 1rem;
   line-height: 1.5;
 
-  height: 5rem;
+  height: 10rem;
 `;
 
 export const SubmitButton = styled.button`

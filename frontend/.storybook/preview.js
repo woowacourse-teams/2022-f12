@@ -1,12 +1,19 @@
 import { BrowserRouter } from 'react-router-dom';
-import ResetCss from '../src/style/ResetCss';
+import { ThemeProvider } from 'styled-components';
+import ResetCss from '@/style/ResetCss';
+import GlobalStyles from '@/style/GlobalStyles';
+import theme from '@/style/theme';
+
 export const decorators = [
   (Story) => (
     <>
       <ResetCss />
-      <BrowserRouter>
-        <Story />
-      </BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <BrowserRouter>
+          <Story />
+        </BrowserRouter>
+      </ThemeProvider>
     </>
   ),
 ];

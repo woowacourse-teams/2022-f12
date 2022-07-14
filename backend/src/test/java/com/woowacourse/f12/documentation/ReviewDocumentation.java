@@ -1,0 +1,111 @@
+package com.woowacourse.f12.documentation;
+
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.woowacourse.f12.application.ReviewService;
+import com.woowacourse.f12.dto.request.ReviewRequest;
+import com.woowacourse.f12.dto.response.ReviewPageResponse;
+import com.woowacourse.f12.presentation.ReviewController;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+@WebMvcTest(ReviewController.class)
+public class ReviewDocumentation extends Documentation {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private ReviewService reviewService;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    @Test
+    void 리뷰_작성_API_문서화() throws Exception {
+        // given
+        given(reviewService.save(anyLong(), any(ReviewRequest.class)))
+                .willReturn(1L);
+        ReviewRequest reviewRequest = new ReviewRequest("content", 5);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/keyboards/" + 1L + "/reviews")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest))
+        );
+
+        // then
+        resultActions.andExpect(status().isCreated())
+                .andDo(print())
+                .andDo(
+                        document("reviews-create")
+                );
+    }
+
+    @Test
+    void 특정_제품의_리뷰_목록_조회_API_문서화() throws Exception {
+        // given
+        PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+        ReviewPageResponse reviewPageResponse = ReviewPageResponse.from(
+                new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, 1L), REVIEW_RATING_4.작성(2L, 1L)), pageable, false));
+
+        given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
+                .willReturn(reviewPageResponse);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                        get("/api/v1/keyboards/1/reviews?page=0&size=10&sort=createdAt,desc"))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("reviews-by-product-page-get")
+                );
+    }
+
+    @Test
+    void 모든_리뷰_목록_페이지_조회_API_문서화() throws Exception {
+        // given
+        PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+        ReviewPageResponse reviewPageResponse = ReviewPageResponse.from(
+                new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, 1L), REVIEW_RATING_4.작성(2L, 2L)), pageable, false));
+
+        given(reviewService.findPage(any(Pageable.class)))
+                .willReturn(reviewPageResponse);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/reviews?page=0&size=10&sort=createdAt,desc"))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("reviews-page-get")
+                );
+    }
+}
