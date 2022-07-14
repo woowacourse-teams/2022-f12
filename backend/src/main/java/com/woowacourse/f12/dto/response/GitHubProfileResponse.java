@@ -1,6 +1,7 @@
 package com.woowacourse.f12.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.woowacourse.f12.domain.Member;
 import lombok.Getter;
 
 @Getter
@@ -22,5 +23,13 @@ public class GitHubProfileResponse {
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
+    }
+
+    public Member toMember() {
+        return Member.builder()
+                .gitHubId(this.gitHubId)
+                .name(this.name)
+                .imageUrl(this.imageUrl)
+                .build();
     }
 }
