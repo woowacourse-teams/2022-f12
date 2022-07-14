@@ -5,6 +5,6 @@ export default {
   title: 'Components/Stepper',
 };
 
-const Template = () => <Stepper />;
-
-export const Default = () => <Template />;
+export const FirstStep = () => <Stepper step={1} />;
+export const SecondStep = () => <Stepper step={2} />;
+export const ThirdStep = () => <Stepper step={3} />;
