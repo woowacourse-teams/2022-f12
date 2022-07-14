@@ -52,9 +52,21 @@ function Register() {
   };
 
   const handleConfirmButtonClick = () => {
+    if (step === 1 && additionalInfo.career === null) {
+      alert('경력을 선택해주세요.');
+      return;
+    }
+    if (step === 2 && additionalInfo.jobGroup === null) {
+      alert('직군을 선택해주세요.');
+      return;
+    }
     if (step === 1 || step === 2) {
       setStep(step + 1);
+      return;
     }
+    confirm(
+      `${additionalInfo.career}, ${additionalInfo.jobGroup} 개발자이신가요?`
+    );
   };
 
   const handleEditButtonClick = () => {
