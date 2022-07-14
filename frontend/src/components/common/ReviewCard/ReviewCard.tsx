@@ -23,7 +23,7 @@ function ReviewCard({
   content,
 }: Props) {
   return (
-    <S.OuterContainer>
+    <S.Container>
       {product && (
         <S.ProductArea>
           <S.FlexColumnWrapper>
@@ -39,7 +39,7 @@ function ReviewCard({
         </S.Wrapper>
         <S.Content>{content}</S.Content>
       </S.ReviewArea>
-    </S.OuterContainer>
+    </S.Container>
   );
 }
 

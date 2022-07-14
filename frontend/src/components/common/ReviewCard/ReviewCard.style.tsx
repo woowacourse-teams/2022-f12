@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const OuterContainer = styled.article`
+export const Container = styled.article`
   display: flex;
   gap: 1rem;
   border-radius: 0.375rem;
