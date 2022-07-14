@@ -71,7 +71,6 @@ export const ConfirmInfo = styled.div`
   border-radius: 8px;
   border: 1px solid #cfcfcf;
   font-size: 1rem;
-  box-shadow: 8px 8px 3px -3px #cfcfcf;
 `;
 
 export const FlexRowWrapper = styled.div`
