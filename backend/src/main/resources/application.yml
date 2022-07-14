@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:~/test;MODE=MySQL;MODE=MySQL
+    url: jdbc:h2:~/test;MODE=MySQL;
     username: sa
     password:
   jpa:
