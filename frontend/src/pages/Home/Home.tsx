@@ -13,6 +13,8 @@ function Home() {
     <CustomLink to={ROUTES.PRODUCTS}>+더보기</CustomLink>
   );
 
+  console.log(reviews);
+
   return (
     <>
       <ProductListSection
@@ -20,7 +22,7 @@ function Home() {
         data={!!keyboards && keyboards}
         addOn={moreProductsLink}
       />
-      <ReviewListSection columns={3} data={reviews} getNextPage={getNextPage} />
+      <ReviewListSection columns={2} data={reviews} getNextPage={getNextPage} />
     </>
   );
 }
