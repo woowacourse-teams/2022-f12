@@ -16,7 +16,6 @@ export const Item = styled.div<{ step: number }>`
   &::before {
     position: absolute;
     content: '';
-    /* border: 2px solid #cfcfcf; */
     width: 100%;
     top: 25px;
     left: -50%;
