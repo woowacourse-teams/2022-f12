@@ -8,4 +8,12 @@ spring:
         format_sql: true
 
 server:
-  port: 8080
+  port: 8888
+
+github:
+  client:
+    id: clientId
+    secret: secret
+  url:
+    accessToken: http://localhost:8888/login/oauth/access_token
+    user: http://localhost:8888/user/user
