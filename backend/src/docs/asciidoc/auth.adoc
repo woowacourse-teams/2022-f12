@@ -1,0 +1,11 @@
+[[Auth]]
+== Auth API
+
+:doctype: book
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+=== 로그인
+
+operation::auth-login[snippets='http-request,http-response']
