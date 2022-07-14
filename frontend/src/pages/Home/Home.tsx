@@ -13,8 +13,6 @@ function Home() {
     <CustomLink to={ROUTES.PRODUCTS}>+더보기</CustomLink>
   );
 
-  console.log(reviews);
-
   return (
     <>
       <ProductListSection
