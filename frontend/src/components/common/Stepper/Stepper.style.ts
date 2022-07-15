@@ -40,7 +40,7 @@ export const Item = styled.div<{ step: number }>`
     ${(props) => {
       if (props.step === 2 || props.step === 3)
         return `border: 2px solid #f6bebe;
-        transition: ease-in 0.5s;`;
+        transition: ease-in 0.2s;`;
     }};
   }
 
@@ -52,7 +52,7 @@ export const Item = styled.div<{ step: number }>`
     ${(props) => {
       if (props.step === 3)
         return `border: 2px solid #f6bebe;
-      transition: ease-in 0.5s;`;
+      transition: ease-in 0.2s;`;
     }};
   }
 
@@ -61,7 +61,7 @@ export const Item = styled.div<{ step: number }>`
       ${(props) => {
         if (props.step === 1)
           return `border: 5px solid #f6bebe;
-        transition: ease-in 0.5s;`;
+        transition: ease-in 0.2s;`;
         if (props.step === 2 || props.step === 3)
           return `border: 5px solid #f6bebe;
           background-color: #f6bebe`;
@@ -74,11 +74,11 @@ export const Item = styled.div<{ step: number }>`
       ${(props) => {
         if (props.step === 2)
           return `border: 5px solid #f6bebe;
-        transition: ease-in 0.5s`;
+        transition: ease-in 0.2s`;
         if (props.step === 3)
           return `border: 5px solid #f6bebe;
         background-color: #f6bebe;
-        transition: ease-in 0.5s`;
+        transition: ease-in 0.2s`;
       }};
     }
   }
@@ -88,7 +88,7 @@ export const Item = styled.div<{ step: number }>`
       ${(props) => {
         if (props.step === 3)
           return `border: 5px solid #f6bebe;
-        transition: ease-in 0.5s;`;
+        transition: ease-in 0.2s;`;
       }};
     }
   }
