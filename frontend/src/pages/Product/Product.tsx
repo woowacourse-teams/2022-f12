@@ -8,6 +8,8 @@ import { useParams } from 'react-router-dom';
 import StickyWrapper from '@/components/common/StickyWrapper/StickyWrapper';
 import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
 import { useReducer } from 'react';
+import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
+import Plus from '@/components/common/FloatingButton/plus.svg';
 
 function Product() {
   const { productId: id } = useParams();
@@ -40,9 +42,9 @@ function Product() {
             />
           </StickyWrapper>
           <S.Wrapper>
-            <S.FloatingButton onClick={toggleSheetOpen}>
-              {isSheetOpen ? 'x' : '+'}
-            </S.FloatingButton>
+            <FloatingButton clickHandler={toggleSheetOpen}>
+              <Plus />
+            </FloatingButton>
             <ReviewListSection
               columns={1}
               data={reviews}
