@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(KeyboardController.class)
 @Import({AuthTokenExtractor.class, JwtProvider.class})
-public class CustomPageableHandlerMethodArgumentResolverTest {
+public class CustomPageableArgumentResolverTest {
 
     @Autowired
     private MockMvc mockMvc;
