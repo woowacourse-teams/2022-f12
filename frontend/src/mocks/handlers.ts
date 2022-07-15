@@ -1,6 +1,7 @@
 import { rest } from 'msw';
 import { BASE_URL, ENDPOINTS } from '../constants/api';
 import { products, reviews } from '@/mocks/data';
+import { authURI } from '@/components/Login/Login';
 
 // 상품 목록 조회
 const getKeyboards = (req, res, ctx) => {
@@ -63,8 +64,15 @@ const postReviewByProductId = (req, res, ctx) => {
   return res(ctx.status(201));
 };
 
-BASE_URL;
-ENDPOINTS;
+// 로그인
+const getToken = (req, res, ctx) => {
+  const response = {
+    jobType: null,
+    career: null,
+    accessToken: 'ZaSw2312EsaCV',
+  };
+  return res(ctx.status(200), ctx.json(response));
+};
 
 export const handlers = [
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
@@ -78,4 +86,5 @@ export const handlers = [
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
     postReviewByProductId
   ),
+  rest.get(authURI, getToken),
 ];
