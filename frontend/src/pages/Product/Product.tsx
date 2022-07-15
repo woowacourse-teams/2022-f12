@@ -7,14 +7,16 @@ import useProduct from '@/hooks/useProduct';
 import { useParams } from 'react-router-dom';
 import StickyWrapper from '@/components/common/StickyWrapper/StickyWrapper';
 import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
-import { useReducer } from 'react';
+import { useReducer, useRef } from 'react';
+import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
+import Plus from '@/components/common/FloatingButton/plus.svg';
 
 function Product() {
   const { productId: id } = useParams();
   const productId = Number(id);
 
   const product = useProduct({ productId: Number(productId) });
-  const [reviews, getNextPage, postReview] = useReviews({
+  const [reviews, getNextPage, refetchReview, postReview] = useReviews({
     size: 6,
     productId,
   });
@@ -24,8 +26,16 @@ function Product() {
     false
   );
 
+  const reviewListRef = useRef<HTMLDivElement | null>();
+
   const handleReviewSubmit = async (reviewInput: ReviewInput) => {
     await postReview(reviewInput);
+    refetchReview();
+    const topOfElement = reviewListRef.current;
+    window.scrollTo({
+      top: reviewListRef.current && Number(topOfElement.offsetTop),
+      behavior: 'smooth',
+    });
   };
 
   return (
@@ -39,10 +49,13 @@ function Product() {
               rating={product.rating}
             />
           </StickyWrapper>
-          <S.Wrapper>
-            <S.FloatingButton onClick={toggleSheetOpen}>
-              {isSheetOpen ? 'x' : '+'}
-            </S.FloatingButton>
+          <S.Wrapper ref={reviewListRef}>
+            {!isSheetOpen && (
+              <FloatingButton clickHandler={toggleSheetOpen}>
+                <Plus />
+              </FloatingButton>
+            )}
+
             <ReviewListSection
               columns={1}
               data={reviews}

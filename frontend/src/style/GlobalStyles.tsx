@@ -9,6 +9,10 @@ const GlobalStyles = createGlobalStyle`
 body {
   background-color: ${({ theme }) => theme.colors.white}
 }
+
+button {
+  cursor: pointer;
+}
 `;
 
 export default GlobalStyles;
