@@ -8,7 +8,8 @@ export const Container = styled.section`
 `;
 
 export const Title = styled.h1`
-  font-size: 1.2rem;
+  font-size: 1.5rem;
+  padding: 0 1rem;
 `;
 
 export const CustomLink = styled(Link)``;
