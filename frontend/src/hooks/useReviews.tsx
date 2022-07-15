@@ -9,13 +9,14 @@ type Props = {
   productId?: number;
 };
 
-type ReturnTypeWithoutProductId = [Review[], () => void];
+type ReturnTypeWithoutProductId = [Review[], () => void, () => void];
 type ReturnTypeWithProductId = [
   ...ReturnTypeWithoutProductId,
   (reviewInput: ReviewInput) => Promise<void>
 ];
 type ReturnType = [
   Review[],
+  () => void,
   () => void,
   ((reviewInput: ReviewInput) => Promise<void>)?
 ];
@@ -28,7 +29,7 @@ function useReviews({
   productId,
 }: PropsWithProductId): ReturnTypeWithProductId;
 function useReviews({ size, productId }: Props): ReturnType {
-  const [reviews, getNextPage] = useGetMany<Review>({
+  const [reviews, getNextPage, refetch] = useGetMany<Review>({
     url:
       productId !== undefined
         ? `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`
@@ -41,7 +42,7 @@ function useReviews({ size, productId }: Props): ReturnType {
     url: `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`,
   });
 
-  return [reviews, getNextPage, productId !== undefined && postReview];
+  return [reviews, getNextPage, refetch, productId !== undefined && postReview];
 }
 
 export default useReviews;
