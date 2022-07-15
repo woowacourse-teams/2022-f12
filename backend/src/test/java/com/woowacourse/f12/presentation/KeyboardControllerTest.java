@@ -9,15 +9,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.woowacourse.f12.application.JwtProvider;
 import com.woowacourse.f12.application.KeyboardService;
 import com.woowacourse.f12.dto.response.KeyboardPageResponse;
 import com.woowacourse.f12.dto.response.KeyboardResponse;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
+import com.woowacourse.f12.support.AuthTokenExtractor;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
@@ -25,6 +28,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(KeyboardController.class)
+@Import({AuthTokenExtractor.class, JwtProvider.class})
 class KeyboardControllerTest {
 
     @Autowired
