@@ -53,3 +53,5 @@ export const FlexLeftUl = styled.ul`
 export const FlexRightUl = styled(FlexLeftUl)`
   justify-content: flex-end;
 `;
+
+export const LoginButton = styled.a``;

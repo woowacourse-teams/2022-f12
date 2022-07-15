@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import * as S from './HeaderNav.style';
+
 function HeaderNav() {
   return (
     <S.Nav>
@@ -11,7 +12,11 @@ function HeaderNav() {
           <li>메뉴4</li>
         </S.FlexLeftUl>
         <S.FlexRightUl>
-          <Link to="/">로그인</Link>
+          <S.LoginButton
+            href={`https://github.com/login/oauth/authorize?client_id=f1e73a9ac502f1b6712a&redirect_uri=http://localhost:3000/login`}
+          >
+            로그인
+          </S.LoginButton>
         </S.FlexRightUl>
       </S.Wrapper>
     </S.Nav>
