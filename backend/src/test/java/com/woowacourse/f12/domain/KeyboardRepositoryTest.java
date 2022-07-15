@@ -39,8 +39,8 @@ class KeyboardRepositoryTest {
     void 키보드를_단일_조회_한다() {
         // given
         Keyboard keyboard = 키보드_저장(KEYBOARD_1.생성());
-        리뷰_저장(REVIEW_RATING_4.작성(keyboard.getId()));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard.getId()));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard));
         entityManager.flush();
         entityManager.refresh(keyboard);
 
@@ -78,9 +78,9 @@ class KeyboardRepositoryTest {
         Keyboard keyboard1 = 키보드_저장(KEYBOARD_1.생성());
         Keyboard keyboard2 = 키보드_저장(KEYBOARD_2.생성());
 
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard1.getId()));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard2.getId()));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard2.getId()));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard2));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard2));
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("reviewCount")));
 
@@ -100,10 +100,10 @@ class KeyboardRepositoryTest {
         Keyboard keyboard2 = 키보드_저장(KEYBOARD_1.생성());
         Keyboard keyboard1 = 키보드_저장(KEYBOARD_2.생성());
 
-        리뷰_저장(REVIEW_RATING_2.작성(keyboard1.getId()));
-        리뷰_저장(REVIEW_RATING_1.작성(keyboard1.getId()));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard2.getId()));
-        리뷰_저장(REVIEW_RATING_4.작성(keyboard2.getId()));
+        리뷰_저장(REVIEW_RATING_2.작성(keyboard1));
+        리뷰_저장(REVIEW_RATING_1.작성(keyboard1));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard2));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard2));
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating")));
 

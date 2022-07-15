@@ -3,6 +3,7 @@ package com.woowacourse.f12.presentation;
 import com.woowacourse.f12.application.ReviewService;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -40,8 +41,8 @@ public class ReviewController {
     }
 
     @GetMapping("/reviews")
-    public ResponseEntity<ReviewPageResponse> showPage(final Pageable pageable) {
-        final ReviewPageResponse reviewPageResponse = reviewService.findPage(pageable);
-        return ResponseEntity.ok(reviewPageResponse);
+    public ResponseEntity<ReviewWithProductPageResponse> showPage(final Pageable pageable) {
+        final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPage(pageable);
+        return ResponseEntity.ok(reviewWithProductPageResponse);
     }
 }

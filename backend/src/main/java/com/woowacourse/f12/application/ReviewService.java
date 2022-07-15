@@ -1,10 +1,12 @@
 package com.woowacourse.f12.application;
 
+import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
 import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.domain.ReviewRepository;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -25,16 +27,11 @@ public class ReviewService {
 
     @Transactional
     public Long save(final Long productId, final ReviewRequest reviewRequest) {
-        validateKeyboardExists(productId);
-        final Review review = reviewRequest.toReview(productId);
+        final Keyboard keyboard = keyboardRepository.findById(productId)
+                .orElseThrow(KeyboardNotFoundException::new);
+        final Review review = reviewRequest.toReview(keyboard);
         return reviewRepository.save(review)
                 .getId();
-    }
-
-    private void validateKeyboardExists(final Long productId) {
-        if (!keyboardRepository.existsById(productId)) {
-            throw new KeyboardNotFoundException();
-        }
     }
 
     public ReviewPageResponse findPageByProductId(final Long productId, final Pageable pageable) {
@@ -43,8 +40,14 @@ public class ReviewService {
         return ReviewPageResponse.from(page);
     }
 
-    public ReviewPageResponse findPage(final Pageable pageable) {
+    private void validateKeyboardExists(final Long productId) {
+        if (!keyboardRepository.existsById(productId)) {
+            throw new KeyboardNotFoundException();
+        }
+    }
+
+    public ReviewWithProductPageResponse findPage(final Pageable pageable) {
         final Slice<Review> page = reviewRepository.findPageBy(pageable);
-        return ReviewPageResponse.from(page);
+        return ReviewWithProductPageResponse.from(page);
     }
 }

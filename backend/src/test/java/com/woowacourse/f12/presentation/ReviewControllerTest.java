@@ -1,5 +1,6 @@
 package com.woowacourse.f12.presentation;
 
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.ReviewService;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.BlankContentException;
 import com.woowacourse.f12.exception.InvalidContentLengthException;
 import com.woowacourse.f12.exception.InvalidRatingValueException;
@@ -192,7 +194,8 @@ class ReviewControllerTest {
     void 전체_리뷰_페이지_조회_성공() throws Exception {
         // given
         given(reviewService.findPage(any(Pageable.class)))
-                .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, PRODUCT_ID)))));
+                .willReturn(ReviewWithProductPageResponse.from(
+                        new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성())))));
 
         // when
         mockMvc.perform(get("/api/v1/reviews?size=150&page=0&sort=rating,desc"))
@@ -207,7 +210,7 @@ class ReviewControllerTest {
     void 특정_상품의_리뷰_페이지_조회() throws Exception {
         // given
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
-                .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, PRODUCT_ID)))));
+                .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성())))));
 
         // when
         mockMvc.perform(get("/api/v1/keyboards/" + PRODUCT_ID + "/reviews?size=150&page=0&sort=rating,desc"))
