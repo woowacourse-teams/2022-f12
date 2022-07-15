@@ -42,9 +42,12 @@ function Product() {
             />
           </StickyWrapper>
           <S.Wrapper>
-            <FloatingButton clickHandler={toggleSheetOpen}>
-              <Plus />
-            </FloatingButton>
+            {!isSheetOpen && (
+              <FloatingButton clickHandler={toggleSheetOpen}>
+                <Plus />
+              </FloatingButton>
+            )}
+
             <ReviewListSection
               columns={1}
               data={reviews}
