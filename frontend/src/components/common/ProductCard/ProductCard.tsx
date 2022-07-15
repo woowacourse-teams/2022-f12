@@ -10,7 +10,9 @@ type Props = {
 function ProductCard({ productImage, name, rating }: Props) {
   return (
     <S.Container>
-      <S.Image src={productImage} />
+      <S.ImageWrapper>
+        <S.Image src={productImage} />
+      </S.ImageWrapper>
       <S.Name>{name}</S.Name>
       <Rating rating={rating} />
     </S.Container>

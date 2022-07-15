@@ -4,16 +4,30 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 0.5rem;
-  width: 12rem;
+  gap: 1rem;
+  width: 17.5rem;
   border-radius: 0.375rem;
   padding: 1rem;
-  box-shadow: 0 0.35rem 0.7rem -0.2rem rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    img {
+      transform: scale(1.03);
+      transition: 0.2s;
+    }
+    p {
+      text-decoration: underline;
+    }
+  }
+`;
+
+export const ImageWrapper = styled.div`
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid ${({ theme }) => theme.colors.secondary};
 `;
 
 export const Image = styled.img`
   width: 100%;
-  height: 8rem;
   object-fit: cover;
 `;
 
@@ -24,4 +38,5 @@ export const Wrapper = styled.div`
 
 export const Name = styled.p`
   font-size: 1rem;
+  line-height: 1.3;
 `;

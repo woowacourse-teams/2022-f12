@@ -34,10 +34,10 @@ function ProductListSection({ title, addOn, data, getNextPage }: Props) {
         <S.Wrapper>
           {getNextPage !== undefined ? (
             <InfiniteScroll handleContentLoad={getNextPage}>
-              <Masonry columnCount={5}>{productCardList}</Masonry>
+              <Masonry columnCount={4}>{productCardList}</Masonry>
             </InfiniteScroll>
           ) : (
-            <Masonry columnCount={5}>{productCardList}</Masonry>
+            <Masonry columnCount={4}>{productCardList}</Masonry>
           )}
         </S.Wrapper>
       </S.Container>
