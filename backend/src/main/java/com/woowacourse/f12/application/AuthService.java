@@ -22,6 +22,7 @@ public class AuthService {
         this.jwtProvider = jwtProvider;
     }
 
+    @Transactional
     public LoginResponse login(final String code) {
         final String gitHubAccessToken = gitHubOauthClient.getAccessToken(code);
         final GitHubProfileResponse gitHubProfileResponse = gitHubOauthClient.getProfile(gitHubAccessToken);
