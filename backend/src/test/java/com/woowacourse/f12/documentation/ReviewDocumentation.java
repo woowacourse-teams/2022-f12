@@ -1,5 +1,7 @@
 package com.woowacourse.f12.documentation;
 
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,8 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.ReviewService;
+import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import com.woowacourse.f12.presentation.ReviewController;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -66,8 +70,9 @@ public class ReviewDocumentation extends Documentation {
     void 특정_제품의_리뷰_목록_조회_API_문서화() throws Exception {
         // given
         PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+        Keyboard keyboard = KEYBOARD_1.생성(1L);
         ReviewPageResponse reviewPageResponse = ReviewPageResponse.from(
-                new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, 1L), REVIEW_RATING_4.작성(2L, 1L)), pageable, false));
+                new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, keyboard), REVIEW_RATING_4.작성(2L, keyboard)), pageable, false));
 
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
                 .willReturn(reviewPageResponse);
@@ -90,11 +95,13 @@ public class ReviewDocumentation extends Documentation {
     void 모든_리뷰_목록_페이지_조회_API_문서화() throws Exception {
         // given
         PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
-        ReviewPageResponse reviewPageResponse = ReviewPageResponse.from(
-                new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, 1L), REVIEW_RATING_4.작성(2L, 2L)), pageable, false));
+        Keyboard keyboard1 = KEYBOARD_1.생성(1L);
+        Keyboard keyboard2 = KEYBOARD_2.생성(2L);
+        ReviewWithProductPageResponse reviewWithProductPageResponse = ReviewWithProductPageResponse.from(
+                new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, keyboard1), REVIEW_RATING_4.작성(2L, keyboard2)), pageable, false));
 
         given(reviewService.findPage(any(Pageable.class)))
-                .willReturn(reviewPageResponse);
+                .willReturn(reviewWithProductPageResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/api/v1/reviews?page=0&size=10&sort=createdAt,desc"))
