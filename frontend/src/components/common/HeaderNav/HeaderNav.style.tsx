@@ -9,9 +9,17 @@ export const Main = styled.main`
   gap: 3rem;
 `;
 
+export const Wrapper = styled.div`
+  max-width: 1320px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+`;
+
 export const Nav = styled.nav`
   width: 100%;
   height: 3rem;
+  display: flex;
 
   position: sticky;
   top: 0;
@@ -33,12 +41,15 @@ export const Nav = styled.nav`
   }
 `;
 
-export const FlexUl = styled.ul`
+export const FlexLeftUl = styled.ul`
   width: 90%;
   height: 3rem;
   margin: 0 auto;
-
   display: flex;
   align-items: center;
   gap: 2rem;
+`;
+
+export const FlexRightUl = styled(FlexLeftUl)`
+  justify-content: flex-end;
 `;
