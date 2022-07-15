@@ -9,11 +9,11 @@ export const Container = styled.section`
 
 export const Title = styled.h1`
   font-size: 1.5rem;
-  padding: 0 1rem;
 `;
 
 export const CustomLink = styled(Link)``;
 
 export const Wrapper = styled.div`
   margin: 1rem auto 0 auto;
+  width: 100%;
 `;

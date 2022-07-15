@@ -5,7 +5,7 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   gap: 1rem;
-  width: 17.5rem;
+  width: 19rem;
   border-radius: 0.375rem;
   padding: 1rem;
 
@@ -24,6 +24,7 @@ export const ImageWrapper = styled.div`
   width: 100%;
   overflow: hidden;
   border: 1px solid ${({ theme }) => theme.colors.secondary};
+  background-color: #fff;
 `;
 
 export const Image = styled.img`
