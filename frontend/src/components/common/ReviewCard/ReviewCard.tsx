@@ -32,7 +32,7 @@ function ReviewCard({
           <S.Title>{product.name}</S.Title>
         </S.ProductArea>
       )}
-      <S.ReviewArea>
+      <S.ReviewArea isFull={!product}>
         <S.Wrapper>
           <UserNameTag profileImage={profileImage} username={username} />
           <Rating type="정수" rating={rating} />

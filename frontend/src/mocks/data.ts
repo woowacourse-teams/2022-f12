@@ -291,13 +291,15 @@ export const products = [
   },
 ];
 
-const getReviewProductData = ({ id, name, imageUrl }) => ({
+const getReviewProductData: (
+  product: Product
+) => Pick<Product, 'id' | 'name' | 'imageUrl'> = ({ id, name, imageUrl }) => ({
   id,
   name,
   imageUrl,
 });
 
-export const reviews = [
+export const reviewsWithProduct: Review[] = [
   {
     id: 1,
     product: {
@@ -446,6 +448,129 @@ export const reviews = [
     product: {
       ...getReviewProductData(products[12]),
     },
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 알고보니 수입 제한금액 오버.. 추가금을 고려해야 해요 그리고 배송은 딱 2주 걸렸어요 참고하세요^^',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨12',
+    profileImage: sampleProfile,
+  },
+];
+
+export const reviewsWithOutProduct: Review[] = [
+  {
+    id: 1,
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨1',
+    profileImage: sampleProfile,
+  },
+  {
+    id: 2,
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 알고보니 수입 제한금액 오버.. 추가금을 고려해야 해요 그리고 배송은 딱 2주 걸렸어요 참고하세요^^',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨2',
+    profileImage: sampleProfile,
+  },
+  {
+    id: 3,
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨3',
+    profileImage: sampleProfile,
+  },
+  {
+    id: 4,
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 알고보니 수입 제한금액 오버.. 추가금을 고려해야 해요 그리고 배송은 딱 2주 걸렸어요 참고하세요^^',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨4',
+    profileImage: sampleProfile,
+  },
+  {
+    id: 5,
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 알고보니 수입 제한금액 오버.. 추가금을 고려해야 해요 그리고 배송은 딱 2주 걸렸어요 참고하세요^^',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨5',
+    profileImage: sampleProfile,
+  },
+  {
+    id: 6,
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 알고보니 수입 제한금액 오버.. 추가금을 고려해야 해요 그리고 배송은 딱 2주 걸렸어요 참고하세요^^',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨6',
+    profileImage: sampleProfile,
+  },
+  {
+    id: 7,
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 알고보니 수입 제한금액 오버.. 추가금을 고려해야 해요 그리고 배송은 딱 2주 걸렸어요 참고하세요^^',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨7',
+    profileImage: sampleProfile,
+  },
+  {
+    id: 8,
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 알고보니 수입 제한금액 오버.. 추가금을 고려해야 해요 그리고 배송은 딱 2주 걸렸어요 참고하세요^^',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨8',
+    profileImage: sampleProfile,
+  },
+  {
+    id: 9,
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 알고보니 수입 제한금액 오버.. 추가금을 고려해야 해요 그리고 배송은 딱 2주 걸렸어요 참고하세요^^',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨9',
+    profileImage: sampleProfile,
+  },
+  {
+    id: 10,
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 알고보니 수입 제한금액 오버.. 추가금을 고려해야 해요 그리고 배송은 딱 2주 걸렸어요 참고하세요^^',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨10',
+    profileImage: sampleProfile,
+  },
+  {
+    id: 11,
+    content:
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 알고보니 수입 제한금액 오버.. 추가금을 고려해야 해요 그리고 배송은 딱 2주 걸렸어요 참고하세요^^',
+    rating: 5,
+    createdAt: '2022-07-03 14:23:23',
+    // 실 서버에는 추후 추가 예정 - username, profileImage
+    username: '인도아저씨11',
+    profileImage: sampleProfile,
+  },
+  {
+    id: 12,
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 알고보니 수입 제한금액 오버.. 추가금을 고려해야 해요 그리고 배송은 딱 2주 걸렸어요 참고하세요^^',
     rating: 5,

@@ -34,11 +34,11 @@ export const Title = styled.div`
   line-height: 1.3;
 `;
 
-export const ReviewArea = styled.div`
+export const ReviewArea = styled.div<{ isFull: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 60%;
+  width: ${({ isFull }) => (isFull ? '100%' : '60%')};
 `;
 
 export const Wrapper = styled.div`
