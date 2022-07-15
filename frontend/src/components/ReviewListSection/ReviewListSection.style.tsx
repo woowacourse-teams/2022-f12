@@ -9,7 +9,6 @@ export const Container = styled.section`
 
 export const Title = styled.h1`
   font-size: 1.5rem;
-  padding: 0 1rem;
 `;
 
 export const Wrapper = styled.div<{ columns: number }>`
