@@ -2,6 +2,7 @@ package com.woowacourse.f12.presentation;
 
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
@@ -36,11 +37,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ReviewController.class)
-@Import({AuthTokenExtractor.class, JwtProvider.class})
+@Import(AuthTokenExtractor.class)
 class ReviewControllerTest {
 
     private static final long PRODUCT_ID = 1L;
@@ -53,6 +55,9 @@ class ReviewControllerTest {
     @MockBean
     private ReviewService reviewService;
 
+    @MockBean
+    private JwtProvider jwtProvider;
+
     public ReviewControllerTest() {
         this.objectMapper = new ObjectMapper();
     }
@@ -60,105 +65,141 @@ class ReviewControllerTest {
     @Test
     void 리뷰_생성_성공() throws Exception {
         // given
+        ReviewRequest reviewRequest = new ReviewRequest("content", 5);
+        String authorizationHeader = "Bearer Token";
         given(reviewService.save(anyLong(), any(ReviewRequest.class)))
                 .willReturn(1L);
-        ReviewRequest reviewRequest = new ReviewRequest("content", 5);
-
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
         // when
         mockMvc.perform(
                         post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
                 ).andExpect(status().isCreated())
                 .andDo(print());
 
         // then
-        verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class));
+        assertAll(
+                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class)),
+                () -> verify(jwtProvider).validateToken(authorizationHeader)
+        );
     }
 
     @Test
     void 리뷰_생성_실패_Request_DTO_의_필드가_null_인_경우() throws Exception {
         // given
+        ReviewRequest reviewRequest = new ReviewRequest(null, null);
+        String authorizationHeader = "Bearer Token";
         given(reviewService.save(anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
-        ReviewRequest reviewRequest = new ReviewRequest(null, null);
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
 
         // when
         mockMvc.perform(
                         post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
                 ).andExpect(status().isBadRequest())
                 .andDo(print());
 
         // then
-        verify(reviewService, times(0)).save(eq(PRODUCT_ID), any(ReviewRequest.class));
+        assertAll(
+                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), any(ReviewRequest.class)),
+                () -> verify(jwtProvider).validateToken(authorizationHeader)
+        );
     }
 
     @Test
     void 리뷰_생성_실패_rating_타입이_올바르지_않을_경우() throws Exception {
         // given
-        given(reviewService.save(anyLong(), any(ReviewRequest.class)))
-                .willThrow(new BlankContentException());
+        String authorizationHeader = "Bearer Token";
         Map<String, Object> reviewRequest = new HashMap<>();
         reviewRequest.put("content", "내용");
         reviewRequest.put("rating", "문자");
+        given(reviewService.save(anyLong(), any(ReviewRequest.class)))
+                .willThrow(new BlankContentException());
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
 
         // when
         mockMvc.perform(
                         post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
                 ).andExpect(status().isBadRequest())
                 .andDo(print());
 
         // then
-        verify(reviewService, times(0)).save(eq(PRODUCT_ID), any(ReviewRequest.class));
+        assertAll(
+                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), any(ReviewRequest.class)),
+                () -> verify(jwtProvider).validateToken(authorizationHeader)
+        );
     }
 
     @Test
     void 리뷰_생성_실패_리뷰_내용이_존재하지_않음() throws Exception {
         // given
+        String authorizationHeader = "Bearer Token";
         given(reviewService.save(anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
         ReviewRequest reviewRequest = new ReviewRequest("", 5);
 
         // when
         mockMvc.perform(
                         post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
                 ).andExpect(status().isBadRequest())
                 .andDo(print());
 
         // then
-        verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class));
+        assertAll(
+                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class)),
+                () -> verify(jwtProvider).validateToken(authorizationHeader)
+        );
     }
 
     @Test
     void 리뷰_생성_실패_리뷰_내용_최대_길이_초과() throws Exception {
         // given
+        String authorizationHeader = "Bearer Token";
         given(reviewService.save(anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidContentLengthException(1000));
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
         String content = "a".repeat(1001);
         ReviewRequest reviewRequest = new ReviewRequest(content, 5);
 
         // when
         mockMvc.perform(
                         post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
                 ).andExpect(status().isBadRequest())
                 .andDo(print());
 
         // then
-        verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class));
-
+        assertAll(
+                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class)),
+                () -> verify(jwtProvider).validateToken(authorizationHeader)
+        );
     }
 
     @Test
     void 리뷰_생성_실패_평점이_1부터_5사이_정수가_아님() throws Exception {
         // given
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
         given(reviewService.save(anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidRatingValueException());
         ReviewRequest reviewRequest = new ReviewRequest("내용", 0);
@@ -166,18 +207,25 @@ class ReviewControllerTest {
         // when
         mockMvc.perform(
                         post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
                 ).andExpect(status().isBadRequest())
                 .andDo(print());
 
         // then
-        verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class));
+        assertAll(
+                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class)),
+                () -> verify(jwtProvider).validateToken(authorizationHeader)
+        );
     }
 
     @Test
     void 리뷰_생성_실패_제품이_존재하지_않음() throws Exception {
         // given
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
         given(reviewService.save(anyLong(), any(ReviewRequest.class)))
                 .willThrow(new KeyboardNotFoundException());
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
@@ -185,13 +233,17 @@ class ReviewControllerTest {
         // when
         mockMvc.perform(
                         post("/api/v1/keyboards/" + 0L + "/reviews")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
                 ).andExpect(status().isNotFound())
                 .andDo(print());
 
         // then
-        verify(reviewService).save(eq(0L), any(ReviewRequest.class));
+        assertAll(
+                () -> verify(reviewService).save(eq(0L), any(ReviewRequest.class)),
+                () -> verify(jwtProvider).validateToken(authorizationHeader)
+        );
     }
 
     @Test

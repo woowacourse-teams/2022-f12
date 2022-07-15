@@ -39,8 +39,9 @@ public enum ReviewFixtures {
                 .build();
     }
 
-    public ExtractableResponse<Response> 작성_요청을_보낸다(Long productId) {
+    public ExtractableResponse<Response> 작성_요청을_보낸다(Long productId, String token) {
         final ReviewRequest reviewRequest = new ReviewRequest(this.content, this.rating);
-        return RestAssuredRequestUtil.POST_요청을_보낸다("/api/v1/keyboards/" + productId + "/reviews", reviewRequest);
+        return RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다("/api/v1/keyboards/" + productId + "/reviews", token,
+                reviewRequest);
     }
 }

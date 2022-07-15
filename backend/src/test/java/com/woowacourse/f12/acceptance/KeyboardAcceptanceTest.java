@@ -14,6 +14,7 @@ import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
 import com.woowacourse.f12.dto.response.KeyboardPageResponse;
 import com.woowacourse.f12.dto.response.KeyboardResponse;
+import com.woowacourse.f12.dto.response.LoginResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
@@ -65,9 +66,12 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
         // given
         Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성());
         Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성());
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboard1.getId());
-        REVIEW_RATING_4.작성_요청을_보낸다(keyboard1.getId());
-        REVIEW_RATING_3.작성_요청을_보낸다(keyboard2.getId());
+        String token = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas")
+                .as(LoginResponse.class)
+                .getToken();
+        REVIEW_RATING_5.작성_요청을_보낸다(keyboard1.getId(), token);
+        REVIEW_RATING_4.작성_요청을_보낸다(keyboard1.getId(), token);
+        REVIEW_RATING_3.작성_요청을_보낸다(keyboard2.getId(), token);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/keyboards?page=0&size=1&sort=reviewCount,desc");
@@ -87,9 +91,12 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
         // given
         Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성());
         Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성());
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboard1.getId());
-        REVIEW_RATING_1.작성_요청을_보낸다(keyboard1.getId());
-        REVIEW_RATING_4.작성_요청을_보낸다(keyboard2.getId());
+        String token = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas")
+                .as(LoginResponse.class)
+                .getToken();
+        REVIEW_RATING_5.작성_요청을_보낸다(keyboard1.getId(), token);
+        REVIEW_RATING_1.작성_요청을_보낸다(keyboard1.getId(), token);
+        REVIEW_RATING_4.작성_요청을_보낸다(keyboard2.getId(), token);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/keyboards?page=0&size=1&sort=rating,desc");

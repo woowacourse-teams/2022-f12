@@ -26,6 +26,7 @@ public class ReviewController {
     }
 
     @PostMapping("/keyboards/{productId}/reviews")
+    @Auth
     public ResponseEntity<Void> create(@PathVariable final Long productId,
                                        @Valid @RequestBody final ReviewRequest reviewRequest) {
         final Long id = reviewService.save(productId, reviewRequest);
