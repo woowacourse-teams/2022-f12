@@ -25,7 +25,7 @@ const DefaultSort = options[1];
 function Products() {
   const [sort, setSort] = useState<Sort>(DefaultSort.value);
   const [keyboards, getNextPage] = useProducts({
-    size: 15,
+    size: 12,
     sort,
   });
 

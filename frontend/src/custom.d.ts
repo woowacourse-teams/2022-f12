@@ -26,6 +26,7 @@ declare type Review = {
   username: string;
   rating: number;
   content: string;
+  createdAt: string;
 };
 
 declare type ReviewInput = {
