@@ -61,4 +61,11 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token);
     }
+
+    public String getPayload(final String authorizationHeader) {
+        final String token = authTokenExtractor.extractToken(authorizationHeader, TOKEN_TYPE);
+        return getClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
 }

@@ -67,4 +67,17 @@ class JwtProviderTest {
         // when, then
         assertThat(jwtProvider.validateToken(authorizationHeader)).isFalse();
     }
+
+    @Test
+    void 토큰의_payload를_복호화한다() {
+        // given
+        String token = jwtProvider.createToken(1L);
+        String authorizationHeader = "Bearer " + token;
+
+        // when
+        String payload = jwtProvider.getPayload(authorizationHeader);
+
+        // then
+        assertThat(payload).isEqualTo("1");
+    }
 }

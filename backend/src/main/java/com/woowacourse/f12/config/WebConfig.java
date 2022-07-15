@@ -1,5 +1,6 @@
 package com.woowacourse.f12.config;
 
+import com.woowacourse.f12.presentation.AuthArgumentResolver;
 import com.woowacourse.f12.presentation.AuthInterceptor;
 import com.woowacourse.f12.presentation.CustomPageableArgumentResolver;
 import java.util.List;
@@ -16,9 +17,11 @@ public class WebConfig implements WebMvcConfigurer {
     private static final String CORS_ALLOWED_METHODS = "GET,POST,HEAD,PUT,PATCH,DELETE,TRACE,OPTIONS";
 
     private final AuthInterceptor authInterceptor;
+    private final AuthArgumentResolver authArgumentResolver;
 
-    public WebConfig(final AuthInterceptor authInterceptor) {
+    public WebConfig(final AuthInterceptor authInterceptor, final AuthArgumentResolver authArgumentResolver) {
         this.authInterceptor = authInterceptor;
+        this.authArgumentResolver = authArgumentResolver;
     }
 
     @Override
@@ -38,5 +41,6 @@ public class WebConfig implements WebMvcConfigurer {
         final CustomPageableArgumentResolver customPageableArgumentResolver = new CustomPageableArgumentResolver();
         customPageableArgumentResolver.setMaxPageSize(150);
         resolvers.add(customPageableArgumentResolver);
+        resolvers.add(authArgumentResolver);
     }
 }
