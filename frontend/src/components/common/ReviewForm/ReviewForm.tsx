@@ -14,6 +14,7 @@ const initialState = {
 function ReviewForm({ handleSubmit }: Props) {
   const [content, setContent] = useState(initialState.content);
   const [rating, setRating] = useState(initialState.rating);
+  const [isFormInvalid, setInvalid] = useState(false);
 
   const validateReviewInput = (contentInput: string, ratingInput: number) => {
     return !!contentInput && ratingInput !== 0 && contentInput.length <= 1000;
@@ -29,10 +30,14 @@ function ReviewForm({ handleSubmit }: Props) {
       setContent(value);
     }, []);
 
+  const handleFormChange: React.ChangeEventHandler<HTMLFormElement> = () => {
+    setInvalid(false);
+  };
+
   const submitForm: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     if (!validateReviewInput(content.trim(), rating)) {
-      alert('모든 항목을 작성해주세요');
+      setInvalid(true);
       throw Error('항목이 누락됨');
     }
 
@@ -45,22 +50,30 @@ function ReviewForm({ handleSubmit }: Props) {
       });
   };
 
+  const isRatingEmpty = rating === 0;
+  const isContentEmpty = content.trim() === '';
+
   return (
     <S.Container>
       <S.Title>리뷰 작성하기</S.Title>
-      <S.Form onSubmit={submitForm}>
-        <S.Label>
+      <S.Form onSubmit={submitForm} onChange={handleFormChange}>
+        <S.Label isInvalid={isFormInvalid && isRatingEmpty}>
           <p>평점을 입력해주세요</p>
           <RatingInput rating={rating} setRating={setRating} />
         </S.Label>
-        <S.Label>
+        <S.Label isInvalid={isFormInvalid && isContentEmpty}>
           <S.LabelTop>
             <p>총평을 입력해주세요</p>
             <p>{content.length} / 1000</p>
           </S.LabelTop>
           <S.Textarea value={content} onChange={handleContentChange} required />
         </S.Label>
-        <S.SubmitButton>리뷰 추가</S.SubmitButton>
+        <S.Footer>
+          <S.SubmitButton>리뷰 추가</S.SubmitButton>
+          {isFormInvalid && (
+            <S.ErrorMessage>모든 항목을 입력해주세요</S.ErrorMessage>
+          )}
+        </S.Footer>
       </S.Form>
     </S.Container>
   );
