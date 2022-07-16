@@ -46,10 +46,10 @@ class AuthInterceptorTest {
         // given
         ReviewRequest reviewRequest = new ReviewRequest("content", 5);
         String authorizationHeader = "Bearer Token";
-        given(reviewService.save(anyLong(), any(ReviewRequest.class)))
-                .willReturn(1L);
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(false);
+        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+                .willReturn(1L);
         // when
         mockMvc.perform(
                         post("/api/v1/keyboards/" + 1L + "/reviews")
@@ -61,8 +61,8 @@ class AuthInterceptorTest {
 
         // then
         assertAll(
-                () -> verify(reviewService, times(0)).save(eq(1L), any(ReviewRequest.class)),
-                () -> verify(jwtProvider).validateToken(authorizationHeader)
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(reviewService, times(0)).save(eq(1L), any(ReviewRequest.class), eq(1L))
         );
     }
 }

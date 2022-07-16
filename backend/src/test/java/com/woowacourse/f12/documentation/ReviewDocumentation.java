@@ -55,7 +55,9 @@ public class ReviewDocumentation extends Documentation {
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
-        given(reviewService.save(anyLong(), any(ReviewRequest.class)))
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
                 .willReturn(1L);
         ReviewRequest reviewRequest = new ReviewRequest("content", 5);
 
