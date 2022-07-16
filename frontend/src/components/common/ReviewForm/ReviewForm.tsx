@@ -15,8 +15,8 @@ function ReviewForm({ handleSubmit }: Props) {
   const [content, setContent] = useState(initialState.content);
   const [rating, setRating] = useState(initialState.rating);
 
-  const validateReviewInput = () => {
-    return !!content && rating !== 0 && content.length <= 1000;
+  const validateReviewInput = (contentInput: string, ratingInput: number) => {
+    return !!contentInput && ratingInput !== 0 && contentInput.length <= 1000;
   };
 
   const resetForm = () => {
@@ -31,7 +31,7 @@ function ReviewForm({ handleSubmit }: Props) {
 
   const submitForm: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    if (!validateReviewInput()) {
+    if (!validateReviewInput(content.trim(), rating)) {
       alert('모든 항목을 작성해주세요');
       throw Error('항목이 누락됨');
     }
