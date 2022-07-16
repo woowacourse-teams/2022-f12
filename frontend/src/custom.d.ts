@@ -17,6 +17,11 @@ declare type Product = {
 
 declare type Review = {
   id: number;
+  product?: {
+    id: number;
+    name: string;
+    imageUrl: string;
+  };
   profileImage: string;
   username: string;
   rating: number;

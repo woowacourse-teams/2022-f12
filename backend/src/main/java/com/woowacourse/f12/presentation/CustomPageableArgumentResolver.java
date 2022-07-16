@@ -13,7 +13,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-public class CustomPageableHandlerMethodArgumentResolver extends PageableHandlerMethodArgumentResolver {
+public class CustomPageableArgumentResolver extends PageableHandlerMethodArgumentResolver {
 
     private static final int MAX_SIZE = 150;
     private static final Pattern NUMBER_PATTERN = Pattern.compile("^[0-9]*$");

@@ -1,6 +1,7 @@
 package com.woowacourse.f12.support;
 
 import com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil;
+import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import io.restassured.response.ExtractableResponse;
@@ -24,22 +25,23 @@ public enum ReviewFixtures {
         this.rating = rating;
     }
 
-    public Review 작성(Long productId) {
-        return 작성(null, productId);
+    public Review 작성(Keyboard keyboard) {
+        return 작성(null, keyboard);
     }
 
-    public Review 작성(Long reviewId, Long productId) {
+    public Review 작성(Long reviewId, Keyboard keyboard) {
         return Review.builder()
                 .id(reviewId)
-                .productId(productId)
+                .keyboard(keyboard)
                 .content(this.content)
                 .rating(this.rating)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
 
-    public ExtractableResponse<Response> 작성_요청을_보낸다(Long productId) {
+    public ExtractableResponse<Response> 작성_요청을_보낸다(Long productId, String token) {
         final ReviewRequest reviewRequest = new ReviewRequest(this.content, this.rating);
-        return RestAssuredRequestUtil.POST_요청을_보낸다("/api/v1/keyboards/" + productId + "/reviews", reviewRequest);
+        return RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다("/api/v1/keyboards/" + productId + "/reviews", token,
+                reviewRequest);
     }
 }

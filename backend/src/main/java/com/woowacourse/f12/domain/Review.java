@@ -8,9 +8,12 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,14 +34,15 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
-
     @Column(name = "content", nullable = false, length = MAXIMUM_CONTENT_LENGTH)
     private String content;
 
     @Column(name = "rating", nullable = false)
     private int rating;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Keyboard keyboard;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -48,14 +52,14 @@ public class Review {
     }
 
     @Builder
-    private Review(final Long id, final Long productId, final String content, final int rating,
+    private Review(final Long id, final String content, final int rating, final Keyboard keyboard,
                    final LocalDateTime createdAt) {
         validateContent(content);
         validateRating(rating);
         this.id = id;
-        this.productId = productId;
         this.content = content;
         this.rating = rating;
+        this.keyboard = keyboard;
         this.createdAt = createdAt;
     }
 
