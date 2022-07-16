@@ -1,12 +1,10 @@
 package com.woowacourse.f12.config;
 
-import com.woowacourse.f12.presentation.AuthArgumentResolver;
-import com.woowacourse.f12.presentation.AuthInterceptor;
-import com.woowacourse.f12.presentation.CustomPageableArgumentResolver;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,17 +14,17 @@ public class WebConfig implements WebMvcConfigurer {
 
     private static final String CORS_ALLOWED_METHODS = "GET,POST,HEAD,PUT,PATCH,DELETE,TRACE,OPTIONS";
 
-    private final AuthInterceptor authInterceptor;
-    private final AuthArgumentResolver authArgumentResolver;
+    private final List<HandlerInterceptor> interceptors;
+    private final List<HandlerMethodArgumentResolver> resolvers;
 
-    public WebConfig(final AuthInterceptor authInterceptor, final AuthArgumentResolver authArgumentResolver) {
-        this.authInterceptor = authInterceptor;
-        this.authArgumentResolver = authArgumentResolver;
+    public WebConfig(List<HandlerInterceptor> interceptors, List<HandlerMethodArgumentResolver> resolvers) {
+        this.interceptors = interceptors;
+        this.resolvers = resolvers;
     }
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor);
+        interceptors.forEach(registry::addInterceptor);
     }
 
     @Override
@@ -38,9 +36,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
-        final CustomPageableArgumentResolver customPageableArgumentResolver = new CustomPageableArgumentResolver();
-        customPageableArgumentResolver.setMaxPageSize(150);
-        resolvers.add(customPageableArgumentResolver);
-        resolvers.add(authArgumentResolver);
+        resolvers.addAll(this.resolvers);
     }
 }
