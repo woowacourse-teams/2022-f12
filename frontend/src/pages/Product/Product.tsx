@@ -9,7 +9,8 @@ import StickyWrapper from '@/components/common/StickyWrapper/StickyWrapper';
 import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
 import { useReducer, useRef } from 'react';
 import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
-import Plus from '@/components/common/FloatingButton/plus.svg';
+import Plus from '@/assets/plus.svg';
+import theme from '@/style/theme';
 
 function Product() {
   const { productId: id } = useParams();
@@ -52,7 +53,7 @@ function Product() {
           <S.Wrapper ref={reviewListRef}>
             {!isSheetOpen && (
               <FloatingButton clickHandler={toggleSheetOpen}>
-                <Plus />
+                <Plus stroke={theme.colors.white} />
               </FloatingButton>
             )}
 

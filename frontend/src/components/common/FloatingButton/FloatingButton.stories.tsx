@@ -1,6 +1,7 @@
 import FloatingButton from './FloatingButton';
 import { ComponentStory } from '@storybook/react';
-import Plus from '@/components/common/FloatingButton/plus.svg';
+import Plus from '@/assets/plus.svg';
+import theme from '@/style/theme';
 
 export default {
   component: FloatingButton,
@@ -17,6 +18,6 @@ export const Default = () => (
       alert('클릭됨');
     }}
   >
-    <Plus />
+    <Plus stroke={theme.colors.white} />
   </Template>
 );

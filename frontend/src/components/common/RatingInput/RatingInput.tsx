@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-import FilledHeart from './heart_filled.svg';
-import EmptyHeart from './heart_empty.svg';
+import Heart from '@/assets/heart.svg';
 
 import * as S from './RatingInput.style';
+import theme from '@/style/theme';
 
 type Props = {
   rating: null | number;
@@ -41,9 +41,12 @@ function RatingInput({ rating = null, setRating }: Props) {
             onMouseLeave={resetHover}
           >
             {ratingIndex > (hoverRating ?? rating) ? (
-              <EmptyHeart />
+              <Heart stroke={theme.colors.primaryDark} />
             ) : (
-              <FilledHeart />
+              <Heart
+                stroke={theme.colors.primaryDark}
+                fill={theme.colors.primary}
+              />
             )}
           </S.EmptyButton>
         );
