@@ -1,5 +1,6 @@
 import BottomSheet from '@/components/common/BottomSheet/BottomSheet';
 import ReviewForm from '@/components/common/ReviewForm/ReviewForm';
+import * as S from '@/components/ReviewBottomSheet/ReviewBottomSheet.style';
 
 type Props = {
   handleClose: () => void;
@@ -17,6 +18,7 @@ function ReviewBottomSheet({ handleClose, handleSubmit }: Props) {
   };
   return (
     <BottomSheet handleClose={handleClose}>
+      <S.Button onClick={handleClose}>닫기</S.Button>
       <ReviewForm handleSubmit={handleCloseWithSubmit} />
     </BottomSheet>
   );

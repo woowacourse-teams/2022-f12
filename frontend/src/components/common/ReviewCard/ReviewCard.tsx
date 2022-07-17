@@ -26,16 +26,16 @@ function ReviewCard({
     <S.Container>
       {product && (
         <S.ProductArea>
-          <S.FlexColumnWrapper>
+          <S.ImageWrapper>
             <S.Image src={product.imageUrl} />
-            <S.Title>{product.name}</S.Title>
-          </S.FlexColumnWrapper>
+          </S.ImageWrapper>
+          <S.Title>{product.name}</S.Title>
         </S.ProductArea>
       )}
-      <S.ReviewArea>
+      <S.ReviewArea isFull={!product}>
         <S.Wrapper>
           <UserNameTag profileImage={profileImage} username={username} />
-          <Rating rating={rating} />
+          <Rating type="정수" rating={rating} />
         </S.Wrapper>
         <S.Content>{content}</S.Content>
       </S.ReviewArea>

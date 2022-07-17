@@ -4,7 +4,7 @@ declare module '*.jpg' {
 }
 
 declare module '*.svg' {
-  const value: React.FC;
+  const value: React.FC<{ fill?: string; stroke?: string }>;
   export = value;
 }
 
@@ -32,6 +32,7 @@ declare type Review = {
   username: string;
   rating: number;
   content: string;
+  createdAt: string;
 };
 
 declare type ReviewInput = {

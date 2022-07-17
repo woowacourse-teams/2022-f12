@@ -5,12 +5,25 @@ export const Container = styled.section`
   flex-direction: column;
   justify-content: flex-end;
 
-  position: sticky;
+  position: fixed;
   bottom: 0;
-  left: 0;
+  right: 3rem;
 
-  width: 100%;
-  height: 100%;
+  width: 50%;
+
+  transform-origin: bottom;
+  animation: slide-up 0.2s ease;
+
+  @keyframes slide-up {
+    0% {
+      transform: translateY(20rem);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0rem);
+      opacity: 1;
+    }
+  }
 `;
 
 export const Backdrop = styled.div`
@@ -22,14 +35,11 @@ export const Backdrop = styled.div`
 
 export const Content = styled.section`
   width: 100%;
-  padding: 10%;
+  padding: 3rem;
 
   position: relative;
   z-index: 2;
 
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
-
-  filter: drop-shadow(0px -10px 30px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.25));
   background-color: ${({ theme }) => theme.colors.white};
 `;

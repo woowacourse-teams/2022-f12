@@ -2,6 +2,7 @@ import { DefaultTheme } from 'styled-components';
 
 const colors = {
   PINK: '#F6BEBE',
+  DARK_PINK: '#EA8686',
   LIGHT_GRAY: '#CFCFCF',
   DARK_GRAY: '#3C3C3C',
   BLACK: '#1A1C1D',
@@ -13,6 +14,7 @@ const theme: DefaultTheme = {
 
   colors: {
     primary: colors.PINK,
+    primaryDark: colors.DARK_PINK,
     secondary: colors.LIGHT_GRAY,
     black: colors.BLACK,
     white: colors.WHITE,
