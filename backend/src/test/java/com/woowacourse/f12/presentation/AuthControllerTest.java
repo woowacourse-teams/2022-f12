@@ -8,16 +8,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woowacourse.f12.application.AuthService;
+import com.woowacourse.f12.application.JwtProvider;
 import com.woowacourse.f12.dto.response.LoginResponse;
 import com.woowacourse.f12.exception.GitHubServerException;
 import com.woowacourse.f12.exception.InvalidGitHubLoginException;
+import com.woowacourse.f12.support.AuthTokenExtractor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(AuthController.class)
+@Import({AuthTokenExtractor.class, JwtProvider.class})
 class AuthControllerTest {
 
     @Autowired

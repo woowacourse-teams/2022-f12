@@ -1,5 +1,9 @@
 package com.woowacourse.f12.application;
 
+import com.woowacourse.f12.support.AuthTokenExtractor;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -12,11 +16,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtProvider {
 
+    private static final String TOKEN_TYPE = "Bearer";
+
+    private final AuthTokenExtractor authTokenExtractor;
     private final Key secretKey;
     private final long validityInMilliseconds;
 
-    public JwtProvider(@Value("${security.jwt.secret-key}") final String secretKey,
+    public JwtProvider(final AuthTokenExtractor authTokenExtractor,
+                       @Value("${security.jwt.secret-key}") final String secretKey,
                        @Value("${security.jwt.expire-length}") final long validityInMilliseconds) {
+        this.authTokenExtractor = authTokenExtractor;
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.validityInMilliseconds = validityInMilliseconds;
     }
@@ -31,5 +40,32 @@ public class JwtProvider {
                 .setExpiration(validity)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public boolean validateToken(final String authorizationHeader) {
+        final String token = authTokenExtractor.extractToken(authorizationHeader, TOKEN_TYPE);
+        try {
+            final Jws<Claims> claims = getClaimsJws(token);
+            return !claims
+                    .getBody()
+                    .getExpiration()
+                    .before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private Jws<Claims> getClaimsJws(final String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token);
+    }
+
+    public String getPayload(final String authorizationHeader) {
+        final String token = authTokenExtractor.extractToken(authorizationHeader, TOKEN_TYPE);
+        return getClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 }

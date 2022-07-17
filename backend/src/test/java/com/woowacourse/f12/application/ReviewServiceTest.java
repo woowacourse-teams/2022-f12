@@ -2,6 +2,7 @@ package com.woowacourse.f12.application;
 
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.verify;
 
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
+import com.woowacourse.f12.domain.MemberRepository;
 import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.domain.ReviewRepository;
 import com.woowacourse.f12.dto.request.ReviewRequest;
@@ -42,6 +44,9 @@ class ReviewServiceTest {
     @Mock
     private KeyboardRepository keyboardRepository;
 
+    @Mock
+    private MemberRepository memberRepository;
+
     @InjectMocks
     private ReviewService reviewService;
 
@@ -53,11 +58,13 @@ class ReviewServiceTest {
         Keyboard keyboard = KEYBOARD_1.생성(productId);
         given(keyboardRepository.findById(productId))
                 .willReturn(Optional.of(keyboard));
+        given(memberRepository.findById(1L))
+                .willReturn(Optional.of(CORINNE.생성(1L)));
         given(reviewRepository.save(reviewRequest.toReview(keyboard)))
                 .willReturn(REVIEW_RATING_5.작성(1L, keyboard));
 
         // when
-        Long reviewId = reviewService.save(productId, reviewRequest);
+        Long reviewId = reviewService.save(productId, reviewRequest, 1L);
 
         // then
         assertAll(
@@ -78,7 +85,7 @@ class ReviewServiceTest {
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.save(1L, reviewRequest))
+                () -> assertThatThrownBy(() -> reviewService.save(1L, reviewRequest, 1L))
                         .isExactlyInstanceOf(KeyboardNotFoundException.class),
                 () -> verify(keyboardRepository).findById(productId),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
