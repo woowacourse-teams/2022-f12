@@ -10,11 +10,18 @@ const initialState = {
   career,
 };
 
+const logoutState = {
+  accessToken: null,
+  jobType: null,
+  career: null,
+};
+
 export const IsLoggedInContext = createContext(!!accessToken);
 export const UserDataContext = createContext(initialState);
 export const SetUserDataContext = createContext<React.Dispatch<
   React.SetStateAction<typeof initialState>
 > | null>(null);
+export const LogOutContext = createContext<() => void | null>(null);
 
 function LoginContextProvider({ children }: PropsWithChildren) {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -29,17 +36,29 @@ function LoginContextProvider({ children }: PropsWithChildren) {
     setUserData(userDataInput);
   };
 
+  const logout = () => {
+    window.sessionStorage.removeItem('accessToken');
+    window.sessionStorage.removeItem('jobType');
+    window.sessionStorage.removeItem('career');
+
+    setUserData(logoutState);
+  };
+
   useEffect(() => {
     if (userData && userData.accessToken && !isLoggedIn) {
       setLoggedIn(true);
+      return;
     }
+    setLoggedIn(false);
   }, [userData]);
 
   return (
     <IsLoggedInContext.Provider value={isLoggedIn}>
       <UserDataContext.Provider value={userData}>
         <SetUserDataContext.Provider value={handleUserDataSet}>
-          {children}
+          <LogOutContext.Provider value={logout}>
+            {children}
+          </LogOutContext.Provider>
         </SetUserDataContext.Provider>
       </UserDataContext.Provider>
     </IsLoggedInContext.Provider>

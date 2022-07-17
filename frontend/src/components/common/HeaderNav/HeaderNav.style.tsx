@@ -55,3 +55,9 @@ export const FlexRightUl = styled(FlexLeftUl)`
 `;
 
 export const LoginButton = styled.a``;
+
+export const LogoutButton = styled.button`
+  background-color: transparent;
+  border: none;
+  font-size: 1rem;
+`;
