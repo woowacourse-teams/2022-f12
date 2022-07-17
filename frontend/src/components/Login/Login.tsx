@@ -1,19 +1,25 @@
-import useLogin from '@/hooks/useLogin';
-// import { useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-
-const params = new URLSearchParams(location.search);
-const code = params.get('code');
-export const authURI = `http://localhost:8080/api/v1/login`;
+import ROUTES from '@/constants/routes';
+import useAuth from '@/hooks/useAuth';
+import { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function Login() {
-  const userData = useLogin(authURI, code);
+  const { login } = useAuth();
+  const { code } = useParams();
 
-  return userData && userData.accessToken ? (
-    <Navigate to={'/'} />
-  ) : (
-    <div>로그인 진행중..</div>
-  );
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    login(code)
+      .catch(() => {
+        alert('로그인에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      })
+      .finally(() => {
+        navigate(ROUTES.HOME);
+      });
+  }, []);
+
+  return <div>로그인 진행중..</div>;
 }
 
 export default Login;

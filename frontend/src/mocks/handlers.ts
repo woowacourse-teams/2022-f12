@@ -1,7 +1,6 @@
 import { rest } from 'msw';
 import { BASE_URL, ENDPOINTS } from '../constants/api';
 import { products, reviews } from '@/mocks/data';
-import { authURI } from '@/components/Login/Login';
 
 // 상품 목록 조회
 const getKeyboards = (req, res, ctx) => {
@@ -86,5 +85,5 @@ export const handlers = [
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
     postReviewByProductId
   ),
-  rest.get(authURI, getToken),
+  rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
 ];

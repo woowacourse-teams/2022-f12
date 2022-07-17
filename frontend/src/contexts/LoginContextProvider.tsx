@@ -1,64 +1,40 @@
+import useSessionStorage from '@/hooks/useSessionStorage';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 
-const accessToken = window.sessionStorage.getItem('accessToken') || null;
-const jobType = window.sessionStorage.getItem('jobType') || null;
-const career = window.sessionStorage.getItem('career') || null;
-
-const initialState = {
-  accessToken,
-  jobType,
-  career,
-};
-
-const logoutState = {
+const initialState: UserData = {
   accessToken: null,
   jobType: null,
   career: null,
 };
 
-export const IsLoggedInContext = createContext(!!accessToken);
+export const IsLoggedInContext = createContext<boolean>(false);
 export const UserDataContext = createContext(initialState);
 export const SetUserDataContext = createContext<React.Dispatch<
-  React.SetStateAction<typeof initialState>
+  React.SetStateAction<UserData>
 > | null>(null);
-export const LogOutContext = createContext<() => void | null>(null);
+export const LogoutContext = createContext<() => void | null>(null);
 
 function LoginContextProvider({ children }: PropsWithChildren) {
+  const [userData, setUserData, removeUserData] =
+    useSessionStorage<UserData>('userData');
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [userData, setUserData] = useState(initialState);
-
-  const handleUserDataSet = (userDataInput: typeof initialState) => {
-    const { accessToken, jobType, career } = userDataInput;
-    window.sessionStorage.setItem('accessToken', accessToken);
-    window.sessionStorage.setItem('jobType', jobType);
-    window.sessionStorage.setItem('career', career);
-
-    setUserData(userDataInput);
-  };
-
-  const logout = () => {
-    window.sessionStorage.removeItem('accessToken');
-    window.sessionStorage.removeItem('jobType');
-    window.sessionStorage.removeItem('career');
-
-    setUserData(logoutState);
-  };
 
   useEffect(() => {
     if (userData && userData.accessToken && !isLoggedIn) {
       setLoggedIn(true);
       return;
     }
+
     setLoggedIn(false);
   }, [userData]);
 
   return (
     <IsLoggedInContext.Provider value={isLoggedIn}>
       <UserDataContext.Provider value={userData}>
-        <SetUserDataContext.Provider value={handleUserDataSet}>
-          <LogOutContext.Provider value={logout}>
+        <SetUserDataContext.Provider value={setUserData}>
+          <LogoutContext.Provider value={removeUserData}>
             {children}
-          </LogOutContext.Provider>
+          </LogoutContext.Provider>
         </SetUserDataContext.Provider>
       </UserDataContext.Provider>
     </IsLoggedInContext.Provider>

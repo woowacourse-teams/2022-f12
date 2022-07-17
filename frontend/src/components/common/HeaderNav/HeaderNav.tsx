@@ -1,13 +1,10 @@
-import {
-  IsLoggedInContext,
-  LogOutContext,
-} from '@/contexts/LoginContextProvider';
-import { useContext } from 'react';
+import { GITHUB_AUTH_URL } from '@/constants/api';
+import useAuth from '@/hooks/useAuth';
+
 import * as S from './HeaderNav.style';
 
 function HeaderNav() {
-  const isLoggedIn = useContext(IsLoggedInContext);
-  const logout = useContext(LogOutContext);
+  const { logout, isLoggedIn } = useAuth();
 
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
@@ -33,11 +30,7 @@ function HeaderNav() {
           {isLoggedIn ? (
             <S.LogoutButton onClick={handleLogout}>로그아웃</S.LogoutButton>
           ) : (
-            <S.LoginButton
-              href={`https://github.com/login/oauth/authorize?client_id=f1e73a9ac502f1b6712a&redirect_uri=http://localhost:3000/login`}
-            >
-              로그인
-            </S.LoginButton>
+            <S.LoginButton href={GITHUB_AUTH_URL}>로그인</S.LoginButton>
           )}
         </S.FlexRightUl>
       </S.Wrapper>
