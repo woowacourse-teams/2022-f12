@@ -1,6 +1,10 @@
 import { rest } from 'msw';
 import { BASE_URL, ENDPOINTS } from '../constants/api';
-import { products, reviews } from '@/mocks/data';
+import {
+  products,
+  reviewsWithOutProduct,
+  reviewsWithProduct,
+} from '@/mocks/data';
 
 // 상품 목록 조회
 const getKeyboards = (req, res, ctx) => {
@@ -37,7 +41,7 @@ const getReviews = (req, res, ctx) => {
 
   const response = {
     hasNext: page < 2,
-    items: reviews.slice(startIndex, endIndex),
+    items: reviewsWithProduct.slice(startIndex, endIndex),
   };
   return res(ctx.status(200), ctx.json(response));
 };
@@ -52,7 +56,7 @@ const getReviewsByProductId = (req, res, ctx) => {
 
   const response = {
     hasNext: page < 2,
-    items: reviews.slice(startIndex, endIndex),
+    items: reviewsWithOutProduct.slice(startIndex, endIndex),
   };
 
   return res(ctx.status(200), ctx.json(response));

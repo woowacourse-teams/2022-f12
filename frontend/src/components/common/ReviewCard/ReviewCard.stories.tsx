@@ -1,7 +1,7 @@
 import ReviewCard from './ReviewCard';
 import { ComponentStory } from '@storybook/react';
 
-import { reviews } from '../../../mocks/data';
+import { reviewsWithProduct } from '../../../mocks/data';
 
 export default {
   component: ReviewCard,
@@ -12,6 +12,6 @@ const Template: ComponentStory<typeof ReviewCard> = (args) => (
   <ReviewCard {...args} />
 );
 
-const defaultArgs = reviews[0];
+const defaultArgs = reviewsWithProduct[0];
 
 export const Default = () => <Template {...defaultArgs} />;
