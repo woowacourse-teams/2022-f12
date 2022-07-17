@@ -39,7 +39,8 @@ export const Item = styled.div<{ step: number }>`
   &:first-child::after {
     ${(props) => {
       if (props.step === 2 || props.step === 3)
-        return `border: 2px solid #f6bebe;`;
+        return `border: 2px solid #f6bebe;
+        transition: ease-in 0.2s;`;
     }};
   }
 
@@ -49,14 +50,18 @@ export const Item = styled.div<{ step: number }>`
 
   &:nth-child(2)::after {
     ${(props) => {
-      if (props.step === 3) return `border: 2px solid #f6bebe;`;
+      if (props.step === 3)
+        return `border: 2px solid #f6bebe;
+      transition: ease-in 0.2s;`;
     }};
   }
 
   &:first-child {
     .step {
       ${(props) => {
-        if (props.step === 1) return `border: 5px solid #f6bebe;`;
+        if (props.step === 1)
+          return `border: 5px solid #f6bebe;
+        transition: ease-in 0.2s;`;
         if (props.step === 2 || props.step === 3)
           return `border: 5px solid #f6bebe;
           background-color: #f6bebe`;
@@ -67,10 +72,13 @@ export const Item = styled.div<{ step: number }>`
   &:nth-child(2) {
     .step {
       ${(props) => {
-        if (props.step === 2) return `border: 5px solid #f6bebe;`;
+        if (props.step === 2)
+          return `border: 5px solid #f6bebe;
+        transition: ease-in 0.2s`;
         if (props.step === 3)
           return `border: 5px solid #f6bebe;
-        background-color: #f6bebe`;
+        background-color: #f6bebe;
+        transition: ease-in 0.2s`;
       }};
     }
   }
@@ -78,7 +86,9 @@ export const Item = styled.div<{ step: number }>`
   &:last-child {
     .step {
       ${(props) => {
-        if (props.step === 3) return `border: 5px solid #f6bebe`;
+        if (props.step === 3)
+          return `border: 5px solid #f6bebe;
+        transition: ease-in 0.2s;`;
       }};
     }
   }

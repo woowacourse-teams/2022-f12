@@ -42,6 +42,7 @@ export const SelectButton = styled.button`
 
   &:focus {
     background-color: #f6bebe;
+    transition: ease-in 0.2s;
     box-shadow: none;
   }
 `;

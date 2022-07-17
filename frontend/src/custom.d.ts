@@ -8,6 +8,12 @@ declare module '*.svg' {
   export = value;
 }
 
+declare type UserData = {
+  jobType: string;
+  career: string;
+  accessToken: string;
+};
+
 declare type Product = {
   id: number;
   name: string;
