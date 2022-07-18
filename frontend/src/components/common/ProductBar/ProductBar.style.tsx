@@ -13,7 +13,8 @@ export const Container = styled.div<{
   barType: 'default' | 'selected' | 'add';
 }>`
   width: 30rem;
-  height: 3rem;
+  min-height: 3rem;
+  height: max-content;
 
   display: flex;
   justify-content: center;
@@ -21,6 +22,7 @@ export const Container = styled.div<{
 
   font-size: 1.25rem;
   font-weight: 600;
+  text-align: left;
 
   border-radius: 0.5rem;
   border: ${({ theme, barType }) => borderByType(theme, barType)};

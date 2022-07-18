@@ -4,26 +4,30 @@ import { useReducer } from 'react';
 import * as S from '@/components/common/ProductSelect/ProductSelect.style';
 
 type Props = {
-  options: Product[];
-  value: Product['id'];
-  setValue: (id: Product['id']) => void;
+  options: InventoryProduct[];
+  value: InventoryProduct;
+  setValue: (value: InventoryProduct) => void;
 };
 
 function ProductSelect({ options, value, setValue }: Props) {
   const [isOpen, setOpen] = useReducer((isOpen: boolean) => !isOpen, false);
-  const currentProduct = options.find(({ id }) => id === value);
+  const currentProduct = options.find(
+    ({ inventoryId }) => inventoryId === value.inventoryId
+  );
 
-  const handleProductSelect = (id: Product['id']) => {
-    setValue(id);
+  const handleProductSelect = (value: InventoryProduct) => {
+    setValue(value);
     setOpen();
   };
 
-  const otherOptions = options.filter(({ id }) => id !== value);
+  const otherOptions = options.filter(
+    ({ inventoryId }) => inventoryId !== value.inventoryId
+  );
 
-  const OptionListItems = otherOptions.map(({ id, name }) => (
-    <S.Option key={id}>
-      <S.PseudoButton onClick={() => handleProductSelect(id)}>
-        <ProductBar name={name} barType="default" />
+  const OptionListItems = otherOptions.map((inventoryProduct) => (
+    <S.Option key={inventoryProduct.id}>
+      <S.PseudoButton onClick={() => handleProductSelect(inventoryProduct)}>
+        <ProductBar name={inventoryProduct.name} barType="default" />
       </S.PseudoButton>
     </S.Option>
   ));

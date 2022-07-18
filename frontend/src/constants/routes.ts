@@ -4,6 +4,7 @@ const ROUTES = {
   PRODUCT: '/product',
   REGISTER: '/register',
   LOGIN: '/login',
+  PROFILE: '/profile',
 } as const;
 
 export default ROUTES;
