@@ -13,6 +13,8 @@ type Props = {
   username: string;
   rating: number;
   content: string;
+  loginUserGithubId: string;
+  handleDeleteReview: () => void;
 };
 
 function ReviewCard({
@@ -21,6 +23,8 @@ function ReviewCard({
   username,
   rating,
   content,
+  loginUserGithubId,
+  handleDeleteReview,
 }: Props) {
   return (
     <S.Container>
@@ -36,10 +40,12 @@ function ReviewCard({
         <S.Wrapper>
           <S.UserWrapper>
             <UserNameTag profileImage={profileImage} username={username} />
-            {!product && (
+            {!product && loginUserGithubId === username && (
               <>
                 <S.EditButton>수정</S.EditButton>
-                <S.DeleteButton>삭제</S.DeleteButton>
+                <S.DeleteButton onClick={handleDeleteReview}>
+                  삭제
+                </S.DeleteButton>
               </>
             )}
           </S.UserWrapper>
