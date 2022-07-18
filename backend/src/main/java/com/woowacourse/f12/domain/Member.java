@@ -28,7 +28,7 @@ public class Member {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url", length = 65535, nullable = false)
     private String imageUrl;
 
     protected Member() {
