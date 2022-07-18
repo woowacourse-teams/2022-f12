@@ -10,13 +10,15 @@ type Props = {
 };
 
 function ReviewListSection({ columns, data, getNextPage }: Props) {
+  console.log(data);
+
   const reviewCardList = data.map(
-    ({ id, product, profileImage, username, rating, content }) => (
+    ({ id, author, product, content, rating }) => (
       <ReviewCard
         key={id}
         product={product}
-        profileImage={profileImage}
-        username={username}
+        profileImage={author.imageUrl}
+        username={author.name}
         rating={rating}
         content={content}
       />
