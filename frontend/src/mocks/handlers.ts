@@ -72,7 +72,7 @@ const getToken = (req, res, ctx) => {
   const response = {
     jobType: null,
     career: null,
-    accessToken: 'ZaSw2312EsaCV',
+    token: 'ZaSw2312EsaCV',
   };
   return res(ctx.status(200), ctx.json(response));
 };
