@@ -34,7 +34,15 @@ function ReviewCard({
       )}
       <S.ReviewArea isFull={!product}>
         <S.Wrapper>
-          <UserNameTag profileImage={profileImage} username={username} />
+          <S.UserWrapper>
+            <UserNameTag profileImage={profileImage} username={username} />
+            {!product && (
+              <>
+                <S.EditButton>수정</S.EditButton>
+                <S.DeleteButton>삭제</S.DeleteButton>
+              </>
+            )}
+          </S.UserWrapper>
           <Rating type="정수" rating={rating} />
         </S.Wrapper>
         <S.Content>{content}</S.Content>
