@@ -2,7 +2,7 @@ import useSessionStorage from '@/hooks/useSessionStorage';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 
 const initialState: UserData = {
-  accessToken: null,
+  token: null,
   jobType: null,
   career: null,
 };
@@ -20,7 +20,7 @@ function LoginContextProvider({ children }: PropsWithChildren) {
   const [isLoggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    if (userData && userData.accessToken && !isLoggedIn) {
+    if (userData && userData.token) {
       setLoggedIn(true);
       return;
     }

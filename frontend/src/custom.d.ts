@@ -9,9 +9,9 @@ declare module '*.svg' {
 }
 
 declare type UserData = {
+  token: string;
   jobType: string;
   career: string;
-  accessToken: string;
 };
 
 declare type Product = {
