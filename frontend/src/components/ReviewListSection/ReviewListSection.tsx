@@ -10,8 +10,6 @@ type Props = {
 };
 
 function ReviewListSection({ columns, data, getNextPage }: Props) {
-  console.log(data);
-
   const reviewCardList = data.map(
     ({ id, author, product, content, rating }) => (
       <ReviewCard
