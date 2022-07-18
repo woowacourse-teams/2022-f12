@@ -33,8 +33,8 @@ public class InventoryProduct {
     protected InventoryProduct() {
     }
 
-    public void updateIsSelected() {
-        this.isSelected = !this.isSelected;
+    public void updateIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
     @Builder
