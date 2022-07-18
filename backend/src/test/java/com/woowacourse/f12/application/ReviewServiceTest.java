@@ -20,7 +20,9 @@ import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.domain.ReviewRepository;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.ReviewResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -101,9 +103,8 @@ class ReviewServiceTest {
         Keyboard keyboard = KEYBOARD_1.생성();
         Member member = CORINNE.생성(1L);
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
-        Slice<Review> slice = new SliceImpl<>(List.of(
-                REVIEW_RATING_5.작성(1L, keyboard, member)
-        ), pageable, true);
+        Review review = REVIEW_RATING_5.작성(1L, keyboard, member);
+        Slice<Review> slice = new SliceImpl<>(List.of(review), pageable, true);
 
         given(keyboardRepository.existsById(productId))
                 .willReturn(true);
@@ -116,8 +117,8 @@ class ReviewServiceTest {
         // then
         assertAll(
                 () -> assertThat(reviewPageResponse.getItems()).hasSize(1)
-                        .extracting("id")
-                        .containsExactly(1L),
+                        .usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(ReviewResponse.from(review)),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
                 () -> verify(keyboardRepository).existsById(productId),
                 () -> verify(reviewRepository).findPageByProductId(productId, pageable)
@@ -144,10 +145,9 @@ class ReviewServiceTest {
         // given
         Pageable pageable = PageRequest.of(0, 2, Sort.by(Order.desc("createdAt")));
         Member member = CORINNE.생성(1L);
-        Slice<Review> slice = new SliceImpl<>(List.of(
-                REVIEW_RATING_5.작성(3L, KEYBOARD_1.생성(), member),
-                REVIEW_RATING_5.작성(2L, KEYBOARD_2.생성(), member)
-        ), pageable, true);
+        Review review1 = REVIEW_RATING_5.작성(3L, KEYBOARD_1.생성(), member);
+        Review review2 = REVIEW_RATING_5.작성(2L, KEYBOARD_2.생성(), member);
+        Slice<Review> slice = new SliceImpl<>(List.of(review1, review2), pageable, true);
 
         given(reviewRepository.findPageBy(pageable))
                 .willReturn(slice);
@@ -158,8 +158,8 @@ class ReviewServiceTest {
         // then
         assertAll(
                 () -> assertThat(reviewWithProductPageResponse.getItems()).hasSize(2)
-                        .extracting("id")
-                        .containsExactly(3L, 2L),
+                        .usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(ReviewWithProductResponse.from(review1), ReviewWithProductResponse.from(review2)),
                 () -> assertThat(reviewWithProductPageResponse.isHasNext()).isTrue(),
                 () -> verify(reviewRepository).findPageBy(pageable)
         );
