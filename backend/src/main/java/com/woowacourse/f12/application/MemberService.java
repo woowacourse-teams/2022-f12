@@ -27,10 +27,10 @@ public class MemberService {
     public void updateProfileProducts(final Long memberId, final ProfileProductRequest profileProductRequest) {
         validateMember(memberId);
         if (!Objects.isNull(profileProductRequest.getSelectedInventoryProductId())) {
-            updateProfileProduct(profileProductRequest.getSelectedInventoryProductId());
+            updateProfileProduct(profileProductRequest.getSelectedInventoryProductId(), true);
         }
         if (!Objects.isNull(profileProductRequest.getUnselectedInventoryProductId())) {
-            updateProfileProduct(profileProductRequest.getUnselectedInventoryProductId());
+            updateProfileProduct(profileProductRequest.getUnselectedInventoryProductId(), false);
         }
     }
 
@@ -39,9 +39,9 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    private void updateProfileProduct(final Long inventoryItemId) {
+    private void updateProfileProduct(final Long inventoryItemId, final boolean isSelected) {
         final InventoryProduct inventoryProduct = inventoryProductRepository.findById(inventoryItemId)
                 .orElseThrow(InventoryItemNotFoundException::new);
-        inventoryProduct.updateIsSelected();
+        inventoryProduct.updateIsSelected(isSelected);
     }
 }
