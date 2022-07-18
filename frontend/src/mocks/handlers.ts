@@ -5,6 +5,7 @@ import {
   reviewsWithOutProduct,
   reviewsWithProduct,
 } from '@/mocks/data';
+import sampleProfile from '@/mocks/sample_profile.jpg';
 
 // 상품 목록 조회
 const getKeyboards = (req, res, ctx) => {
@@ -80,9 +81,13 @@ const deleteReviewByReviewId = (req, res, ctx) => {
 // 로그인
 const getToken = (req, res, ctx) => {
   const response = {
-    jobType: null,
-    career: null,
-    token: 'ZaSw2312EsaCV',
+    member: {
+      id: 1,
+      githubId: '사용자2',
+      imageUrl: sampleProfile,
+      name: 'F12개발자',
+    },
+    token: 'iJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjU4MTQ4Mzg1LCJleHAiOjE2NTgxNTE',
   };
   return res(ctx.status(200), ctx.json(response));
 };

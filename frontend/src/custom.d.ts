@@ -9,9 +9,13 @@ declare module '*.svg' {
 }
 
 declare type UserData = {
+  member: {
+    id: number;
+    githubId: string;
+    imageUrl: string;
+    name: string;
+  };
   token: string;
-  jobType: string;
-  career: string;
 };
 
 declare type Product = {
