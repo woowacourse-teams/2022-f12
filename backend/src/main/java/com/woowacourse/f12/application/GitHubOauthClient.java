@@ -33,15 +33,15 @@ public class GitHubOauthClient {
 
     public String getAccessToken(final String code) {
         final GitHubTokenRequest gitHubTokenRequest = new GitHubTokenRequest(clientId, secret, code);
-        final GitHubTokenResponse gitHubTokenResponse = requestGitHubAccessToken(gitHubTokenRequest);
-        return gitHubTokenResponse.getAccessToken();
-    }
-
-    private GitHubTokenResponse requestGitHubAccessToken(final GitHubTokenRequest gitHubTokenRequest) {
         final WebClient webClient = WebClient.builder()
                 .baseUrl(accessTokenUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
+        return requestAccessToken(gitHubTokenRequest, webClient).getAccessToken();
+    }
+
+    private GitHubTokenResponse requestAccessToken(final GitHubTokenRequest gitHubTokenRequest,
+                                                   final WebClient webClient) {
         return webClient.post()
                 .body(Mono.just(gitHubTokenRequest), GitHubTokenRequest.class)
                 .retrieve()
@@ -61,6 +61,10 @@ public class GitHubOauthClient {
                 .baseUrl(profileUrl)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "token " + accessToken)
                 .build();
+        return requestProfile(webClient);
+    }
+
+    private GitHubProfileResponse requestProfile(final WebClient webClient) {
         return webClient.get()
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientResponse -> {
