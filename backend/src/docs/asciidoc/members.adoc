@@ -1,0 +1,6 @@
+[[Member]]
+== Member API
+
+=== Member 대표 장비 업데이트
+
+operation::member-inventoryProduct-update[snippets='http-request,http-response']
