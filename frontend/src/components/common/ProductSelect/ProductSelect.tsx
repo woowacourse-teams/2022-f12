@@ -23,7 +23,7 @@ function ProductSelect({ options, value, setValue }: Props) {
   const OptionListItems = otherOptions.map(({ id, name }) => (
     <S.Option key={id}>
       <S.PseudoButton onClick={() => handleProductSelect(id)}>
-        <ProductBar name={name} isSelected={false} />
+        <ProductBar name={name} barType="default" />
       </S.PseudoButton>
     </S.Option>
   ));
@@ -31,7 +31,7 @@ function ProductSelect({ options, value, setValue }: Props) {
   return (
     <S.Container>
       <S.PseudoButton onClick={setOpen}>
-        <ProductBar name={currentProduct.name} isSelected={true} />
+        <ProductBar name={currentProduct.name} barType="selected" />
       </S.PseudoButton>
       {isOpen && <S.OptionsList>{OptionListItems}</S.OptionsList>}
     </S.Container>
