@@ -37,8 +37,7 @@ public class ReviewService {
                 .orElseThrow(KeyboardNotFoundException::new);
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
-
-        final Review review = reviewRequest.toReview(keyboard);
+        final Review review = reviewRequest.toReview(keyboard, member);
         return reviewRepository.save(review)
                 .getId();
     }
