@@ -2,6 +2,7 @@ package com.woowacourse.f12.domain;
 
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,13 +29,17 @@ class ReviewRepositoryTest {
     @Autowired
     private KeyboardRepository keyboardRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @Test
     void 특정_제품의_리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
         Keyboard keyboard = keyboardRepository.save(KEYBOARD_1.생성());
+        Member member = memberRepository.save(CORINNE.생성(1L));
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard));
-        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard, member));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard, member));
 
         // when
         Slice<Review> page = reviewRepository.findPageByProductId(keyboard.getId(), pageable);
@@ -52,9 +57,10 @@ class ReviewRepositoryTest {
     void 특정_제품의_리뷰_목록을_평점순으로_페이징하여_조회한다() {
         // given
         Keyboard keyboard = keyboardRepository.save(KEYBOARD_1.생성());
+        Member member = memberRepository.save(CORINNE.생성(1L));
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("rating")));
-        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard));
-        리뷰_저장(REVIEW_RATING_4.작성(keyboard));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard, member));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard, member));
 
         // when
         Slice<Review> page = reviewRepository.findPageByProductId(keyboard.getId(), pageable);
@@ -73,9 +79,10 @@ class ReviewRepositoryTest {
         // given
         Keyboard keyboard1 = keyboardRepository.save(KEYBOARD_1.생성());
         Keyboard keyboard2 = keyboardRepository.save(KEYBOARD_2.생성());
+        Member member = memberRepository.save(CORINNE.생성(1L));
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard1));
-        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard2));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1, member));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard2, member));
 
         // when
         Slice<Review> page = reviewRepository.findPageBy(pageable);

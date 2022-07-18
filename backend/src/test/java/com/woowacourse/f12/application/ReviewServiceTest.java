@@ -14,6 +14,7 @@ import static org.mockito.Mockito.verify;
 
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
+import com.woowacourse.f12.domain.Member;
 import com.woowacourse.f12.domain.MemberRepository;
 import com.woowacourse.f12.domain.Review;
 import com.woowacourse.f12.domain.ReviewRepository;
@@ -56,12 +57,13 @@ class ReviewServiceTest {
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
         Long productId = 1L;
         Keyboard keyboard = KEYBOARD_1.생성(productId);
+        Member member = CORINNE.생성(1L);
         given(keyboardRepository.findById(productId))
                 .willReturn(Optional.of(keyboard));
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(CORINNE.생성(1L)));
         given(reviewRepository.save(reviewRequest.toReview(keyboard)))
-                .willReturn(REVIEW_RATING_5.작성(1L, keyboard));
+                .willReturn(REVIEW_RATING_5.작성(1L, keyboard, member));
 
         // when
         Long reviewId = reviewService.save(productId, reviewRequest, 1L);
@@ -97,9 +99,10 @@ class ReviewServiceTest {
         // given
         Long productId = 1L;
         Keyboard keyboard = KEYBOARD_1.생성();
+        Member member = CORINNE.생성(1L);
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
         Slice<Review> slice = new SliceImpl<>(List.of(
-                REVIEW_RATING_5.작성(1L, keyboard)
+                REVIEW_RATING_5.작성(1L, keyboard, member)
         ), pageable, true);
 
         given(keyboardRepository.existsById(productId))
@@ -140,9 +143,10 @@ class ReviewServiceTest {
     void 전체_리뷰_목록을_조회한다() {
         // given
         Pageable pageable = PageRequest.of(0, 2, Sort.by(Order.desc("createdAt")));
+        Member member = CORINNE.생성(1L);
         Slice<Review> slice = new SliceImpl<>(List.of(
-                REVIEW_RATING_5.작성(3L, KEYBOARD_1.생성()),
-                REVIEW_RATING_5.작성(2L, KEYBOARD_2.생성())
+                REVIEW_RATING_5.작성(3L, KEYBOARD_1.생성(), member),
+                REVIEW_RATING_5.작성(2L, KEYBOARD_2.생성(), member)
         ), pageable, true);
 
         given(reviewRepository.findPageBy(pageable))

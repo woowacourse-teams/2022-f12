@@ -1,6 +1,7 @@
 package com.woowacourse.f12.presentation;
 
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -266,7 +267,7 @@ class ReviewControllerTest {
         // given
         given(reviewService.findPage(any(Pageable.class)))
                 .willReturn(ReviewWithProductPageResponse.from(
-                        new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성())))));
+                        new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(1L))))));
 
         // when
         mockMvc.perform(get("/api/v1/reviews?size=150&page=0&sort=rating,desc"))
@@ -281,7 +282,7 @@ class ReviewControllerTest {
     void 특정_상품의_리뷰_페이지_조회() throws Exception {
         // given
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
-                .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성())))));
+                .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(1L))))));
 
         // when
         mockMvc.perform(get("/api/v1/keyboards/" + PRODUCT_ID + "/reviews?size=150&page=0&sort=rating,desc"))

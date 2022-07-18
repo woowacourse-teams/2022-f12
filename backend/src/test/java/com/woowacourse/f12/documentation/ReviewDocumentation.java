@@ -2,6 +2,7 @@ package com.woowacourse.f12.documentation;
 
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.mockito.ArgumentMatchers.any;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.JwtProvider;
 import com.woowacourse.f12.application.ReviewService;
 import com.woowacourse.f12.domain.Keyboard;
+import com.woowacourse.f12.domain.Member;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
@@ -82,8 +84,9 @@ public class ReviewDocumentation extends Documentation {
         // given
         PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
         Keyboard keyboard = KEYBOARD_1.생성(1L);
+        Member member = CORINNE.생성(1L);
         ReviewPageResponse reviewPageResponse = ReviewPageResponse.from(
-                new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, keyboard), REVIEW_RATING_4.작성(2L, keyboard)), pageable, false));
+                new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, keyboard, member), REVIEW_RATING_4.작성(2L, keyboard, member)), pageable, false));
 
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
                 .willReturn(reviewPageResponse);
@@ -108,8 +111,9 @@ public class ReviewDocumentation extends Documentation {
         PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
         Keyboard keyboard1 = KEYBOARD_1.생성(1L);
         Keyboard keyboard2 = KEYBOARD_2.생성(2L);
+        Member member = CORINNE.생성(1L);
         ReviewWithProductPageResponse reviewWithProductPageResponse = ReviewWithProductPageResponse.from(
-                new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, keyboard1), REVIEW_RATING_4.작성(2L, keyboard2)), pageable, false));
+                new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, keyboard1, member), REVIEW_RATING_4.작성(2L, keyboard2, member)), pageable, false));
 
         given(reviewService.findPage(any(Pageable.class)))
                 .willReturn(reviewWithProductPageResponse);
