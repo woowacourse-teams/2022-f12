@@ -9,24 +9,31 @@ const borderByType = (
   if (type === 'add') return `3px dashed ${theme.colors.primary}`;
 };
 
-export const Container = styled.div<{
+export const Container = styled.p<{
   barType: 'default' | 'selected' | 'add';
 }>`
-  width: 30rem;
-  min-height: 3rem;
-  height: max-content;
+  width: 36rem;
+  height: 3rem;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  font-size: 1.25rem;
-  font-weight: 600;
-  text-align: left;
-
   border-radius: 0.5rem;
   border: ${({ theme, barType }) => borderByType(theme, barType)};
   background-color: ${({ theme }) => theme.colors.white};
+`;
+
+export const Name = styled.p`
+  width: 34rem;
+
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const AddContainer = styled(Container)`

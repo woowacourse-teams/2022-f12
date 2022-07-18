@@ -13,7 +13,7 @@ type Props = {
 function ProductBar({ name, barType, handleClick }: Props) {
   return (
     <S.Container barType={barType} onClick={handleClick}>
-      {name}
+      <S.Name>{name}</S.Name>
     </S.Container>
   );
 }
