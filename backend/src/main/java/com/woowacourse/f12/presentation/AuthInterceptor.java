@@ -33,7 +33,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
-        Auth auth = handlerMethod.getMethodAnnotation(Auth.class);
+        LoginRequired auth = handlerMethod.getMethodAnnotation(LoginRequired.class);
         return Objects.isNull(auth);
     }
 
