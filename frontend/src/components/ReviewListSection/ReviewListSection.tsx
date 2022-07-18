@@ -16,7 +16,7 @@ function ReviewListSection({ columns, data, getNextPage }: Props) {
         key={id}
         product={product}
         profileImage={author.imageUrl}
-        username={author.name}
+        username={author.githubId}
         rating={rating}
         content={content}
       />

@@ -25,7 +25,7 @@ declare type Review = {
   id: number;
   author: {
     id: number;
-    name: string;
+    githubId: string;
     imageUrl: string;
   };
   product?: {
