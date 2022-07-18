@@ -43,6 +43,7 @@ public class GitHubOauthClient {
     private GitHubTokenResponse requestAccessToken(final GitHubTokenRequest gitHubTokenRequest,
                                                    final WebClient webClient) {
         return webClient.post()
+                .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(gitHubTokenRequest), GitHubTokenRequest.class)
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientResponse -> {
