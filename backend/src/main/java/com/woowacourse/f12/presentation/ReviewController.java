@@ -26,7 +26,7 @@ public class ReviewController {
     }
 
     @PostMapping("/keyboards/{productId}/reviews")
-    @Auth
+    @LoginRequired
     public ResponseEntity<Void> create(@PathVariable final Long productId,
                                        @Valid @RequestBody final ReviewRequest reviewRequest,
                                        @AuthPrincipal final Long memberId) {
