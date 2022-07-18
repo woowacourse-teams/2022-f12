@@ -20,20 +20,27 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
-            throws Exception {
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
+        if (isNotTarget(handler)) {
+            return true;
+        }
+        validateAuthorization(request);
+        return true;
+    }
+
+    private boolean isNotTarget(final Object handler) {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Auth auth = handlerMethod.getMethodAnnotation(Auth.class);
-        if (Objects.isNull(auth)) {
-            return true;
-        }
+        return Objects.isNull(auth);
+    }
+
+    private void validateAuthorization(final HttpServletRequest request) {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (!jwtProvider.validateToken(authorizationHeader)) {
             throw new UnauthorizedException();
         }
-        return true;
     }
 }
