@@ -1,7 +1,7 @@
 package com.woowacourse.f12.presentation;
 
 import com.woowacourse.f12.application.JwtProvider;
-import com.woowacourse.f12.exception.UnAuthorizedException;
+import com.woowacourse.f12.exception.UnauthorizedException;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +32,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (!jwtProvider.validateToken(authorizationHeader)) {
-            throw new UnAuthorizedException();
+            throw new UnauthorizedException();
         }
         return true;
     }
