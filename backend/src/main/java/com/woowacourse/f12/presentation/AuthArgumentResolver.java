@@ -21,13 +21,12 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthPrincipal.class);
+        return parameter.hasParameterAnnotation(VerifiedMember.class);
     }
 
     @Override
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
-                                  final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory)
-            throws Exception {
+                                  final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         final String authorizationHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
         final String payload = jwtProvider.getPayload(authorizationHeader);
         try {
