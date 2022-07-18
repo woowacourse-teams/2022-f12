@@ -67,6 +67,16 @@ const postReviewByProductId = (req, res, ctx) => {
   return res(ctx.status(201));
 };
 
+// 리뷰 수정 기능
+const updateReviewByReviewId = (req, res, ctx) => {
+  return res(ctx.status(204));
+};
+
+// 리뷰 삭제
+const deleteReviewByReviewId = (req, res, ctx) => {
+  return res(ctx.status(204));
+};
+
 // 로그인
 const getToken = (req, res, ctx) => {
   const response = {
@@ -88,6 +98,14 @@ export const handlers = [
   rest.post(
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
     postReviewByProductId
+  ),
+  rest.post(
+    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
+    updateReviewByReviewId
+  ),
+  rest.delete(
+    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
+    deleteReviewByReviewId
   ),
   rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
 ];
