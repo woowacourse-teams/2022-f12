@@ -62,7 +62,7 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(keyboard));
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(CORINNE.생성(1L)));
-        given(reviewRepository.save(reviewRequest.toReview(keyboard)))
+        given(reviewRepository.save(reviewRequest.toReview(keyboard, member)))
                 .willReturn(REVIEW_RATING_5.작성(1L, keyboard, member));
 
         // when
