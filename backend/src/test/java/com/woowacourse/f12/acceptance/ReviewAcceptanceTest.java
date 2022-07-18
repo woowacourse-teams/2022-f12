@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
+import com.woowacourse.f12.dto.response.LoginResponse;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import io.restassured.response.ExtractableResponse;
@@ -27,9 +28,12 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void 키보드가_저장되어있고_키보드에_대한_리뷰를_작성한다() {
         // given
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        String token = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas")
+                .as(LoginResponse.class)
+                .getToken();
 
         // when
-        ExtractableResponse<Response> response = REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId());
+        ExtractableResponse<Response> response = REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
 
         // then
         assertAll(
@@ -42,8 +46,11 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void 특정_제품_리뷰_목록을_최신순으로_조회한다() {
         // given
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId());
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId()));
+        String token = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas")
+                .as(LoginResponse.class)
+                .getToken();
+        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token));
 
         // when
         String url = "/api/v1/keyboards/" + keyboard.getId() + "/reviews?size=1&page=0&sort=createdAt,desc";
@@ -64,8 +71,11 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void 특정_제품_리뷰_목록을_평점순으로_조회한다() {
         // given
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
-        REVIEW_RATING_4.작성_요청을_보낸다(keyboard.getId());
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId()));
+        String token = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas")
+                .as(LoginResponse.class)
+                .getToken();
+        REVIEW_RATING_4.작성_요청을_보낸다(keyboard.getId(), token);
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token));
 
         // when
         String url = "/api/v1/keyboards/" + keyboard.getId() + "/reviews?size=1&page=0&sort=rating,desc";
@@ -87,8 +97,11 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         // given
         Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성());
         Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성());
-        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(keyboard1.getId()));
-        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(keyboard2.getId()));
+        String token = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas")
+                .as(LoginResponse.class)
+                .getToken();
+        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(keyboard1.getId(), token));
+        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(keyboard2.getId(), token));
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(

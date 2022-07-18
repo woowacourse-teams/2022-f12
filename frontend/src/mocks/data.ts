@@ -1,4 +1,5 @@
 import sampleProfile from '@/mocks/sample_profile.jpg';
+import sampleKeyboard from '@/mocks/sample_keyboard.jpg';
 
 export const products = [
   {

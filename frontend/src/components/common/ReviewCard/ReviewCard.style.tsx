@@ -41,6 +41,26 @@ export const ReviewArea = styled.div<{ isFull: boolean }>`
   width: ${({ isFull }) => (isFull ? '100%' : '60%')};
 `;
 
+export const ProductArea = styled.div`
+  display: flex;
+`;
+
+export const Image = styled.img`
+  width: 250px;
+`;
+
+export const Title = styled.div``;
+
+export const ReviewArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+export const FlexColumnWrapper = styled(ReviewArea)`
+  gap: 1rem;
+`;
+
 export const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;

@@ -67,8 +67,15 @@ const postReviewByProductId = (req, res, ctx) => {
   return res(ctx.status(201));
 };
 
-BASE_URL;
-ENDPOINTS;
+// 로그인
+const getToken = (req, res, ctx) => {
+  const response = {
+    jobType: null,
+    career: null,
+    accessToken: 'ZaSw2312EsaCV',
+  };
+  return res(ctx.status(200), ctx.json(response));
+};
 
 export const handlers = [
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
@@ -82,4 +89,5 @@ export const handlers = [
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
     postReviewByProductId
   ),
+  rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
 ];
