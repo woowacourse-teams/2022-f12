@@ -23,15 +23,19 @@ declare type Product = {
 
 declare type Review = {
   id: number;
+  author: {
+    id: number;
+    name: string;
+    imageUrl: string;
+  };
   product?: {
     id: number;
     name: string;
     imageUrl: string;
   };
-  profileImage: string;
-  username: string;
-  rating: number;
+  productId?: number;
   content: string;
+  rating: number;
   createdAt: string;
 };
 

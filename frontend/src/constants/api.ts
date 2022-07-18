@@ -9,5 +9,7 @@ export const ENDPOINTS = {
   PRODUCT: (id: number | ':id') => `/keyboards/${id}`,
   REVIEWS: '/reviews',
   REVIEWS_BY_PRODUCT_ID: (id: number | ':id') => `/keyboards/${id}/reviews`,
+  REVIEWS_BY_REVIEW_ID: (id: number | ':id') =>
+    `/keyboards/${id}/reviews/${id}`,
   LOGIN: '/login',
 } as const;
