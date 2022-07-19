@@ -4,6 +4,9 @@ import * as S from './ReviewForm.style';
 
 type Props = {
   handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
+  isEdit: boolean;
+  rating?: number;
+  content?: string;
 };
 
 const initialState = {
@@ -11,9 +14,18 @@ const initialState = {
   rating: 0,
 };
 
-function ReviewForm({ handleSubmit }: Props) {
-  const [content, setContent] = useState(initialState.content);
-  const [rating, setRating] = useState(initialState.rating);
+function ReviewForm({
+  handleSubmit,
+  isEdit,
+  rating: savedRating,
+  content: savedContent,
+}: Props) {
+  const [content, setContent] = useState(
+    savedContent ? savedContent : initialState.content
+  );
+  const [rating, setRating] = useState(
+    savedRating ? savedRating : initialState.rating
+  );
   const [isFormInvalid, setInvalid] = useState(false);
 
   const validateReviewInput = (contentInput: string, ratingInput: number) => {
@@ -55,7 +67,7 @@ function ReviewForm({ handleSubmit }: Props) {
 
   return (
     <S.Container>
-      <S.Title>리뷰 작성하기</S.Title>
+      <S.Title>{isEdit ? '리뷰 수정하기' : '리뷰 작성하기'}</S.Title>
       <S.Form onSubmit={submitForm} onChange={handleFormChange}>
         <S.Label isInvalid={isFormInvalid && isRatingEmpty}>
           <p>평점을 입력해주세요</p>
@@ -69,7 +81,7 @@ function ReviewForm({ handleSubmit }: Props) {
           <S.Textarea value={content} onChange={handleContentChange} required />
         </S.Label>
         <S.Footer>
-          <S.SubmitButton>리뷰 추가</S.SubmitButton>
+          <S.SubmitButton>{isEdit ? '리뷰 수정' : '리뷰 추가'}</S.SubmitButton>
           {isFormInvalid && (
             <S.ErrorMessage>모든 항목을 입력해주세요</S.ErrorMessage>
           )}

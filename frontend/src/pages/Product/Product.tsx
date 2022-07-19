@@ -19,11 +19,17 @@ function Product() {
   const productId = Number(id);
 
   const product = useProduct({ productId: Number(productId) });
-  const [reviews, getNextPage, refetchReview, postReview, deleteReview] =
-    useReviews({
-      size: 6,
-      productId,
-    });
+  const [
+    reviews,
+    getNextPage,
+    refetchReview,
+    postReview,
+    deleteReview,
+    editReview,
+  ] = useReviews({
+    size: 6,
+    productId,
+  });
 
   const [isSheetOpen, toggleSheetOpen] = useReducer(
     (isSheetOpen: boolean) => !isSheetOpen,
@@ -40,6 +46,16 @@ function Product() {
       top: reviewListRef.current && Number(topOfElement.offsetTop),
       behavior: 'smooth',
     });
+  };
+
+  const handleReviewEdit = (reviewInput: ReviewInput, id: number) => {
+    editReview(reviewInput, id)
+      .then(() => {
+        refetchReview();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleReviewDeletion = (id: number) => {
@@ -69,17 +85,18 @@ function Product() {
                 <Plus stroke={theme.colors.white} />
               </FloatingButton>
             )}
-
             <ReviewListSection
               columns={1}
               data={reviews}
               getNextPage={getNextPage}
               handleDelete={handleReviewDeletion}
+              handleEdit={handleReviewEdit}
             />
             {isSheetOpen && (
               <ReviewBottomSheet
                 handleClose={toggleSheetOpen}
                 handleSubmit={handleReviewSubmit}
+                isEdit={false}
               />
             )}
           </S.Wrapper>
