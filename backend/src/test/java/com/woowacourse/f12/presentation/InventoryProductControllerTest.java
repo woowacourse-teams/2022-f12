@@ -19,6 +19,7 @@ import com.woowacourse.f12.application.JwtProvider;
 import com.woowacourse.f12.domain.InventoryProduct;
 import com.woowacourse.f12.dto.request.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.InventoryProductsResponse;
+import com.woowacourse.f12.exception.InvalidProfileProductException;
 import com.woowacourse.f12.exception.InventoryItemNotFoundException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -92,6 +93,36 @@ class InventoryProductControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class))
+        );
+    }
+
+    @Test
+    void 대표_장비_등록_실패_요청된_장비가_모두_null인_경우() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        ProfileProductRequest profileProductRequest = new ProfileProductRequest(null, null);
+        willThrow(new InvalidProfileProductException()).given(inventoryProductService)
+                .updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
+
+        // when
+        mockMvc.perform(
+                        patch("/api/v1/members/inventoryProducts")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .content(objectMapper.writeValueAsString(profileProductRequest))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andExpect(status().isBadRequest())
                 .andDo(print());
 
         // then
