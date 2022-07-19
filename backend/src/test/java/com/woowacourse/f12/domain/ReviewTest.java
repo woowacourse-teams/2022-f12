@@ -2,6 +2,7 @@ package com.woowacourse.f12.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.exception.BlankContentException;
 import com.woowacourse.f12.exception.InvalidContentLengthException;
@@ -99,5 +100,31 @@ class ReviewTest {
 
         // then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 리뷰를_수정한다() {
+        // given
+        Review review = Review.builder()
+                .id(1L)
+                .content("내용")
+                .rating(5)
+                .build();
+        Review updateReview = Review.builder()
+                .id(2L)
+                .content("수정한 내용")
+                .rating(4)
+                .build();
+
+        // when
+        review.update(updateReview);
+
+        // then
+        assertAll(
+                () -> assertThat(review.getId()).isEqualTo(1L),
+                () -> assertThat(review).usingRecursiveComparison()
+                        .ignoringFields("id")
+                        .isEqualTo(updateReview)
+        );
     }
 }
