@@ -15,17 +15,19 @@ type Props = {
   rating: number;
   content: string;
   loginUserGithubId: string;
-  handleDeleteReview: () => void;
+  reviewId: number;
+  handleDelete?: (id: number) => void;
 };
 
 function ReviewCard({
   profileImage,
+  reviewId,
   product,
   username,
   rating,
   content,
   loginUserGithubId,
-  handleDeleteReview,
+  handleDelete,
 }: Props) {
   const { isLoggedIn } = useAuth();
 
@@ -46,7 +48,11 @@ function ReviewCard({
             {!product && loginUserGithubId === username && isLoggedIn && (
               <>
                 <S.EditButton>수정</S.EditButton>
-                <S.DeleteButton onClick={handleDeleteReview}>
+                <S.DeleteButton
+                  onClick={() => {
+                    handleDelete(reviewId);
+                  }}
+                >
                   삭제
                 </S.DeleteButton>
               </>

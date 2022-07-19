@@ -8,13 +8,15 @@ type Props = {
   columns: number;
   data: Review[];
   getNextPage: () => void;
+  handleDelete?: (id: number) => void;
 };
 
-const handleDeleteReview = () => {
-  console.log('삭제됨');
-};
-
-function ReviewListSection({ columns, data: reviewData, getNextPage }: Props) {
+function ReviewListSection({
+  columns,
+  data: reviewData,
+  getNextPage,
+  handleDelete,
+}: Props) {
   const [data] = useSessionStorage<UserData>('userData');
   const loginUserGithubId = data?.member.githubId;
 
@@ -22,13 +24,14 @@ function ReviewListSection({ columns, data: reviewData, getNextPage }: Props) {
     ({ id, author, product, content, rating }) => (
       <ReviewCard
         key={id}
+        reviewId={id}
         product={product}
         profileImage={author.imageUrl}
         username={author.githubId}
         rating={rating}
         content={content}
         loginUserGithubId={loginUserGithubId}
-        handleDeleteReview={handleDeleteReview}
+        handleDelete={handleDelete}
       />
     )
   );
