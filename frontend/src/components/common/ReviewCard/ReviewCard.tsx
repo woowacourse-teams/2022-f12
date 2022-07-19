@@ -1,5 +1,6 @@
 import Rating from '../Rating/Rating';
 import UserNameTag from '../UserNameTag/UserNameTag';
+import useAuth from '@/hooks/useAuth';
 
 import * as S from './ReviewCard.style';
 
@@ -13,15 +14,23 @@ type Props = {
   username: string;
   rating: number;
   content: string;
+  loginUserGithubId: string;
+  reviewId: number;
+  handleDelete?: (id: number) => void;
 };
 
 function ReviewCard({
   profileImage,
+  reviewId,
   product,
   username,
   rating,
   content,
+  loginUserGithubId,
+  handleDelete,
 }: Props) {
+  const { isLoggedIn } = useAuth();
+
   return (
     <S.Container>
       {product && (
@@ -34,7 +43,21 @@ function ReviewCard({
       )}
       <S.ReviewArea isFull={!product}>
         <S.Wrapper>
-          <UserNameTag profileImage={profileImage} username={username} />
+          <S.UserWrapper>
+            <UserNameTag profileImage={profileImage} username={username} />
+            {!product && loginUserGithubId === username && isLoggedIn && (
+              <>
+                <S.EditButton>수정</S.EditButton>
+                <S.DeleteButton
+                  onClick={() => {
+                    handleDelete(reviewId);
+                  }}
+                >
+                  삭제
+                </S.DeleteButton>
+              </>
+            )}
+          </S.UserWrapper>
           <Rating type="정수" rating={rating} />
         </S.Wrapper>
         <S.Content>{content}</S.Content>

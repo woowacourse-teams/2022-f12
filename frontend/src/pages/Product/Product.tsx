@@ -11,16 +11,19 @@ import { useReducer, useRef } from 'react';
 import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
 import Plus from '@/assets/plus.svg';
 import theme from '@/style/theme';
+import useAuth from '@/hooks/useAuth';
 
 function Product() {
+  const { isLoggedIn } = useAuth();
   const { productId: id } = useParams();
   const productId = Number(id);
 
   const product = useProduct({ productId: Number(productId) });
-  const [reviews, getNextPage, refetchReview, postReview] = useReviews({
-    size: 6,
-    productId,
-  });
+  const [reviews, getNextPage, refetchReview, postReview, deleteReview] =
+    useReviews({
+      size: 6,
+      productId,
+    });
 
   const [isSheetOpen, toggleSheetOpen] = useReducer(
     (isSheetOpen: boolean) => !isSheetOpen,
@@ -39,6 +42,16 @@ function Product() {
     });
   };
 
+  const handleReviewDeletion = (id: number) => {
+    deleteReview(id)
+      .then(() => {
+        refetchReview();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     !!product && (
       <>
@@ -51,7 +64,7 @@ function Product() {
             />
           </StickyWrapper>
           <S.Wrapper ref={reviewListRef}>
-            {!isSheetOpen && (
+            {!isSheetOpen && isLoggedIn && (
               <FloatingButton clickHandler={toggleSheetOpen}>
                 <Plus stroke={theme.colors.white} />
               </FloatingButton>
@@ -61,6 +74,7 @@ function Product() {
               columns={1}
               data={reviews}
               getNextPage={getNextPage}
+              handleDelete={handleReviewDeletion}
             />
             {isSheetOpen && (
               <ReviewBottomSheet

@@ -51,6 +51,20 @@ export const Wrapper = styled.div`
   align-items: center;
 `;
 
+export const UserWrapper = styled.div`
+  display: flex;
+  gap: 0.3rem;
+`;
+
+export const EditButton = styled.button`
+  border: none;
+  width: 2.5rem;
+  border-radius: 0.5rem;
+  background-color: ${({ theme }) => theme.colors.secondary};
+`;
+
+export const DeleteButton = styled(EditButton)``;
+
 export const Content = styled.p`
   line-height: 1.4;
 `;
