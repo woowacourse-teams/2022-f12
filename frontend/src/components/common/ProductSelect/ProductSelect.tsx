@@ -33,14 +33,14 @@ function ProductSelect({ submitHandler }: Props) {
 
   const handleEditDone = () => {
     if (isEditMode) {
-      updateProfileProduct(selectedProduct.id)
+      updateProfileProduct()
         .then(() => {
           submitHandler();
           setOptionOpen();
           setEditMode();
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
       return;
     }
@@ -50,8 +50,7 @@ function ProductSelect({ submitHandler }: Props) {
 
   return (
     otherProducts &&
-    otherProducts.length !== 0 &&
-    selectedProduct && (
+    otherProducts.length !== 0 && (
       <S.Container>
         <S.EditButton onClick={handleEditDone}>
           {isEditMode ? '수정 완료' : '수정하기'}
@@ -60,10 +59,14 @@ function ProductSelect({ submitHandler }: Props) {
           <>
             <S.Selected>
               <S.PseudoButton onClick={setOptionOpen}>
-                <ProductBar
-                  name={selectedProduct.product.name}
-                  barType="selected"
-                />
+                {selectedProduct !== undefined ? (
+                  <ProductBar
+                    name={selectedProduct.product.name}
+                    barType="selected"
+                  />
+                ) : (
+                  <ProductBar.AddButton />
+                )}
               </S.PseudoButton>
               <DownArrow stroke={theme.colors.black} />
             </S.Selected>
@@ -76,11 +79,13 @@ function ProductSelect({ submitHandler }: Props) {
               </S.OptionsList>
             )}
           </>
-        ) : (
+        ) : selectedProduct ? (
           <ProductBar
             name={selectedProduct.product.name}
             barType={'selected'}
           />
+        ) : (
+          <p> 등록된 장비가 없어요! 수정하기로 대표 장비를 등록해주세요!</p>
         )}
       </S.Container>
     )
