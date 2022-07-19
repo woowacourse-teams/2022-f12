@@ -104,7 +104,7 @@ export const handlers = [
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
     postReviewByProductId
   ),
-  rest.post(
+  rest.put(
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id', ':id')}`,
     updateReviewByReviewId
   ),
