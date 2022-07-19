@@ -66,4 +66,30 @@ class InventoryProductControllerTest {
                 () -> verify(inventoryProductService).findByMemberId(memberId)
         );
     }
+
+    @Test
+    void 다른_멤버_id_로_조회한다() throws Exception {
+        // given
+        Long memberId = 1L;
+        InventoryProduct inventoryProduct = InventoryProduct.builder()
+                .id(1L)
+                .memberId(memberId)
+                .keyboard(KEYBOARD_1.생성(1L))
+                .isSelected(true)
+                .build();
+        given(inventoryProductService.findByMemberId(memberId))
+                .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
+
+        // when
+        mockMvc.perform(
+                        get("/api/v1/members/" + memberId + "/inventoryProducts")
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(inventoryProductService).findByMemberId(memberId)
+        );
+    }
 }

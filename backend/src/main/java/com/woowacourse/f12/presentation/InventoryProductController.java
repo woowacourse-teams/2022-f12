@@ -4,11 +4,12 @@ import com.woowacourse.f12.application.InventoryProductService;
 import com.woowacourse.f12.dto.response.InventoryProductsResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/members/inventoryProducts")
+@RequestMapping("/api/v1/members")
 public class InventoryProductController {
 
     private final InventoryProductService inventoryProductService;
@@ -17,9 +18,15 @@ public class InventoryProductController {
         this.inventoryProductService = inventoryProductService;
     }
 
-    @GetMapping
+    @GetMapping("/inventoryProducts")
     @LoginRequired
-    public ResponseEntity<InventoryProductsResponse> show(@VerifiedMember final Long memberId) {
+    public ResponseEntity<InventoryProductsResponse> showMyInventoryProducts(@VerifiedMember final Long memberId) {
+        final InventoryProductsResponse inventoryProductsResponse = inventoryProductService.findByMemberId(memberId);
+        return ResponseEntity.ok(inventoryProductsResponse);
+    }
+
+    @GetMapping("/{memberId}/inventoryProducts")
+    public ResponseEntity<InventoryProductsResponse> show(@PathVariable final Long memberId) {
         final InventoryProductsResponse inventoryProductsResponse = inventoryProductService.findByMemberId(memberId);
         return ResponseEntity.ok(inventoryProductsResponse);
     }
