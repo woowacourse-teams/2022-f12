@@ -4,46 +4,42 @@ import * as S from '@/pages/Profile/Profile.style';
 import sampleProfile from '@/mocks/sample_profile.jpg';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import ProductSelect from '@/components/common/ProductSelect/ProductSelect';
-import { products } from '@/mocks/data';
 import useAuth from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import ROUTES from '@/constants/routes';
-
-const mockKeyboards = products.slice(0, 6);
-
-const mockInventoryItem = mockKeyboards.map((product, index) => ({
-  ...product,
-  inventoryId: index,
-  isSelected: index === 0,
-}));
-
-const selectedProduct = mockInventoryItem.find(({ isSelected }) => isSelected);
+import useInventory from '@/hooks/useInventory';
 
 function Profile() {
   const { isLoggedIn } = useAuth();
+  const [keyboards] = useInventory();
 
+  const selectedProduct = keyboards.find(({ selected }) => selected);
   return isLoggedIn ? (
     <S.Container>
       <S.ProfileSection>
         <UserInfo profileImageUrl={sampleProfile} username="@dev1" />
-        <ProductSelect
-          options={mockInventoryItem}
-          initialValue={selectedProduct}
-          // onSelectSubmit={handleInventoryRefetch}
-        />
+        {keyboards.length !== 0 && (
+          <ProductSelect
+            options={keyboards}
+            initialValue={selectedProduct}
+            // onSelectSubmit={handleInventoryRefetch}
+          />
+        )}
       </S.ProfileSection>
       <S.InventorySection>
         <SectionHeader>
           <S.Title>보유한 장비 목록</S.Title>
         </SectionHeader>
         <S.InventoryProductList>
-          {mockInventoryItem.map(({ inventoryId, name, isSelected }) => (
-            <ProductBar
-              key={inventoryId}
-              name={name}
-              barType={isSelected ? 'selected' : 'default'}
-            />
-          ))}
+          {keyboards.map(
+            ({ id: inventoryId, selected: isSelected, product: { name } }) => (
+              <ProductBar
+                key={inventoryId}
+                name={name}
+                barType={isSelected ? 'selected' : 'default'}
+              />
+            )
+          )}
         </S.InventoryProductList>
       </S.InventorySection>
     </S.Container>

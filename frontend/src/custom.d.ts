@@ -21,10 +21,11 @@ declare type Product = {
   rating: number;
 };
 
-declare interface InventoryProduct extends Product {
-  inventoryId: number;
-  isSelected: boolean;
-}
+declare type InventoryProduct = {
+  id: number;
+  selected: boolean;
+  product: Product;
+};
 
 declare type Review = {
   id: number;

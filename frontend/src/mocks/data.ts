@@ -268,7 +268,7 @@ export const InventoryProducts = {
   keyboards: [
     {
       id: 1,
-      selected: true,
+      selected: false,
       product: {
         id: 3,
         name: '레오폴드 FC900RBT PD 그레이 블루 한글 (저소음 적축)',
@@ -279,7 +279,7 @@ export const InventoryProducts = {
     },
     {
       id: 2,
-      selected: false,
+      selected: true,
       product: {
         id: 4,
         name: '레오폴드 FC900RBT PD 라이트 핑크 한글 (저소음 적축)',

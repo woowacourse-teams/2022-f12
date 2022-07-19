@@ -10,4 +10,5 @@ export const ENDPOINTS = {
   REVIEWS: '/reviews',
   REVIEWS_BY_PRODUCT_ID: (id: number | ':id') => `/keyboards/${id}/reviews`,
   LOGIN: '/login',
+  INVENTORY_PRODUCTS: '/members/inventoryProducts',
 } as const;

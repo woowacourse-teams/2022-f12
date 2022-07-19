@@ -26,17 +26,22 @@ function ProductSelect({ options, initialValue }: Props) {
     setOptionOpen();
   };
 
-  const otherOptions = options.filter(
-    ({ inventoryId }) => inventoryId !== profileProduct.inventoryId
-  );
+  const otherOptions = options.filter(({ id }) => id !== profileProduct.id);
 
-  const OptionListItems = otherOptions.map((inventoryProduct) => (
-    <S.Option key={inventoryProduct.id}>
-      <S.PseudoButton onClick={() => handleProductSelect(inventoryProduct)}>
-        <ProductBar name={inventoryProduct.name} barType="default" />
-      </S.PseudoButton>
-    </S.Option>
-  ));
+  const OptionListItems = otherOptions.map((inventoryProduct) => {
+    const {
+      id,
+      product: { name },
+    } = inventoryProduct;
+
+    return (
+      <S.Option key={id}>
+        <S.PseudoButton onClick={() => handleProductSelect(inventoryProduct)}>
+          <ProductBar name={name} barType="default" />
+        </S.PseudoButton>
+      </S.Option>
+    );
+  });
 
   const handleEditDone = () => {
     if (isEditMode) {
@@ -54,14 +59,17 @@ function ProductSelect({ options, initialValue }: Props) {
         <>
           <S.Selected>
             <S.PseudoButton onClick={setOptionOpen}>
-              <ProductBar name={profileProduct.name} barType="selected" />
+              <ProductBar
+                name={profileProduct.product.name}
+                barType="selected"
+              />
             </S.PseudoButton>
             <DownArrow stroke={theme.colors.black} />
           </S.Selected>
           {isOptionsOpen && <S.OptionsList>{OptionListItems}</S.OptionsList>}
         </>
       ) : (
-        <ProductBar name={profileProduct.name} barType={'selected'} />
+        <ProductBar name={profileProduct.product.name} barType={'selected'} />
       )}
     </S.Container>
   );
