@@ -1,9 +1,5 @@
-= Review API
-
-:doctype: book
-:toc: left
-:toclevels: 2
-:sectlinks:
+[[Reivew]]
+== Review API
 
 === 리뷰 작성
 

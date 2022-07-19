@@ -1,0 +1,6 @@
+[[Auth]]
+== Auth API
+
+=== 로그인
+
+operation::auth-login[snippets='http-request,http-response']

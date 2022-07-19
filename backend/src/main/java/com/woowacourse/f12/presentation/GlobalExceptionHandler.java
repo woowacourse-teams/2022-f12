@@ -3,6 +3,7 @@ package com.woowacourse.f12.presentation;
 import com.woowacourse.f12.dto.response.ExceptionResponse;
 import com.woowacourse.f12.exception.InvalidValueException;
 import com.woowacourse.f12.exception.NotFoundException;
+import com.woowacourse.f12.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,11 @@ public class GlobalExceptionHandler {
         exception.getBindingResult().getAllErrors().forEach((error) -> stringBuilder.append(error.getDefaultMessage())
                 .append(System.lineSeparator()));
         return ResponseEntity.badRequest().body(ExceptionResponse.from(stringBuilder.toString()));
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ExceptionResponse> handleUnAuthorizedException(final UnauthorizedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ExceptionResponse.from(e));
     }
 
     @ExceptionHandler(Exception.class)

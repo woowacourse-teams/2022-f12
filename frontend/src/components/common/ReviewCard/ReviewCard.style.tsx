@@ -41,6 +41,10 @@ export const ReviewArea = styled.div<{ isFull: boolean }>`
   width: ${({ isFull }) => (isFull ? '100%' : '60%')};
 `;
 
+export const FlexColumnWrapper = styled(ReviewArea)`
+  gap: 1rem;
+`;
+
 export const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;

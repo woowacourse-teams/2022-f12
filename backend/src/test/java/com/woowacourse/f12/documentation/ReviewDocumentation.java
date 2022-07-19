@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.woowacourse.f12.application.JwtProvider;
 import com.woowacourse.f12.application.ReviewService;
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.dto.request.ReviewRequest;
@@ -29,6 +30,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -42,18 +44,27 @@ public class ReviewDocumentation extends Documentation {
     @MockBean
     private ReviewService reviewService;
 
+    @MockBean
+    private JwtProvider jwtProvider;
+
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void 리뷰_작성_API_문서화() throws Exception {
         // given
-        given(reviewService.save(anyLong(), any(ReviewRequest.class)))
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
                 .willReturn(1L);
         ReviewRequest reviewRequest = new ReviewRequest("content", 5);
 
         // when
         ResultActions resultActions = mockMvc.perform(
                 post("/api/v1/keyboards/" + 1L + "/reviews")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reviewRequest))
         );
