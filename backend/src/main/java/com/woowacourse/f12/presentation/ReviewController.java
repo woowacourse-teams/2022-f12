@@ -28,9 +28,9 @@ public class ReviewController {
     @PostMapping("/keyboards/{productId}/reviews")
     @LoginRequired
     public ResponseEntity<Void> create(@PathVariable final Long productId,
-                                       @Valid @RequestBody final ReviewRequest reviewRequest,
-                                       @VerifiedMember final Long memberId) {
-        final Long id = reviewService.save(productId, reviewRequest, memberId);
+                                       @VerifiedMember final Long memberId,
+                                       @Valid @RequestBody final ReviewRequest reviewRequest) {
+        final Long id = reviewService.save(productId, memberId, reviewRequest);
         return ResponseEntity.created(URI.create("/api/v1/reviews/" + id))
                 .build();
     }

@@ -73,7 +73,7 @@ class ReviewServiceTest {
                 .willReturn(REVIEW_RATING_5.작성(1L, keyboard, member));
 
         // when
-        Long reviewId = reviewService.save(productId, reviewRequest, 1L);
+        Long reviewId = reviewService.save(productId, 1L, reviewRequest);
 
         // then
         assertAll(
@@ -94,7 +94,7 @@ class ReviewServiceTest {
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.save(1L, reviewRequest, 1L))
+                () -> assertThatThrownBy(() -> reviewService.save(1L, 1L, reviewRequest))
                         .isExactlyInstanceOf(KeyboardNotFoundException.class),
                 () -> verify(keyboardRepository).findById(productId),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
@@ -115,7 +115,7 @@ class ReviewServiceTest {
                 .willReturn(Optional.empty());
 
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.save(keyboardId, reviewRequest, memberId)),
+                () -> assertThatThrownBy(() -> reviewService.save(keyboardId, memberId, reviewRequest)),
                 () -> verify(keyboardRepository).findById(keyboardId),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))

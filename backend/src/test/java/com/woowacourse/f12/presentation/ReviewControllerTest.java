@@ -72,7 +72,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willReturn(1L);
         // when
         mockMvc.perform(
@@ -87,7 +87,7 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -98,7 +98,7 @@ class ReviewControllerTest {
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
         // when
@@ -113,7 +113,7 @@ class ReviewControllerTest {
         // then
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
-                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -126,7 +126,7 @@ class ReviewControllerTest {
         reviewRequest.put("rating", "문자");
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
         // when
@@ -141,7 +141,7 @@ class ReviewControllerTest {
         // then
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
-                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -154,7 +154,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
         // when
@@ -170,7 +170,7 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -184,7 +184,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidContentLengthException(1000));
 
         // when
@@ -200,7 +200,7 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -213,7 +213,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidRatingValueException());
 
         // when
@@ -229,7 +229,7 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -242,7 +242,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new KeyboardNotFoundException());
 
         // when
@@ -258,7 +258,7 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(0L), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService).save(eq(0L), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -282,7 +282,8 @@ class ReviewControllerTest {
     void 특정_상품의_리뷰_페이지_조회() throws Exception {
         // given
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
-                .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(1L))))));
+                .willReturn(ReviewPageResponse.from(
+                        new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(1L))))));
 
         // when
         mockMvc.perform(get("/api/v1/keyboards/" + PRODUCT_ID + "/reviews?size=150&page=0&sort=rating,desc"))
