@@ -6,6 +6,9 @@ import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import { useReducer, useState } from 'react';
 import ProductSelect from '@/components/common/ProductSelect/ProductSelect';
 import { products } from '@/mocks/data';
+import useAuth from '@/hooks/useAuth';
+import { Navigate } from 'react-router-dom';
+import ROUTES from '@/constants/routes';
 
 const mockKeyboards = products.slice(0, 6);
 
@@ -27,6 +30,7 @@ function Profile() {
 
   const [profileProductInput, setProfileProductInput] =
     useState(selectedProduct);
+  const { isLoggedIn } = useAuth();
 
   const handleSelectedProductChange = (value: InventoryProduct) => {
     const target = mockInventoryItem.find(
@@ -39,7 +43,7 @@ function Profile() {
     setProfileProductInput(value);
   };
 
-  return (
+  return isLoggedIn ? (
     <S.Container>
       <S.ProfileSection>
         <S.EditButton onClick={setEditMode}>
@@ -76,6 +80,8 @@ function Profile() {
         </S.InventoryProductList>
       </S.InventorySection>
     </S.Container>
+  ) : (
+    <Navigate to={ROUTES.HOME} />
   );
 }
 
