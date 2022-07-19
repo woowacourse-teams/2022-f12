@@ -76,7 +76,7 @@ class InventoryDocumentation extends Documentation {
                 .id(1L)
                 .memberId(memberId)
                 .keyboard(KEYBOARD_1.생성(1L))
-                .isSelected(true)
+                .selected(true)
                 .build();
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -90,12 +90,12 @@ class InventoryDocumentation extends Documentation {
         ResultActions resultActions = mockMvc.perform(
                 get("/api/v1/members/inventoryProducts")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-
         );
+
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("inventoryProducts-get-my"));
+                .andDo(document("inventoryProducts-get-mine"));
     }
 
     @Test
@@ -106,7 +106,7 @@ class InventoryDocumentation extends Documentation {
                 .id(1L)
                 .memberId(memberId)
                 .keyboard(KEYBOARD_1.생성(1L))
-                .isSelected(true)
+                .selected(true)
                 .build();
         given(inventoryProductService.findByMemberId(memberId))
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
@@ -114,7 +114,6 @@ class InventoryDocumentation extends Documentation {
         // when
         ResultActions resultActions = mockMvc.perform(
                 get("/api/v1/members/" + memberId + "/inventoryProducts")
-
         );
 
         // then

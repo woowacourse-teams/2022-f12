@@ -141,7 +141,7 @@ class InventoryProductControllerTest {
                 .id(1L)
                 .memberId(memberId)
                 .keyboard(KEYBOARD_1.생성(1L))
-                .isSelected(true)
+                .selected(true)
                 .build();
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -176,7 +176,7 @@ class InventoryProductControllerTest {
                 .id(1L)
                 .memberId(memberId)
                 .keyboard(KEYBOARD_1.생성(1L))
-                .isSelected(true)
+                .selected(true)
                 .build();
         given(inventoryProductService.findByMemberId(memberId))
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));

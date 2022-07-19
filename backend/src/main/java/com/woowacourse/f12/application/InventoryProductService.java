@@ -29,10 +29,18 @@ public class InventoryProductService {
     @Transactional
     public void updateProfileProducts(final Long memberId, final ProfileProductRequest profileProductRequest) {
         validateMember(memberId);
+        validateInvalidProfileProductRequest(profileProductRequest);
+        updateProfileProduct(profileProductRequest);
+    }
+
+    private void validateInvalidProfileProductRequest(final ProfileProductRequest profileProductRequest) {
         if (Objects.isNull(profileProductRequest.getSelectedInventoryProductId()) && Objects.isNull(
                 profileProductRequest.getUnselectedInventoryProductId())) {
             throw new InvalidProfileProductException();
         }
+    }
+
+    private void updateProfileProduct(final ProfileProductRequest profileProductRequest) {
         if (!Objects.isNull(profileProductRequest.getSelectedInventoryProductId())) {
             updateProfileProduct(profileProductRequest.getSelectedInventoryProductId(), true);
         }
@@ -41,10 +49,10 @@ public class InventoryProductService {
         }
     }
 
-    private void updateProfileProduct(final Long inventoryItemId, final boolean isSelected) {
+    private void updateProfileProduct(final Long inventoryItemId, final boolean selected) {
         final InventoryProduct inventoryProduct = inventoryProductRepository.findById(inventoryItemId)
                 .orElseThrow(InventoryItemNotFoundException::new);
-        inventoryProduct.updateIsSelected(isSelected);
+        inventoryProduct.updateSelected(selected);
     }
 
     public InventoryProductsResponse findByMemberId(final Long memberId) {
@@ -54,7 +62,8 @@ public class InventoryProductService {
     }
 
     private void validateMember(final Long memberId) {
-        memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
     }
 }

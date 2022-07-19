@@ -2,7 +2,6 @@ package com.woowacourse.f12.application;
 
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -17,7 +16,6 @@ import com.woowacourse.f12.dto.response.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.InventoryProductsResponse;
 import com.woowacourse.f12.exception.InvalidProfileProductException;
 import com.woowacourse.f12.support.KeyboardFixtures;
-import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -46,16 +44,16 @@ class InventoryProductServiceTest {
                 .id(1L)
                 .memberId(1L)
                 .keyboard(KEYBOARD_1.생성())
-                .isSelected(false)
+                .selected(false)
                 .build();
         InventoryProduct unselectInventoryProduct = InventoryProduct.builder()
                 .id(2L)
                 .memberId(1L)
                 .keyboard(KEYBOARD_2.생성())
-                .isSelected(true)
+                .selected(true)
                 .build();
-        given(memberRepository.findById(1L))
-                .willReturn(Optional.of(MemberFixtures.CORINNE.생성(1L)));
+        given(memberRepository.existsById(1L))
+                .willReturn(true);
         given(inventoryProductRepository.findById(1L))
                 .willReturn(Optional.of(selectInventoryProduct));
         given(inventoryProductRepository.findById(2L))
@@ -66,7 +64,7 @@ class InventoryProductServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findById(1L),
+                () -> verify(memberRepository).existsById(1L),
                 () -> verify(inventoryProductRepository).findById(1L),
                 () -> verify(inventoryProductRepository).findById(2L)
         );
@@ -76,14 +74,14 @@ class InventoryProductServiceTest {
     void 대표_장비를_업데이트할_때_요청된_장비가_모두_null인_경우_예외가_발생한다() {
         // given
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(null, null);
-        given(memberRepository.findById(1L))
-                .willReturn(Optional.of(MemberFixtures.CORINNE.생성(1L)));
+        given(memberRepository.existsById(1L))
+                .willReturn(true);
 
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> inventoryProductService.updateProfileProducts(1L, profileProductRequest))
                         .isExactlyInstanceOf(InvalidProfileProductException.class),
-                () -> verify(memberRepository).findById(1L)
+                () -> verify(memberRepository).existsById(1L)
         );
     }
 
@@ -95,10 +93,10 @@ class InventoryProductServiceTest {
                 .id(1L)
                 .memberId(memberId)
                 .keyboard(KeyboardFixtures.KEYBOARD_1.생성(1L))
-                .isSelected(true)
+                .selected(true)
                 .build();
-        given(memberRepository.findById(memberId))
-                .willReturn(Optional.of(CORINNE.생성(1L)));
+        given(memberRepository.existsById(1L))
+                .willReturn(true);
         given(inventoryProductRepository.findByMemberId(memberId))
                 .willReturn(List.of(inventoryProduct));
 
@@ -110,7 +108,7 @@ class InventoryProductServiceTest {
                 () -> assertThat(inventoryProductsResponse.getKeyboards()).hasSize(1)
                         .usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(InventoryProductResponse.from(inventoryProduct)),
-                () -> verify(memberRepository).findById(memberId),
+                () -> verify(memberRepository).existsById(memberId),
                 () -> verify(inventoryProductRepository).findByMemberId(memberId)
         );
     }
