@@ -4,13 +4,30 @@ import * as S from '@/components/ReviewBottomSheet/ReviewBottomSheet.style';
 
 type Props = {
   handleClose: () => void;
-  handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
+  handleSubmit?: (reviewInput: ReviewInput) => Promise<void>;
+  handleEdit?: (reviewInput: ReviewInput, id: number) => void;
+  isEdit: boolean;
+  reviewId?: number;
+  rating?: number;
+  content?: string;
 };
 
-function ReviewBottomSheet({ handleClose, handleSubmit }: Props) {
+function ReviewBottomSheet({
+  handleClose,
+  handleSubmit,
+  handleEdit,
+  isEdit = false,
+  reviewId,
+  rating,
+  content,
+}: Props) {
   const handleCloseWithSubmit = async (reviewInput: ReviewInput) => {
     try {
-      await handleSubmit(reviewInput);
+      if (isEdit) {
+        handleEdit(reviewInput, reviewId);
+      } else {
+        await handleSubmit(reviewInput);
+      }
       handleClose();
     } catch (error) {
       console.log(error);
@@ -19,7 +36,12 @@ function ReviewBottomSheet({ handleClose, handleSubmit }: Props) {
   return (
     <BottomSheet handleClose={handleClose}>
       <S.Button onClick={handleClose}>닫기</S.Button>
-      <ReviewForm handleSubmit={handleCloseWithSubmit} />
+      <ReviewForm
+        handleSubmit={handleCloseWithSubmit}
+        isEdit={isEdit ? true : false}
+        rating={rating}
+        content={content}
+      />
     </BottomSheet>
   );
 }

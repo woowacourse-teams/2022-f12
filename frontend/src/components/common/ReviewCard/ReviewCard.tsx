@@ -1,6 +1,8 @@
 import Rating from '../Rating/Rating';
 import UserNameTag from '../UserNameTag/UserNameTag';
 import useAuth from '@/hooks/useAuth';
+import { useReducer } from 'react';
+import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
 
 import * as S from './ReviewCard.style';
 
@@ -17,6 +19,7 @@ type Props = {
   loginUserGithubId: string;
   reviewId: number;
   handleDelete?: (id: number) => void;
+  handleEdit?: (reviewInput: ReviewInput, id: number) => void;
 };
 
 function ReviewCard({
@@ -28,8 +31,13 @@ function ReviewCard({
   content,
   loginUserGithubId,
   handleDelete,
+  handleEdit,
 }: Props) {
   const { isLoggedIn } = useAuth();
+  const [isEditSheetOpen, toggleEditSheetOpen] = useReducer(
+    (isSheetOpen: boolean) => !isSheetOpen,
+    false
+  );
 
   return (
     <S.Container>
@@ -47,7 +55,13 @@ function ReviewCard({
             <UserNameTag profileImage={profileImage} username={username} />
             {!product && loginUserGithubId === username && isLoggedIn && (
               <>
-                <S.EditButton>수정</S.EditButton>
+                <S.EditButton
+                  onClick={() => {
+                    toggleEditSheetOpen();
+                  }}
+                >
+                  수정
+                </S.EditButton>
                 <S.DeleteButton
                   onClick={() => {
                     handleDelete(reviewId);
@@ -62,6 +76,16 @@ function ReviewCard({
         </S.Wrapper>
         <S.Content>{content}</S.Content>
       </S.ReviewArea>
+      {isEditSheetOpen && (
+        <ReviewBottomSheet
+          handleClose={toggleEditSheetOpen}
+          handleEdit={handleEdit}
+          isEdit
+          reviewId={reviewId}
+          rating={rating}
+          content={content}
+        />
+      )}
     </S.Container>
   );
 }

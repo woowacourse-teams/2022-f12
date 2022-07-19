@@ -19,11 +19,17 @@ function Product() {
   const productId = Number(id);
 
   const product = useProduct({ productId: Number(productId) });
-  const [reviews, getNextPage, refetchReview, postReview, deleteReview] =
-    useReviews({
-      size: 6,
-      productId,
-    });
+  const [
+    reviews,
+    getNextPage,
+    refetchReview,
+    postReview,
+    deleteReview,
+    editReview,
+  ] = useReviews({
+    size: 6,
+    productId,
+  });
 
   const [isSheetOpen, toggleSheetOpen] = useReducer(
     (isSheetOpen: boolean) => !isSheetOpen,
@@ -42,7 +48,20 @@ function Product() {
     });
   };
 
+  const handleReviewEdit = (reviewInput: ReviewInput, id: number) => {
+    editReview(reviewInput, id)
+      .then(() => {
+        alert('리뷰가 수정되었습니다.');
+        refetchReview();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const handleReviewDeletion = (id: number) => {
+    if (!confirm('리뷰를 삭제하시겠습니까?')) return;
+
     deleteReview(id)
       .then(() => {
         refetchReview();
@@ -69,17 +88,18 @@ function Product() {
                 <Plus stroke={theme.colors.white} />
               </FloatingButton>
             )}
-
             <ReviewListSection
               columns={1}
               data={reviews}
               getNextPage={getNextPage}
               handleDelete={handleReviewDeletion}
+              handleEdit={handleReviewEdit}
             />
             {isSheetOpen && (
               <ReviewBottomSheet
                 handleClose={toggleSheetOpen}
                 handleSubmit={handleReviewSubmit}
+                isEdit={false}
               />
             )}
           </S.Wrapper>

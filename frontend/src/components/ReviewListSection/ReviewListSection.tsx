@@ -9,6 +9,7 @@ type Props = {
   data: Review[];
   getNextPage: () => void;
   handleDelete?: (id: number) => void;
+  handleEdit?: (reviewInput: ReviewInput, id: number) => void;
 };
 
 function ReviewListSection({
@@ -16,6 +17,7 @@ function ReviewListSection({
   data: reviewData,
   getNextPage,
   handleDelete,
+  handleEdit,
 }: Props) {
   const [data] = useSessionStorage<UserData>('userData');
   const loginUserGithubId = data?.member.githubId;
@@ -32,6 +34,7 @@ function ReviewListSection({
         content={content}
         loginUserGithubId={loginUserGithubId}
         handleDelete={handleDelete}
+        handleEdit={handleEdit}
       />
     )
   );

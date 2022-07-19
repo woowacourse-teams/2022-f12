@@ -1,13 +1,8 @@
 export const BASE_URL =
   'http://ec2-52-78-192-78.ap-northeast-2.compute.amazonaws.com:8080/api/v1';
 
-// AWS
-// export const GITHUB_AUTH_URL =
-//   'https://github.com/login/oauth/authorize?client_id=f1e73a9ac502f1b6712a';
-
-// Local
 export const GITHUB_AUTH_URL =
-  'https://github.com/login/oauth/authorize?client_id=404072c5857d705db2d9';
+  'https://github.com/login/oauth/authorize?client_id=f1e73a9ac502f1b6712a';
 
 export const ENDPOINTS = {
   PRODUCTS: '/keyboards',
