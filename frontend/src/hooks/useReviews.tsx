@@ -47,6 +47,7 @@ function useReviews({ size, productId }: Props): ReturnType {
 
   const postReview = usePost<ReviewInput>({
     url: `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`,
+    headers: { Authorization: `Bearer ${data?.token}` },
   });
 
   const deleteReview = useDelete({
