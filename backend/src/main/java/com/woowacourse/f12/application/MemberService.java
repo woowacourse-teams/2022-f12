@@ -3,6 +3,7 @@ package com.woowacourse.f12.application;
 
 import com.woowacourse.f12.domain.Member;
 import com.woowacourse.f12.domain.MemberRepository;
+import com.woowacourse.f12.dto.request.MemberRequest;
 import com.woowacourse.f12.dto.response.MemberResponse;
 import com.woowacourse.f12.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,19 @@ public class MemberService {
     }
 
     public MemberResponse findById(final Long memberId) {
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+        final Member member = findMember(memberId);
         return MemberResponse.from(member);
+    }
+
+    @Transactional
+    public void updateMember(final Long memberId, final MemberRequest memberRequest) {
+        final Member member = findMember(memberId);
+        member.updateCareerLevel(memberRequest.getCareerLevel());
+        member.updateJobType(memberRequest.getJobType());
+    }
+
+    private Member findMember(final Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
     }
 }

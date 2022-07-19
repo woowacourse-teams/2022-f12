@@ -1,5 +1,7 @@
 package com.woowacourse.f12.application;
 
+import static com.woowacourse.f12.domain.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.JobType.ETC;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -8,6 +10,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 
 import com.woowacourse.f12.domain.MemberRepository;
+import com.woowacourse.f12.dto.request.MemberRequest;
 import com.woowacourse.f12.dto.response.MemberResponse;
 import com.woowacourse.f12.exception.MemberNotFoundException;
 import java.util.Optional;
@@ -55,5 +58,18 @@ class MemberServiceTest {
                         .isExactlyInstanceOf(MemberNotFoundException.class),
                 () -> verify(memberRepository).findById(1L)
         );
+    }
+
+    @Test
+    void 회원정보를_업데이트_한다() {
+        // given
+        given(memberRepository.findById(1L))
+                .willReturn(Optional.of(CORINNE.생성(1L)));
+
+        // when
+        memberService.updateMember(1L, new MemberRequest(JUNIOR, ETC));
+
+        // then
+        verify(memberRepository).findById(1L);
     }
 }
