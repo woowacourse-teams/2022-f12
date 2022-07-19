@@ -23,6 +23,10 @@ operation::reviews-by-product-page-get[snippets='http-request,http-response']
 
 operation::reviews-page-get[snippets='http-request,http-response']
 
+=== 리뷰 수정
+
+operation::reviews-update[snippets='http-request,http-response']
+
 === 리뷰 삭제
 
 operation::reviews-delete[snippets='http-request,http-response']
