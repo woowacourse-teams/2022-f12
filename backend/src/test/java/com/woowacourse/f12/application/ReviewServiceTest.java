@@ -7,8 +7,11 @@ import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -24,6 +27,9 @@ import com.woowacourse.f12.dto.response.ReviewResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
+import com.woowacourse.f12.exception.MemberNotFoundException;
+import com.woowacourse.f12.exception.NotAuthorException;
+import com.woowacourse.f12.exception.ReviewNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -162,6 +168,80 @@ class ReviewServiceTest {
                         .containsOnly(ReviewWithProductResponse.from(review1), ReviewWithProductResponse.from(review2)),
                 () -> assertThat(reviewWithProductPageResponse.isHasNext()).isTrue(),
                 () -> verify(reviewRepository).findPageBy(pageable)
+        );
+    }
+
+    @Test
+    void 로그인한_회원이_리뷰_작성자와_일치하면_삭제한다() {
+        // given
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        Member member = CORINNE.생성(memberId);
+        Review review = REVIEW_RATING_5.작성(reviewId, KEYBOARD_1.생성(), member);
+
+        given(memberRepository.findById(anyLong()))
+                .willReturn(Optional.of(member));
+        given(reviewRepository.findById(anyLong()))
+                .willReturn(Optional.of(review));
+        willDoNothing().given(reviewRepository)
+                .delete(any(Review.class));
+
+        // when, then
+        assertAll(
+                () -> assertDoesNotThrow(() -> reviewService.delete(reviewId, memberId)),
+                () -> verify(reviewRepository).delete(review)
+        );
+    }
+
+    @Test
+    void 로그인한_회원이_정상_회원이_아니면_예외를_반환한다() {
+        // given
+        given(memberRepository.findById(anyLong()))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.delete(1L, 1L))
+                        .isExactlyInstanceOf(MemberNotFoundException.class),
+                () -> verify(reviewRepository, times(0)).delete(any(Review.class))
+        );
+    }
+
+    @Test
+    void 삭제하려는_리뷰가_없으면_예외를_반환한다() {
+        // given
+        given(memberRepository.findById(anyLong()))
+                .willReturn(Optional.of(CORINNE.생성(1L)));
+        given(reviewRepository.findById(anyLong()))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.delete(1L, 1L))
+                        .isExactlyInstanceOf(ReviewNotFoundException.class),
+                () -> verify(reviewRepository, times(0)).delete(any(Review.class))
+        );
+    }
+
+    @Test
+    void 로그인한_회원이_리뷰_작성자가_아니면_예외를_반환한다() {
+        // given
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        Member member = CORINNE.생성(memberId);
+        Member notAuthor = CORINNE.생성(0L);
+        Review review = REVIEW_RATING_5.작성(reviewId, KEYBOARD_1.생성(), member);
+
+        given(memberRepository.findById(anyLong()))
+                .willReturn(Optional.of(notAuthor));
+        given(reviewRepository.findById(anyLong()))
+                .willReturn(Optional.of(review));
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.delete(reviewId, 0L))
+                        .isExactlyInstanceOf(NotAuthorException.class),
+                () -> verify(reviewRepository, times(0)).delete(review)
         );
     }
 }
