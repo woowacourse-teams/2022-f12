@@ -5,6 +5,7 @@ import com.woowacourse.f12.domain.InventoryProductRepository;
 import com.woowacourse.f12.domain.MemberRepository;
 import com.woowacourse.f12.dto.request.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.InventoryProductsResponse;
+import com.woowacourse.f12.exception.InvalidProfileProductException;
 import com.woowacourse.f12.exception.InventoryItemNotFoundException;
 import com.woowacourse.f12.exception.MemberNotFoundException;
 import java.util.List;
@@ -28,6 +29,10 @@ public class InventoryProductService {
     @Transactional
     public void updateProfileProducts(final Long memberId, final ProfileProductRequest profileProductRequest) {
         validateMember(memberId);
+        if (Objects.isNull(profileProductRequest.getSelectedInventoryProductId()) && Objects.isNull(
+                profileProductRequest.getUnselectedInventoryProductId())) {
+            throw new InvalidProfileProductException();
+        }
         if (!Objects.isNull(profileProductRequest.getSelectedInventoryProductId())) {
             updateProfileProduct(profileProductRequest.getSelectedInventoryProductId(), true);
         }

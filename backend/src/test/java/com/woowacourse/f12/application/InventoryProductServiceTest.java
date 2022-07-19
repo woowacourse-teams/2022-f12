@@ -4,6 +4,7 @@ import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
@@ -14,6 +15,7 @@ import com.woowacourse.f12.domain.MemberRepository;
 import com.woowacourse.f12.dto.request.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.InventoryProductsResponse;
+import com.woowacourse.f12.exception.InvalidProfileProductException;
 import com.woowacourse.f12.support.KeyboardFixtures;
 import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
@@ -67,6 +69,21 @@ class InventoryProductServiceTest {
                 () -> verify(memberRepository).findById(1L),
                 () -> verify(inventoryProductRepository).findById(1L),
                 () -> verify(inventoryProductRepository).findById(2L)
+        );
+    }
+
+    @Test
+    void 대표_장비를_업데이트할_때_요청된_장비가_모두_null인_경우_예외가_발생한다() {
+        // given
+        ProfileProductRequest profileProductRequest = new ProfileProductRequest(null, null);
+        given(memberRepository.findById(1L))
+                .willReturn(Optional.of(MemberFixtures.CORINNE.생성(1L)));
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> inventoryProductService.updateProfileProducts(1L, profileProductRequest))
+                        .isExactlyInstanceOf(InvalidProfileProductException.class),
+                () -> verify(memberRepository).findById(1L)
         );
     }
 
