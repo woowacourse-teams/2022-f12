@@ -6,7 +6,6 @@
 = F12
 
 include::auth.adoc[]
-include::members.adoc[]
 include::keyboards.adoc[]
 include::reviews.adoc[]
 include::inventoryProducts.adoc[]

@@ -1,10 +1,13 @@
 package com.woowacourse.f12.presentation;
 
 import com.woowacourse.f12.application.InventoryProductService;
+import com.woowacourse.f12.dto.request.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.InventoryProductsResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +19,14 @@ public class InventoryProductController {
 
     public InventoryProductController(final InventoryProductService inventoryProductService) {
         this.inventoryProductService = inventoryProductService;
+    }
+
+    @PatchMapping("/inventoryProducts")
+    @LoginRequired
+    public ResponseEntity<Void> updateProfileProducts(@RequestBody final ProfileProductRequest profileProductRequest,
+                                                      @VerifiedMember final Long memberId) {
+        inventoryProductService.updateProfileProducts(memberId, profileProductRequest);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/inventoryProducts")

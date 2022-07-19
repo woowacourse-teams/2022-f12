@@ -2,6 +2,7 @@ package com.woowacourse.f12.acceptance;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -10,6 +11,7 @@ import com.woowacourse.f12.domain.InventoryProduct;
 import com.woowacourse.f12.domain.InventoryProductRepository;
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
+import com.woowacourse.f12.dto.request.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.InventoryProductsResponse;
 import com.woowacourse.f12.dto.response.LoginResponse;
@@ -26,6 +28,29 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private InventoryProductRepository inventoryProductRepository;
+
+    @Test
+    void 대표_장비가_없는_상태에서_대표_장비를_등록한다() {
+        // given
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas");
+        String token = response.as(LoginResponse.class).getToken();
+        Long memberId = response.as(LoginResponse.class).getMember().getId();
+
+        InventoryProduct inventoryProduct = InventoryProduct.builder()
+                .memberId(memberId)
+                .keyboard(keyboard)
+                .build();
+        InventoryProduct savedInventoryProduct = inventoryProductRepository.save(inventoryProduct);
+
+        // when
+        ExtractableResponse<Response> saveProfileProductResponse = 로그인된_상태로_PATCH_요청을_보낸다(
+                "api/v1/members/inventoryProducts", token,
+                new ProfileProductRequest(savedInventoryProduct.getId(), null));
+
+        // then
+        assertThat(saveProfileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 
     @Test
     void 등록된_장비_목록을_대표_장비를_포함해서_조회한다() {
