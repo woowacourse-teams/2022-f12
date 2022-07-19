@@ -3,7 +3,6 @@ import UserInfo from '@/components/common/UserInfo/UserInfo';
 import * as S from '@/pages/Profile/Profile.style';
 import sampleProfile from '@/mocks/sample_profile.jpg';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
-import { useReducer, useState } from 'react';
 import ProductSelect from '@/components/common/ProductSelect/ProductSelect';
 import { products } from '@/mocks/data';
 import useAuth from '@/hooks/useAuth';
@@ -12,58 +11,26 @@ import ROUTES from '@/constants/routes';
 
 const mockKeyboards = products.slice(0, 6);
 
+const mockInventoryItem = mockKeyboards.map((product, index) => ({
+  ...product,
+  inventoryId: index,
+  isSelected: index === 0,
+}));
+
+const selectedProduct = mockInventoryItem.find(({ isSelected }) => isSelected);
+
 function Profile() {
-  const mockInventoryItem = mockKeyboards.map((product, index) => ({
-    ...product,
-    inventoryId: index,
-    isSelected: index === 0,
-  }));
-
-  const selectedProduct = mockInventoryItem.find(
-    ({ isSelected }) => isSelected
-  );
-
-  const [isEditMode, setEditMode] = useReducer(
-    (isEditMode: boolean) => !isEditMode,
-    false
-  );
-
-  const [profileProductInput, setProfileProductInput] =
-    useState(selectedProduct);
   const { isLoggedIn } = useAuth();
-
-  const handleSelectedProductChange = (value: InventoryProduct) => {
-    const target = mockInventoryItem.find(
-      ({ inventoryId }) => inventoryId === value.inventoryId
-    );
-
-    profileProductInput.isSelected = false;
-    target.isSelected = true;
-
-    setProfileProductInput(value);
-  };
 
   return isLoggedIn ? (
     <S.Container>
       <S.ProfileSection>
-        <S.EditButton onClick={setEditMode}>
-          {isEditMode ? '수정 완료' : '수정하기'}
-        </S.EditButton>
-        <UserInfo
-          profileImageUrl={sampleProfile}
-          username="@dev1"
-          jobType="프론트엔드"
-          career="0-2년차"
+        <UserInfo profileImageUrl={sampleProfile} username="@dev1" />
+        <ProductSelect
+          options={mockInventoryItem}
+          initialValue={selectedProduct}
+          // onSelectSubmit={handleInventoryRefetch}
         />
-        {isEditMode ? (
-          <ProductSelect
-            setValue={handleSelectedProductChange}
-            options={mockInventoryItem}
-            value={profileProductInput}
-          />
-        ) : (
-          <ProductBar name={profileProductInput.name} barType={'selected'} />
-        )}
       </S.ProfileSection>
       <S.InventorySection>
         <SectionHeader>

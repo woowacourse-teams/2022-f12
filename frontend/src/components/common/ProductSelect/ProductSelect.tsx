@@ -1,5 +1,5 @@
 import ProductBar from '@/components/common/ProductBar/ProductBar';
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 import DownArrow from '@/assets/down_arrow.svg';
 
 import * as S from '@/components/common/ProductSelect/ProductSelect.style';
@@ -7,23 +7,27 @@ import theme from '@/style/theme';
 
 type Props = {
   options: InventoryProduct[];
-  value: InventoryProduct;
-  setValue: (value: InventoryProduct) => void;
+  initialValue: InventoryProduct;
 };
 
-function ProductSelect({ options, value, setValue }: Props) {
-  const [isOpen, setOpen] = useReducer((isOpen: boolean) => !isOpen, false);
-  const currentProduct = options.find(
-    ({ inventoryId }) => inventoryId === value.inventoryId
+function ProductSelect({ options, initialValue }: Props) {
+  const [isEditMode, setEditMode] = useReducer(
+    (isEditMode: boolean) => !isEditMode,
+    false
   );
+  const [isOptionsOpen, setOptionOpen] = useReducer(
+    (isOptionsOpen: boolean) => !isOptionsOpen,
+    false
+  );
+  const [profileProduct, setProfileProduct] = useState(initialValue);
 
   const handleProductSelect = (value: InventoryProduct) => {
-    setValue(value);
-    setOpen();
+    setProfileProduct(value);
+    setOptionOpen();
   };
 
   const otherOptions = options.filter(
-    ({ inventoryId }) => inventoryId !== value.inventoryId
+    ({ inventoryId }) => inventoryId !== profileProduct.inventoryId
   );
 
   const OptionListItems = otherOptions.map((inventoryProduct) => (
@@ -34,15 +38,31 @@ function ProductSelect({ options, value, setValue }: Props) {
     </S.Option>
   ));
 
+  const handleEditDone = () => {
+    if (isEditMode) {
+      // handleProfileProductPatch()
+    }
+    setEditMode();
+  };
+
   return (
     <S.Container>
-      <S.Selected>
-        <S.PseudoButton onClick={setOpen}>
-          <ProductBar name={currentProduct.name} barType="selected" />
-        </S.PseudoButton>
-        <DownArrow stroke={theme.colors.black} />
-      </S.Selected>
-      {isOpen && <S.OptionsList>{OptionListItems}</S.OptionsList>}
+      <S.EditButton onClick={handleEditDone}>
+        {isEditMode ? '수정 완료' : '수정하기'}
+      </S.EditButton>
+      {isEditMode ? (
+        <>
+          <S.Selected>
+            <S.PseudoButton onClick={setOptionOpen}>
+              <ProductBar name={profileProduct.name} barType="selected" />
+            </S.PseudoButton>
+            <DownArrow stroke={theme.colors.black} />
+          </S.Selected>
+          {isOptionsOpen && <S.OptionsList>{OptionListItems}</S.OptionsList>}
+        </>
+      ) : (
+        <ProductBar name={profileProduct.name} barType={'selected'} />
+      )}
     </S.Container>
   );
 }
