@@ -1,5 +1,6 @@
 package com.woowacourse.f12.domain;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,8 +22,8 @@ public class InventoryProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "is_selected")
-    private boolean isSelected;
+    @Column(name = "selected")
+    private boolean selected;
 
     @Column(name = "member_id")
     private Long memberId;
@@ -34,15 +35,32 @@ public class InventoryProduct {
     protected InventoryProduct() {
     }
 
-    public void updateIsSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
     @Builder
-    private InventoryProduct(final Long id, final boolean isSelected, final Long memberId, final Keyboard keyboard) {
+    private InventoryProduct(final Long id, final boolean selected, final Long memberId, final Keyboard keyboard) {
         this.id = id;
-        this.isSelected = isSelected;
+        this.selected = selected;
         this.memberId = memberId;
         this.keyboard = keyboard;
+    }
+
+    public void updateSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof InventoryProduct)) {
+            return false;
+        }
+        final InventoryProduct that = (InventoryProduct) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

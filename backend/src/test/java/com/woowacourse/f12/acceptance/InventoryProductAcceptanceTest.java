@@ -33,23 +33,20 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     void 대표_장비가_없는_상태에서_대표_장비를_등록한다() {
         // given
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas");
-        String token = response.as(LoginResponse.class).getToken();
-        Long memberId = response.as(LoginResponse.class).getMember().getId();
+        LoginResponse loginResponse = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas")
+                .as(LoginResponse.class);
+        String token = loginResponse.getToken();
+        Long memberId = loginResponse.getMember().getId();
 
-        InventoryProduct inventoryProduct = InventoryProduct.builder()
-                .memberId(memberId)
-                .keyboard(keyboard)
-                .build();
-        InventoryProduct savedInventoryProduct = inventoryProductRepository.save(inventoryProduct);
+        InventoryProduct savedInventoryProduct = 대표장비를_지정한다(keyboard, memberId, false);
 
         // when
-        ExtractableResponse<Response> saveProfileProductResponse = 로그인된_상태로_PATCH_요청을_보낸다(
+        ExtractableResponse<Response> profileProductResponse = 로그인된_상태로_PATCH_요청을_보낸다(
                 "api/v1/members/inventoryProducts", token,
                 new ProfileProductRequest(savedInventoryProduct.getId(), null));
 
         // then
-        assertThat(saveProfileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(profileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
@@ -59,27 +56,17 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas");
         String token = response.as(LoginResponse.class).getToken();
         Long memberId = response.as(LoginResponse.class).getMember().getId();
-        InventoryProduct selectedInventoryProduct = InventoryProduct.builder()
-                .memberId(memberId)
-                .keyboard(keyboard)
-                .isSelected(true)
-                .build();
-        InventoryProduct unselectedInventoryProduct = InventoryProduct.builder()
-                .memberId(memberId)
-                .keyboard(keyboard)
-                .isSelected(false)
-                .build();
-        InventoryProduct savedSelectedInventoryProduct = inventoryProductRepository.save(selectedInventoryProduct);
-        InventoryProduct savedUnselectedInventoryProduct = inventoryProductRepository.save(unselectedInventoryProduct);
+        InventoryProduct savedSelectedInventoryProduct = 대표장비를_지정한다(keyboard, memberId, true);
+        InventoryProduct savedUnselectedInventoryProduct = 대표장비를_지정한다(keyboard, memberId, false);
 
         // when
-        ExtractableResponse<Response> saveProfileProductResponse = 로그인된_상태로_GET_요청을_보낸다(
+        ExtractableResponse<Response> profileProductResponse = 로그인된_상태로_GET_요청을_보낸다(
                 "api/v1/members/inventoryProducts", token);
 
         // then
         assertAll(
-                () -> assertThat(saveProfileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(saveProfileProductResponse.as(InventoryProductsResponse.class).getKeyboards())
+                () -> assertThat(profileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(profileProductResponse.as(InventoryProductsResponse.class).getKeyboards())
                         .usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(InventoryProductResponse.from(savedSelectedInventoryProduct),
                                 InventoryProductResponse.from(savedUnselectedInventoryProduct))
@@ -92,27 +79,17 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas");
         Long memberId = response.as(LoginResponse.class).getMember().getId();
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
-        InventoryProduct selectedInventoryProduct = InventoryProduct.builder()
-                .memberId(memberId)
-                .keyboard(keyboard)
-                .isSelected(true)
-                .build();
-        InventoryProduct unselectedInventoryProduct = InventoryProduct.builder()
-                .memberId(memberId)
-                .keyboard(keyboard)
-                .isSelected(false)
-                .build();
-        InventoryProduct savedSelectedInventoryProduct = inventoryProductRepository.save(selectedInventoryProduct);
-        InventoryProduct savedUnselectedInventoryProduct = inventoryProductRepository.save(unselectedInventoryProduct);
+        InventoryProduct savedSelectedInventoryProduct = 대표장비를_지정한다(keyboard, memberId, true);
+        InventoryProduct savedUnselectedInventoryProduct = 대표장비를_지정한다(keyboard, memberId, false);
 
         // when
-        ExtractableResponse<Response> saveProfileProductResponse = GET_요청을_보낸다(
+        ExtractableResponse<Response> profileProductResponse = GET_요청을_보낸다(
                 "/api/v1/members/" + memberId + "/inventoryProducts");
 
         // then
         assertAll(
-                () -> assertThat(saveProfileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(saveProfileProductResponse.as(InventoryProductsResponse.class).getKeyboards())
+                () -> assertThat(profileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(profileProductResponse.as(InventoryProductsResponse.class).getKeyboards())
                         .usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(InventoryProductResponse.from(savedSelectedInventoryProduct),
                                 InventoryProductResponse.from(savedUnselectedInventoryProduct))
@@ -121,5 +98,14 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
 
     private Keyboard 키보드를_저장한다(Keyboard keyboard) {
         return keyboardRepository.save(keyboard);
+    }
+
+    private InventoryProduct 대표장비를_지정한다(Keyboard keyboard, Long memberId, boolean selected) {
+        InventoryProduct inventoryProduct = InventoryProduct.builder()
+                .memberId(memberId)
+                .keyboard(keyboard)
+                .selected(selected)
+                .build();
+        return inventoryProductRepository.save(inventoryProduct);
     }
 }
