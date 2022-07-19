@@ -264,6 +264,66 @@ const getReviewProductData: (
   imageUrl,
 });
 
+export const InventoryProducts = {
+  keyboards: [
+    {
+      id: 1,
+      selected: true,
+      product: {
+        id: 3,
+        name: '레오폴드 FC900RBT PD 그레이 블루 한글 (저소음 적축)',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/833/414/img/15414833_1.jpg?shrink=330:330&_v=20211013110445',
+        rating: 0.0,
+      },
+    },
+    {
+      id: 2,
+      selected: false,
+      product: {
+        id: 4,
+        name: '레오폴드 FC900RBT PD 라이트 핑크 한글 (저소음 적축)',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/701/350/img/16350701_1.jpg?shrink=330:330&_v=20220209091825',
+        rating: 0.0,
+      },
+    },
+    {
+      id: 3,
+      selected: false,
+      product: {
+        id: 5,
+        name: '레오폴드 FC900RBT PD 그라파이트 화이트 한글 (저소음 적축)',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/637/448/img/15448637_1.jpg?shrink=330:330&_v=20211015164726',
+        rating: 0.0,
+      },
+    },
+    {
+      id: 4,
+      selected: false,
+      product: {
+        id: 6,
+        name: '레오폴드 FC900RBT PD 화이트민트 한글 (저소음적축)',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/701/079/img/17079701_1.jpg?shrink=330:330&_v=20220519094414',
+        rating: 0.0,
+      },
+    },
+    {
+      id: 5,
+      selected: false,
+      product: {
+        id: 7,
+        name: '레오폴드 FC660MBT PD 라이트 핑크 영문 (저소음 적축)',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
+        rating: 0.0,
+      },
+    },
+  ],
+};
+
 export const reviewsWithProduct: Review[] = [
   {
     id: 1,
