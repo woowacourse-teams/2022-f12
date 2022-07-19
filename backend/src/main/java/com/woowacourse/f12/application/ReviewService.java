@@ -62,14 +62,30 @@ public class ReviewService {
     }
 
     @Transactional
+    public void update(final Long reviewId, final Long memberId, final ReviewRequest updateRequest) {
+        final Review target = findTarget(reviewId, memberId);
+        final Review updateReview = updateRequest.toReview(target.getKeyboard(), target.getMember());
+        target.update(updateReview);
+    }
+
+    @Transactional
     public void delete(final Long reviewId, final Long memberId) {
+        final Review target = findTarget(reviewId, memberId);
+        reviewRepository.delete(target);
+    }
+
+    private Review findTarget(final Long reviewId, final Long memberId) {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
         final Review target = reviewRepository.findById(reviewId)
                 .orElseThrow(ReviewNotFoundException::new);
+        validateAuthor(member, target);
+        return target;
+    }
+
+    private void validateAuthor(final Member member, final Review target) {
         if (!target.isWrittenBy(member)) {
             throw new NotAuthorException();
         }
-        reviewRepository.delete(target);
     }
 }

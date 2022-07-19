@@ -192,6 +192,96 @@ class ReviewServiceTest {
     }
 
     @Test
+    void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰를_수정한다() {
+        // given
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        Member member = CORINNE.생성(memberId);
+        Review review = REVIEW_RATING_5.작성(reviewId, KEYBOARD_1.생성(), member);
+        ReviewRequest updateRequest = new ReviewRequest("수정할 내용", 4);
+
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.of(member));
+        given(reviewRepository.findById(reviewId))
+                .willReturn(Optional.of(review));
+
+        // when
+        reviewService.update(reviewId, memberId, updateRequest);
+
+        // then
+        assertAll(
+                () -> assertThat(review).usingRecursiveComparison()
+                        .comparingOnlyFields("content", "rating")
+                        .isEqualTo(updateRequest.toReview(null, null)),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(reviewRepository).findById(reviewId)
+        );
+    }
+
+    @Test
+    void 존재하지_않는_회원으로_로그인하여_리뷰를_수정하려_하면_예외를_반환한다() {
+        // given
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        ReviewRequest updateRequest = new ReviewRequest("수정할 내용", 4);
+
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.update(reviewId, memberId, updateRequest)),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(reviewRepository, times(0)).findById(reviewId)
+        );
+    }
+
+    @Test
+    void 수정하려는_리뷰가_없으면_예외를_반환한다() {
+        // given
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        ReviewRequest updateRequest = new ReviewRequest("수정할 내용", 4);
+        Member member = CORINNE.생성(memberId);
+
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.of(member));
+        given(reviewRepository.findById(reviewId))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.update(reviewId, memberId, updateRequest)),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(reviewRepository).findById(reviewId)
+        );
+    }
+
+    @Test
+    void 수정_요청의_로그인한_회원이_리뷰_작성자가_아니면_예외를_반환한다() {
+        // given
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        Long notAuthorId = 0L;
+        Member member = CORINNE.생성(memberId);
+        Member notAuthor = CORINNE.생성(notAuthorId);
+        Review review = REVIEW_RATING_5.작성(reviewId, KEYBOARD_1.생성(), member);
+        ReviewRequest updateRequest = new ReviewRequest("수정할 내용", 4);
+
+        given(memberRepository.findById(notAuthorId))
+                .willReturn(Optional.of(notAuthor));
+        given(reviewRepository.findById(reviewId))
+                .willReturn(Optional.of(review));
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.update(reviewId, notAuthorId, updateRequest)),
+                () -> verify(memberRepository).findById(notAuthorId),
+                () -> verify(reviewRepository).findById(reviewId)
+        );
+    }
+
+    @Test
     void 로그인한_회원이_리뷰_작성자와_일치하면_삭제한다() {
         // given
         Long reviewId = 1L;
@@ -255,7 +345,7 @@ class ReviewServiceTest {
     }
 
     @Test
-    void 로그인한_회원이_리뷰_작성자가_아니면_예외를_반환한다() {
+    void 삭제_요청의_로그인한_회원이_리뷰_작성자가_아니면_예외를_반환한다() {
         // given
         Long reviewId = 1L;
         Long memberId = 1L;

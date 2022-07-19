@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,10 +50,20 @@ public class ReviewController {
         return ResponseEntity.ok(reviewWithProductPageResponse);
     }
 
+    @PutMapping("/reviews/{reviewId}")
+    @LoginRequired
+    public ResponseEntity<Void> update(@PathVariable final Long reviewId, @VerifiedMember final Long memberId,
+                                       @RequestBody final ReviewRequest updateRequest) {
+        reviewService.update(reviewId, memberId, updateRequest);
+        return ResponseEntity.noContent()
+                .build();
+    }
+
     @DeleteMapping("/reviews/{reviewId}")
     @LoginRequired
     public ResponseEntity<Void> delete(@PathVariable final Long reviewId, @VerifiedMember final Long memberId) {
         reviewService.delete(reviewId, memberId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+                .build();
     }
 }

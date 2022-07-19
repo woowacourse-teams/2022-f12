@@ -87,6 +87,11 @@ public class Review {
         return this.member.equals(member);
     }
 
+    public void update(final Review updateReview) {
+        this.content = updateReview.getContent();
+        this.rating = updateReview.getRating();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

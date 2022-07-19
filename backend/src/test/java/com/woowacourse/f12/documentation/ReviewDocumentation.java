@@ -7,6 +7,7 @@ import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -130,6 +131,34 @@ public class ReviewDocumentation extends Documentation {
                 .andDo(print())
                 .andDo(
                         document("reviews-page-get")
+                );
+    }
+
+    @Test
+    void 리뷰_수정_API_문서화() throws Exception {
+        // given
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        String authorizationHeader = "Bearer Token";
+        ReviewRequest requestBody = new ReviewRequest("수정된 내용", 4);
+
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(memberId.toString());
+        willDoNothing().given(reviewService)
+                .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/reviews/" + reviewId)
+                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                .content(objectMapper.writeValueAsString(requestBody)));
+
+        // then
+        resultActions.andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(
+                        document("reviews-update")
                 );
     }
 
