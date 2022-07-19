@@ -14,9 +14,7 @@ type Return = {
   setSelectedProduct: React.Dispatch<React.SetStateAction<InventoryProduct>>;
   otherProducts: InventoryProduct[];
   refetchInventoryProducts: () => void;
-  updateProfileProduct: (
-    newSelectedInventoryProductId: InventoryProduct['id']
-  ) => Promise<void>;
+  updateProfileProduct: () => Promise<void>;
 };
 
 function useInventory(): Return {
@@ -35,26 +33,26 @@ function useInventory(): Return {
 
   const keyboards = (inventoryProducts && inventoryProducts.keyboards) || [];
 
-  const updateProfileProduct = async (
-    newSelectedInventoryProductId: InventoryProduct['id']
-  ) => {
+  const updateProfileProduct = async () => {
     if (
-      newSelectedInventoryProductId === undefined &&
-      initialSelectedProduct.current.id === undefined
+      !selectedProduct ||
+      (initialSelectedProduct.current &&
+        selectedProduct.id === initialSelectedProduct.current.id)
     ) {
-      throw new Error('유효하지 않은 요청입니다.');
-    }
-    if (newSelectedInventoryProductId === initialSelectedProduct.current.id) {
       return;
     }
-    await patchProfileProduct({
-      selectedInventoryProductId: newSelectedInventoryProductId,
-      unselectedInventoryProductId: initialSelectedProduct.current.id,
-    });
+
+    const patchBody = { selectedInventoryProductId: selectedProduct.id };
+    if (initialSelectedProduct.current) {
+      patchBody['unselectedInventoryProductId'] =
+        initialSelectedProduct.current.id;
+    }
+    await patchProfileProduct(patchBody);
   };
 
-  const otherProducts =
-    selectedProduct && keyboards.filter(({ id }) => id !== selectedProduct.id);
+  const otherProducts = selectedProduct
+    ? keyboards.filter(({ id }) => id !== selectedProduct.id)
+    : keyboards;
 
   useEffect(() => {
     if (!inventoryProducts) return;

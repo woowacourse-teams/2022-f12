@@ -37,5 +37,6 @@ export const Name = styled.p`
 `;
 
 export const AddContainer = styled(Container)`
+  width: 34rem;
   cursor: pointer;
 `;
