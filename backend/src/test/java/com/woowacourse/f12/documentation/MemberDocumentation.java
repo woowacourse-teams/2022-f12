@@ -53,4 +53,22 @@ public class MemberDocumentation extends Documentation {
                 .andDo(document("members-get-me"))
                 .andDo(print());
     }
+
+    @Test
+    void 비로그인_상태에서_회원정보를_조회_API_문서화() throws Exception {
+        // given
+        Long memberId = 1L;
+        given(memberService.findById(memberId))
+                .willReturn(MemberResponse.from(CORINNE.생성(memberId)));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/" + memberId)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("members-get-by-memberId"))
+                .andDo(print());
+    }
 }
