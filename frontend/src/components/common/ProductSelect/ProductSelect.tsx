@@ -9,9 +9,10 @@ import useInventory from '@/hooks/useInventory';
 type Props = {
   options: InventoryProduct[];
   initialValue: InventoryProduct;
+  submitHandler: () => void;
 };
 
-function ProductSelect({ options, initialValue }: Props) {
+function ProductSelect({ options, initialValue, submitHandler }: Props) {
   const [isEditMode, setEditMode] = useReducer(
     (isEditMode: boolean) => !isEditMode,
     false
@@ -49,13 +50,14 @@ function ProductSelect({ options, initialValue }: Props) {
     if (isEditMode) {
       updateProfileProduct(profileProduct.id, initialValue.id)
         .then(() => {
-          console.log(1);
+          submitHandler();
         })
-        .catch(() => {});
+        .catch((error) => {
+          alert(error);
+        });
       setOptionOpen();
     }
 
-    console.log(2);
     setEditMode();
   };
 

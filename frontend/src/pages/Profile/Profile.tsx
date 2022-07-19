@@ -11,7 +11,8 @@ import useInventory from '@/hooks/useInventory';
 
 function Profile() {
   const { isLoggedIn } = useAuth();
-  const { keyboards, selectedProduct } = useInventory();
+  const { keyboards, selectedProduct, refetchInventoryProducts } =
+    useInventory();
 
   return isLoggedIn ? (
     <S.Container>
@@ -21,7 +22,7 @@ function Profile() {
           <ProductSelect
             options={keyboards}
             initialValue={selectedProduct}
-            // onSelectSubmit={handleInventoryRefetch}
+            submitHandler={refetchInventoryProducts}
           />
         )}
       </S.ProfileSection>

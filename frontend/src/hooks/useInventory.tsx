@@ -11,6 +11,7 @@ type InventoryResponse = {
 type Return = {
   keyboards: InventoryProduct[];
   selectedProduct: InventoryProduct | null;
+  refetchInventoryProducts: () => void;
   updateProfileProduct: (
     selectedInventoryProductId: InventoryProduct['id'],
     unselectedInventoryProductId: InventoryProduct['id']
@@ -18,19 +19,20 @@ type Return = {
 };
 
 function useInventory(): Return {
-  const data = useGetOne<InventoryResponse>({
-    url: ENDPOINTS.INVENTORY_PRODUCTS,
-  });
+  const [inventoryProducts, refetchInventoryProducts] =
+    useGetOne<InventoryResponse>({
+      url: ENDPOINTS.INVENTORY_PRODUCTS,
+    });
 
   const { token } = useContext(UserDataContext);
   const patchProfileProduct = usePatch({
     url: ENDPOINTS.INVENTORY_PRODUCTS,
     headers: { Authorization: `Bearer ${token}` },
   });
-  const keyboards = (data && data.keyboards) || [];
+  const keyboards = (inventoryProducts && inventoryProducts.keyboards) || [];
   const selectedProduct =
-    data && data.keyboards.find(({ selected }) => selected);
-  // 프로필 상품 변경 매서드
+    inventoryProducts &&
+    inventoryProducts.keyboards.find(({ selected }) => selected);
   const updateProfileProduct = async (
     selectedInventoryProductId: InventoryProduct['id'],
     unselectedInventoryProductId: InventoryProduct['id']
@@ -50,7 +52,12 @@ function useInventory(): Return {
     });
   };
 
-  return { keyboards, selectedProduct, updateProfileProduct };
+  return {
+    keyboards,
+    selectedProduct,
+    refetchInventoryProducts,
+    updateProfileProduct,
+  };
 }
 
 export default useInventory;
