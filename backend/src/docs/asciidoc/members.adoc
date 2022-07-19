@@ -1,0 +1,14 @@
+[[Member]]
+== Member API
+
+=== 로그인된 상태로 나의 회원 정보 조회
+
+operation::members-get-me[snippets='http-request,http-response']
+
+=== 비로그인 상태로 회원 정보 조회
+
+operation::members-get-by-memberId[snippets='http-request,http-response']
+
+=== 로그인된 상태로 나의 회원 정보 수정
+
+operation::members-update-me[snippets='http-request,http-response']

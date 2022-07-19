@@ -7,18 +7,21 @@ import lombok.Getter;
 public class LoginResponse {
 
     private String token;
-    private MemberResponse member;
+    private boolean registerCompleted;
+    private LoginMemberResponse member;
 
     private LoginResponse() {
     }
 
-    private LoginResponse(final String token, final MemberResponse member) {
+    public LoginResponse(final String token, final boolean registerCompleted,
+                         final LoginMemberResponse loginMemberResponse) {
         this.token = token;
-        this.member = member;
+        this.registerCompleted = registerCompleted;
+        this.member = loginMemberResponse;
     }
 
     public static LoginResponse of(final String token, final Member member) {
-        final MemberResponse memberResponse = MemberResponse.from(member);
-        return new LoginResponse(token, memberResponse);
+        final LoginMemberResponse loginMemberResponse = LoginMemberResponse.from(member);
+        return new LoginResponse(token, member.isRegisterCompleted(), loginMemberResponse);
     }
 }
