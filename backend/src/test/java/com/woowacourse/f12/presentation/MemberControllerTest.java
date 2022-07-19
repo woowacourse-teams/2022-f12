@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.woowacourse.f12.application.JwtProvider;
 import com.woowacourse.f12.application.MemberService;
 import com.woowacourse.f12.dto.response.MemberResponse;
+import com.woowacourse.f12.exception.MemberNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -54,5 +55,39 @@ class MemberControllerTest {
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(memberService).findById(1L)
         );
+    }
+
+    @Test
+    void 비로그인_상태에서_회원정보를_조회_성공() throws Exception {
+        // given
+        Long memberId = 1L;
+        given(memberService.findById(memberId))
+                .willReturn(MemberResponse.from(CORINNE.생성(memberId)));
+
+        // when
+        mockMvc.perform(
+                        get("/api/v1/members/" + memberId)
+                ).andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(memberService).findById(1L);
+    }
+
+    @Test
+    void 비로그인_상태에서_회원정보를_조회_실패_등록되지_않은_회원일_경우() throws Exception {
+        // given
+        Long memberId = 1L;
+        given(memberService.findById(memberId))
+                .willThrow(new MemberNotFoundException());
+
+        // when
+        mockMvc.perform(
+                        get("/api/v1/members/" + memberId)
+                ).andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        verify(memberService).findById(1L);
     }
 }

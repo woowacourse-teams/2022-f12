@@ -29,4 +29,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
                 .isEqualTo(memberResponse);
     }
+
+    @Test
+    void 비로그인_상태에서_회원정보를_조회한다() {
+        // given
+        LoginResponse loginResponse = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas")
+                .as(LoginResponse.class);
+        MemberResponse memberResponse = loginResponse.getMember();
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members/" + memberResponse.getId());
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
+                .isEqualTo(memberResponse);
+    }
 }
