@@ -11,35 +11,26 @@ import useInventory from '@/hooks/useInventory';
 
 function Profile() {
   const { isLoggedIn } = useAuth();
-  const { keyboards, selectedProduct, refetchInventoryProducts } =
-    useInventory();
+  const { keyboards, refetchInventoryProducts } = useInventory();
 
   return isLoggedIn ? (
     <S.Container>
       <S.ProfileSection>
         <UserInfo profileImageUrl={sampleProfile} username="@dev1" />
-        {keyboards.length !== 0 && (
-          <ProductSelect
-            options={keyboards}
-            initialValue={selectedProduct}
-            submitHandler={refetchInventoryProducts}
-          />
-        )}
+        <ProductSelect submitHandler={refetchInventoryProducts} />
       </S.ProfileSection>
       <S.InventorySection>
         <SectionHeader>
           <S.Title>보유한 장비 목록</S.Title>
         </SectionHeader>
         <S.InventoryProductList>
-          {keyboards.map(
-            ({ id: inventoryId, selected: isSelected, product: { name } }) => (
-              <ProductBar
-                key={inventoryId}
-                name={name}
-                barType={isSelected ? 'selected' : 'default'}
-              />
-            )
-          )}
+          {keyboards.map(({ id: inventoryId, selected, product: { name } }) => (
+            <ProductBar
+              key={inventoryId}
+              name={name}
+              barType={selected ? 'selected' : 'default'}
+            />
+          ))}
         </S.InventoryProductList>
       </S.InventorySection>
     </S.Container>

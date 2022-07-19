@@ -2,7 +2,7 @@ import { ENDPOINTS } from '@/constants/api';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 import useGetOne from '@/hooks/api/useGetOne';
 import usePatch from '@/hooks/api/usePatch';
-import { useContext } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 type InventoryResponse = {
   keyboards: InventoryProduct[];
@@ -11,10 +11,11 @@ type InventoryResponse = {
 type Return = {
   keyboards: InventoryProduct[];
   selectedProduct: InventoryProduct | null;
+  setSelectedProduct: React.Dispatch<React.SetStateAction<InventoryProduct>>;
+  otherProducts: InventoryProduct[];
   refetchInventoryProducts: () => void;
   updateProfileProduct: (
-    selectedInventoryProductId: InventoryProduct['id'],
-    unselectedInventoryProductId: InventoryProduct['id']
+    newSelectedInventoryProductId: InventoryProduct['id']
   ) => Promise<void>;
 };
 
@@ -23,38 +24,57 @@ function useInventory(): Return {
     useGetOne<InventoryResponse>({
       url: ENDPOINTS.INVENTORY_PRODUCTS,
     });
-
   const { token } = useContext(UserDataContext);
+  const [selectedProduct, setSelectedProduct] =
+    useState<InventoryProduct | null>(null);
   const patchProfileProduct = usePatch({
     url: ENDPOINTS.INVENTORY_PRODUCTS,
     headers: { Authorization: `Bearer ${token}` },
   });
+  const initialSelectedProduct = useRef<InventoryProduct>();
+
   const keyboards = (inventoryProducts && inventoryProducts.keyboards) || [];
-  const selectedProduct =
-    inventoryProducts &&
-    inventoryProducts.keyboards.find(({ selected }) => selected);
+
   const updateProfileProduct = async (
-    selectedInventoryProductId: InventoryProduct['id'],
-    unselectedInventoryProductId: InventoryProduct['id']
+    newSelectedInventoryProductId: InventoryProduct['id']
   ) => {
     if (
-      selectedInventoryProductId === undefined &&
-      unselectedInventoryProductId === undefined
+      newSelectedInventoryProductId === undefined &&
+      initialSelectedProduct.current.id === undefined
     ) {
       throw new Error('유효하지 않은 요청입니다.');
     }
-    if (selectedInventoryProductId === unselectedInventoryProductId) {
+    if (newSelectedInventoryProductId === initialSelectedProduct.current.id) {
       return;
     }
     await patchProfileProduct({
-      selectedInventoryProductId,
-      unselectedInventoryProductId,
+      selectedInventoryProductId: newSelectedInventoryProductId,
+      unselectedInventoryProductId: initialSelectedProduct.current.id,
     });
   };
+
+  const otherProducts =
+    selectedProduct && keyboards.filter(({ id }) => id !== selectedProduct.id);
+
+  useEffect(() => {
+    if (!inventoryProducts) return;
+
+    const newSelectedProduct = inventoryProducts.keyboards.find(
+      ({ selected }) => selected
+    );
+
+    if (!selectedProduct && !!inventoryProducts) {
+      initialSelectedProduct.current = newSelectedProduct;
+    }
+
+    setSelectedProduct(newSelectedProduct);
+  }, [inventoryProducts]);
 
   return {
     keyboards,
     selectedProduct,
+    setSelectedProduct,
+    otherProducts,
     refetchInventoryProducts,
     updateProfileProduct,
   };
