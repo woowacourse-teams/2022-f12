@@ -2,6 +2,8 @@ package com.woowacourse.f12.application;
 
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
@@ -10,7 +12,11 @@ import com.woowacourse.f12.domain.InventoryProduct;
 import com.woowacourse.f12.domain.InventoryProductRepository;
 import com.woowacourse.f12.domain.MemberRepository;
 import com.woowacourse.f12.dto.request.ProfileProductRequest;
+import com.woowacourse.f12.dto.response.InventoryProductResponse;
+import com.woowacourse.f12.dto.response.InventoryProductsResponse;
+import com.woowacourse.f12.support.KeyboardFixtures;
 import com.woowacourse.f12.support.MemberFixtures;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class MemberServiceTest {
+class InventoryProductServiceTest {
 
     @Mock
     private InventoryProductRepository inventoryProductRepository;
@@ -28,7 +34,7 @@ class MemberServiceTest {
     private MemberRepository memberRepository;
 
     @InjectMocks
-    private MemberService memberService;
+    private InventoryProductService inventoryProductService;
 
     @Test
     void 대표_장비를_등록한다() {
@@ -54,13 +60,41 @@ class MemberServiceTest {
                 .willReturn(Optional.of(unselectInventoryProduct));
 
         // when
-        memberService.updateProfileProducts(1L, profileProductRequest);
+        inventoryProductService.updateProfileProducts(1L, profileProductRequest);
 
         // then
         assertAll(
                 () -> verify(memberRepository).findById(1L),
                 () -> verify(inventoryProductRepository).findById(1L),
                 () -> verify(inventoryProductRepository).findById(2L)
+        );
+    }
+
+    @Test
+    void 등록된_장비를_멤버_id로_조회한다() {
+        // given
+        Long memberId = 1L;
+        InventoryProduct inventoryProduct = InventoryProduct.builder()
+                .id(1L)
+                .memberId(memberId)
+                .keyboard(KeyboardFixtures.KEYBOARD_1.생성(1L))
+                .isSelected(true)
+                .build();
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.of(CORINNE.생성(1L)));
+        given(inventoryProductRepository.findByMemberId(memberId))
+                .willReturn(List.of(inventoryProduct));
+
+        // when
+        InventoryProductsResponse inventoryProductsResponse = inventoryProductService.findByMemberId(memberId);
+
+        // then
+        assertAll(
+                () -> assertThat(inventoryProductsResponse.getKeyboards()).hasSize(1)
+                        .usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(InventoryProductResponse.from(inventoryProduct)),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(inventoryProductRepository).findByMemberId(memberId)
         );
     }
 }

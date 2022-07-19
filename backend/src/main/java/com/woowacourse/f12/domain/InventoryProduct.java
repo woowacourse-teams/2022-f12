@@ -2,6 +2,7 @@ package com.woowacourse.f12.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +27,7 @@ public class InventoryProduct {
     @Column(name = "member_id")
     private Long memberId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "keyboard_id")
     private Keyboard keyboard;
 
