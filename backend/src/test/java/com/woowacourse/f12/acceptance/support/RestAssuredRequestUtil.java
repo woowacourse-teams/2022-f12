@@ -19,6 +19,16 @@ public class RestAssuredRequestUtil {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 로그인된_상태로_GET_요청을_보낸다(final String url, final String token) {
+        return RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get(url)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 로그인된_상태로_POST_요청을_보낸다(final String url, final String token,
                                                                       final Object requestBody) {
         return RestAssured.given().log().all()
