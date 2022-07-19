@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.data.domain.Sort.Order.desc;
 
 import com.woowacourse.f12.config.JpaConfig;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -31,6 +33,9 @@ class ReviewRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Test
     void 특정_제품의_리뷰_목록을_최신순으로_페이징하여_조회한다() {
@@ -93,6 +98,32 @@ class ReviewRepositoryTest {
                         .extracting("id")
                         .containsOnly(review.getId()),
                 () -> assertThat(page.hasNext()).isTrue()
+        );
+    }
+
+    @Test
+    void 프록시의_equals_hashCode_테스트() {
+        // given
+        Keyboard keyboard = keyboardRepository.save(KEYBOARD_1.생성());
+        Member member = memberRepository.save(CORINNE.생성());
+        Long testReviewId = reviewRepository.save(REVIEW_RATING_5.작성(keyboard, member))
+                .getId();
+        Long testKeyboardId = keyboard.getId();
+        Long testMemberId = member.getId();
+        entityManager.clear();
+
+        // when
+        Review review = reviewRepository.findById(testReviewId)
+                .get();
+        Member targetMember = memberRepository.findById(testMemberId)
+                .get();
+        Keyboard targetKeyboard = keyboardRepository.findById(testKeyboardId)
+                .get();
+
+        // then
+        assertAll(
+                () -> assertThat(targetMember).isEqualTo(review.getMember()),
+                () -> assertThat(targetKeyboard).isEqualTo(review.getKeyboard())
         );
     }
 
