@@ -8,7 +8,9 @@ import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -93,11 +95,9 @@ public class ReviewDocumentation extends Documentation {
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
                 .willReturn(reviewPageResponse);
 
-        // when
+        // when, then
         ResultActions resultActions = mockMvc.perform(
-                        get("/api/v1/keyboards/1/reviews?page=0&size=10&sort=createdAt,desc"))
-                .andExpect(status().isOk())
-                .andDo(print());
+                get("/api/v1/keyboards/1/reviews?page=0&size=10&sort=createdAt,desc"));
 
         // then
         resultActions.andExpect(status().isOk())
@@ -123,15 +123,38 @@ public class ReviewDocumentation extends Documentation {
                 .willReturn(reviewWithProductPageResponse);
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/reviews?page=0&size=10&sort=createdAt,desc"))
-                .andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/reviews?page=0&size=10&sort=createdAt,desc"));
 
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
                         document("reviews-page-get")
+                );
+    }
+
+    @Test
+    void 리뷰_삭제_API_문서화() throws Exception {
+        // given
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(memberId.toString());
+        willDoNothing().given(reviewService)
+                .delete(reviewId, memberId);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/reviews/" + reviewId)
+                .header(HttpHeaders.AUTHORIZATION, authorizationHeader));
+
+        // then
+        resultActions.andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(
+                        document("reviews-delete")
                 );
     }
 }
