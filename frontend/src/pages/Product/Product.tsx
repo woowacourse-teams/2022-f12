@@ -51,6 +51,7 @@ function Product() {
   const handleReviewEdit = (reviewInput: ReviewInput, id: number) => {
     editReview(reviewInput, id)
       .then(() => {
+        alert('리뷰가 수정되었습니다.');
         refetchReview();
       })
       .catch((error) => {
@@ -59,6 +60,8 @@ function Product() {
   };
 
   const handleReviewDeletion = (id: number) => {
+    if (!confirm('리뷰를 삭제하시겠습니까?')) return;
+
     deleteReview(id)
       .then(() => {
         refetchReview();
