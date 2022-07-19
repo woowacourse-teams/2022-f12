@@ -17,7 +17,7 @@ export const LogoutContext = createContext<() => void | null>(null);
 function LoginContextProvider({ children }: PropsWithChildren) {
   const [userData, setUserData, removeUserData] =
     useSessionStorage<UserData>('userData');
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(true);
 
   useEffect(() => {
     if (userData && userData.token) {

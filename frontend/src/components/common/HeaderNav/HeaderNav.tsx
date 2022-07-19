@@ -1,4 +1,5 @@
 import { GITHUB_AUTH_URL } from '@/constants/api';
+import ROUTES from '@/constants/routes';
 import useAuth from '@/hooks/useAuth';
 
 import * as S from './HeaderNav.style';
@@ -28,7 +29,10 @@ function HeaderNav() {
         </S.FlexLeftUl>
         <S.FlexRightUl>
           {isLoggedIn ? (
-            <S.LogoutButton onClick={handleLogout}>로그아웃</S.LogoutButton>
+            <>
+              <S.ProfileLink to={ROUTES.PROFILE}>내 프로필</S.ProfileLink>
+              <S.LogoutButton onClick={handleLogout}>로그아웃</S.LogoutButton>
+            </>
           ) : (
             <S.LoginButton href={GITHUB_AUTH_URL}>로그인</S.LoginButton>
           )}
