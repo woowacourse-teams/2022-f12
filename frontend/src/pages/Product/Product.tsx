@@ -11,8 +11,10 @@ import { useReducer, useRef } from 'react';
 import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
 import Plus from '@/assets/plus.svg';
 import theme from '@/style/theme';
+import useAuth from '@/hooks/useAuth';
 
 function Product() {
+  const { isLoggedIn } = useAuth();
   const { productId: id } = useParams();
   const productId = Number(id);
 
@@ -51,7 +53,7 @@ function Product() {
             />
           </StickyWrapper>
           <S.Wrapper ref={reviewListRef}>
-            {!isSheetOpen && (
+            {!isSheetOpen && isLoggedIn && (
               <FloatingButton clickHandler={toggleSheetOpen}>
                 <Plus stroke={theme.colors.white} />
               </FloatingButton>
