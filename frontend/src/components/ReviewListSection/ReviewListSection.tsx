@@ -16,7 +16,7 @@ const handleDeleteReview = () => {
 
 function ReviewListSection({ columns, data: reviewData, getNextPage }: Props) {
   const [data] = useSessionStorage<UserData>('userData');
-  const loginUserGithubId = data.member.githubId;
+  const loginUserGithubId = data?.member.githubId;
 
   const reviewCardList = reviewData.map(
     ({ id, author, product, content, rating }) => (
