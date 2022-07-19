@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -103,6 +102,27 @@ class ReviewServiceTest {
     }
 
     @Test
+    void 존재하지_않는_회원으로_로그인하여_리뷰를_작성하면_예외를_반환한다() {
+        // given
+        Long keyboardId = 1L;
+        Long memberId = 1L;
+        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
+        Keyboard keyboard = KEYBOARD_1.생성(keyboardId);
+
+        given(keyboardRepository.findById(keyboardId))
+                .willReturn(Optional.of(keyboard));
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.empty());
+
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.save(keyboardId, reviewRequest, memberId)),
+                () -> verify(keyboardRepository).findById(keyboardId),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(reviewRepository, times(0)).save(any(Review.class))
+        );
+    }
+
+    @Test
     void 특정_제품에_대한_리뷰_목록을_조회한다() {
         // given
         Long productId = 1L;
@@ -179,9 +199,9 @@ class ReviewServiceTest {
         Member member = CORINNE.생성(memberId);
         Review review = REVIEW_RATING_5.작성(reviewId, KEYBOARD_1.생성(), member);
 
-        given(memberRepository.findById(anyLong()))
+        given(memberRepository.findById(memberId))
                 .willReturn(Optional.of(member));
-        given(reviewRepository.findById(anyLong()))
+        given(reviewRepository.findById(reviewId))
                 .willReturn(Optional.of(review));
         willDoNothing().given(reviewRepository)
                 .delete(any(Review.class));
@@ -189,20 +209,26 @@ class ReviewServiceTest {
         // when, then
         assertAll(
                 () -> assertDoesNotThrow(() -> reviewService.delete(reviewId, memberId)),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(reviewRepository).findById(reviewId),
                 () -> verify(reviewRepository).delete(review)
         );
     }
 
     @Test
-    void 로그인한_회원이_정상_회원이_아니면_예외를_반환한다() {
+    void 존재하지_않는_회원으로_로그인하여_리뷰를_삭제하려_하면_예외를_반환한다() {
         // given
-        given(memberRepository.findById(anyLong()))
+        Long memberId = 1L;
+        Long reviewId = 1L;
+        given(memberRepository.findById(memberId))
                 .willReturn(Optional.empty());
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.delete(1L, 1L))
+                () -> assertThatThrownBy(() -> reviewService.delete(reviewId, memberId))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
+                () -> verify(memberRepository).findById(1L),
+                () -> verify(reviewRepository, times(0)).findById(reviewId),
                 () -> verify(reviewRepository, times(0)).delete(any(Review.class))
         );
     }
@@ -210,15 +236,20 @@ class ReviewServiceTest {
     @Test
     void 삭제하려는_리뷰가_없으면_예외를_반환한다() {
         // given
-        given(memberRepository.findById(anyLong()))
-                .willReturn(Optional.of(CORINNE.생성(1L)));
-        given(reviewRepository.findById(anyLong()))
+        Long memberId = 1L;
+        Long reviewId = 1L;
+        Member member = CORINNE.생성(memberId);
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.of(member));
+        given(reviewRepository.findById(reviewId))
                 .willReturn(Optional.empty());
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.delete(1L, 1L))
+                () -> assertThatThrownBy(() -> reviewService.delete(reviewId, memberId))
                         .isExactlyInstanceOf(ReviewNotFoundException.class),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(reviewRepository).findById(reviewId),
                 () -> verify(reviewRepository, times(0)).delete(any(Review.class))
         );
     }
@@ -228,19 +259,22 @@ class ReviewServiceTest {
         // given
         Long reviewId = 1L;
         Long memberId = 1L;
+        Long notAuthorId = 0L;
         Member member = CORINNE.생성(memberId);
-        Member notAuthor = CORINNE.생성(0L);
+        Member notAuthor = CORINNE.생성(notAuthorId);
         Review review = REVIEW_RATING_5.작성(reviewId, KEYBOARD_1.생성(), member);
 
-        given(memberRepository.findById(anyLong()))
+        given(memberRepository.findById(notAuthorId))
                 .willReturn(Optional.of(notAuthor));
-        given(reviewRepository.findById(anyLong()))
+        given(reviewRepository.findById(reviewId))
                 .willReturn(Optional.of(review));
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.delete(reviewId, 0L))
+                () -> assertThatThrownBy(() -> reviewService.delete(reviewId, notAuthorId))
                         .isExactlyInstanceOf(NotAuthorException.class),
+                () -> verify(memberRepository).findById(notAuthorId),
+                () -> verify(reviewRepository).findById(reviewId),
                 () -> verify(reviewRepository, times(0)).delete(review)
         );
     }
