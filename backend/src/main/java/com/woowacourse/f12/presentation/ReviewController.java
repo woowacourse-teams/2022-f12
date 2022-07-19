@@ -8,6 +8,7 @@ import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,5 +47,12 @@ public class ReviewController {
     public ResponseEntity<ReviewWithProductPageResponse> showPage(final Pageable pageable) {
         final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPage(pageable);
         return ResponseEntity.ok(reviewWithProductPageResponse);
+    }
+
+    @DeleteMapping("/reviews/{reviewId}")
+    @LoginRequired
+    public ResponseEntity<Void> delete(@PathVariable final Long reviewId, @VerifiedMember final Long memberId) {
+        reviewService.delete(reviewId, memberId);
+        return ResponseEntity.noContent().build();
     }
 }

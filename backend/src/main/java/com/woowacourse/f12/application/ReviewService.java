@@ -61,6 +61,7 @@ public class ReviewService {
         return ReviewWithProductPageResponse.from(page);
     }
 
+    @Transactional
     public void delete(final Long reviewId, final Long memberId) {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
