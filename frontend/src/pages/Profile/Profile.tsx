@@ -11,9 +11,8 @@ import useInventory from '@/hooks/useInventory';
 
 function Profile() {
   const { isLoggedIn } = useAuth();
-  const [keyboards] = useInventory();
+  const { keyboards, selectedProduct } = useInventory();
 
-  const selectedProduct = keyboards.find(({ selected }) => selected);
   return isLoggedIn ? (
     <S.Container>
       <S.ProfileSection>

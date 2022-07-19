@@ -4,6 +4,7 @@ import DownArrow from '@/assets/down_arrow.svg';
 
 import * as S from '@/components/common/ProductSelect/ProductSelect.style';
 import theme from '@/style/theme';
+import useInventory from '@/hooks/useInventory';
 
 type Props = {
   options: InventoryProduct[];
@@ -20,6 +21,7 @@ function ProductSelect({ options, initialValue }: Props) {
     false
   );
   const [profileProduct, setProfileProduct] = useState(initialValue);
+  const { updateProfileProduct } = useInventory();
 
   const handleProductSelect = (value: InventoryProduct) => {
     setProfileProduct(value);
@@ -45,8 +47,15 @@ function ProductSelect({ options, initialValue }: Props) {
 
   const handleEditDone = () => {
     if (isEditMode) {
-      // handleProfileProductPatch()
+      updateProfileProduct(profileProduct.id, initialValue.id)
+        .then(() => {
+          console.log(1);
+        })
+        .catch(() => {});
+      setOptionOpen();
     }
+
+    console.log(2);
     setEditMode();
   };
 
