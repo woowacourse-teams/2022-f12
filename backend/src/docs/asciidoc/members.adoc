@@ -1,0 +1,6 @@
+[[Member]]
+== Member API
+
+=== 로그인된 상태로 나의 회원 정보 조회
+
+operation::members-get-me[snippets='http-request,http-response']
