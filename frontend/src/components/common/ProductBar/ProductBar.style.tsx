@@ -9,7 +9,7 @@ const borderByType = (
   if (type === 'add') return `3px dashed ${theme.colors.primary}`;
 };
 
-export const Container = styled.p<{
+export const Container = styled.div<{
   barType: 'default' | 'selected' | 'add';
 }>`
   width: 100%;
