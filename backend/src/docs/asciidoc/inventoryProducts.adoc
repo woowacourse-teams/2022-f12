@@ -1,0 +1,6 @@
+[[InventoryProduct]]
+== InventoryProduct API
+
+=== 멤버 아이디로 인벤토리 상품을 조회
+
+operation::inventoryProducts-get-by-memberId[snippets='http-request,http-response']
