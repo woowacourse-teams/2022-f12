@@ -60,6 +60,31 @@ class InventoryDocumentation extends Documentation {
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(print())
+                .andDo(document("inventoryProducts-get-my"));
+    }
+
+    @Test
+    void 다른_멤버_id_로_인벤토리_상품_조회하는_API_문서화() throws Exception {
+        // given
+        Long memberId = 1L;
+        InventoryProduct inventoryProduct = InventoryProduct.builder()
+                .id(1L)
+                .memberId(memberId)
+                .keyboard(KEYBOARD_1.생성(1L))
+                .isSelected(true)
+                .build();
+        given(inventoryProductService.findByMemberId(memberId))
+                .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/" + memberId + "/inventoryProducts")
+
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
                 .andDo(document("inventoryProducts-get-by-memberId"));
     }
 }
