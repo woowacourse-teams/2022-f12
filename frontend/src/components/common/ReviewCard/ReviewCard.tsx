@@ -1,5 +1,6 @@
 import Rating from '../Rating/Rating';
 import UserNameTag from '../UserNameTag/UserNameTag';
+import useAuth from '@/hooks/useAuth';
 
 import * as S from './ReviewCard.style';
 
@@ -26,6 +27,8 @@ function ReviewCard({
   loginUserGithubId,
   handleDeleteReview,
 }: Props) {
+  const { isLoggedIn } = useAuth();
+
   return (
     <S.Container>
       {product && (
@@ -40,7 +43,7 @@ function ReviewCard({
         <S.Wrapper>
           <S.UserWrapper>
             <UserNameTag profileImage={profileImage} username={username} />
-            {!product && loginUserGithubId === username && (
+            {!product && loginUserGithubId === username && isLoggedIn && (
               <>
                 <S.EditButton>수정</S.EditButton>
                 <S.DeleteButton onClick={handleDeleteReview}>
