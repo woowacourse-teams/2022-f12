@@ -14,10 +14,10 @@ function UserInfo({ profileImageUrl, username, jobType, career }: Props) {
         <S.ProfileImage src={profileImageUrl} alt="" />
       </S.ImageWrapper>
       <S.Username>{username}</S.Username>
-      <S.ChipWrapper>
+      {/* <S.ChipWrapper>
         <Chip>{jobType}</Chip>
         <Chip>{career}</Chip>
-      </S.ChipWrapper>
+      </S.ChipWrapper> */}
     </S.Container>
   );
 }
