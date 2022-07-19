@@ -1,7 +1,9 @@
 import ProductBar from '@/components/common/ProductBar/ProductBar';
 import { useReducer } from 'react';
+import DownArrow from '@/assets/down_arrow.svg';
 
 import * as S from '@/components/common/ProductSelect/ProductSelect.style';
+import theme from '@/style/theme';
 
 type Props = {
   options: InventoryProduct[];
@@ -34,9 +36,12 @@ function ProductSelect({ options, value, setValue }: Props) {
 
   return (
     <S.Container>
-      <S.PseudoButton onClick={setOpen}>
-        <ProductBar name={currentProduct.name} barType="selected" />
-      </S.PseudoButton>
+      <S.Selected>
+        <S.PseudoButton onClick={setOpen}>
+          <ProductBar name={currentProduct.name} barType="selected" />
+        </S.PseudoButton>
+        <DownArrow stroke={theme.colors.black} />
+      </S.Selected>
       {isOpen && <S.OptionsList>{OptionListItems}</S.OptionsList>}
     </S.Container>
   );

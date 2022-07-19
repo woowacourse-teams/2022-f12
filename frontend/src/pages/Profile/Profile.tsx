@@ -42,9 +42,9 @@ function Profile() {
   return (
     <S.Container>
       <S.ProfileSection>
-        <button onClick={setEditMode}>
+        <S.EditButton onClick={setEditMode}>
           {isEditMode ? '수정 완료' : '수정하기'}
-        </button>
+        </S.EditButton>
         <UserInfo
           profileImageUrl={sampleProfile}
           username="@dev1"

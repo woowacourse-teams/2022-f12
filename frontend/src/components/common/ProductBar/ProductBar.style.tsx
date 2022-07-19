@@ -12,8 +12,8 @@ const borderByType = (
 export const Container = styled.p<{
   barType: 'default' | 'selected' | 'add';
 }>`
-  width: 36rem;
-  height: 3rem;
+  width: 100%;
+  height: 2.5rem;
 
   display: flex;
   justify-content: center;
@@ -27,7 +27,7 @@ export const Container = styled.p<{
 export const Name = styled.p`
   width: 34rem;
 
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
   text-align: center;
 
