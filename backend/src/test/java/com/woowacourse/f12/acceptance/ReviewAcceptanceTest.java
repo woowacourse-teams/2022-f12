@@ -1,6 +1,7 @@
 package com.woowacourse.f12.acceptance;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
@@ -13,8 +14,10 @@ import com.woowacourse.f12.domain.KeyboardRepository;
 import com.woowacourse.f12.dto.response.LoginResponse;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.ReviewWithProductResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -117,8 +120,31 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private long Location_헤더에서_id값을_꺼낸다(final ExtractableResponse<Response> REVIEW_RATING_4) {
-        return Long.parseLong(REVIEW_RATING_4
+    @Test
+    void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰를_삭제한다() {
+        // given
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        LoginResponse loginResponse = GET_요청을_보낸다("/api/v1/login?code=code")
+                .as(LoginResponse.class);
+        String token = loginResponse.getToken();
+        long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token));
+
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다(
+                "/api/v1/reviews/" + reviewId, token);
+        List<ReviewWithProductResponse> reviews = GET_요청을_보낸다("/api/v1/reviews?page=0&size=2&sort=createdAt,desc")
+                .as(ReviewWithProductPageResponse.class)
+                .getItems();
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                () -> assertThat(reviews).isEmpty()
+        );
+    }
+
+    private long Location_헤더에서_id값을_꺼낸다(final ExtractableResponse<Response> reviewCreateResponse) {
+        return Long.parseLong(reviewCreateResponse
                 .header("Location")
                 .split("/")[4]);
     }

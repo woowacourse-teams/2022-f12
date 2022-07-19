@@ -22,3 +22,7 @@ operation::reviews-by-product-page-get[snippets='http-request,http-response']
 - `rating,desc`(평점순)
 
 operation::reviews-page-get[snippets='http-request,http-response']
+
+=== 리뷰 삭제
+
+operation::reviews-delete[snippets='http-request,http-response']

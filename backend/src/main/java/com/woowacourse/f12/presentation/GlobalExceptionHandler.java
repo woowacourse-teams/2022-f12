@@ -1,6 +1,7 @@
 package com.woowacourse.f12.presentation;
 
 import com.woowacourse.f12.dto.response.ExceptionResponse;
+import com.woowacourse.f12.exception.ForbiddenMemberException;
 import com.woowacourse.f12.exception.InvalidValueException;
 import com.woowacourse.f12.exception.NotFoundException;
 import com.woowacourse.f12.exception.UnauthorizedException;
@@ -44,8 +45,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ExceptionResponse> handleUnAuthorizedException(final UnauthorizedException e) {
+    public ResponseEntity<ExceptionResponse> handleUnauthorizedException(final UnauthorizedException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ExceptionResponse.from(e));
+    }
+
+    @ExceptionHandler(ForbiddenMemberException.class)
+    public ResponseEntity<ExceptionResponse> handleForbiddenMemberException(final ForbiddenMemberException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ExceptionResponse.from(e));
     }
 
     @ExceptionHandler(Exception.class)

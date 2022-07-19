@@ -48,7 +48,7 @@ class AuthInterceptorTest {
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(false);
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willReturn(1L);
         // when
         mockMvc.perform(
@@ -62,7 +62,7 @@ class AuthInterceptorTest {
         // then
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
-                () -> verify(reviewService, times(0)).save(eq(1L), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService, times(0)).save(eq(1L), eq(1L), any(ReviewRequest.class))
         );
     }
 }

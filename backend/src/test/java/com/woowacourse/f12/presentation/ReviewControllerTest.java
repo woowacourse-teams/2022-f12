@@ -8,8 +8,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -25,6 +28,9 @@ import com.woowacourse.f12.exception.BlankContentException;
 import com.woowacourse.f12.exception.InvalidContentLengthException;
 import com.woowacourse.f12.exception.InvalidRatingValueException;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
+import com.woowacourse.f12.exception.MemberNotFoundException;
+import com.woowacourse.f12.exception.NotAuthorException;
+import com.woowacourse.f12.exception.ReviewNotFoundException;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +78,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willReturn(1L);
         // when
         mockMvc.perform(
@@ -87,7 +93,7 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -98,7 +104,9 @@ class ReviewControllerTest {
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
         // when
@@ -113,7 +121,7 @@ class ReviewControllerTest {
         // then
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
-                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -126,7 +134,9 @@ class ReviewControllerTest {
         reviewRequest.put("rating", "문자");
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
         // when
@@ -141,7 +151,7 @@ class ReviewControllerTest {
         // then
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
-                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -154,7 +164,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
         // when
@@ -170,7 +180,7 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -184,7 +194,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidContentLengthException(1000));
 
         // when
@@ -200,7 +210,7 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -213,7 +223,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidRatingValueException());
 
         // when
@@ -229,7 +239,7 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -242,7 +252,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), any(ReviewRequest.class), anyLong()))
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new KeyboardNotFoundException());
 
         // when
@@ -258,7 +268,36 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(0L), any(ReviewRequest.class), eq(1L))
+                () -> verify(reviewService).save(eq(0L), eq(1L), any(ReviewRequest.class))
+        );
+    }
+
+    @Test
+    void 리뷰_생성_실패_회원이_존재하지_않음() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
+                .willThrow(new MemberNotFoundException());
+
+        // when
+        mockMvc.perform(
+                        post("/api/v1/keyboards/" + 1L + "/reviews")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(reviewRequest))
+                ).andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(reviewService).save(eq(1L), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -282,7 +321,8 @@ class ReviewControllerTest {
     void 특정_상품의_리뷰_페이지_조회() throws Exception {
         // given
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
-                .willReturn(ReviewPageResponse.from(new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(1L))))));
+                .willReturn(ReviewPageResponse.from(
+                        new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(1L))))));
 
         // when
         mockMvc.perform(get("/api/v1/keyboards/" + PRODUCT_ID + "/reviews?size=150&page=0&sort=rating,desc"))
@@ -306,5 +346,117 @@ class ReviewControllerTest {
 
         // then
         verify(reviewService).findPageByProductId(0L, PageRequest.of(0, 150, Sort.by("rating").descending()));
+    }
+
+    @Test
+    void 리뷰_삭제_성공() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(memberId.toString());
+        willDoNothing().given(reviewService)
+                .delete(reviewId, memberId);
+
+        // when
+        mockMvc.perform(
+                        delete("/api/v1/reviews/" + reviewId)
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                ).andExpect(status().isNoContent())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(reviewService).delete(reviewId, memberId)
+        );
+    }
+
+    @Test
+    void 리뷰_삭제_실패_회원_존재하지_않음() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(memberId.toString());
+        willThrow(new MemberNotFoundException()).given(reviewService)
+                .delete(reviewId, memberId);
+
+        // when
+        mockMvc.perform(
+                        delete("/api/v1/reviews/" + reviewId)
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                ).andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(reviewService).delete(reviewId, memberId)
+        );
+    }
+
+    @Test
+    void 리뷰_삭제_실패_리뷰_존재하지_않음() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(memberId.toString());
+        willThrow(new ReviewNotFoundException()).given(reviewService)
+                .delete(reviewId, memberId);
+
+        // when
+        mockMvc.perform(
+                        delete("/api/v1/reviews/" + reviewId)
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                ).andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(reviewService).delete(reviewId, memberId)
+        );
+    }
+
+    @Test
+    void 리뷰_삭제_실패_작성자가_아님() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(memberId.toString());
+        willThrow(new NotAuthorException()).given(reviewService)
+                .delete(reviewId, memberId);
+
+        // when
+        mockMvc.perform(
+                        delete("/api/v1/reviews/" + reviewId)
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                ).andExpect(status().isForbidden())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(reviewService).delete(reviewId, memberId)
+        );
     }
 }

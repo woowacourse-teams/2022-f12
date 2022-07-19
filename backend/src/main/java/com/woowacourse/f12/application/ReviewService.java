@@ -11,6 +11,8 @@ import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import com.woowacourse.f12.exception.MemberNotFoundException;
+import com.woowacourse.f12.exception.NotAuthorException;
+import com.woowacourse.f12.exception.ReviewNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public Long save(final Long productId, final ReviewRequest reviewRequest, final Long memberId) {
+    public Long save(final Long productId, final Long memberId, final ReviewRequest reviewRequest) {
         final Keyboard keyboard = keyboardRepository.findById(productId)
                 .orElseThrow(KeyboardNotFoundException::new);
         final Member member = memberRepository.findById(memberId)
@@ -57,5 +59,17 @@ public class ReviewService {
     public ReviewWithProductPageResponse findPage(final Pageable pageable) {
         final Slice<Review> page = reviewRepository.findPageBy(pageable);
         return ReviewWithProductPageResponse.from(page);
+    }
+
+    @Transactional
+    public void delete(final Long reviewId, final Long memberId) {
+        final Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+        final Review target = reviewRepository.findById(reviewId)
+                .orElseThrow(ReviewNotFoundException::new);
+        if (!target.isWrittenBy(member)) {
+            throw new NotAuthorException();
+        }
+        reviewRepository.delete(target);
     }
 }

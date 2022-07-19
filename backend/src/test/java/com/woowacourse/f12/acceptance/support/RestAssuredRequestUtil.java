@@ -30,4 +30,13 @@ public class RestAssuredRequestUtil {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 로그인된_상태로_DELETE_요청을_보낸다(final String url, final String token) {
+        return RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .when()
+                .delete(url)
+                .then().log().all()
+                .extract();
+    }
 }
