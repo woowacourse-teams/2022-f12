@@ -2,6 +2,7 @@ package com.woowacourse.f12.acceptance;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PUT_요청을_보낸다;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
+import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.LoginResponse;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
@@ -117,6 +119,32 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.as(ReviewWithProductPageResponse.class).getItems())
                         .extracting("id")
                         .containsExactly(reviewId2, reviewId1)
+        );
+    }
+
+    @Test
+    void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰를_수정한다() {
+        // given
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        LoginResponse loginResponse = GET_요청을_보낸다("/api/v1/login?code=code")
+                .as(LoginResponse.class);
+        String token = loginResponse.getToken();
+        long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token));
+        ReviewRequest requestBody = new ReviewRequest("수정된 내용", 4);
+
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_PUT_요청을_보낸다("/api/v1/reviews/" + reviewId, token,
+                requestBody);
+        ReviewWithProductResponse review = GET_요청을_보낸다("/api/v1/reviews?page=0&size=2&sort=createdAt,desc")
+                .as(ReviewWithProductPageResponse.class)
+                .getItems()
+                .get(0);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                () -> assertThat(review.getContent()).isEqualTo(requestBody.getContent()),
+                () -> assertThat(review.getRating()).isEqualTo(requestBody.getRating())
         );
     }
 

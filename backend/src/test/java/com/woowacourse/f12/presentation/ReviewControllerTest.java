@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -346,6 +347,130 @@ class ReviewControllerTest {
 
         // then
         verify(reviewService).findPageByProductId(0L, PageRequest.of(0, 150, Sort.by("rating").descending()));
+    }
+
+    @Test
+    void 리뷰_수정_성공() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        ReviewRequest updateRequest = new ReviewRequest("수정된 내용", 4);
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(memberId.toString());
+        willDoNothing().given(reviewService)
+                .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
+
+        // when
+        mockMvc.perform(
+                        put("/api/v1/reviews/" + reviewId)
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateRequest))
+                ).andExpect(status().isNoContent())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(reviewService).update(eq(reviewId), eq(memberId), any(ReviewRequest.class))
+        );
+    }
+
+    @Test
+    void 리뷰_수정_실패_회원_존재하지_않음() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        ReviewRequest updateRequest = new ReviewRequest("수정된 내용", 4);
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(memberId.toString());
+        willThrow(new MemberNotFoundException()).given(reviewService)
+                .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
+
+        // when
+        mockMvc.perform(
+                        put("/api/v1/reviews/" + reviewId)
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateRequest))
+                ).andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(reviewService).update(eq(reviewId), eq(memberId), any(ReviewRequest.class))
+        );
+    }
+
+    @Test
+    void 리뷰_수정_실패_리뷰_존재하지_않음() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        ReviewRequest updateRequest = new ReviewRequest("수정된 내용", 4);
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(memberId.toString());
+        willThrow(new ReviewNotFoundException()).given(reviewService)
+                .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
+
+        // when
+        mockMvc.perform(
+                        put("/api/v1/reviews/" + reviewId)
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateRequest))
+                ).andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(reviewService).update(eq(reviewId), eq(memberId), any(ReviewRequest.class))
+        );
+    }
+
+    @Test
+    void 리뷰_수정_실패_작성자가_아님() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        Long reviewId = 1L;
+        Long memberId = 1L;
+        ReviewRequest updateRequest = new ReviewRequest("수정된 내용", 4);
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(memberId.toString());
+        willThrow(new NotAuthorException()).given(reviewService)
+                .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
+
+        // when
+        mockMvc.perform(
+                        put("/api/v1/reviews/" + reviewId)
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateRequest))
+                ).andExpect(status().isForbidden())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(reviewService).update(eq(reviewId), eq(memberId), any(ReviewRequest.class))
+        );
     }
 
     @Test
