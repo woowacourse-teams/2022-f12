@@ -64,16 +64,17 @@ class ReviewServiceTest {
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
         Long productId = 1L;
         Keyboard keyboard = KEYBOARD_1.생성(productId);
-        Member member = CORINNE.생성(1L);
+        Long memberId = 1L;
+        Member member = CORINNE.생성(memberId);
         given(keyboardRepository.findById(productId))
                 .willReturn(Optional.of(keyboard));
         given(memberRepository.findById(1L))
-                .willReturn(Optional.of(CORINNE.생성(1L)));
+                .willReturn(Optional.of(member));
         given(reviewRepository.save(reviewRequest.toReview(keyboard, member)))
                 .willReturn(REVIEW_RATING_5.작성(1L, keyboard, member));
 
         // when
-        Long reviewId = reviewService.save(productId, 1L, reviewRequest);
+        Long reviewId = reviewService.save(productId, memberId, reviewRequest);
 
         // then
         assertAll(
@@ -84,11 +85,32 @@ class ReviewServiceTest {
     }
 
     @Test
+    void 존재하지_않는_회원으로_로그인하여_리뷰를_작성하면_예외를_반환한다() {
+        // given
+        Long memberId = 1L;
+        Long productId = 1L;
+        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
+
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.empty());
+
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.save(productId, memberId, reviewRequest)),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(reviewRepository, times(0)).save(any(Review.class))
+        );
+    }
+
+    @Test
     void 존재하지_않는_제품_리뷰_등록하면_예외가_발생한다() {
         // given
-        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
+        Long memberId = 1L;
         Long productId = 1L;
+        Member member = CORINNE.생성(memberId);
+        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
 
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.of(member));
         given(keyboardRepository.findById(productId))
                 .willReturn(Optional.empty());
 
@@ -96,28 +118,8 @@ class ReviewServiceTest {
         assertAll(
                 () -> assertThatThrownBy(() -> reviewService.save(1L, 1L, reviewRequest))
                         .isExactlyInstanceOf(KeyboardNotFoundException.class),
-                () -> verify(keyboardRepository).findById(productId),
-                () -> verify(reviewRepository, times(0)).save(any(Review.class))
-        );
-    }
-
-    @Test
-    void 존재하지_않는_회원으로_로그인하여_리뷰를_작성하면_예외를_반환한다() {
-        // given
-        Long keyboardId = 1L;
-        Long memberId = 1L;
-        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
-        Keyboard keyboard = KEYBOARD_1.생성(keyboardId);
-
-        given(keyboardRepository.findById(keyboardId))
-                .willReturn(Optional.of(keyboard));
-        given(memberRepository.findById(memberId))
-                .willReturn(Optional.empty());
-
-        assertAll(
-                () -> assertThatThrownBy(() -> reviewService.save(keyboardId, memberId, reviewRequest)),
-                () -> verify(keyboardRepository).findById(keyboardId),
                 () -> verify(memberRepository).findById(memberId),
+                () -> verify(keyboardRepository).findById(productId),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
         );
     }
