@@ -69,7 +69,6 @@ public class RestAssuredRequestUtil {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when()
                 .delete(url)
-                .patch(url)
                 .then().log().all()
                 .extract();
     }
