@@ -18,11 +18,12 @@ type Return = {
 };
 
 function useInventory(): Return {
+  const { token } = useContext(UserDataContext);
   const [inventoryProducts, refetchInventoryProducts] =
     useGetOne<InventoryResponse>({
       url: ENDPOINTS.INVENTORY_PRODUCTS,
+      headers: { Authorization: `Bearer ${token}` },
     });
-  const { token } = useContext(UserDataContext);
   const [selectedProduct, setSelectedProduct] =
     useState<InventoryProduct | null>(null);
   const patchProfileProduct = usePatch({
