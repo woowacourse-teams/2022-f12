@@ -7,7 +7,7 @@ import lombok.Getter;
 public class ReviewResponse {
 
     private Long id;
-    private ReviewAuthor author;
+    private ReviewAuthorResponse author;
     private Long productId;
     private String content;
     private int rating;
@@ -16,7 +16,7 @@ public class ReviewResponse {
     private ReviewResponse() {
     }
 
-    private ReviewResponse(final Long id, final ReviewAuthor author, final Long productId, final String content,
+    private ReviewResponse(final Long id, final ReviewAuthorResponse author, final Long productId, final String content,
                            final int rating, final String createdAt) {
         this.id = id;
         this.author = author;
@@ -27,7 +27,7 @@ public class ReviewResponse {
     }
 
     public static ReviewResponse from(final Review review) {
-        final ReviewAuthor author = ReviewAuthor.from(review.getMember());
+        final ReviewAuthorResponse author = ReviewAuthorResponse.from(review.getMember());
         return new ReviewResponse(review.getId(), author, review.getKeyboard().getId(), review.getContent(),
                 review.getRating(), review.getCreatedAt().toString());
     }
