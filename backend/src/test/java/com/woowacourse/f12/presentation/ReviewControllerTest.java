@@ -79,7 +79,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willReturn(1L);
         // when
         mockMvc.perform(
@@ -94,7 +94,8 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
+                () -> verify(reviewService).saveReviewAndInventoryProduct(eq(PRODUCT_ID), eq(1L),
+                        any(ReviewRequest.class))
         );
     }
 
@@ -107,7 +108,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
         // when
@@ -122,7 +123,8 @@ class ReviewControllerTest {
         // then
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
-                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
+                () -> verify(reviewService, times(0)).saveReviewAndInventoryProduct(eq(PRODUCT_ID), eq(1L),
+                        any(ReviewRequest.class))
         );
     }
 
@@ -137,7 +139,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
         // when
@@ -152,7 +154,8 @@ class ReviewControllerTest {
         // then
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
-                () -> verify(reviewService, times(0)).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
+                () -> verify(reviewService, times(0)).saveReviewAndInventoryProduct(eq(PRODUCT_ID), eq(1L),
+                        any(ReviewRequest.class))
         );
     }
 
@@ -165,7 +168,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
         // when
@@ -181,7 +184,8 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
+                () -> verify(reviewService).saveReviewAndInventoryProduct(eq(PRODUCT_ID), eq(1L),
+                        any(ReviewRequest.class))
         );
     }
 
@@ -195,7 +199,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidContentLengthException(1000));
 
         // when
@@ -211,7 +215,8 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
+                () -> verify(reviewService).saveReviewAndInventoryProduct(eq(PRODUCT_ID), eq(1L),
+                        any(ReviewRequest.class))
         );
     }
 
@@ -224,7 +229,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidRatingValueException());
 
         // when
@@ -240,7 +245,8 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(PRODUCT_ID), eq(1L), any(ReviewRequest.class))
+                () -> verify(reviewService).saveReviewAndInventoryProduct(eq(PRODUCT_ID), eq(1L),
+                        any(ReviewRequest.class))
         );
     }
 
@@ -253,7 +259,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new KeyboardNotFoundException());
 
         // when
@@ -269,7 +275,7 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(0L), eq(1L), any(ReviewRequest.class))
+                () -> verify(reviewService).saveReviewAndInventoryProduct(eq(0L), eq(1L), any(ReviewRequest.class))
         );
     }
 
@@ -282,7 +288,7 @@ class ReviewControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new MemberNotFoundException());
 
         // when
@@ -298,7 +304,7 @@ class ReviewControllerTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(reviewService).save(eq(1L), eq(1L), any(ReviewRequest.class))
+                () -> verify(reviewService).saveReviewAndInventoryProduct(eq(1L), eq(1L), any(ReviewRequest.class))
         );
     }
 

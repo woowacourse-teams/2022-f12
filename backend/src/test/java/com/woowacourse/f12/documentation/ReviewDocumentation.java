@@ -62,7 +62,7 @@ public class ReviewDocumentation extends Documentation {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(reviewService.save(anyLong(), anyLong(), any(ReviewRequest.class)))
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willReturn(1L);
         ReviewRequest reviewRequest = new ReviewRequest("content", 5);
 

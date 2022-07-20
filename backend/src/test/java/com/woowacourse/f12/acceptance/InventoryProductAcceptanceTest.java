@@ -4,6 +4,7 @@ import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -17,6 +18,7 @@ import com.woowacourse.f12.dto.response.InventoryProductsResponse;
 import com.woowacourse.f12.dto.response.LoginResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,26 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private InventoryProductRepository inventoryProductRepository;
+
+    @Test
+    void 리뷰를_작성하면_해당_장비가_인벤토리에_추가된다() {
+        // given
+        Long keyboardId = 키보드를_저장한다(KEYBOARD_1.생성()).getId();
+        String token = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas")
+                .as(LoginResponse.class)
+                .getToken();
+        REVIEW_RATING_5.작성_요청을_보낸다(keyboardId, token);
+
+        // when
+        List<InventoryProductResponse> keyboardsInInventory =
+                로그인된_상태로_GET_요청을_보낸다("/api/v1/members/inventoryProducts", token)
+                        .as(InventoryProductsResponse.class)
+                        .getKeyboards();
+
+        // then
+        assertThat(keyboardsInInventory).extracting("id")
+                .containsOnly(keyboardId);
+    }
 
     @Test
     void 대표_장비가_없는_상태에서_대표_장비를_등록한다() {
