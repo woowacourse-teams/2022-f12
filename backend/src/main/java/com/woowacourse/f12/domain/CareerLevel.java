@@ -1,5 +1,8 @@
 package com.woowacourse.f12.domain;
 
+import lombok.Getter;
+
+@Getter
 public enum CareerLevel {
 
     NONE("경력 없음"),
@@ -11,9 +14,5 @@ public enum CareerLevel {
 
     CareerLevel(final String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 }

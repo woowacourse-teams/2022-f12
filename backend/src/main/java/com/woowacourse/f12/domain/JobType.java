@@ -1,5 +1,8 @@
 package com.woowacourse.f12.domain;
 
+import lombok.Getter;
+
+@Getter
 public enum JobType {
 
     FRONT_END("프론트엔드"),
@@ -11,9 +14,5 @@ public enum JobType {
 
     JobType(final String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 }
