@@ -167,6 +167,38 @@ class MemberControllerTest {
     }
 
     @Test
+    void 로그인된_상태에서_나의_회원정보를_수정_실패_Enum의_name값과_다른_요청일_경우() throws Exception {
+        // given
+        Map<String, Object> memberRequest = new HashMap<>();
+        memberRequest.put("careerLevel", "invalid");
+        memberRequest.put("jobType", "invalid");
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        willDoNothing().given(memberService).updateMember(eq(1L), any(MemberRequest.class));
+
+        // when
+        mockMvc.perform(
+                        patch("/api/v1/members/me")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .content(objectMapper.writeValueAsString(memberRequest))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(memberService, times(0)).updateMember(eq(1L), any(MemberRequest.class))
+        );
+    }
+
+    @Test
     void 로그인된_상태에서_나의_회원정보를_수정_실패_DTO_필드가_null인_경우() throws Exception {
         // given
         MemberRequest memberRequest = new MemberRequest(null, null);
