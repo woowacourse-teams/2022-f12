@@ -103,7 +103,7 @@ const getToken = (req, res, ctx) => {
   const response = {
     member: {
       id: 1,
-      githubId: '사용자2',
+      gitHubId: '사용자2',
       imageUrl: sampleProfile,
       name: 'F12개발자',
     },

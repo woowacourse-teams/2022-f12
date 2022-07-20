@@ -536,7 +536,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 1,
     author: {
       id: 1,
-      githubId: '사용자1',
+      gitHubId: '사용자1',
       imageUrl: sampleProfile,
     },
     productId: 1,
@@ -549,7 +549,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 2,
     author: {
       id: 2,
-      githubId: '사용자2',
+      gitHubId: '사용자2',
       imageUrl: sampleProfile,
     },
     productId: 2,
@@ -562,7 +562,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 3,
     author: {
       id: 3,
-      githubId: '사용자3',
+      gitHubId: '사용자3',
       imageUrl: sampleProfile,
     },
     productId: 3,
@@ -575,7 +575,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 4,
     author: {
       id: 4,
-      githubId: '사용자4',
+      gitHubId: '사용자4',
       imageUrl: sampleProfile,
     },
     productId: 4,
@@ -588,7 +588,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 5,
     author: {
       id: 5,
-      githubId: '사용자5',
+      gitHubId: '사용자5',
       imageUrl: sampleProfile,
     },
     productId: 5,
@@ -601,7 +601,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 6,
     author: {
       id: 6,
-      githubId: '사용자6',
+      gitHubId: '사용자6',
       imageUrl: sampleProfile,
     },
     productId: 6,
@@ -614,7 +614,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 7,
     author: {
       id: 7,
-      githubId: '사용자7',
+      gitHubId: '사용자7',
       imageUrl: sampleProfile,
     },
     productId: 7,
@@ -627,7 +627,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 8,
     author: {
       id: 8,
-      githubId: '사용자8',
+      gitHubId: '사용자8',
       imageUrl: sampleProfile,
     },
     productId: 8,
@@ -640,7 +640,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 9,
     author: {
       id: 9,
-      githubId: '사용자9',
+      gitHubId: '사용자9',
       imageUrl: sampleProfile,
     },
     productId: 9,
@@ -653,7 +653,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 10,
     author: {
       id: 10,
-      githubId: '사용자10',
+      gitHubId: '사용자10',
       imageUrl: sampleProfile,
     },
     productId: 10,
@@ -666,7 +666,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 11,
     author: {
       id: 11,
-      githubId: '사용자11',
+      gitHubId: '사용자11',
       imageUrl: sampleProfile,
     },
     productId: 11,
@@ -679,7 +679,7 @@ export const reviewsWithOutProduct: Review[] = [
     id: 12,
     author: {
       id: 12,
-      githubId: '사용자12',
+      gitHubId: '사용자12',
       imageUrl: sampleProfile,
     },
     productId: 12,

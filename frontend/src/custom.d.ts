@@ -10,7 +10,7 @@ declare module '*.svg' {
 
 declare type Member = {
   id: number;
-  githubId: string;
+  gitHubId: string;
   imageUrl: string;
   name: string;
 };
