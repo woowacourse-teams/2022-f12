@@ -5,6 +5,7 @@ import com.woowacourse.f12.domain.Member;
 import com.woowacourse.f12.domain.MemberRepository;
 import com.woowacourse.f12.dto.request.MemberRequest;
 import com.woowacourse.f12.dto.response.MemberResponse;
+import com.woowacourse.f12.exception.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,9 @@ public class MemberService {
 
     public MemberResponse findById(final Long memberId) {
         final Member member = findMember(memberId);
+        if (!member.isRegisterCompleted()) {
+            throw new InvalidProfileArgumentException();
+        }
         return MemberResponse.from(member);
     }
 

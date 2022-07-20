@@ -9,9 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 
+import com.woowacourse.f12.domain.Member;
 import com.woowacourse.f12.domain.MemberRepository;
 import com.woowacourse.f12.dto.request.MemberRequest;
 import com.woowacourse.f12.dto.response.MemberResponse;
+import com.woowacourse.f12.exception.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.MemberNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -56,6 +58,26 @@ class MemberServiceTest {
         assertAll(
                 () -> assertThatThrownBy(() -> memberService.findById(1L))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
+                () -> verify(memberRepository).findById(1L)
+        );
+    }
+
+    @Test
+    void 추가_정보가_입력되지_않은_멤버_아이디로_회원정보를_조회하면_예외가_발생한다() {
+        // given
+        Member member = Member.builder()
+                .id(1L)
+                .gitHubId("gitHubId")
+                .name("name")
+                .imageUrl("url")
+                .build();
+        given(memberRepository.findById(1L))
+                .willReturn(Optional.of(member));
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> memberService.findById(1L))
+                        .isExactlyInstanceOf(InvalidProfileArgumentException.class),
                 () -> verify(memberRepository).findById(1L)
         );
     }
