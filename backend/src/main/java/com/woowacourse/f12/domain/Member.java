@@ -68,7 +68,7 @@ public class Member {
     }
 
     public boolean isRegisterCompleted() {
-        return !Objects.isNull(this.careerLevel) && !Objects.isNull(this.jobType);
+        return Objects.nonNull(this.careerLevel) && Objects.nonNull(this.jobType);
     }
 
     @Override
