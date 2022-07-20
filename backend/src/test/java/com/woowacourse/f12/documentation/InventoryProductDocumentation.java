@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(InventoryProductController.class)
-class InventoryDocumentation extends Documentation {
+class InventoryProductDocumentation extends Documentation {
 
     @Autowired
     private MockMvc mockMvc;
@@ -95,7 +95,7 @@ class InventoryDocumentation extends Documentation {
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("inventoryProducts-get-mine"));
+                .andDo(document("inventoryProducts-get-own"));
     }
 
     @Test
