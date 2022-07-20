@@ -107,7 +107,8 @@ class ReviewServiceTest {
         // when, then
         assertAll(
                 () -> assertThatThrownBy(
-                        () -> reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest)),
+                        () -> reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest))
+                        .isExactlyInstanceOf(MemberNotFoundException.class),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
         );
