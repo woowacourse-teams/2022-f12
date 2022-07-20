@@ -11,7 +11,7 @@ function usePut<T>({
   headers,
 }: Props): (input: T, id: number) => Promise<void> {
   const putData = async (body: T, id: number) => {
-    await axiosInstance.put(url + `/${id}`, body, {
+    await axiosInstance.put(`${url}/${id}`, body, {
       headers,
     });
   };

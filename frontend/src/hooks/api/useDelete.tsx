@@ -8,7 +8,7 @@ type Props = {
 
 function useDelete({ url, headers }: Props): (id: number) => Promise<void> {
   const deleteData = async (id: number) => {
-    await axiosInstance.delete(url + `/${id}`, {
+    await axiosInstance.delete(`${url}/${id}`, {
       headers,
     });
   };
