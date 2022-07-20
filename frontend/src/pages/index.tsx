@@ -5,6 +5,7 @@ import Products from '@/pages/Products/Products';
 import Login from '@/components/Login/Login';
 import Register from './Register/Register';
 import ROUTES from '@/constants/routes';
+import Profile from '@/pages/Profile/Profile';
 
 export const PAGES = [
   {
@@ -15,6 +16,7 @@ export const PAGES = [
       { path: `${ROUTES.PRODUCT}/:productId`, element: <Product /> },
       { path: ROUTES.LOGIN, element: <Login /> },
       { path: ROUTES.REGISTER, element: <Register /> },
+      { path: ROUTES.PROFILE, element: <Profile /> },
     ],
   },
 ];

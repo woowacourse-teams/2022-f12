@@ -8,3 +8,4 @@
 include::auth.adoc[]
 include::keyboards.adoc[]
 include::reviews.adoc[]
+include::inventoryProducts.adoc[]

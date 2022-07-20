@@ -25,7 +25,7 @@ public class Member {
     @Column(name = "github_id", nullable = false)
     private String gitHubId;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
     @Column(name = "image_url", nullable = false)
