@@ -149,11 +149,11 @@ export const handlers = [
     postReviewByProductId
   ),
   rest.put(
-    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id', ':id')}`,
+    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
     updateReviewByReviewId
   ),
   rest.delete(
-    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id', ':id')}`,
+    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
     deleteReviewByReviewId
   ),
   rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
