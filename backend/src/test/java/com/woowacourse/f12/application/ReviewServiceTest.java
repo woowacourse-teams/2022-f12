@@ -230,7 +230,8 @@ class ReviewServiceTest {
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.update(reviewId, memberId, updateRequest)),
+                () -> assertThatThrownBy(() -> reviewService.update(reviewId, memberId, updateRequest))
+                        .isExactlyInstanceOf(MemberNotFoundException.class),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository, times(0)).findById(reviewId)
         );
@@ -251,7 +252,8 @@ class ReviewServiceTest {
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.update(reviewId, memberId, updateRequest)),
+                () -> assertThatThrownBy(() -> reviewService.update(reviewId, memberId, updateRequest))
+                        .isExactlyInstanceOf(ReviewNotFoundException.class),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId)
         );
@@ -275,7 +277,8 @@ class ReviewServiceTest {
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.update(reviewId, notAuthorId, updateRequest)),
+                () -> assertThatThrownBy(() -> reviewService.update(reviewId, notAuthorId, updateRequest))
+                        .isExactlyInstanceOf(NotAuthorException.class),
                 () -> verify(memberRepository).findById(notAuthorId),
                 () -> verify(reviewRepository).findById(reviewId)
         );
