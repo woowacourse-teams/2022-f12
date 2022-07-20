@@ -1,6 +1,7 @@
 import { rest } from 'msw';
 import { BASE_URL, ENDPOINTS } from '../constants/api';
 import {
+  InventoryProducts,
   products,
   reviewsWithOutProduct,
   reviewsWithProduct,
@@ -92,6 +93,30 @@ const getToken = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response));
 };
 
+const getInventoryProducts = (req, res, ctx) => {
+  const token = req.headers.get('Authorization');
+  if (token === undefined) {
+    return res(ctx.status(401));
+  }
+
+  return res(ctx.status(200), ctx.json(InventoryProducts));
+};
+
+const patchInventoryProducts = (req, res, ctx) => {
+  const token = req.headers.get('Authorization');
+  if (token === undefined) {
+    return res(ctx.status(401));
+  }
+  const { selectedInventoryProductId, unselectedInventoryProductId } = req.body;
+  if (
+    selectedInventoryProductId === undefined &&
+    unselectedInventoryProductId === undefined
+  ) {
+    return res(ctx.status(400));
+  }
+  return res(ctx.status(200));
+};
+
 export const handlers = [
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
@@ -113,4 +138,9 @@ export const handlers = [
     deleteReviewByReviewId
   ),
   rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
+  rest.get(`${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`, getInventoryProducts),
+  rest.patch(
+    `${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`,
+    patchInventoryProducts
+  ),
 ];

@@ -25,6 +25,12 @@ declare type Product = {
   rating: number;
 };
 
+declare type InventoryProduct = {
+  id: number;
+  selected: boolean;
+  product: Product;
+};
+
 declare type Review = {
   id: number;
   author: {

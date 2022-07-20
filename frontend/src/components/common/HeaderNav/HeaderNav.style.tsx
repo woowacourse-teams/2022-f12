@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Main = styled.main`
@@ -61,3 +62,5 @@ export const LogoutButton = styled.button`
   border: none;
   font-size: 1rem;
 `;
+
+export const ProfileLink = styled(Link)``;
