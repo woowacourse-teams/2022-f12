@@ -3,7 +3,7 @@
 
 === 로그인된 상태로 나의 회원 정보 조회
 
-operation::members-get-me[snippets='http-request,http-response']
+operation::members-get-mine[snippets='http-request,http-response']
 
 === 비로그인 상태로 회원 정보 조회
 
