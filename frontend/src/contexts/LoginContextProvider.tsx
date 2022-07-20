@@ -4,7 +4,7 @@ import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 const initialState: UserData = {
   member: {
     id: null,
-    githubId: null,
+    gitHubId: null,
     imageUrl: null,
     name: null,
   },

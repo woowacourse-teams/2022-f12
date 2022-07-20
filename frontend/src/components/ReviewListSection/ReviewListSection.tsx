@@ -21,7 +21,7 @@ function ReviewListSection({
   handleEdit,
 }: Props) {
   const userData = useContext(UserDataContext);
-  const loginUserGithubId = userData?.member.githubId;
+  const loginUserGithubId = userData?.member.gitHubId;
 
   const reviewCardList = reviewData.map(
     ({ id, author, product, content, rating }) => (
@@ -30,7 +30,7 @@ function ReviewListSection({
         reviewId={id}
         product={product}
         profileImage={author.imageUrl}
-        username={author.githubId}
+        username={author.gitHubId}
         rating={rating}
         content={content}
         loginUserGithubId={loginUserGithubId}
