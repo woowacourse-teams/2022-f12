@@ -51,7 +51,8 @@ public class RestAssuredRequestUtil {
                 .put(url)
                 .then().log().all()
                 .extract();
-                
+    }
+
     public static ExtractableResponse<Response> 로그인된_상태로_PATCH_요청을_보낸다(final String url, final String token,
                                                                        final Object requestBody) {
         return RestAssured.given().log().all()
