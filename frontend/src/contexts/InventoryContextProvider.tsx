@@ -12,7 +12,6 @@ export const RefetchInventoryProductsContext = createContext<() => void>(null);
 
 function InventoryContextProvider({ children }: PropsWithChildren) {
   const userData = useContext(UserDataContext);
-  console.log(userData);
   const [inventoryProducts, refetchInventoryProducts] =
     useGetOne<InventoryResponse>({
       url: ENDPOINTS.INVENTORY_PRODUCTS,

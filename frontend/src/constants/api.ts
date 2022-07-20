@@ -12,4 +12,5 @@ export const ENDPOINTS = {
     `/keyboards/${productId}/reviews/${reviewId}`,
   LOGIN: '/login',
   INVENTORY_PRODUCTS: '/members/inventoryProducts',
+  ME: '/members/me',
 } as const;

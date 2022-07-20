@@ -2,6 +2,7 @@ import { rest } from 'msw';
 import { BASE_URL, ENDPOINTS } from '../constants/api';
 import {
   InventoryProducts,
+  myData,
   products,
   reviewsWithOutProduct,
   reviewsWithProduct,
@@ -136,6 +137,14 @@ const patchInventoryProducts = (req, res, ctx) => {
   return res(ctx.status(200));
 };
 
+const getMyInfo = (req, res, ctx) => {
+  const token = req.headers.get('Authorization');
+  if (token === undefined) {
+    return res(ctx.status(401));
+  }
+  return res(ctx.status(200), ctx.json(myData));
+};
+
 export const handlers = [
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
@@ -162,4 +171,5 @@ export const handlers = [
     `${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`,
     patchInventoryProducts
   ),
+  rest.get(`${BASE_URL}${ENDPOINTS.ME}`, getMyInfo),
 ];
