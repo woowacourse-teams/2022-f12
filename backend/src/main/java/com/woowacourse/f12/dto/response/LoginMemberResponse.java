@@ -24,4 +24,13 @@ public class LoginMemberResponse {
     public static LoginMemberResponse from(final Member member) {
         return new LoginMemberResponse(member.getId(), member.getGitHubId(), member.getName(), member.getImageUrl());
     }
+
+    public Member toMember() {
+        return Member.builder()
+                .id(id)
+                .gitHubId(gitHubId)
+                .name(name)
+                .imageUrl(imageUrl)
+                .build();
+    }
 }
