@@ -1,5 +1,4 @@
-export const BASE_URL =
-  'http://ec2-52-78-192-78.ap-northeast-2.compute.amazonaws.com:8080/api/v1';
+export const BASE_URL = 'http://3.34.47.160:8080/api/v1';
 
 export const GITHUB_AUTH_URL =
   'https://github.com/login/oauth/authorize?client_id=f1e73a9ac502f1b6712a';

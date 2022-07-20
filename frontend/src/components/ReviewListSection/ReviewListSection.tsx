@@ -2,7 +2,8 @@ import InfiniteScroll from '../common/InfiniteScroll/InfiniteScroll';
 import ReviewCard from '../common/ReviewCard/ReviewCard';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import * as S from './ReviewListSection.style';
-import useSessionStorage from '@/hooks/useSessionStorage';
+import { useContext } from 'react';
+import { UserDataContext } from '@/contexts/LoginContextProvider';
 
 type Props = {
   columns: number;
@@ -19,8 +20,8 @@ function ReviewListSection({
   handleDelete,
   handleEdit,
 }: Props) {
-  const [data] = useSessionStorage<UserData>('userData');
-  const loginUserGithubId = data?.member.githubId;
+  const userData = useContext(UserDataContext);
+  const loginUserGithubId = userData?.member.githubId;
 
   const reviewCardList = reviewData.map(
     ({ id, author, product, content, rating }) => (

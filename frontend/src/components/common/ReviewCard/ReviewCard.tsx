@@ -1,10 +1,10 @@
 import Rating from '../Rating/Rating';
 import UserNameTag from '../UserNameTag/UserNameTag';
-import useAuth from '@/hooks/useAuth';
 import { useReducer } from 'react';
 import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
 
 import * as S from './ReviewCard.style';
+import useAuth from '@/hooks/useAuth';
 
 type Props = {
   profileImage: string;
@@ -33,11 +33,12 @@ function ReviewCard({
   handleDelete,
   handleEdit,
 }: Props) {
-  const { isLoggedIn } = useAuth();
   const [isEditSheetOpen, toggleEditSheetOpen] = useReducer(
     (isSheetOpen: boolean) => !isSheetOpen,
     false
   );
+
+  const { isLoggedIn } = useAuth();
 
   return (
     <S.Container>
@@ -53,7 +54,7 @@ function ReviewCard({
         <S.Wrapper>
           <S.UserWrapper>
             <UserNameTag profileImage={profileImage} username={username} />
-            {!product && loginUserGithubId === username && isLoggedIn && (
+            {!product && loginUserGithubId === username && (
               <>
                 <S.EditButton
                   onClick={() => {
@@ -76,7 +77,7 @@ function ReviewCard({
         </S.Wrapper>
         <S.Content>{content}</S.Content>
       </S.ReviewArea>
-      {isEditSheetOpen && (
+      {isEditSheetOpen && isLoggedIn && (
         <ReviewBottomSheet
           handleClose={toggleEditSheetOpen}
           handleEdit={handleEdit}
