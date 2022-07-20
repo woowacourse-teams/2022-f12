@@ -94,6 +94,7 @@ class ReviewServiceTest {
         given(memberRepository.findById(memberId))
                 .willReturn(Optional.empty());
 
+        // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> reviewService.save(productId, memberId, reviewRequest)),
                 () -> verify(memberRepository).findById(memberId),
