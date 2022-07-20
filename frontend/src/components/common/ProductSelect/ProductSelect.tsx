@@ -49,48 +49,42 @@ function ProductSelect({ submitHandler }: Props) {
   };
 
   return (
-    otherProducts &&
-    otherProducts.length !== 0 && (
-      <S.Container>
-        <S.EditButton onClick={handleEditDone}>
-          {isEditMode ? '수정 완료' : '수정하기'}
-        </S.EditButton>
-        {isEditMode ? (
-          <>
-            <S.Selected>
-              <S.PseudoButton onClick={setOptionOpen}>
-                {selectedProduct !== undefined ? (
-                  <ProductBar
-                    name={selectedProduct.product.name}
-                    barType="selected"
-                  />
-                ) : (
-                  <ProductBar.AddButton />
-                )}
-                <DownArrow stroke={theme.colors.black} />
-              </S.PseudoButton>
-            </S.Selected>
-            {isOptionsOpen && (
-              <S.OptionsList>
-                <OptionListItems
-                  options={otherProducts}
-                  handleSelect={handleProductSelect}
+    <S.Container>
+      <S.EditButton onClick={handleEditDone}>
+        {isEditMode ? '수정 완료' : '수정하기'}
+      </S.EditButton>
+      {isEditMode ? (
+        <>
+          <S.Selected>
+            <S.PseudoButton onClick={setOptionOpen}>
+              {selectedProduct !== undefined ? (
+                <ProductBar
+                  name={selectedProduct.product.name}
+                  barType="selected"
                 />
-              </S.OptionsList>
-            )}
-          </>
-        ) : selectedProduct ? (
-          <ProductBar
-            name={selectedProduct.product.name}
-            barType={'selected'}
-          />
-        ) : (
-          <S.NoContentMessage>
-            등록된 장비가 없어요! 수정하기로 대표 장비를 등록해주세요!
-          </S.NoContentMessage>
-        )}
-      </S.Container>
-    )
+              ) : (
+                <ProductBar.AddButton />
+              )}
+              <DownArrow stroke={theme.colors.black} />
+            </S.PseudoButton>
+          </S.Selected>
+          {isOptionsOpen && (
+            <S.OptionsList>
+              <OptionListItems
+                options={otherProducts}
+                handleSelect={handleProductSelect}
+              />
+            </S.OptionsList>
+          )}
+        </>
+      ) : selectedProduct ? (
+        <ProductBar name={selectedProduct.product.name} barType={'selected'} />
+      ) : (
+        <S.NoContentMessage>
+          등록된 장비가 없어요! 수정하기로 대표 장비를 등록해주세요!
+        </S.NoContentMessage>
+      )}
+    </S.Container>
   );
 }
 
