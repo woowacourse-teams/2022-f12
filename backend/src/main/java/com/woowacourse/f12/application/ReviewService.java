@@ -1,5 +1,7 @@
 package com.woowacourse.f12.application;
 
+import com.woowacourse.f12.domain.InventoryProduct;
+import com.woowacourse.f12.domain.InventoryProductRepository;
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
 import com.woowacourse.f12.domain.Member;
@@ -25,23 +27,41 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final KeyboardRepository keyboardRepository;
     private final MemberRepository memberRepository;
+    private final InventoryProductRepository inventoryProductRepository;
 
     public ReviewService(final ReviewRepository reviewRepository, final KeyboardRepository keyboardRepository,
-                         final MemberRepository memberRepository) {
+                         final MemberRepository memberRepository,
+                         final InventoryProductRepository inventoryProductRepository) {
         this.reviewRepository = reviewRepository;
         this.keyboardRepository = keyboardRepository;
         this.memberRepository = memberRepository;
+        this.inventoryProductRepository = inventoryProductRepository;
     }
 
     @Transactional
-    public Long save(final Long productId, final Long memberId, final ReviewRequest reviewRequest) {
+    public Long saveReviewAndInventoryProduct(final Long productId, final Long memberId,
+                                              final ReviewRequest reviewRequest) {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
         final Keyboard keyboard = keyboardRepository.findById(productId)
                 .orElseThrow(KeyboardNotFoundException::new);
+        final Long reviewId = saveReview(reviewRequest, member, keyboard);
+        saveInventoryProduct(memberId, keyboard);
+        return reviewId;
+    }
+
+    private Long saveReview(final ReviewRequest reviewRequest, final Member member, final Keyboard keyboard) {
         final Review review = reviewRequest.toReview(keyboard, member);
         return reviewRepository.save(review)
                 .getId();
+    }
+
+    private void saveInventoryProduct(final Long memberId, final Keyboard keyboard) {
+        final InventoryProduct inventoryProduct = InventoryProduct.builder()
+                .memberId(memberId)
+                .keyboard(keyboard)
+                .build();
+        inventoryProductRepository.save(inventoryProduct);
     }
 
     public ReviewPageResponse findPageByProductId(final Long productId, final Pageable pageable) {

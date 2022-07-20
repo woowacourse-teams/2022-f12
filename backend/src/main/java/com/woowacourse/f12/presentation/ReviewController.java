@@ -32,7 +32,7 @@ public class ReviewController {
     public ResponseEntity<Void> create(@PathVariable final Long productId,
                                        @VerifiedMember final Long memberId,
                                        @Valid @RequestBody final ReviewRequest reviewRequest) {
-        final Long id = reviewService.save(productId, memberId, reviewRequest);
+        final Long id = reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest);
         return ResponseEntity.created(URI.create("/api/v1/reviews/" + id))
                 .build();
     }
