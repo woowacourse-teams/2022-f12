@@ -11,11 +11,12 @@ export const InventoryProductsContext = createContext<InventoryProduct[]>([]);
 export const RefetchInventoryProductsContext = createContext<() => void>(null);
 
 function InventoryContextProvider({ children }: PropsWithChildren) {
-  const { token } = useContext(UserDataContext);
+  const userData = useContext(UserDataContext);
+  console.log(userData);
   const [inventoryProducts, refetchInventoryProducts] =
     useGetOne<InventoryResponse>({
       url: ENDPOINTS.INVENTORY_PRODUCTS,
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${userData?.token}` },
     });
 
   return (

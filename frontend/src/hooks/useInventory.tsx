@@ -17,7 +17,7 @@ type Return = {
 };
 
 function useInventory(): Return {
-  const { token } = useContext(UserDataContext);
+  const userData = useContext(UserDataContext);
   const keyboards = useContext(InventoryProductsContext);
   const refetchInventoryProducts = useContext(RefetchInventoryProductsContext);
 
@@ -25,7 +25,7 @@ function useInventory(): Return {
     useState<InventoryProduct | null>(null);
   const patchProfileProduct = usePatch({
     url: ENDPOINTS.INVENTORY_PRODUCTS,
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${userData?.token}` },
   });
   const initialSelectedProduct = useMemo<InventoryProduct>(
     () => keyboards && keyboards.find(({ selected }) => selected),

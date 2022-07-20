@@ -23,6 +23,11 @@ function LoginContextProvider({ children }: PropsWithChildren) {
     useSessionStorage<UserData>('userData');
   const [isLoggedIn, setLoggedIn] = useState(true);
 
+  const handleLogout = () => {
+    removeUserData();
+    setLoggedIn(false);
+  };
+
   useEffect(() => {
     if (userData && userData.token) {
       setLoggedIn(true);
@@ -36,7 +41,7 @@ function LoginContextProvider({ children }: PropsWithChildren) {
     <IsLoggedInContext.Provider value={isLoggedIn}>
       <UserDataContext.Provider value={userData}>
         <SetUserDataContext.Provider value={setUserData}>
-          <LogoutContext.Provider value={removeUserData}>
+          <LogoutContext.Provider value={handleLogout}>
             {children}
           </LogoutContext.Provider>
         </SetUserDataContext.Provider>
