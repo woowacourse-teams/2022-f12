@@ -27,11 +27,27 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .as(LoginResponse.class);
         String token = loginResponse.getToken();
         MemberRequest memberRequest = new MemberRequest(JUNIOR, BACK_END);
+
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        ExtractableResponse<Response> memberUpdatedResponse = 로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token,
+                memberRequest);
+        ExtractableResponse<Response> memberGetResponse = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", token);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Member member = Member.builder()
+                .id(null)
+                .imageUrl(null)
+                .name(null)
+                .gitHubId(null)
+                .careerLevel(JUNIOR)
+                .jobType(BACK_END)
+                .build();
+        assertAll(
+                () -> assertThat(memberGetResponse.as(MemberResponse.class)).usingRecursiveComparison()
+                        .comparingOnlyFields("careerLevel", "jobType")
+                        .isEqualTo(MemberResponse.from(member)),
+                () -> assertThat(memberUpdatedResponse.statusCode()).isEqualTo(HttpStatus.OK.value())
+        );
     }
 
     @Test

@@ -59,7 +59,7 @@ public class MemberDocumentation extends Documentation {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("members-get-me"))
+                .andDo(document("members-get-mine"))
                 .andDo(print());
     }
 
