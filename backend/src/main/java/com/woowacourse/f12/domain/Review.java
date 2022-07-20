@@ -41,8 +41,12 @@ public class Review {
     private int rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Keyboard keyboard;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -52,7 +56,7 @@ public class Review {
     }
 
     @Builder
-    private Review(final Long id, final String content, final int rating, final Keyboard keyboard,
+    private Review(final Long id, final String content, final int rating, final Keyboard keyboard, final Member member,
                    final LocalDateTime createdAt) {
         validateContent(content);
         validateRating(rating);
@@ -60,6 +64,7 @@ public class Review {
         this.content = content;
         this.rating = rating;
         this.keyboard = keyboard;
+        this.member = member;
         this.createdAt = createdAt;
     }
 
@@ -76,6 +81,15 @@ public class Review {
         if (rating < MINIMUM_RATING || rating > MAXIMUM_RATING) {
             throw new InvalidRatingValueException();
         }
+    }
+
+    public boolean isWrittenBy(final Member member) {
+        return this.member.equals(member);
+    }
+
+    public void update(final Review updateReview) {
+        this.content = updateReview.getContent();
+        this.rating = updateReview.getRating();
     }
 
     @Override

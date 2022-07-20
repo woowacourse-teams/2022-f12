@@ -2,12 +2,14 @@ package com.woowacourse.f12.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.exception.BlankContentException;
 import com.woowacourse.f12.exception.InvalidContentLengthException;
 import com.woowacourse.f12.exception.InvalidRatingValueException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -75,5 +77,54 @@ class ReviewTest {
                 .content(invalidContent)
                 .build())
                 .isExactlyInstanceOf(BlankContentException.class);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1, true", "2, false"})
+    void 리뷰의_작성자인지_반환한다(Long targetMemberId, boolean expected) {
+        // given
+        Member author = Member.builder()
+                .id(1L)
+                .build();
+        Member targetMember = Member.builder()
+                .id(targetMemberId)
+                .build();
+        Review review = Review.builder()
+                .member(author)
+                .content("내용")
+                .rating(5)
+                .build();
+
+        // when
+        boolean actual = review.isWrittenBy(targetMember);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 리뷰를_수정한다() {
+        // given
+        Review review = Review.builder()
+                .id(1L)
+                .content("내용")
+                .rating(5)
+                .build();
+        Review updateReview = Review.builder()
+                .id(2L)
+                .content("수정한 내용")
+                .rating(4)
+                .build();
+
+        // when
+        review.update(updateReview);
+
+        // then
+        assertAll(
+                () -> assertThat(review.getId()).isEqualTo(1L),
+                () -> assertThat(review).usingRecursiveComparison()
+                        .ignoringFields("id")
+                        .isEqualTo(updateReview)
+        );
     }
 }

@@ -40,15 +40,15 @@ class KeyboardServiceTest {
         Keyboard keyboard = KEYBOARD_1.생성(1L);
 
         given(keyboardRepository.findById(anyLong()))
-                .willReturn(Optional.ofNullable(keyboard));
+                .willReturn(Optional.of(keyboard));
         // when
         KeyboardResponse keyboardResponse = keyboardService.findById(1L);
 
         // then
         assertAll(
                 () -> verify(keyboardRepository).findById(1L),
-                () -> assertThat(keyboardResponse.getId()).isEqualTo(1L),
-                () -> assertThat(keyboardResponse.getName()).isEqualTo("키보드1")
+                () -> assertThat(keyboardResponse).usingRecursiveComparison()
+                        .isEqualTo(KeyboardResponse.from(keyboard))
         );
     }
 
@@ -68,11 +68,10 @@ class KeyboardServiceTest {
     @Test
     void 전체_키보드_목록을_조회한다() {
         // given
+        Keyboard keyboard = KEYBOARD_1.생성(1L);
         Pageable pageable = PageRequest.of(0, 1);
         given(keyboardRepository.findPageBy(any(Pageable.class)))
-                .willReturn(new SliceImpl<>(List.of(
-                        KEYBOARD_1.생성(1L)
-                ), pageable, false));
+                .willReturn(new SliceImpl<>(List.of(keyboard), pageable, false));
 
         // when
         KeyboardPageResponse keyboardPageResponse = keyboardService.findPage(pageable);
@@ -82,6 +81,8 @@ class KeyboardServiceTest {
                 () -> verify(keyboardRepository).findPageBy(any(Pageable.class)),
                 () -> assertThat(keyboardPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(keyboardPageResponse.getItems()).hasSize(1)
+                        .usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(KeyboardResponse.from(keyboard))
         );
     }
 }

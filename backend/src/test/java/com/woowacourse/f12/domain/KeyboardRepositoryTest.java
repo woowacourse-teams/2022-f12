@@ -2,6 +2,7 @@ package com.woowacourse.f12.domain;
 
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
@@ -30,6 +31,9 @@ class KeyboardRepositoryTest {
     private KeyboardRepository keyboardRepository;
 
     @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
     private ReviewRepository reviewRepository;
 
     @PersistenceContext
@@ -39,8 +43,9 @@ class KeyboardRepositoryTest {
     void 키보드를_단일_조회_한다() {
         // given
         Keyboard keyboard = 키보드_저장(KEYBOARD_1.생성());
-        리뷰_저장(REVIEW_RATING_4.작성(keyboard));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard));
+        Member member = memberRepository.save(CORINNE.생성(1L));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard, member));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard, member));
         entityManager.flush();
         entityManager.refresh(keyboard);
 
@@ -77,10 +82,11 @@ class KeyboardRepositoryTest {
         // given
         Keyboard keyboard1 = 키보드_저장(KEYBOARD_1.생성());
         Keyboard keyboard2 = 키보드_저장(KEYBOARD_2.생성());
+        Member member = memberRepository.save(CORINNE.생성(1L));
 
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard1));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard2));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard2));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1, member));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard2, member));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard2, member));
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("reviewCount")));
 
@@ -99,11 +105,12 @@ class KeyboardRepositoryTest {
         // given
         Keyboard keyboard2 = 키보드_저장(KEYBOARD_1.생성());
         Keyboard keyboard1 = 키보드_저장(KEYBOARD_2.생성());
+        Member member = memberRepository.save(CORINNE.생성(1L));
 
-        리뷰_저장(REVIEW_RATING_2.작성(keyboard1));
-        리뷰_저장(REVIEW_RATING_1.작성(keyboard1));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard2));
-        리뷰_저장(REVIEW_RATING_4.작성(keyboard2));
+        리뷰_저장(REVIEW_RATING_2.작성(keyboard1, member));
+        리뷰_저장(REVIEW_RATING_1.작성(keyboard1, member));
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard2, member));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard2, member));
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating")));
 

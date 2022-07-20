@@ -8,20 +8,24 @@ type Props = {
   headers: null | AxiosRequestHeaders;
 };
 
-function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
+function usePut<T>({
+  url,
+  headers,
+}: Props): (input: T, id: number) => Promise<void> {
   const userData = useContext(UserDataContext);
 
-  const postData = async (body: T) => {
+  const putData = async (body: T, id: number) => {
     if (!userData || !userData.token) {
       alert('로그인이 필요합니다.');
       return;
     }
-    await axiosInstance.post(url, body, {
+
+    await axiosInstance.put(`${url}/${id}`, body, {
       headers,
     });
   };
 
-  return postData;
+  return putData;
 }
 
-export default usePost;
+export default usePut;

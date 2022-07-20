@@ -11,13 +11,22 @@ import { useReducer, useRef } from 'react';
 import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
 import Plus from '@/assets/plus.svg';
 import theme from '@/style/theme';
+import useAuth from '@/hooks/useAuth';
 
 function Product() {
+  const { isLoggedIn } = useAuth();
   const { productId: id } = useParams();
   const productId = Number(id);
 
   const product = useProduct({ productId: Number(productId) });
-  const [reviews, getNextPage, refetchReview, postReview] = useReviews({
+  const [
+    reviews,
+    getNextPage,
+    refetchReview,
+    postReview,
+    deleteReview,
+    editReview,
+  ] = useReviews({
     size: 6,
     productId,
   });
@@ -39,6 +48,29 @@ function Product() {
     });
   };
 
+  const handleReviewEdit = (reviewInput: ReviewInput, id: number) => {
+    editReview(reviewInput, id)
+      .then(() => {
+        alert('리뷰가 수정되었습니다.');
+        refetchReview();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleReviewDeletion = (id: number) => {
+    if (!confirm('리뷰를 삭제하시겠습니까?')) return;
+
+    deleteReview(id)
+      .then(() => {
+        refetchReview();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     !!product && (
       <>
@@ -51,21 +83,23 @@ function Product() {
             />
           </StickyWrapper>
           <S.Wrapper ref={reviewListRef}>
-            {!isSheetOpen && (
+            {!isSheetOpen && isLoggedIn && (
               <FloatingButton clickHandler={toggleSheetOpen}>
                 <Plus stroke={theme.colors.white} />
               </FloatingButton>
             )}
-
             <ReviewListSection
               columns={1}
               data={reviews}
               getNextPage={getNextPage}
+              handleDelete={handleReviewDeletion}
+              handleEdit={handleReviewEdit}
             />
-            {isSheetOpen && (
+            {isSheetOpen && isLoggedIn && (
               <ReviewBottomSheet
                 handleClose={toggleSheetOpen}
                 handleSubmit={handleReviewSubmit}
+                isEdit={false}
               />
             )}
           </S.Wrapper>

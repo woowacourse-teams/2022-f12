@@ -11,6 +11,8 @@ import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import com.woowacourse.f12.exception.MemberNotFoundException;
+import com.woowacourse.f12.exception.NotAuthorException;
+import com.woowacourse.f12.exception.ReviewNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -32,13 +34,12 @@ public class ReviewService {
     }
 
     @Transactional
-    public Long save(final Long productId, final ReviewRequest reviewRequest, final Long memberId) {
-        final Keyboard keyboard = keyboardRepository.findById(productId)
-                .orElseThrow(KeyboardNotFoundException::new);
+    public Long save(final Long productId, final Long memberId, final ReviewRequest reviewRequest) {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
-
-        final Review review = reviewRequest.toReview(keyboard);
+        final Keyboard keyboard = keyboardRepository.findById(productId)
+                .orElseThrow(KeyboardNotFoundException::new);
+        final Review review = reviewRequest.toReview(keyboard, member);
         return reviewRepository.save(review)
                 .getId();
     }
@@ -58,5 +59,33 @@ public class ReviewService {
     public ReviewWithProductPageResponse findPage(final Pageable pageable) {
         final Slice<Review> page = reviewRepository.findPageBy(pageable);
         return ReviewWithProductPageResponse.from(page);
+    }
+
+    @Transactional
+    public void update(final Long reviewId, final Long memberId, final ReviewRequest updateRequest) {
+        final Review target = findTarget(reviewId, memberId);
+        final Review updateReview = updateRequest.toReview(target.getKeyboard(), target.getMember());
+        target.update(updateReview);
+    }
+
+    @Transactional
+    public void delete(final Long reviewId, final Long memberId) {
+        final Review target = findTarget(reviewId, memberId);
+        reviewRepository.delete(target);
+    }
+
+    private Review findTarget(final Long reviewId, final Long memberId) {
+        final Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+        final Review target = reviewRepository.findById(reviewId)
+                .orElseThrow(ReviewNotFoundException::new);
+        validateAuthor(member, target);
+        return target;
+    }
+
+    private void validateAuthor(final Member member, final Review target) {
+        if (!target.isWrittenBy(member)) {
+            throw new NotAuthorException();
+        }
     }
 }

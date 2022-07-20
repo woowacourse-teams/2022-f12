@@ -8,10 +8,16 @@ declare module '*.svg' {
   export = value;
 }
 
+declare type Member = {
+  id: number;
+  githubId: string;
+  imageUrl: string;
+  name: string;
+};
+
 declare type UserData = {
+  member: Member;
   token: string;
-  jobType: string;
-  career: string;
 };
 
 declare type Product = {
@@ -29,15 +35,15 @@ declare type InventoryProduct = {
 
 declare type Review = {
   id: number;
+  author: Exclude<Member, 'name'>;
   product?: {
     id: number;
     name: string;
     imageUrl: string;
   };
-  profileImage: string;
-  username: string;
-  rating: number;
+  productId?: number;
   content: string;
+  rating: number;
   createdAt: string;
 };
 

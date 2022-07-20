@@ -2,9 +2,13 @@ import useSessionStorage from '@/hooks/useSessionStorage';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 
 const initialState: UserData = {
+  member: {
+    id: null,
+    githubId: null,
+    imageUrl: null,
+    name: null,
+  },
   token: null,
-  jobType: null,
-  career: null,
 };
 
 export const IsLoggedInContext = createContext<boolean>(false);

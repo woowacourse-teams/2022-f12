@@ -51,11 +51,11 @@ public class Keyboard {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Keyboard)) {
             return false;
         }
         final Keyboard keyboard = (Keyboard) o;
-        return Objects.equals(id, keyboard.id);
+        return Objects.equals(id, keyboard.getId());
     }
 
     @Override

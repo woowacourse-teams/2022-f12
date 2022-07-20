@@ -8,9 +8,11 @@ import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,9 +30,9 @@ public class ReviewController {
     @PostMapping("/keyboards/{productId}/reviews")
     @LoginRequired
     public ResponseEntity<Void> create(@PathVariable final Long productId,
-                                       @Valid @RequestBody final ReviewRequest reviewRequest,
-                                       @VerifiedMember final Long memberId) {
-        final Long id = reviewService.save(productId, reviewRequest, memberId);
+                                       @VerifiedMember final Long memberId,
+                                       @Valid @RequestBody final ReviewRequest reviewRequest) {
+        final Long id = reviewService.save(productId, memberId, reviewRequest);
         return ResponseEntity.created(URI.create("/api/v1/reviews/" + id))
                 .build();
     }
@@ -46,5 +48,23 @@ public class ReviewController {
     public ResponseEntity<ReviewWithProductPageResponse> showPage(final Pageable pageable) {
         final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPage(pageable);
         return ResponseEntity.ok(reviewWithProductPageResponse);
+    }
+
+    @PutMapping("/reviews/{reviewId}")
+    @LoginRequired
+    public ResponseEntity<Void> update(@PathVariable final Long reviewId,
+                                       @VerifiedMember final Long memberId,
+                                       @Valid @RequestBody final ReviewRequest updateRequest) {
+        reviewService.update(reviewId, memberId, updateRequest);
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    @DeleteMapping("/reviews/{reviewId}")
+    @LoginRequired
+    public ResponseEntity<Void> delete(@PathVariable final Long reviewId, @VerifiedMember final Long memberId) {
+        reviewService.delete(reviewId, memberId);
+        return ResponseEntity.noContent()
+                .build();
     }
 }

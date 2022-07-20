@@ -28,7 +28,7 @@ public class Member {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url", length = 65535, nullable = false)
     private String imageUrl;
 
     protected Member() {
@@ -51,11 +51,11 @@ public class Member {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Member)) {
             return false;
         }
         final Member member = (Member) o;
-        return Objects.equals(id, member.id);
+        return Objects.equals(id, member.getId());
     }
 
     @Override
