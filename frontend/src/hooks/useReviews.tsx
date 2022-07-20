@@ -54,12 +54,12 @@ function useReviews({ size, productId }: Props): ReturnType {
   });
 
   const deleteReview = useDelete({
-    url: `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`,
+    url: `${ENDPOINTS.REVIEWS}`,
     headers: { Authorization: `Bearer ${data?.token}` },
   });
 
   const putReview = usePut<ReviewInput>({
-    url: `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`,
+    url: `${ENDPOINTS.REVIEWS}`,
     headers: { Authorization: `Bearer ${data?.token}` },
   });
 

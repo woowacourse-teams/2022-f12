@@ -8,8 +8,7 @@ export const ENDPOINTS = {
   PRODUCT: (id: number | ':id') => `/keyboards/${id}`,
   REVIEWS: '/reviews',
   REVIEWS_BY_PRODUCT_ID: (id: number | ':id') => `/keyboards/${id}/reviews`,
-  REVIEWS_BY_REVIEW_ID: (productId: number | ':id', reviewId: number | ':id') =>
-    `/keyboards/${productId}/reviews/${reviewId}`,
+  REVIEWS_BY_REVIEW_ID: (reviewId: number | ':id') => `/reviews/${reviewId}`,
   LOGIN: '/login',
   INVENTORY_PRODUCTS: '/members/inventoryProducts',
 } as const;
