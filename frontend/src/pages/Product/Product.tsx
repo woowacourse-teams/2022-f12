@@ -95,7 +95,7 @@ function Product() {
               handleDelete={handleReviewDeletion}
               handleEdit={handleReviewEdit}
             />
-            {isSheetOpen && (
+            {isSheetOpen && isLoggedIn && (
               <ReviewBottomSheet
                 handleClose={toggleSheetOpen}
                 handleSubmit={handleReviewSubmit}

@@ -4,6 +4,7 @@ import { useReducer } from 'react';
 import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
 
 import * as S from './ReviewCard.style';
+import useAuth from '@/hooks/useAuth';
 
 type Props = {
   profileImage: string;
@@ -36,6 +37,8 @@ function ReviewCard({
     (isSheetOpen: boolean) => !isSheetOpen,
     false
   );
+
+  const { isLoggedIn } = useAuth();
 
   return (
     <S.Container>
@@ -74,7 +77,7 @@ function ReviewCard({
         </S.Wrapper>
         <S.Content>{content}</S.Content>
       </S.ReviewArea>
-      {isEditSheetOpen && (
+      {isEditSheetOpen && isLoggedIn && (
         <ReviewBottomSheet
           handleClose={toggleEditSheetOpen}
           handleEdit={handleEdit}
