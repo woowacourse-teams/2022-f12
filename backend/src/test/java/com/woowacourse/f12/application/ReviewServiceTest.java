@@ -14,6 +14,8 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.woowacourse.f12.domain.InventoryProduct;
+import com.woowacourse.f12.domain.InventoryProductRepository;
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
 import com.woowacourse.f12.domain.Member;
@@ -55,32 +57,40 @@ class ReviewServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
+    @Mock
+    private InventoryProductRepository inventoryProductRepository;
+
     @InjectMocks
     private ReviewService reviewService;
 
     @Test
-    void 리뷰를_저장한다() {
+    void 리뷰를_저장하고_인벤토리에_제품을_추가한다() {
         // given
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
         Long productId = 1L;
         Keyboard keyboard = KEYBOARD_1.생성(productId);
         Long memberId = 1L;
         Member member = CORINNE.생성(memberId);
-        given(keyboardRepository.findById(productId))
-                .willReturn(Optional.of(keyboard));
+        InventoryProduct inventoryProduct = 인벤토리_항목을_생성한다(keyboard, memberId);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
+        given(keyboardRepository.findById(productId))
+                .willReturn(Optional.of(keyboard));
+        given(inventoryProductRepository.save(inventoryProduct))
+                .willReturn(inventoryProduct);
         given(reviewRepository.save(reviewRequest.toReview(keyboard, member)))
                 .willReturn(REVIEW_RATING_5.작성(1L, keyboard, member));
 
         // when
-        Long reviewId = reviewService.save(productId, memberId, reviewRequest);
+        Long reviewId = reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest);
 
         // then
         assertAll(
                 () -> assertThat(reviewId).isEqualTo(1L),
                 () -> verify(keyboardRepository).findById(productId),
-                () -> verify(reviewRepository).save(any(Review.class))
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(reviewRepository).save(any(Review.class)),
+                () -> verify(inventoryProductRepository).save(inventoryProduct)
         );
     }
 
@@ -96,7 +106,9 @@ class ReviewServiceTest {
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.save(productId, memberId, reviewRequest)),
+                () -> assertThatThrownBy(
+                        () -> reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest))
+                        .isExactlyInstanceOf(MemberNotFoundException.class),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
         );
@@ -117,7 +129,7 @@ class ReviewServiceTest {
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.save(1L, 1L, reviewRequest))
+                () -> assertThatThrownBy(() -> reviewService.saveReviewAndInventoryProduct(1L, 1L, reviewRequest))
                         .isExactlyInstanceOf(KeyboardNotFoundException.class),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(keyboardRepository).findById(productId),
@@ -373,5 +385,12 @@ class ReviewServiceTest {
                 () -> verify(reviewRepository).findById(reviewId),
                 () -> verify(reviewRepository, times(0)).delete(review)
         );
+    }
+
+    private InventoryProduct 인벤토리_항목을_생성한다(final Keyboard keyboard, final Long memberId) {
+        return InventoryProduct.builder()
+                .keyboard(keyboard)
+                .memberId(memberId)
+                .build();
     }
 }
