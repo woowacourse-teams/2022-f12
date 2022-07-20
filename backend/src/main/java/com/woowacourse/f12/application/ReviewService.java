@@ -35,10 +35,10 @@ public class ReviewService {
 
     @Transactional
     public Long save(final Long productId, final Long memberId, final ReviewRequest reviewRequest) {
-        final Keyboard keyboard = keyboardRepository.findById(productId)
-                .orElseThrow(KeyboardNotFoundException::new);
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
+        final Keyboard keyboard = keyboardRepository.findById(productId)
+                .orElseThrow(KeyboardNotFoundException::new);
         final Review review = reviewRequest.toReview(keyboard, member);
         return reviewRepository.save(review)
                 .getId();

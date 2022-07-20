@@ -52,8 +52,9 @@ public class ReviewController {
 
     @PutMapping("/reviews/{reviewId}")
     @LoginRequired
-    public ResponseEntity<Void> update(@PathVariable final Long reviewId, @VerifiedMember final Long memberId,
-                                       @RequestBody final ReviewRequest updateRequest) {
+    public ResponseEntity<Void> update(@PathVariable final Long reviewId,
+                                       @VerifiedMember final Long memberId,
+                                       @Valid @RequestBody final ReviewRequest updateRequest) {
         reviewService.update(reviewId, memberId, updateRequest);
         return ResponseEntity.noContent()
                 .build();

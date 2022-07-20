@@ -367,7 +367,7 @@ class ReviewControllerTest {
         mockMvc.perform(
                         put("/api/v1/reviews/" + reviewId)
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(updateRequest))
                 ).andExpect(status().isNoContent())
                 .andDo(print());
@@ -398,7 +398,7 @@ class ReviewControllerTest {
         mockMvc.perform(
                         put("/api/v1/reviews/" + reviewId)
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(updateRequest))
                 ).andExpect(status().isNotFound())
                 .andDo(print());
@@ -429,7 +429,7 @@ class ReviewControllerTest {
         mockMvc.perform(
                         put("/api/v1/reviews/" + reviewId)
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(updateRequest))
                 ).andExpect(status().isNotFound())
                 .andDo(print());
@@ -460,7 +460,7 @@ class ReviewControllerTest {
         mockMvc.perform(
                         put("/api/v1/reviews/" + reviewId)
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(updateRequest))
                 ).andExpect(status().isForbidden())
                 .andDo(print());
