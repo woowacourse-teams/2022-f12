@@ -1,6 +1,14 @@
 import sampleProfile from '@/mocks/sample_profile.jpg';
 import sampleKeyboard from '@/mocks/sample_keyboard.jpg';
 
+export const myData = {
+  id: 1,
+  gitHubId: 'hamcheeseburger',
+  name: '유현지',
+  imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
+  careerLevel: 'SENIOR',
+  jobType: 'BACK_END',
+};
 export const products = [
   {
     id: 3,

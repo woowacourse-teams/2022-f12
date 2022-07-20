@@ -67,8 +67,8 @@ function ProductSelect({ submitHandler }: Props) {
                 ) : (
                   <ProductBar.AddButton />
                 )}
+                <DownArrow stroke={theme.colors.black} />
               </S.PseudoButton>
-              <DownArrow stroke={theme.colors.black} />
             </S.Selected>
             {isOptionsOpen && (
               <S.OptionsList>
@@ -85,7 +85,9 @@ function ProductSelect({ submitHandler }: Props) {
             barType={'selected'}
           />
         ) : (
-          <p> 등록된 장비가 없어요! 수정하기로 대표 장비를 등록해주세요!</p>
+          <S.NoContentMessage>
+            등록된 장비가 없어요! 수정하기로 대표 장비를 등록해주세요!
+          </S.NoContentMessage>
         )}
       </S.Container>
     )

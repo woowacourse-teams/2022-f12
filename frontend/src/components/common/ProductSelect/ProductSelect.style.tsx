@@ -4,14 +4,11 @@ export const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 1rem;
 `;
 
 export const Selected = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  width: max-content;
 `;
 
 export const OptionsList = styled.ul`
@@ -25,6 +22,10 @@ export const Option = styled.li`
 `;
 
 export const PseudoButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
   background-color: transparent;
   border: none;
 `;
@@ -42,4 +43,8 @@ export const EditButton = styled.button`
   &:hover {
     filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.25));
   }
+`;
+
+export const NoContentMessage = styled.p`
+  text-align: center;
 `;

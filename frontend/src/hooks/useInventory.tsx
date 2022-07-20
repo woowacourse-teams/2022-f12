@@ -1,12 +1,11 @@
 import { ENDPOINTS } from '@/constants/api';
+import {
+  InventoryProductsContext,
+  RefetchInventoryProductsContext,
+} from '@/contexts/InventoryContextProvider';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
-import useGetOne from '@/hooks/api/useGetOne';
 import usePatch from '@/hooks/api/usePatch';
 import { useContext, useEffect, useMemo, useState } from 'react';
-
-type InventoryResponse = {
-  keyboards: InventoryProduct[];
-};
 
 type Return = {
   keyboards: InventoryProduct[];
@@ -18,26 +17,20 @@ type Return = {
 };
 
 function useInventory(): Return {
-  const { token } = useContext(UserDataContext);
-  const [inventoryProducts, refetchInventoryProducts] =
-    useGetOne<InventoryResponse>({
-      url: ENDPOINTS.INVENTORY_PRODUCTS,
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  const userData = useContext(UserDataContext);
+  const keyboards = useContext(InventoryProductsContext);
+  const refetchInventoryProducts = useContext(RefetchInventoryProductsContext);
+
   const [selectedProduct, setSelectedProduct] =
     useState<InventoryProduct | null>(null);
   const patchProfileProduct = usePatch({
     url: ENDPOINTS.INVENTORY_PRODUCTS,
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${userData?.token}` },
   });
   const initialSelectedProduct = useMemo<InventoryProduct>(
-    () =>
-      inventoryProducts &&
-      inventoryProducts.keyboards.find(({ selected }) => selected),
-    [inventoryProducts]
+    () => keyboards && keyboards.find(({ selected }) => selected),
+    [keyboards]
   );
-
-  const keyboards = (inventoryProducts && inventoryProducts.keyboards) || [];
 
   const updateProfileProduct = async () => {
     if (
@@ -60,14 +53,12 @@ function useInventory(): Return {
     : keyboards;
 
   useEffect(() => {
-    if (!inventoryProducts) return;
+    if (!keyboards) return;
 
-    const newSelectedProduct = inventoryProducts.keyboards.find(
-      ({ selected }) => selected
-    );
+    const newSelectedProduct = keyboards.find(({ selected }) => selected);
 
     setSelectedProduct(newSelectedProduct);
-  }, [inventoryProducts]);
+  }, [keyboards]);
 
   return {
     keyboards,

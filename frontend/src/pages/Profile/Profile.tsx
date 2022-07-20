@@ -1,22 +1,42 @@
 import ProductBar from '@/components/common/ProductBar/ProductBar';
 import UserInfo from '@/components/common/UserInfo/UserInfo';
 import * as S from '@/pages/Profile/Profile.style';
-import sampleProfile from '@/mocks/sample_profile.jpg';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import ProductSelect from '@/components/common/ProductSelect/ProductSelect';
 import useAuth from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import ROUTES from '@/constants/routes';
 import useInventory from '@/hooks/useInventory';
+import { ENDPOINTS } from '@/constants/api';
+import { useContext } from 'react';
+import { UserDataContext } from '@/contexts/LoginContextProvider';
+import useGetOne from '@/hooks/api/useGetOne';
+
+type Member = {
+  id: string;
+  gitHubId: string;
+  name: string;
+  imageUrl: string;
+  careerLevel: string;
+  jobType: string;
+};
 
 function Profile() {
+  const userData = useContext(UserDataContext);
   const { isLoggedIn } = useAuth();
   const { keyboards, refetchInventoryProducts } = useInventory();
+  const [myData] = useGetOne<Member>({
+    url: ENDPOINTS.ME,
+    headers: { Authorization: `Bearer ${userData?.token}` },
+  });
 
   return isLoggedIn ? (
     <S.Container>
       <S.ProfileSection>
-        <UserInfo profileImageUrl={sampleProfile} username="@dev1" />
+        <UserInfo
+          profileImageUrl={myData?.imageUrl}
+          username={`@${myData?.gitHubId}`}
+        />
         <ProductSelect submitHandler={refetchInventoryProducts} />
       </S.ProfileSection>
       <S.InventorySection>
