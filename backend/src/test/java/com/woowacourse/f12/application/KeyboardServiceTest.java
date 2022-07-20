@@ -40,18 +40,15 @@ class KeyboardServiceTest {
         Keyboard keyboard = KEYBOARD_1.생성(1L);
 
         given(keyboardRepository.findById(anyLong()))
-                .willReturn(Optional.ofNullable(keyboard));
+                .willReturn(Optional.of(keyboard));
         // when
         KeyboardResponse keyboardResponse = keyboardService.findById(1L);
 
         // then
         assertAll(
                 () -> verify(keyboardRepository).findById(1L),
-                () -> {
-                    assert keyboard != null;
-                    assertThat(keyboardResponse).usingRecursiveComparison()
-                            .isEqualTo(KeyboardResponse.from(keyboard));
-                }
+                () -> assertThat(keyboardResponse).usingRecursiveComparison()
+                        .isEqualTo(KeyboardResponse.from(keyboard))
         );
     }
 
