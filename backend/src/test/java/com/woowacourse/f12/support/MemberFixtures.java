@@ -28,6 +28,10 @@ public enum MemberFixtures {
         this.jobType = jobType;
     }
 
+    public Member 생성() {
+        return 생성(null);
+    }
+
     public Member 생성(final Long id) {
         return Member.builder()
                 .id(id)
