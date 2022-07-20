@@ -2,7 +2,7 @@ import { ENDPOINTS } from '@/constants/api';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 import useGetOne from '@/hooks/api/useGetOne';
 import usePatch from '@/hooks/api/usePatch';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
 type InventoryResponse = {
   keyboards: InventoryProduct[];
@@ -29,23 +29,27 @@ function useInventory(): Return {
     url: ENDPOINTS.INVENTORY_PRODUCTS,
     headers: { Authorization: `Bearer ${token}` },
   });
-  const initialSelectedProduct = useRef<InventoryProduct>();
+  const initialSelectedProduct = useMemo<InventoryProduct>(
+    () =>
+      inventoryProducts &&
+      inventoryProducts.keyboards.find(({ selected }) => selected),
+    [inventoryProducts]
+  );
 
   const keyboards = (inventoryProducts && inventoryProducts.keyboards) || [];
 
   const updateProfileProduct = async () => {
     if (
       !selectedProduct ||
-      (initialSelectedProduct.current &&
-        selectedProduct.id === initialSelectedProduct.current.id)
+      (initialSelectedProduct &&
+        selectedProduct.id === initialSelectedProduct.id)
     ) {
       return;
     }
 
     const patchBody = { selectedInventoryProductId: selectedProduct.id };
-    if (initialSelectedProduct.current) {
-      patchBody['unselectedInventoryProductId'] =
-        initialSelectedProduct.current.id;
+    if (initialSelectedProduct) {
+      patchBody['unselectedInventoryProductId'] = initialSelectedProduct.id;
     }
     await patchProfileProduct(patchBody);
   };
@@ -60,10 +64,6 @@ function useInventory(): Return {
     const newSelectedProduct = inventoryProducts.keyboards.find(
       ({ selected }) => selected
     );
-
-    if (!selectedProduct && !!inventoryProducts) {
-      initialSelectedProduct.current = newSelectedProduct;
-    }
 
     setSelectedProduct(newSelectedProduct);
   }, [inventoryProducts]);
