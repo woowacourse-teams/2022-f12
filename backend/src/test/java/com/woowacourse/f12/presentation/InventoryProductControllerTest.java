@@ -1,5 +1,6 @@
 package com.woowacourse.f12.presentation;
 
+import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -137,12 +138,7 @@ class InventoryProductControllerTest {
     void 멤버_id_로_조회한다() throws Exception {
         // given
         Long memberId = 1L;
-        InventoryProduct inventoryProduct = InventoryProduct.builder()
-                .id(1L)
-                .memberId(memberId)
-                .keyboard(KEYBOARD_1.생성(1L))
-                .selected(true)
-                .build();
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
@@ -172,12 +168,7 @@ class InventoryProductControllerTest {
     void 다른_멤버_id_로_조회한다() throws Exception {
         // given
         Long memberId = 1L;
-        InventoryProduct inventoryProduct = InventoryProduct.builder()
-                .id(1L)
-                .memberId(memberId)
-                .keyboard(KEYBOARD_1.생성(1L))
-                .selected(true)
-                .build();
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
         given(inventoryProductService.findByMemberId(memberId))
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
 

@@ -3,6 +3,8 @@ package com.woowacourse.f12.acceptance;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
+import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,13 +62,14 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         String token = loginResponse.getToken();
         Long memberId = loginResponse.getMember().getId();
 
-        InventoryProduct savedInventoryProduct = 대표장비를_지정한다(keyboard, memberId, false);
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct savedInventoryProduct = 인벤토리에_장비를_추가한다(inventoryProduct);
 
         // when
         ExtractableResponse<Response> profileProductResponse = 로그인된_상태로_PATCH_요청을_보낸다(
                 "api/v1/members/inventoryProducts", token,
                 new ProfileProductRequest(savedInventoryProduct.getId(), null));
-        
+
         List<InventoryProductResponse> inventoryProductResponses = 로그인된_상태로_GET_요청을_보낸다(
                 "/api/v1/members/inventoryProducts",
                 token)
@@ -86,8 +89,10 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas");
         String token = response.as(LoginResponse.class).getToken();
         Long memberId = response.as(LoginResponse.class).getMember().getId();
-        InventoryProduct savedSelectedInventoryProduct = 대표장비를_지정한다(keyboard, memberId, true);
-        InventoryProduct savedUnselectedInventoryProduct = 대표장비를_지정한다(keyboard, memberId, false);
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
+        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);
 
         // when
         ExtractableResponse<Response> profileProductResponse = 로그인된_상태로_GET_요청을_보낸다(
@@ -109,9 +114,11 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas");
         Long memberId = response.as(LoginResponse.class).getMember().getId();
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
-        InventoryProduct savedSelectedInventoryProduct = 대표장비를_지정한다(keyboard, memberId, true);
-        InventoryProduct savedUnselectedInventoryProduct = 대표장비를_지정한다(keyboard, memberId, false);
-
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
+        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);
+        
         // when
         ExtractableResponse<Response> profileProductResponse = GET_요청을_보낸다(
                 "/api/v1/members/" + memberId + "/inventoryProducts");
@@ -130,12 +137,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         return keyboardRepository.save(keyboard);
     }
 
-    private InventoryProduct 대표장비를_지정한다(Keyboard keyboard, Long memberId, boolean selected) {
-        InventoryProduct inventoryProduct = InventoryProduct.builder()
-                .memberId(memberId)
-                .keyboard(keyboard)
-                .selected(selected)
-                .build();
+    private InventoryProduct 인벤토리에_장비를_추가한다(InventoryProduct inventoryProduct) {
         return inventoryProductRepository.save(inventoryProduct);
     }
 }
