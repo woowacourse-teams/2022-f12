@@ -66,9 +66,17 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> profileProductResponse = 로그인된_상태로_PATCH_요청을_보낸다(
                 "api/v1/members/inventoryProducts", token,
                 new ProfileProductRequest(savedInventoryProduct.getId(), null));
+        
+        List<InventoryProductResponse> inventoryProductResponses = 로그인된_상태로_GET_요청을_보낸다(
+                "/api/v1/members/inventoryProducts",
+                token)
+                .as(InventoryProductsResponse.class).getKeyboards();
 
         // then
-        assertThat(profileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertAll(
+                () -> assertThat(profileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(inventoryProductResponses.get(0).isSelected()).isTrue()
+        );
     }
 
     @Test
