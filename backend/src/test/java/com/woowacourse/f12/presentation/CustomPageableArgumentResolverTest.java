@@ -8,9 +8,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.woowacourse.f12.application.JwtProvider;
-import com.woowacourse.f12.application.KeyboardService;
-import com.woowacourse.f12.dto.response.KeyboardPageResponse;
+import com.woowacourse.f12.application.auth.JwtProvider;
+import com.woowacourse.f12.application.product.KeyboardService;
+import com.woowacourse.f12.dto.response.product.KeyboardPageResponse;
+import com.woowacourse.f12.presentation.product.KeyboardController;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import java.util.List;
 import org.junit.jupiter.api.Test;
