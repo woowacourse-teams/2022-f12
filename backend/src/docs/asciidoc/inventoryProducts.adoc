@@ -1,14 +1,14 @@
 [[InventoryProduct]]
 == InventoryProduct API
 
-=== 나의 대표 장비 업데이트
-
-operation::inventoryProducts-update[snippets='http-request,http-response']
-
 === 나의 로그인 정보로 인벤토리 상품을 조회
 
-operation::inventoryProducts-get-mine[snippets='http-request,http-response']
+operation::inventoryProducts-get-own[snippets='http-request,http-response']
 
 === 멤버 아이디로 인벤토리 상품을 조회
 
 operation::inventoryProducts-get-by-memberId[snippets='http-request,http-response']
+
+=== 나의 대표 장비 수정
+
+operation::inventoryProducts-update[snippets='http-request,http-response']

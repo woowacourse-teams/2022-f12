@@ -10,18 +10,24 @@ public class MemberResponse {
     private String gitHubId;
     private String name;
     private String imageUrl;
+    private String careerLevel;
+    private String jobType;
 
     private MemberResponse() {
     }
 
-    private MemberResponse(final Long id, final String gitHubId, final String name, final String imageUrl) {
+    private MemberResponse(final Long id, final String gitHubId, final String name, final String imageUrl,
+                           final String careerLevel, final String jobType) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.careerLevel = careerLevel;
+        this.jobType = jobType;
     }
 
     public static MemberResponse from(final Member member) {
-        return new MemberResponse(member.getId(), member.getGitHubId(), member.getName(), member.getImageUrl());
+        return new MemberResponse(member.getId(), member.getGitHubId(), member.getName(), member.getImageUrl(),
+                member.getCareerLevel().name(), member.getJobType().name());
     }
 }
