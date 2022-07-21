@@ -1,6 +1,7 @@
 import { GITHUB_AUTH_URL } from '@/constants/api';
 import ROUTES from '@/constants/routes';
 import useAuth from '@/hooks/useAuth';
+import { Link } from 'react-router-dom';
 
 import * as S from './HeaderNav.style';
 
@@ -22,10 +23,10 @@ function HeaderNav() {
     <S.Nav>
       <S.Wrapper>
         <S.FlexLeftUl>
-          <li>메뉴1</li>
-          <li>메뉴2</li>
-          <li>메뉴3</li>
-          <li>메뉴4</li>
+          <Link to={ROUTES.PRODUCTS}>전체 상품 목록</Link>
+          <Link to={{ pathname: ROUTES.PRODUCTS, hash: '#popular' }}>
+            인기 상품 목록
+          </Link>
         </S.FlexLeftUl>
         <S.FlexRightUl>
           {isLoggedIn ? (

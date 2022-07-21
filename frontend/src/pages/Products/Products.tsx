@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import ProductListSection from '@/components/ProductListSection/ProductListSection';
 import Select from '@/components/common/Select/Select';
 import useProducts from '@/hooks/useProducts';
+import { useLocation } from 'react-router-dom';
 
 type Option = { value: string; text: string };
 
@@ -19,18 +20,26 @@ const options: ProductSortOption[] = [
   { value: 'reviewCount,desc', text: '리뷰 많은 순' },
 ];
 
+const PopularSort = options[0];
 const DefaultSort = options[1];
 
 function Products() {
+  const location = useLocation();
   const [sort, setSort] = useState<Sort>(DefaultSort.value);
   const [keyboards, getNextPage] = useProducts({
     size: 12,
     sort,
   });
 
+  useEffect(() => {
+    setSort(
+      location.hash === '#popular' ? PopularSort.value : DefaultSort.value
+    );
+  }, [location.hash]);
+
   return (
     <ProductListSection
-      title={'모든 상품 목록'}
+      title={location.hash === '#popular' ? '인기 상품 목록' : '모든 상품 목록'}
       data={!!keyboards && keyboards}
       getNextPage={getNextPage}
       addOn={<Select value={sort} setValue={setSort} options={options} />}
