@@ -40,6 +40,21 @@ class InventoryProductRepositoryTest {
         assertThat(inventoryProducts).containsOnly(inventoryProduct1);
     }
 
+    @Test
+    void 멤버_아이디와_상품으로_인벤토리_상품_목록을_조회한다() {
+        // given
+        Long memberId = 1L;
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성(1L));
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        inventoryProductRepository.save(inventoryProduct);
+
+        // when
+        boolean actual = inventoryProductRepository.existsByMemberIdAndKeyboard(memberId, keyboard);
+
+        // then
+        assertThat(actual).isTrue();
+    }
+
     private Keyboard 키보드를_저장한다(Keyboard keyboard) {
         return keyboardRepository.save(keyboard);
     }

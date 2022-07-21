@@ -78,6 +78,8 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(member));
         given(keyboardRepository.findById(productId))
                 .willReturn(Optional.of(keyboard));
+        given(inventoryProductRepository.existsByMemberIdAndKeyboard(memberId, keyboard))
+                .willReturn(false);
         given(inventoryProductRepository.save(inventoryProduct))
                 .willReturn(inventoryProduct);
         given(reviewRepository.save(reviewRequest.toReview(keyboard, member)))
@@ -92,6 +94,7 @@ class ReviewServiceTest {
                 () -> verify(keyboardRepository).findById(productId),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).save(any(Review.class)),
+                () -> verify(inventoryProductRepository).existsByMemberIdAndKeyboard(memberId, keyboard),
                 () -> verify(inventoryProductRepository).save(inventoryProduct)
         );
     }

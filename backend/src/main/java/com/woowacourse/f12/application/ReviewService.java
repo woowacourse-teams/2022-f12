@@ -65,6 +65,9 @@ public class ReviewService {
     }
 
     private void saveInventoryProduct(final Long memberId, final Keyboard keyboard) {
+        if (inventoryProductRepository.existsByMemberIdAndKeyboard(memberId, keyboard)) {
+            return;
+        }
         final InventoryProduct inventoryProduct = InventoryProduct.builder()
                 .memberId(memberId)
                 .keyboard(keyboard)

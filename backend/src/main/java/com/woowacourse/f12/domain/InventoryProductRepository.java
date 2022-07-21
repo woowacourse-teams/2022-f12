@@ -5,5 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InventoryProductRepository extends JpaRepository<InventoryProduct, Long> {
 
-    List<InventoryProduct> findByMemberId(final Long memberId);
+    List<InventoryProduct> findByMemberId(Long memberId);
+
+    boolean existsByMemberIdAndKeyboard(Long memberId, Keyboard keyboard);
 }
