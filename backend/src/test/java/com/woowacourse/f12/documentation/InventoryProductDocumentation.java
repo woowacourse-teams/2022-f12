@@ -1,5 +1,6 @@
 package com.woowacourse.f12.documentation;
 
+import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -72,12 +73,7 @@ class InventoryProductDocumentation extends Documentation {
     void 멤버_id_로_인벤토리_상품_조회하는_API_문서화() throws Exception {
         // given
         Long memberId = 1L;
-        InventoryProduct inventoryProduct = InventoryProduct.builder()
-                .id(1L)
-                .memberId(memberId)
-                .keyboard(KEYBOARD_1.생성(1L))
-                .selected(true)
-                .build();
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
@@ -102,12 +98,7 @@ class InventoryProductDocumentation extends Documentation {
     void 다른_멤버_id_로_인벤토리_상품_조회하는_API_문서화() throws Exception {
         // given
         Long memberId = 1L;
-        InventoryProduct inventoryProduct = InventoryProduct.builder()
-                .id(1L)
-                .memberId(memberId)
-                .keyboard(KEYBOARD_1.생성(1L))
-                .selected(true)
-                .build();
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
         given(inventoryProductService.findByMemberId(memberId))
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
 

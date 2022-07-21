@@ -1,5 +1,6 @@
 package com.woowacourse.f12.application;
 
+import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
@@ -71,7 +72,7 @@ class ReviewServiceTest {
         Keyboard keyboard = KEYBOARD_1.생성(productId);
         Long memberId = 1L;
         Member member = CORINNE.생성(memberId);
-        InventoryProduct inventoryProduct = 인벤토리_항목을_생성한다(keyboard, memberId);
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
         given(keyboardRepository.findById(productId))
@@ -385,12 +386,5 @@ class ReviewServiceTest {
                 () -> verify(reviewRepository).findById(reviewId),
                 () -> verify(reviewRepository, times(0)).delete(review)
         );
-    }
-
-    private InventoryProduct 인벤토리_항목을_생성한다(final Keyboard keyboard, final Long memberId) {
-        return InventoryProduct.builder()
-                .keyboard(keyboard)
-                .memberId(memberId)
-                .build();
     }
 }

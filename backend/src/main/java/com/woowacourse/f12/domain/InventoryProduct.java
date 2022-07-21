@@ -14,7 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Entity
-@Table(name = "inventroy_product")
+@Table(name = "inventory_product")
 @Getter
 public class InventoryProduct {
 
