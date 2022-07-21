@@ -11,6 +11,7 @@ import com.woowacourse.f12.domain.ReviewRepository;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
+import com.woowacourse.f12.exception.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import com.woowacourse.f12.exception.MemberNotFoundException;
 import com.woowacourse.f12.exception.NotAuthorException;
@@ -51,9 +52,16 @@ public class ReviewService {
     }
 
     private Long saveReview(final ReviewRequest reviewRequest, final Member member, final Keyboard keyboard) {
+        validateNotWritten(member, keyboard);
         final Review review = reviewRequest.toReview(keyboard, member);
         return reviewRepository.save(review)
                 .getId();
+    }
+
+    private void validateNotWritten(final Member member, final Keyboard keyboard) {
+        if (reviewRepository.existsByMemberAndKeyboard(member, keyboard)) {
+            throw new AlreadyWrittenReviewException();
+        }
     }
 
     private void saveInventoryProduct(final Long memberId, final Keyboard keyboard) {

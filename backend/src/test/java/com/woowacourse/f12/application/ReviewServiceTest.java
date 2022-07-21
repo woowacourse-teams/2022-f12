@@ -28,6 +28,7 @@ import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.ReviewResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductResponse;
+import com.woowacourse.f12.exception.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.KeyboardNotFoundException;
 import com.woowacourse.f12.exception.MemberNotFoundException;
 import com.woowacourse.f12.exception.NotAuthorException;
@@ -134,6 +135,33 @@ class ReviewServiceTest {
                         .isExactlyInstanceOf(KeyboardNotFoundException.class),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(keyboardRepository).findById(productId),
+                () -> verify(reviewRepository, times(0)).save(any(Review.class))
+        );
+    }
+
+    @Test
+    void 이미_작성되어있는_제품의_리뷰를_등록하면_예외가_발생한다() {
+        // given
+        Long memberId = 1L;
+        Long productId = 1L;
+        Member member = CORINNE.생성(memberId);
+        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
+        Keyboard keyboard = KEYBOARD_1.생성(productId);
+
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.of(member));
+        given(keyboardRepository.findById(productId))
+                .willReturn(Optional.of(keyboard));
+        given(reviewRepository.existsByMemberAndKeyboard(member, keyboard))
+                .willReturn(true);
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.saveReviewAndInventoryProduct(1L, 1L, reviewRequest))
+                        .isExactlyInstanceOf(AlreadyWrittenReviewException.class),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(keyboardRepository).findById(productId),
+                () -> verify(reviewRepository).existsByMemberAndKeyboard(member, keyboard),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
         );
     }
