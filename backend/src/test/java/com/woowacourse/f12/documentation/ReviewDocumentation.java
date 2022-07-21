@@ -3,6 +3,7 @@ package com.woowacourse.f12.documentation;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,6 +26,7 @@ import com.woowacourse.f12.domain.Member;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
+import com.woowacourse.f12.exception.AlreadyWrittenReviewException;
 import com.woowacourse.f12.presentation.ReviewController;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -83,14 +85,43 @@ public class ReviewDocumentation extends Documentation {
     }
 
     @Test
+    void 리뷰_작성시_같은_제품에_대해_작성한_리뷰가_존재하는_경우_예외_발생_API_문서화() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
+                .willThrow(new AlreadyWrittenReviewException());
+        ReviewRequest reviewRequest = new ReviewRequest("content", 5);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/keyboards/" + 1L + "/reviews")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest))
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print())
+                .andDo(
+                        document("reviews-create-already-written-exception")
+                );
+    }
+
+    @Test
     void 특정_제품의_리뷰_목록_조회_API_문서화() throws Exception {
         // given
         PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
         Keyboard keyboard = KEYBOARD_1.생성(1L);
-        Member member = CORINNE.생성(1L);
+        Member corinne = CORINNE.생성(1L);
+        Member mincho = MINCHO.생성(2L);
         ReviewPageResponse reviewPageResponse = ReviewPageResponse.from(
                 new SliceImpl<>(
-                        List.of(REVIEW_RATING_5.작성(1L, keyboard, member), REVIEW_RATING_4.작성(2L, keyboard, member)),
+                        List.of(REVIEW_RATING_5.작성(1L, keyboard, corinne), REVIEW_RATING_4.작성(2L, keyboard, mincho)),
                         pageable, false));
 
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
