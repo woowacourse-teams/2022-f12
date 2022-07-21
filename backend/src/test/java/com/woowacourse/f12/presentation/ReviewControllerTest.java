@@ -25,6 +25,7 @@ import com.woowacourse.f12.application.ReviewService;
 import com.woowacourse.f12.dto.request.ReviewRequest;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
+import com.woowacourse.f12.exception.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.BlankContentException;
 import com.woowacourse.f12.exception.InvalidContentLengthException;
 import com.woowacourse.f12.exception.InvalidRatingValueException;
@@ -298,6 +299,35 @@ class ReviewControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
                 ).andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(reviewService).saveReviewAndInventoryProduct(eq(1L), eq(1L), any(ReviewRequest.class))
+        );
+    }
+
+    @Test
+    void 리뷰_생성_실패_이미_리뷰가_작성되어있음() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
+                .willThrow(new AlreadyWrittenReviewException());
+
+        // when
+        mockMvc.perform(
+                        post("/api/v1/keyboards/" + 1L + "/reviews")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(reviewRequest))
+                ).andExpect(status().isBadRequest())
                 .andDo(print());
 
         // then

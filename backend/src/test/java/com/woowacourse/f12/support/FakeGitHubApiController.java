@@ -3,6 +3,7 @@ package com.woowacourse.f12.support;
 import com.woowacourse.f12.dto.request.GitHubTokenRequest;
 import com.woowacourse.f12.dto.response.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.GitHubTokenResponse;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class FakeGitHubApiController {
+
+    private Map<String, String> codeAndToken = Map.of("1", "token1", "2", "token2");
+    private Map<String, String> tokenAndGitHubId = Map.of("token1", "gitHubId1", "token2", "gitHubId2");
 
     private String clientId;
     private String clientSecret;
@@ -31,7 +35,7 @@ public class FakeGitHubApiController {
                 .equals(clientSecret)) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(new GitHubTokenResponse("accessToken"));
+        return ResponseEntity.ok(new GitHubTokenResponse(codeAndToken.get(gitHubTokenRequest.getCode())));
     }
 
     @GetMapping("/user")
@@ -44,6 +48,6 @@ public class FakeGitHubApiController {
         if (splitValue.length != 2 || !splitValue[0].equals("token")) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(new GitHubProfileResponse("gitHubId", "name", "url"));
+        return ResponseEntity.ok(new GitHubProfileResponse(tokenAndGitHubId.get(splitValue[1]), "name", "url"));
     }
 }

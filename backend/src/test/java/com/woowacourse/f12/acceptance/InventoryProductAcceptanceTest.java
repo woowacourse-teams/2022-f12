@@ -1,5 +1,6 @@
 package com.woowacourse.f12.acceptance;
 
+import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
@@ -37,9 +38,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     void 리뷰를_작성하면_해당_장비가_인벤토리에_추가된다() {
         // given
         Long keyboardId = 키보드를_저장한다(KEYBOARD_1.생성()).getId();
-        String token = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas")
-                .as(LoginResponse.class)
-                .getToken();
+        String token = 로그인을_한다("1").getToken();
         REVIEW_RATING_5.작성_요청을_보낸다(keyboardId, token);
 
         // when
@@ -57,8 +56,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     void 대표_장비가_없는_상태에서_대표_장비를_등록한다() {
         // given
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
-        LoginResponse loginResponse = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas")
-                .as(LoginResponse.class);
+        LoginResponse loginResponse = 로그인을_한다("1");
         String token = loginResponse.getToken();
         Long memberId = loginResponse.getMember().getId();
 
@@ -86,9 +84,10 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     void 등록된_장비_목록을_대표_장비를_포함해서_조회한다() {
         // given
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas");
-        String token = response.as(LoginResponse.class).getToken();
-        Long memberId = response.as(LoginResponse.class).getMember().getId();
+        LoginResponse response = 로그인을_한다("1");
+        String token = response.getToken();
+        Long memberId = response.getMember()
+                .getId();
         InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
         InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
@@ -111,14 +110,15 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 다른_회원의_아이디로_등록된_장비를_조회한다() {
         // given
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/login?code=dkasjbdkjas");
-        Long memberId = response.as(LoginResponse.class).getMember().getId();
+        LoginResponse response = 로그인을_한다("1");
+        Long memberId = response.getMember()
+                .getId();
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
         InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
         InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
         InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);
-        
+
         // when
         ExtractableResponse<Response> profileProductResponse = GET_요청을_보낸다(
                 "/api/v1/members/" + memberId + "/inventoryProducts");
