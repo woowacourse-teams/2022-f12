@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.woowacourse.f12.domain.Keyboard;
 import com.woowacourse.f12.domain.KeyboardRepository;
 import com.woowacourse.f12.dto.request.ReviewRequest;
+import com.woowacourse.f12.dto.response.ExceptionResponse;
 import com.woowacourse.f12.dto.response.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.ReviewWithProductResponse;
@@ -42,6 +43,24 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).contains("/api/v1/reviews/")
+        );
+    }
+
+    @Test
+    void 같은_회원이_같은_제품에_리뷰를_중복해서_작성하면_예외가_발생한다() {
+        // given
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        String token = 로그인을_한다("1").getToken();
+        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+
+        // when
+        ExtractableResponse<Response> response = REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.as(ExceptionResponse.class).getMessage())
+                        .isEqualTo("해당 제품에 대해 이미 리뷰가 작성되어 있습니다.")
         );
     }
 
