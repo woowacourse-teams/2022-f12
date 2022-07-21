@@ -11,4 +11,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Slice<Review> findPageByProductId(Long productId, Pageable pageable);
 
     Slice<Review> findPageBy(Pageable pageable);
+
+    boolean existsByMemberAndKeyboard(Member member, Keyboard keyboard);
 }

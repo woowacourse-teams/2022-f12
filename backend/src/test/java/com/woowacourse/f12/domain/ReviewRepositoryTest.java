@@ -127,6 +127,20 @@ class ReviewRepositoryTest {
         );
     }
 
+    @Test
+    void 회원과_제품으로_작성된_리뷰가_존재하는지_확인한다() {
+        // given
+        Keyboard keyboard = keyboardRepository.save(KEYBOARD_1.생성());
+        Member member = memberRepository.save(CORINNE.생성());
+        reviewRepository.save(REVIEW_RATING_5.작성(keyboard, member));
+
+        // when
+        boolean actual = reviewRepository.existsByMemberAndKeyboard(member, keyboard);
+
+        // then
+        assertThat(actual).isTrue();
+    }
+
     private Review 리뷰_저장(Review review) {
         return reviewRepository.save(review);
     }
