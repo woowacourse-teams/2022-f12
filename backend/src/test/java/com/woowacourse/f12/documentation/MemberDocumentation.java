@@ -59,7 +59,7 @@ public class MemberDocumentation extends Documentation {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("members-get-mine"))
+                .andDo(document("members-get-own"))
                 .andDo(print());
     }
 
@@ -102,7 +102,7 @@ public class MemberDocumentation extends Documentation {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("members-update-me"))
+                .andDo(document("members-update"))
                 .andDo(print());
     }
 }

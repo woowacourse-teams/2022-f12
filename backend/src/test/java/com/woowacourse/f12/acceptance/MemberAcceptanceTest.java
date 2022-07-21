@@ -35,10 +35,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         Member member = Member.builder()
-                .id(null)
-                .imageUrl(null)
-                .name(null)
-                .gitHubId(null)
                 .careerLevel(JUNIOR)
                 .jobType(BACK_END)
                 .build();
@@ -65,14 +61,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", token);
 
         // then
-        Member expectedMember = Member.builder()
-                .id(loginMemberResponse.getId())
-                .name(loginMemberResponse.getName())
-                .gitHubId(loginMemberResponse.getGitHubId())
-                .imageUrl(loginMemberResponse.getImageUrl())
-                .careerLevel(JUNIOR)
-                .jobType(BACK_END)
-                .build();
+        Member expectedMember = loginMemberResponse.toMember();
+        expectedMember.updateCareerLevel(JUNIOR);
+        expectedMember.updateJobType(BACK_END);
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()

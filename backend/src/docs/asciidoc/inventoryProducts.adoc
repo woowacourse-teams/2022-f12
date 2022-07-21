@@ -3,7 +3,7 @@
 
 === 나의 로그인 정보로 인벤토리 상품을 조회
 
-operation::inventoryProducts-get-mine[snippets='http-request,http-response']
+operation::inventoryProducts-get-own[snippets='http-request,http-response']
 
 === 멤버 아이디로 인벤토리 상품을 조회
 

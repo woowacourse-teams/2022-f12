@@ -24,7 +24,7 @@ public class MemberController {
 
     @GetMapping("/me")
     @LoginRequired
-    public ResponseEntity<MemberResponse> showMe(@VerifiedMember final Long memberId) {
+    public ResponseEntity<MemberResponse> showLoggedIn(@VerifiedMember final Long memberId) {
         final MemberResponse memberResponse = memberService.findById(memberId);
         return ResponseEntity.ok(memberResponse);
     }
