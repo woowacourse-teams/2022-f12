@@ -17,17 +17,17 @@ class GitHubOauthClientTest {
     @Test
     void GitHub에_accessToken을_요청한다() {
         // given, when
-        String accessToken = gitHubOauthClient.getAccessToken("code");
+        String accessToken = gitHubOauthClient.getAccessToken("1");
 
         // then
-        assertThat(accessToken).isEqualTo("accessToken");
+        assertThat(accessToken).isEqualTo("token1");
     }
 
     @Test
     void GitHub에_프로필을_요청한다() {
         // given
-        String accessToken = "accessToken";
-        GitHubProfileResponse expected = new GitHubProfileResponse("gitHubId", "name", "url");
+        String accessToken = "token1";
+        GitHubProfileResponse expected = new GitHubProfileResponse("gitHubId1", "name", "url");
 
         // when
         GitHubProfileResponse gitHubProfileResponse = gitHubOauthClient.getProfile(accessToken);
