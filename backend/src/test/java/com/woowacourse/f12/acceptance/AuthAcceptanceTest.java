@@ -4,7 +4,7 @@ import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.woowacourse.f12.dto.response.LoginResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;

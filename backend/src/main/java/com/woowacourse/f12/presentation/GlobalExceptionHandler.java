@@ -1,10 +1,10 @@
 package com.woowacourse.f12.presentation;
 
 import com.woowacourse.f12.dto.response.ExceptionResponse;
-import com.woowacourse.f12.exception.ForbiddenMemberException;
-import com.woowacourse.f12.exception.InvalidValueException;
-import com.woowacourse.f12.exception.NotFoundException;
-import com.woowacourse.f12.exception.UnauthorizedException;
+import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
+import com.woowacourse.f12.exception.badrequest.InvalidValueException;
+import com.woowacourse.f12.exception.notfound.NotFoundException;
+import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

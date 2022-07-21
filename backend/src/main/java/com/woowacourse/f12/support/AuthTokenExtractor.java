@@ -1,6 +1,6 @@
 package com.woowacourse.f12.support;
 
-import com.woowacourse.f12.exception.UnauthorizedException;
+import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
 

@@ -1,8 +1,8 @@
 package com.woowacourse.f12.support;
 
-import com.woowacourse.f12.dto.request.GitHubTokenRequest;
-import com.woowacourse.f12.dto.response.GitHubProfileResponse;
-import com.woowacourse.f12.dto.response.GitHubTokenResponse;
+import com.woowacourse.f12.dto.request.auth.GitHubTokenRequest;
+import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
+import com.woowacourse.f12.dto.response.auth.GitHubTokenResponse;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

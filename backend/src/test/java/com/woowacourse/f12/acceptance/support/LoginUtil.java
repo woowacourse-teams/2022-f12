@@ -2,7 +2,7 @@ package com.woowacourse.f12.acceptance.support;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 
-import com.woowacourse.f12.dto.response.LoginResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
 
 public class LoginUtil {
 

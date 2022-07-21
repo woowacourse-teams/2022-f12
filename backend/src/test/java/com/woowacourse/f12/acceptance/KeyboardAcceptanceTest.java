@@ -10,10 +10,10 @@ import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.woowacourse.f12.domain.Keyboard;
-import com.woowacourse.f12.domain.KeyboardRepository;
-import com.woowacourse.f12.dto.response.KeyboardPageResponse;
-import com.woowacourse.f12.dto.response.KeyboardResponse;
+import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.KeyboardRepository;
+import com.woowacourse.f12.dto.response.product.KeyboardPageResponse;
+import com.woowacourse.f12.dto.response.product.KeyboardResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;

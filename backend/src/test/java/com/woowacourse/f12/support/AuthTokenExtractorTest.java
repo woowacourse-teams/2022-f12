@@ -3,7 +3,7 @@ package com.woowacourse.f12.support;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.woowacourse.f12.exception.UnauthorizedException;
+import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
 import org.junit.jupiter.api.Test;
 
 class AuthTokenExtractorTest {
