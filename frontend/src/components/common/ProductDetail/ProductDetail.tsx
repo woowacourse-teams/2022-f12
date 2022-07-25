@@ -1,5 +1,5 @@
-import Rating from '../Rating/Rating';
-import * as S from './ProductDetail.style';
+import Rating from '@/components/common/Rating/Rating';
+import * as S from '@/components/common/ProductDetail/ProductDetail.style';
 
 type Props = {
   imageUrl?: string;

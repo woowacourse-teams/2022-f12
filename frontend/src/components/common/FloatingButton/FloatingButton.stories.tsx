@@ -1,4 +1,4 @@
-import FloatingButton from './FloatingButton';
+import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
 import { ComponentStory } from '@storybook/react';
 import Plus from '@/assets/plus.svg';
 import theme from '@/style/theme';

@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { BASE_URL, ENDPOINTS } from '../constants/api';
+import { BASE_URL, ENDPOINTS } from '@/constants/api';
 import {
   InventoryProducts,
   myData,

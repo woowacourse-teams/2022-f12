@@ -1,9 +1,9 @@
-import Rating from '../Rating/Rating';
-import UserNameTag from '../UserNameTag/UserNameTag';
+import Rating from '@/components/common/Rating/Rating';
+import UserNameTag from '@/components/common/UserNameTag/UserNameTag';
 import { useReducer } from 'react';
 import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
 
-import * as S from './ReviewCard.style';
+import * as S from '@/components/common/ReviewCard/ReviewCard.style';
 import useAuth from '@/hooks/useAuth';
 
 type Props = {

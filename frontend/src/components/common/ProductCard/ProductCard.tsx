@@ -1,5 +1,5 @@
-import Rating from '../Rating/Rating';
-import * as S from './ProductCard.style';
+import Rating from '@/components/common/Rating/Rating';
+import * as S from '@/components/common/ProductCard/ProductCard.style';
 
 type Props = {
   productImage?: string;

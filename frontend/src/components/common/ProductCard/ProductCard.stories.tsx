@@ -1,6 +1,6 @@
-import ProductCard from './ProductCard';
+import ProductCard from '@/components/common/ProductCard/ProductCard';
 import { ComponentStory } from '@storybook/react';
-import sampleKeyboard from '../../../mocks/sample_keyboard.jpg';
+import sampleKeyboard from '@/mocks/sample_keyboard.jpg';
 
 export default {
   component: ProductCard,

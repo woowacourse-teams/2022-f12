@@ -1,6 +1,6 @@
 import React from 'react';
 
-import * as S from './Masonry.style';
+import * as S from '@/components/common/Masonry/Masonry.style';
 
 type Props = { columnCount: number; children: React.ReactNode };
 
