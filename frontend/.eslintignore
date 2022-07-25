@@ -1,3 +1,4 @@
-webpack.config.js
+webpack.common.js
 webpack.prod.js
+webpack.dev.js
 mocks

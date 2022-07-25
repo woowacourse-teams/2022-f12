@@ -4,10 +4,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = merge(common, {
-  mode: 'production',
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, './public/index.html'),
-    }),
-  ],
+  mode: 'development',
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'public'),
+    },
+    open: true,
+    historyApiFallback: true,
+    compress: true,
+    port: 3000,
+  },
 });

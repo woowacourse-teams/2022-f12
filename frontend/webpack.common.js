@@ -3,7 +3,6 @@ const path = require('path');
 
 module.exports = {
   entry: './src/index.tsx',
-  mode: process.env.production === 'true' ? 'production' : 'development',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.[hash].js',
@@ -49,15 +48,6 @@ module.exports = {
       template: path.resolve(__dirname, './public/index.html'),
     }),
   ],
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'public'),
-    },
-    open: true,
-    historyApiFallback: true,
-    compress: true,
-    port: 3000,
-  },
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx'],
     alias: {
