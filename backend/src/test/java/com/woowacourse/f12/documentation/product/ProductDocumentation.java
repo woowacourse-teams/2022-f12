@@ -1,5 +1,6 @@
 package com.woowacourse.f12.documentation.product;
 
+import static com.woowacourse.f12.domain.product.Category.*;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static org.mockito.BDDMockito.given;
@@ -35,7 +36,7 @@ class ProductDocumentation extends Documentation {
     private ProductService productService;
 
     @Test
-    void 키보드_단일_조회_API_문서화() throws Exception {
+    void 제품_단일_조회_API_문서화() throws Exception {
         // given
         Product product = KEYBOARD_1.생성(1L);
         given(productService.findById(1L))
@@ -55,19 +56,19 @@ class ProductDocumentation extends Documentation {
     }
 
     @Test
-    void 키보드_목록_조회_API_문서화() throws Exception {
+    void 제품_목록_조회_API_문서화() throws Exception {
         // given
         Product product1 = KEYBOARD_1.생성(1L);
         Product product2 = KEYBOARD_2.생성(2L);
         PageRequest pageable = PageRequest.of(0, 5, Sort.by("rating").descending());
         SliceImpl<Product> keyboards = new SliceImpl<>(List.of(product1, product2), pageable, false);
 
-        given(productService.findPage(pageable))
+        given(productService.findPage(KEYBOARD, pageable))
                 .willReturn(ProductPageResponse.from(keyboards));
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/products?page=0&size=5&sort=rating,desc")
+                get("/api/v1/products?category=KEYBOARD&page=0&size=5&sort=rating,desc")
         );
 
         // then

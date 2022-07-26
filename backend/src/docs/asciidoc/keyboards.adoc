@@ -1,11 +1,20 @@
-[[Keyboard]]
-== Keyboard API
+[[Product]]
+== Product API
 
-=== 키보드 단일 상품 조회
+=== 제품 단일 상품 조회
 
 operation::keyboards-get[snippets='http-request,http-response']
 
-=== 키보드 목록 페이지 조회
+=== 제품 목록 페이지 조회
+
+==== category 조건
+
+- `KEYBOARD` (키보드)
+- `MOUSE` (마우스)
+- `MONITOR` (모니터)
+- `STAND` (거치대)
+- `SOFTWARE` (소프트웨어)
+- 없을 경우 모든 제품 조회
 
 ==== sort 조건
 
