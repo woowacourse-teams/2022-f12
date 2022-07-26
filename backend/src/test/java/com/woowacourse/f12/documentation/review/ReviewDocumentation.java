@@ -71,7 +71,7 @@ public class ReviewDocumentation extends Documentation {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/keyboards/" + 1L + "/reviews")
+                post("/api/v1/products/" + 1L + "/reviews")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reviewRequest))
@@ -99,7 +99,7 @@ public class ReviewDocumentation extends Documentation {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/keyboards/" + 1L + "/reviews")
+                post("/api/v1/products/" + 1L + "/reviews")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reviewRequest))
@@ -130,7 +130,7 @@ public class ReviewDocumentation extends Documentation {
 
         // when, then
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/keyboards/1/reviews?page=0&size=10&sort=createdAt,desc"));
+                get("/api/v1/products/1/reviews?page=0&size=10&sort=createdAt,desc"));
 
         // then
         resultActions.andExpect(status().isOk())

@@ -5,7 +5,7 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.product.Keyboard;
-import com.woowacourse.f12.domain.product.KeyboardRepository;
+import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
@@ -26,15 +26,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final KeyboardRepository keyboardRepository;
+    private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
     private final InventoryProductRepository inventoryProductRepository;
 
-    public ReviewService(final ReviewRepository reviewRepository, final KeyboardRepository keyboardRepository,
+    public ReviewService(final ReviewRepository reviewRepository, final ProductRepository productRepository,
                          final MemberRepository memberRepository,
                          final InventoryProductRepository inventoryProductRepository) {
         this.reviewRepository = reviewRepository;
-        this.keyboardRepository = keyboardRepository;
+        this.productRepository = productRepository;
         this.memberRepository = memberRepository;
         this.inventoryProductRepository = inventoryProductRepository;
     }
@@ -44,7 +44,7 @@ public class ReviewService {
                                               final ReviewRequest reviewRequest) {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
-        final Keyboard keyboard = keyboardRepository.findById(productId)
+        final Keyboard keyboard = productRepository.findById(productId)
                 .orElseThrow(KeyboardNotFoundException::new);
         final Long reviewId = saveReview(reviewRequest, member, keyboard);
         saveInventoryProduct(memberId, keyboard);
@@ -82,7 +82,7 @@ public class ReviewService {
     }
 
     private void validateKeyboardExists(final Long productId) {
-        if (!keyboardRepository.existsById(productId)) {
+        if (!productRepository.existsById(productId)) {
             throw new KeyboardNotFoundException();
         }
     }

@@ -13,7 +13,7 @@ import com.woowacourse.f12.config.JpaConfig;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.product.Keyboard;
-import com.woowacourse.f12.domain.product.KeyboardRepository;
+import com.woowacourse.f12.domain.product.ProductRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class ReviewRepositoryTest {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private KeyboardRepository keyboardRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -44,7 +44,7 @@ class ReviewRepositoryTest {
     @Test
     void 특정_제품의_리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard = keyboardRepository.save(KEYBOARD_1.생성());
+        Keyboard keyboard = productRepository.save(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성(1L));
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
         리뷰_저장(REVIEW_RATING_5.작성(keyboard, member));
@@ -65,7 +65,7 @@ class ReviewRepositoryTest {
     @Test
     void 특정_제품의_리뷰_목록을_평점순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard = keyboardRepository.save(KEYBOARD_1.생성());
+        Keyboard keyboard = productRepository.save(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성(1L));
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("rating")));
         Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard, member));
@@ -86,8 +86,8 @@ class ReviewRepositoryTest {
     @Test
     void 리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = keyboardRepository.save(KEYBOARD_1.생성());
-        Keyboard keyboard2 = keyboardRepository.save(KEYBOARD_2.생성());
+        Keyboard keyboard1 = productRepository.save(KEYBOARD_1.생성());
+        Keyboard keyboard2 = productRepository.save(KEYBOARD_2.생성());
         Member member = memberRepository.save(CORINNE.생성(1L));
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
         리뷰_저장(REVIEW_RATING_5.작성(keyboard1, member));
@@ -108,7 +108,7 @@ class ReviewRepositoryTest {
     @Test
     void 프록시의_equals_hashCode_테스트() {
         // given
-        Keyboard keyboard = keyboardRepository.save(KEYBOARD_1.생성());
+        Keyboard keyboard = productRepository.save(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성());
         Long testReviewId = reviewRepository.save(REVIEW_RATING_5.작성(keyboard, member))
                 .getId();
@@ -121,7 +121,7 @@ class ReviewRepositoryTest {
                 .get();
         Member targetMember = memberRepository.findById(testMemberId)
                 .get();
-        Keyboard targetKeyboard = keyboardRepository.findById(testKeyboardId)
+        Keyboard targetKeyboard = productRepository.findById(testKeyboardId)
                 .get();
 
         // then
@@ -134,7 +134,7 @@ class ReviewRepositoryTest {
     @Test
     void 회원과_제품으로_작성된_리뷰가_존재하는지_확인한다() {
         // given
-        Keyboard keyboard = keyboardRepository.save(KEYBOARD_1.생성());
+        Keyboard keyboard = productRepository.save(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성());
         reviewRepository.save(REVIEW_RATING_5.작성(keyboard, member));
 

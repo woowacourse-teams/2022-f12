@@ -10,9 +10,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import com.woowacourse.f12.domain.product.Keyboard;
-import com.woowacourse.f12.domain.product.KeyboardRepository;
-import com.woowacourse.f12.dto.response.product.KeyboardPageResponse;
-import com.woowacourse.f12.dto.response.product.KeyboardResponse;
+import com.woowacourse.f12.domain.product.ProductRepository;
+import com.woowacourse.f12.dto.response.product.ProductPageResponse;
+import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -26,42 +26,42 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 
 @ExtendWith(MockitoExtension.class)
-class KeyboardServiceTest {
+class ProductServiceTest {
 
     @Mock
-    private KeyboardRepository keyboardRepository;
+    private ProductRepository productRepository;
 
     @InjectMocks
-    private KeyboardService keyboardService;
+    private ProductService productService;
 
     @Test
     void id_값으로_키보드를_조회한다() {
         // given
         Keyboard keyboard = KEYBOARD_1.생성(1L);
 
-        given(keyboardRepository.findById(anyLong()))
+        given(productRepository.findById(anyLong()))
                 .willReturn(Optional.of(keyboard));
         // when
-        KeyboardResponse keyboardResponse = keyboardService.findById(1L);
+        ProductResponse productResponse = productService.findById(1L);
 
         // then
         assertAll(
-                () -> verify(keyboardRepository).findById(1L),
-                () -> assertThat(keyboardResponse).usingRecursiveComparison()
-                        .isEqualTo(KeyboardResponse.from(keyboard))
+                () -> verify(productRepository).findById(1L),
+                () -> assertThat(productResponse).usingRecursiveComparison()
+                        .isEqualTo(ProductResponse.from(keyboard))
         );
     }
 
     @Test
     void 존재하지_않는_id_값으로_키보드를_조회하면_예외를_반환한다() {
         // given
-        given(keyboardRepository.findById(anyLong()))
+        given(productRepository.findById(anyLong()))
                 .willReturn(Optional.empty());
         // when then
         assertAll(
-                () -> assertThatThrownBy(() -> keyboardService.findById(1L))
+                () -> assertThatThrownBy(() -> productService.findById(1L))
                         .isExactlyInstanceOf(KeyboardNotFoundException.class),
-                () -> verify(keyboardRepository).findById(1L)
+                () -> verify(productRepository).findById(1L)
         );
     }
 
@@ -70,19 +70,19 @@ class KeyboardServiceTest {
         // given
         Keyboard keyboard = KEYBOARD_1.생성(1L);
         Pageable pageable = PageRequest.of(0, 1);
-        given(keyboardRepository.findPageBy(any(Pageable.class)))
+        given(productRepository.findPageBy(any(Pageable.class)))
                 .willReturn(new SliceImpl<>(List.of(keyboard), pageable, false));
 
         // when
-        KeyboardPageResponse keyboardPageResponse = keyboardService.findPage(pageable);
+        ProductPageResponse productPageResponse = productService.findPage(pageable);
 
         // then
         assertAll(
-                () -> verify(keyboardRepository).findPageBy(any(Pageable.class)),
-                () -> assertThat(keyboardPageResponse.isHasNext()).isFalse(),
-                () -> assertThat(keyboardPageResponse.getItems()).hasSize(1)
+                () -> verify(productRepository).findPageBy(any(Pageable.class)),
+                () -> assertThat(productPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(productPageResponse.getItems()).hasSize(1)
                         .usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(KeyboardResponse.from(keyboard))
+                        .containsOnly(ProductResponse.from(keyboard))
         );
     }
 }

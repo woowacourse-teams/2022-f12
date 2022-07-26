@@ -11,32 +11,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.product.Keyboard;
-import com.woowacourse.f12.domain.product.KeyboardRepository;
-import com.woowacourse.f12.dto.response.product.KeyboardPageResponse;
-import com.woowacourse.f12.dto.response.product.KeyboardResponse;
+import com.woowacourse.f12.domain.product.ProductRepository;
+import com.woowacourse.f12.dto.response.product.ProductPageResponse;
+import com.woowacourse.f12.dto.response.product.ProductResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-class KeyboardAcceptanceTest extends AcceptanceTest {
+class ProductAcceptanceTest extends AcceptanceTest {
 
     @Autowired
-    private KeyboardRepository keyboardRepository;
+    private ProductRepository productRepository;
 
     @Test
-    void 키보드_단일_제품_조회한다() {
+    void 단일_제품_조회한다() {
         // given
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/keyboards/" + keyboard.getId());
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products/" + keyboard.getId());
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(KeyboardResponse.class)).usingRecursiveComparison()
+                () -> assertThat(response.as(ProductResponse.class)).usingRecursiveComparison()
                         .isEqualTo(keyboard)
         );
     }
@@ -48,15 +48,15 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
         키보드를_저장한다(KEYBOARD_2.생성());
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/keyboards?page=0&size=1");
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?page=0&size=1");
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(KeyboardPageResponse.class).getItems())
+                () -> assertThat(response.as(ProductPageResponse.class).getItems())
                         .extracting("id")
                         .containsExactly(keyboard.getId()),
-                () -> assertThat(response.as(KeyboardPageResponse.class).isHasNext()).isTrue()
+                () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isTrue()
         );
     }
 
@@ -71,15 +71,15 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
         REVIEW_RATING_3.작성_요청을_보낸다(keyboard2.getId(), token);
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/keyboards?page=0&size=1&sort=reviewCount,desc");
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?page=0&size=1&sort=reviewCount,desc");
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(KeyboardPageResponse.class).getItems())
+                () -> assertThat(response.as(ProductPageResponse.class).getItems())
                         .extracting("id")
                         .containsExactly(keyboard1.getId()),
-                () -> assertThat(response.as(KeyboardPageResponse.class).isHasNext()).isTrue()
+                () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isTrue()
         );
     }
 
@@ -93,19 +93,19 @@ class KeyboardAcceptanceTest extends AcceptanceTest {
         REVIEW_RATING_5.작성_요청을_보낸다(keyboard2.getId(), token);
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/keyboards?page=0&size=1&sort=rating,desc");
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?page=0&size=1&sort=rating,desc");
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(KeyboardPageResponse.class).getItems())
+                () -> assertThat(response.as(ProductPageResponse.class).getItems())
                         .extracting("id")
                         .containsExactly(keyboard2.getId()),
-                () -> assertThat(response.as(KeyboardPageResponse.class).isHasNext()).isTrue()
+                () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isTrue()
         );
     }
 
     private Keyboard 키보드를_저장한다(Keyboard keyboard) {
-        return keyboardRepository.save(keyboard);
+        return productRepository.save(keyboard);
     }
 }

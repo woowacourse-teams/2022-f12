@@ -29,10 +29,10 @@ import org.springframework.data.domain.Sort.Order;
 
 @DataJpaTest
 @Import(JpaConfig.class)
-class KeyboardRepositoryTest {
+class ProductRepositoryTest {
 
     @Autowired
-    private KeyboardRepository keyboardRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -54,7 +54,7 @@ class KeyboardRepositoryTest {
         entityManager.refresh(keyboard);
 
         // when
-        Keyboard savedKeyboard = keyboardRepository.findById(keyboard.getId())
+        Keyboard savedKeyboard = productRepository.findById(keyboard.getId())
                 .orElseThrow(IllegalArgumentException::new);
 
         // then
@@ -72,7 +72,7 @@ class KeyboardRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1);
 
         // when
-        Slice<Keyboard> slice = keyboardRepository.findPageBy(pageable);
+        Slice<Keyboard> slice = productRepository.findPageBy(pageable);
 
         // then
         assertAll(
@@ -95,7 +95,7 @@ class KeyboardRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("reviewCount")));
 
         // when
-        Slice<Keyboard> slice = keyboardRepository.findPageBy(pageable);
+        Slice<Keyboard> slice = productRepository.findPageBy(pageable);
 
         // then
         assertAll(
@@ -119,7 +119,7 @@ class KeyboardRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating")));
 
         // when
-        Slice<Keyboard> slice = keyboardRepository.findPageBy(pageable);
+        Slice<Keyboard> slice = productRepository.findPageBy(pageable);
 
         // then
         assertAll(
@@ -129,7 +129,7 @@ class KeyboardRepositoryTest {
     }
 
     private Keyboard 키보드_저장(Keyboard keyboard) {
-        return keyboardRepository.save(keyboard);
+        return productRepository.save(keyboard);
     }
 
     private Review 리뷰_저장(Review review) {

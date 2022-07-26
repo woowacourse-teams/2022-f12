@@ -4,7 +4,7 @@ import com.woowacourse.f12.domain.product.Keyboard;
 import lombok.Getter;
 
 @Getter
-public class KeyboardResponse {
+public class ProductResponse {
 
     private Long id;
     private String name;
@@ -12,11 +12,11 @@ public class KeyboardResponse {
     private int reviewCount;
     private double rating;
 
-    private KeyboardResponse() {
+    private ProductResponse() {
     }
 
-    private KeyboardResponse(final Long id, final String name, final String imageUrl, final int reviewCount,
-                             final double rating) {
+    private ProductResponse(final Long id, final String name, final String imageUrl, final int reviewCount,
+                            final double rating) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
@@ -24,8 +24,8 @@ public class KeyboardResponse {
         this.rating = rating;
     }
 
-    public static KeyboardResponse from(final Keyboard keyboard) {
-        return new KeyboardResponse(
+    public static ProductResponse from(final Keyboard keyboard) {
+        return new ProductResponse(
                 keyboard.getId(),
                 keyboard.getName(),
                 keyboard.getImageUrl(),

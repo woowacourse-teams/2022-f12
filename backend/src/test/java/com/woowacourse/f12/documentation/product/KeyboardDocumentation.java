@@ -8,12 +8,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.woowacourse.f12.application.product.KeyboardService;
+import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.documentation.Documentation;
 import com.woowacourse.f12.domain.product.Keyboard;
-import com.woowacourse.f12.dto.response.product.KeyboardPageResponse;
-import com.woowacourse.f12.dto.response.product.KeyboardResponse;
-import com.woowacourse.f12.presentation.product.KeyboardController;
+import com.woowacourse.f12.dto.response.product.ProductPageResponse;
+import com.woowacourse.f12.dto.response.product.ProductResponse;
+import com.woowacourse.f12.presentation.product.ProductController;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,25 +25,25 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-@WebMvcTest(KeyboardController.class)
+@WebMvcTest(ProductController.class)
 class KeyboardDocumentation extends Documentation {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private KeyboardService keyboardService;
+    private ProductService productService;
 
     @Test
     void 키보드_단일_조회_API_문서화() throws Exception {
         // given
         Keyboard keyboard = KEYBOARD_1.생성(1L);
-        given(keyboardService.findById(1L))
-                .willReturn(KeyboardResponse.from(keyboard));
+        given(productService.findById(1L))
+                .willReturn(ProductResponse.from(keyboard));
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/keyboards/1")
+                get("/api/v1/products/1")
         );
 
         // then
@@ -62,16 +62,16 @@ class KeyboardDocumentation extends Documentation {
         PageRequest pageable = PageRequest.of(0, 5, Sort.by("rating").descending());
         SliceImpl<Keyboard> keyboards = new SliceImpl<>(List.of(keyboard1, keyboard2), pageable, false);
 
-        given(keyboardService.findPage(pageable))
-                .willReturn(KeyboardPageResponse.from(keyboards));
+        given(productService.findPage(pageable))
+                .willReturn(ProductPageResponse.from(keyboards));
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/keyboards?page=0&size=5&sort=rating,desc")
+                get("/api/v1/products?page=0&size=5&sort=rating,desc")
         );
 
         // then
-        resultActions.andExpect(status().isOk())
+         resultActions.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
                         document("keyboards-page-get")

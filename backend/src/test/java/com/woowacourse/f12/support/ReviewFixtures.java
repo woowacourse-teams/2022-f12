@@ -43,7 +43,7 @@ public enum ReviewFixtures {
 
     public ExtractableResponse<Response> 작성_요청을_보낸다(final Long productId, final String token) {
         final ReviewRequest reviewRequest = new ReviewRequest(this.content, this.rating);
-        return RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다("/api/v1/keyboards/" + productId + "/reviews", token,
+        return RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다("/api/v1/products/" + productId + "/reviews", token,
                 reviewRequest);
     }
 }

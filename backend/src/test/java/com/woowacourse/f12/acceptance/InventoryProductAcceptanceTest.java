@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.product.Keyboard;
-import com.woowacourse.f12.domain.product.KeyboardRepository;
+import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
@@ -29,7 +29,7 @@ import org.springframework.http.HttpStatus;
 class InventoryProductAcceptanceTest extends AcceptanceTest {
 
     @Autowired
-    private KeyboardRepository keyboardRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private InventoryProductRepository inventoryProductRepository;
@@ -134,7 +134,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     }
 
     private Keyboard 키보드를_저장한다(Keyboard keyboard) {
-        return keyboardRepository.save(keyboard);
+        return productRepository.save(keyboard);
     }
 
     private InventoryProduct 인벤토리에_장비를_추가한다(InventoryProduct inventoryProduct) {

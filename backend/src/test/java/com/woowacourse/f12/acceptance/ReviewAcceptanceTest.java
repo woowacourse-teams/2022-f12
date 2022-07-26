@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.product.Keyboard;
-import com.woowacourse.f12.domain.product.KeyboardRepository;
+import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.ExceptionResponse;
 import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
@@ -28,7 +28,7 @@ import org.springframework.http.HttpStatus;
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
     @Autowired
-    private KeyboardRepository keyboardRepository;
+    private ProductRepository productRepository;
 
     @Test
     void 키보드가_저장되어있고_키보드에_대한_리뷰를_작성한다() {
@@ -74,7 +74,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token2));
 
         // when
-        String url = "/api/v1/keyboards/" + keyboard.getId() + "/reviews?size=1&page=0&sort=createdAt,desc";
+        String url = "/api/v1/products/" + keyboard.getId() + "/reviews?size=1&page=0&sort=createdAt,desc";
         ExtractableResponse<Response> response = GET_요청을_보낸다(url);
 
         // then
@@ -98,7 +98,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token2));
 
         // when
-        String url = "/api/v1/keyboards/" + keyboard.getId() + "/reviews?size=1&page=0&sort=rating,desc";
+        String url = "/api/v1/products/" + keyboard.getId() + "/reviews?size=1&page=0&sort=rating,desc";
         ExtractableResponse<Response> response = GET_요청을_보낸다(url);
 
         // then
@@ -187,6 +187,6 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     private Keyboard 키보드를_저장한다(Keyboard keyboard) {
-        return keyboardRepository.save(keyboard);
+        return productRepository.save(keyboard);
     }
 }

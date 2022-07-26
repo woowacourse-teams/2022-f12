@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woowacourse.f12.config.JpaConfig;
 import com.woowacourse.f12.domain.product.Keyboard;
-import com.woowacourse.f12.domain.product.KeyboardRepository;
+import com.woowacourse.f12.domain.product.ProductRepository;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ class InventoryProductRepositoryTest {
     private InventoryProductRepository inventoryProductRepository;
 
     @Autowired
-    private KeyboardRepository keyboardRepository;
+    private ProductRepository productRepository;
 
     @Test
     void 멤버_아이디로_인벤토리_상품_목록을_조회한다() {
@@ -58,6 +58,6 @@ class InventoryProductRepositoryTest {
     }
 
     private Keyboard 키보드를_저장한다(Keyboard keyboard) {
-        return keyboardRepository.save(keyboard);
+        return productRepository.save(keyboard);
     }
 }

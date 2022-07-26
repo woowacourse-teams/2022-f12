@@ -29,7 +29,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping("/keyboards/{productId}/reviews")
+    @PostMapping("/products/{productId}/reviews")
     @LoginRequired
     public ResponseEntity<Void> create(@PathVariable final Long productId,
                                        @VerifiedMember final Long memberId,
@@ -39,7 +39,7 @@ public class ReviewController {
                 .build();
     }
 
-    @GetMapping("/keyboards/{productId}/reviews")
+    @GetMapping("/products/{productId}/reviews")
     public ResponseEntity<ReviewPageResponse> showPageByProductId(@PathVariable final Long productId,
                                                                   final Pageable pageable) {
         final ReviewPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, pageable);
