@@ -23,7 +23,7 @@ import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.documentation.Documentation;
 import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
@@ -117,12 +117,12 @@ public class ReviewDocumentation extends Documentation {
     void 특정_제품의_리뷰_목록_조회_API_문서화() throws Exception {
         // given
         PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
-        Keyboard keyboard = KEYBOARD_1.생성(1L);
+        Product product = KEYBOARD_1.생성(1L);
         Member corinne = CORINNE.생성(1L);
         Member mincho = MINCHO.생성(2L);
         ReviewPageResponse reviewPageResponse = ReviewPageResponse.from(
                 new SliceImpl<>(
-                        List.of(REVIEW_RATING_5.작성(1L, keyboard, corinne), REVIEW_RATING_4.작성(2L, keyboard, mincho)),
+                        List.of(REVIEW_RATING_5.작성(1L, product, corinne), REVIEW_RATING_4.작성(2L, product, mincho)),
                         pageable, false));
 
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
@@ -144,12 +144,12 @@ public class ReviewDocumentation extends Documentation {
     void 모든_리뷰_목록_페이지_조회_API_문서화() throws Exception {
         // given
         PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
-        Keyboard keyboard1 = KEYBOARD_1.생성(1L);
-        Keyboard keyboard2 = KEYBOARD_2.생성(2L);
+        Product product1 = KEYBOARD_1.생성(1L);
+        Product product2 = KEYBOARD_2.생성(2L);
         Member member = CORINNE.생성(1L);
         ReviewWithProductPageResponse reviewWithProductPageResponse = ReviewWithProductPageResponse.from(
                 new SliceImpl<>(
-                        List.of(REVIEW_RATING_5.작성(1L, keyboard1, member), REVIEW_RATING_4.작성(2L, keyboard2, member)),
+                        List.of(REVIEW_RATING_5.작성(1L, product1, member), REVIEW_RATING_4.작성(2L, product2, member)),
                         pageable, false));
 
         given(reviewService.findPage(any(Pageable.class)))

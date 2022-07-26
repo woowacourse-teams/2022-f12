@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
@@ -37,7 +37,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 리뷰를_작성하면_해당_장비가_인벤토리에_추가된다() {
         // given
-        Long keyboardId = 키보드를_저장한다(KEYBOARD_1.생성()).getId();
+        Long keyboardId = 제품을_저장한다(KEYBOARD_1.생성()).getId();
         String token = 로그인을_한다("1").getToken();
         REVIEW_RATING_5.작성_요청을_보낸다(keyboardId, token);
 
@@ -55,12 +55,12 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 대표_장비가_없는_상태에서_대표_장비를_등록한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
         LoginResponse loginResponse = 로그인을_한다("1");
         String token = loginResponse.getToken();
         Long memberId = loginResponse.getMember().getId();
 
-        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, product);
         InventoryProduct savedInventoryProduct = 인벤토리에_장비를_추가한다(inventoryProduct);
 
         // when
@@ -83,14 +83,14 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 등록된_장비_목록을_대표_장비를_포함해서_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
         LoginResponse response = 로그인을_한다("1");
         String token = response.getToken();
         Long memberId = response.getMember()
                 .getId();
-        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, product);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
-        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, product);
         InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);
 
         // when
@@ -113,10 +113,10 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         LoginResponse response = 로그인을_한다("1");
         Long memberId = response.getMember()
                 .getId();
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
-        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, product);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
-        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, product);
         InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);
 
         // when
@@ -133,8 +133,8 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Keyboard 키보드를_저장한다(Keyboard keyboard) {
-        return productRepository.save(keyboard);
+    private Product 제품을_저장한다(Product product) {
+        return productRepository.save(product);
     }
 
     private InventoryProduct 인벤토리에_장비를_추가한다(InventoryProduct inventoryProduct) {

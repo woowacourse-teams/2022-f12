@@ -9,7 +9,7 @@ import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
@@ -37,10 +37,10 @@ class ProductServiceTest {
     @Test
     void id_값으로_키보드를_조회한다() {
         // given
-        Keyboard keyboard = KEYBOARD_1.생성(1L);
+        Product product = KEYBOARD_1.생성(1L);
 
         given(productRepository.findById(anyLong()))
-                .willReturn(Optional.of(keyboard));
+                .willReturn(Optional.of(product));
         // when
         ProductResponse productResponse = productService.findById(1L);
 
@@ -48,7 +48,7 @@ class ProductServiceTest {
         assertAll(
                 () -> verify(productRepository).findById(1L),
                 () -> assertThat(productResponse).usingRecursiveComparison()
-                        .isEqualTo(ProductResponse.from(keyboard))
+                        .isEqualTo(ProductResponse.from(product))
         );
     }
 
@@ -68,10 +68,10 @@ class ProductServiceTest {
     @Test
     void 전체_키보드_목록을_조회한다() {
         // given
-        Keyboard keyboard = KEYBOARD_1.생성(1L);
+        Product product = KEYBOARD_1.생성(1L);
         Pageable pageable = PageRequest.of(0, 1);
         given(productRepository.findPageBy(any(Pageable.class)))
-                .willReturn(new SliceImpl<>(List.of(keyboard), pageable, false));
+                .willReturn(new SliceImpl<>(List.of(product), pageable, false));
 
         // when
         ProductPageResponse productPageResponse = productService.findPage(pageable);
@@ -82,7 +82,7 @@ class ProductServiceTest {
                 () -> assertThat(productPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(productPageResponse.getItems()).hasSize(1)
                         .usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(ProductResponse.from(keyboard))
+                        .containsOnly(ProductResponse.from(product))
         );
     }
 }

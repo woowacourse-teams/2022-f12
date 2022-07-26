@@ -19,7 +19,7 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
@@ -70,20 +70,20 @@ class ReviewServiceTest {
         // given
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
         Long productId = 1L;
-        Keyboard keyboard = KEYBOARD_1.생성(productId);
+        Product product = KEYBOARD_1.생성(productId);
         Long memberId = 1L;
         Member member = CORINNE.생성(memberId);
-        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, product);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
         given(productRepository.findById(productId))
-                .willReturn(Optional.of(keyboard));
-        given(inventoryProductRepository.existsByMemberIdAndKeyboard(memberId, keyboard))
+                .willReturn(Optional.of(product));
+        given(inventoryProductRepository.existsByMemberIdAndProduct(memberId, product))
                 .willReturn(false);
         given(inventoryProductRepository.save(inventoryProduct))
                 .willReturn(inventoryProduct);
-        given(reviewRepository.save(reviewRequest.toReview(keyboard, member)))
-                .willReturn(REVIEW_RATING_5.작성(1L, keyboard, member));
+        given(reviewRepository.save(reviewRequest.toReview(product, member)))
+                .willReturn(REVIEW_RATING_5.작성(1L, product, member));
 
         // when
         Long reviewId = reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest);
@@ -94,7 +94,7 @@ class ReviewServiceTest {
                 () -> verify(productRepository).findById(productId),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).save(any(Review.class)),
-                () -> verify(inventoryProductRepository).existsByMemberIdAndKeyboard(memberId, keyboard),
+                () -> verify(inventoryProductRepository).existsByMemberIdAndProduct(memberId, product),
                 () -> verify(inventoryProductRepository).save(inventoryProduct)
         );
     }
@@ -149,13 +149,13 @@ class ReviewServiceTest {
         Long productId = 1L;
         Member member = CORINNE.생성(memberId);
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
-        Keyboard keyboard = KEYBOARD_1.생성(productId);
+        Product product = KEYBOARD_1.생성(productId);
 
         given(memberRepository.findById(memberId))
                 .willReturn(Optional.of(member));
         given(productRepository.findById(productId))
-                .willReturn(Optional.of(keyboard));
-        given(reviewRepository.existsByMemberAndKeyboard(member, keyboard))
+                .willReturn(Optional.of(product));
+        given(reviewRepository.existsByMemberAndProduct(member, product))
                 .willReturn(true);
 
         // when, then
@@ -164,7 +164,7 @@ class ReviewServiceTest {
                         .isExactlyInstanceOf(AlreadyWrittenReviewException.class),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(productRepository).findById(productId),
-                () -> verify(reviewRepository).existsByMemberAndKeyboard(member, keyboard),
+                () -> verify(reviewRepository).existsByMemberAndProduct(member, product),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
         );
     }
@@ -173,10 +173,10 @@ class ReviewServiceTest {
     void 특정_제품에_대한_리뷰_목록을_조회한다() {
         // given
         Long productId = 1L;
-        Keyboard keyboard = KEYBOARD_1.생성();
+        Product product = KEYBOARD_1.생성();
         Member member = CORINNE.생성(1L);
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
-        Review review = REVIEW_RATING_5.작성(1L, keyboard, member);
+        Review review = REVIEW_RATING_5.작성(1L, product, member);
         Slice<Review> slice = new SliceImpl<>(List.of(review), pageable, true);
 
         given(productRepository.existsById(productId))

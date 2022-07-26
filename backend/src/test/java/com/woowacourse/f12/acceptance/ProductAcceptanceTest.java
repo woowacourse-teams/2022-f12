@@ -10,7 +10,7 @@ import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
@@ -28,23 +28,23 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 단일_제품_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 키보드를_저장한다(KEYBOARD_1.생성());
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products/" + keyboard.getId());
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products/" + product.getId());
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(ProductResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(keyboard)
+                        .isEqualTo(product)
         );
     }
 
     @Test
     void 키보드_목록을_페이징하여_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 키보드를_저장한다(KEYBOARD_1.생성());
         키보드를_저장한다(KEYBOARD_2.생성());
 
         // when
@@ -55,7 +55,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(ProductPageResponse.class).getItems())
                         .extracting("id")
-                        .containsExactly(keyboard.getId()),
+                        .containsExactly(product.getId()),
                 () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isTrue()
         );
     }
@@ -63,12 +63,12 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 키보드_목록을_리뷰가_많은_순서로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성());
-        Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성());
+        Product product1 = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product2 = 키보드를_저장한다(KEYBOARD_2.생성());
         String token = 로그인을_한다("1").getToken();
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboard1.getId(), token);
-        REVIEW_RATING_4.작성_요청을_보낸다(keyboard1.getId(), token);
-        REVIEW_RATING_3.작성_요청을_보낸다(keyboard2.getId(), token);
+        REVIEW_RATING_5.작성_요청을_보낸다(product1.getId(), token);
+        REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token);
+        REVIEW_RATING_3.작성_요청을_보낸다(product2.getId(), token);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?page=0&size=1&sort=reviewCount,desc");
@@ -78,7 +78,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(ProductPageResponse.class).getItems())
                         .extracting("id")
-                        .containsExactly(keyboard1.getId()),
+                        .containsExactly(product1.getId()),
                 () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isTrue()
         );
     }
@@ -86,11 +86,11 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 키보드_목록을_평점_높은_순서로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성());
-        Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성());
+        Product product1 = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product2 = 키보드를_저장한다(KEYBOARD_2.생성());
         String token = 로그인을_한다("1").getToken();
-        REVIEW_RATING_4.작성_요청을_보낸다(keyboard1.getId(), token);
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboard2.getId(), token);
+        REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token);
+        REVIEW_RATING_5.작성_요청을_보낸다(product2.getId(), token);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?page=0&size=1&sort=rating,desc");
@@ -100,12 +100,12 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(ProductPageResponse.class).getItems())
                         .extracting("id")
-                        .containsExactly(keyboard2.getId()),
+                        .containsExactly(product2.getId()),
                 () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isTrue()
         );
     }
 
-    private Keyboard 키보드를_저장한다(Keyboard keyboard) {
-        return productRepository.save(keyboard);
+    private Product 키보드를_저장한다(Product product) {
+        return productRepository.save(product);
     }
 }

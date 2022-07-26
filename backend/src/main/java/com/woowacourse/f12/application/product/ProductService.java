@@ -1,6 +1,6 @@
 package com.woowacourse.f12.application.product;
 
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
@@ -20,9 +20,9 @@ public class ProductService {
     }
 
     public ProductResponse findById(final Long id) {
-        final Keyboard keyboard = productRepository.findById(id)
+        final Product product = productRepository.findById(id)
                 .orElseThrow(KeyboardNotFoundException::new);
-        return ProductResponse.from(keyboard);
+        return ProductResponse.from(product);
     }
 
     public ProductPageResponse findPage(final Pageable pageable) {

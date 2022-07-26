@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.documentation.Documentation;
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.presentation.product.ProductController;
@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(ProductController.class)
-class KeyboardDocumentation extends Documentation {
+class ProductDocumentation extends Documentation {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,9 +37,9 @@ class KeyboardDocumentation extends Documentation {
     @Test
     void 키보드_단일_조회_API_문서화() throws Exception {
         // given
-        Keyboard keyboard = KEYBOARD_1.생성(1L);
+        Product product = KEYBOARD_1.생성(1L);
         given(productService.findById(1L))
-                .willReturn(ProductResponse.from(keyboard));
+                .willReturn(ProductResponse.from(product));
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -57,10 +57,10 @@ class KeyboardDocumentation extends Documentation {
     @Test
     void 키보드_목록_조회_API_문서화() throws Exception {
         // given
-        Keyboard keyboard1 = KEYBOARD_1.생성(1L);
-        Keyboard keyboard2 = KEYBOARD_2.생성(2L);
+        Product product1 = KEYBOARD_1.생성(1L);
+        Product product2 = KEYBOARD_2.생성(2L);
         PageRequest pageable = PageRequest.of(0, 5, Sort.by("rating").descending());
-        SliceImpl<Keyboard> keyboards = new SliceImpl<>(List.of(keyboard1, keyboard2), pageable, false);
+        SliceImpl<Product> keyboards = new SliceImpl<>(List.of(product1, product2), pageable, false);
 
         given(productService.findPage(pageable))
                 .willReturn(ProductPageResponse.from(keyboards));

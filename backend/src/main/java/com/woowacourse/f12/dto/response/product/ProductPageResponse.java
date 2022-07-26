@@ -1,6 +1,6 @@
 package com.woowacourse.f12.dto.response.product;
 
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class ProductPageResponse {
         this.items = items;
     }
 
-    public static ProductPageResponse from(final Slice<Keyboard> slice) {
+    public static ProductPageResponse from(final Slice<Product> slice) {
         final List<ProductResponse> productResponses = slice.getContent()
                 .stream()
                 .map(ProductResponse::from)

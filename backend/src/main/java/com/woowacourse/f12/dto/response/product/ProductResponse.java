@@ -1,6 +1,6 @@
 package com.woowacourse.f12.dto.response.product;
 
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import lombok.Getter;
 
 @Getter
@@ -24,13 +24,13 @@ public class ProductResponse {
         this.rating = rating;
     }
 
-    public static ProductResponse from(final Keyboard keyboard) {
+    public static ProductResponse from(final Product product) {
         return new ProductResponse(
-                keyboard.getId(),
-                keyboard.getName(),
-                keyboard.getImageUrl(),
-                keyboard.getReviewCount(),
-                keyboard.getRating()
+                product.getId(),
+                product.getName(),
+                product.getImageUrl(),
+                product.getReviewCount(),
+                product.getRating()
         );
     }
 }

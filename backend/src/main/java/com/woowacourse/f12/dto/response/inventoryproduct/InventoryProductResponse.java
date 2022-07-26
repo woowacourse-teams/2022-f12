@@ -21,7 +21,7 @@ public class InventoryProductResponse {
     }
 
     public static InventoryProductResponse from(final InventoryProduct inventoryProduct) {
-        final ProductResponse productResponse = ProductResponse.from(inventoryProduct.getKeyboard());
+        final ProductResponse productResponse = ProductResponse.from(inventoryProduct.getProduct());
         return new InventoryProductResponse(inventoryProduct.getId(), inventoryProduct.isSelected(), productResponse);
     }
 }

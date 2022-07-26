@@ -1,7 +1,7 @@
 package com.woowacourse.f12.domain.review;
 
 import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.exception.badrequest.BlankContentException;
 import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
 import com.woowacourse.f12.exception.badrequest.InvalidRatingValueException;
@@ -44,7 +44,7 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    private Keyboard keyboard;
+    private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -58,14 +58,14 @@ public class Review {
     }
 
     @Builder
-    private Review(final Long id, final String content, final int rating, final Keyboard keyboard, final Member member,
+    private Review(final Long id, final String content, final int rating, final Product product, final Member member,
                    final LocalDateTime createdAt) {
         validateContent(content);
         validateRating(rating);
         this.id = id;
         this.content = content;
         this.rating = rating;
-        this.keyboard = keyboard;
+        this.product = product;
         this.member = member;
         this.createdAt = createdAt;
     }

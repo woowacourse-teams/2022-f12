@@ -12,7 +12,7 @@ import static org.springframework.data.domain.Sort.Order.desc;
 import com.woowacourse.f12.config.JpaConfig;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -44,14 +44,14 @@ class ReviewRepositoryTest {
     @Test
     void 특정_제품의_리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard = productRepository.save(KEYBOARD_1.생성());
+        Product product = productRepository.save(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성(1L));
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard, member));
-        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard, member));
+        리뷰_저장(REVIEW_RATING_5.작성(product, member));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(product, member));
 
         // when
-        Slice<Review> page = reviewRepository.findPageByProductId(keyboard.getId(), pageable);
+        Slice<Review> page = reviewRepository.findPageByProductId(product.getId(), pageable);
 
         // then
         assertAll(
@@ -65,14 +65,14 @@ class ReviewRepositoryTest {
     @Test
     void 특정_제품의_리뷰_목록을_평점순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard = productRepository.save(KEYBOARD_1.생성());
+        Product product = productRepository.save(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성(1L));
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("rating")));
-        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard, member));
-        리뷰_저장(REVIEW_RATING_4.작성(keyboard, member));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(product, member));
+        리뷰_저장(REVIEW_RATING_4.작성(product, member));
 
         // when
-        Slice<Review> page = reviewRepository.findPageByProductId(keyboard.getId(), pageable);
+        Slice<Review> page = reviewRepository.findPageByProductId(product.getId(), pageable);
 
         // then
         assertAll(
@@ -86,12 +86,12 @@ class ReviewRepositoryTest {
     @Test
     void 리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = productRepository.save(KEYBOARD_1.생성());
-        Keyboard keyboard2 = productRepository.save(KEYBOARD_2.생성());
+        Product product1 = productRepository.save(KEYBOARD_1.생성());
+        Product product2 = productRepository.save(KEYBOARD_2.생성());
         Member member = memberRepository.save(CORINNE.생성(1L));
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard1, member));
-        Review review = 리뷰_저장(REVIEW_RATING_5.작성(keyboard2, member));
+        리뷰_저장(REVIEW_RATING_5.작성(product1, member));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(product2, member));
 
         // when
         Slice<Review> page = reviewRepository.findPageBy(pageable);
@@ -108,11 +108,11 @@ class ReviewRepositoryTest {
     @Test
     void 프록시의_equals_hashCode_테스트() {
         // given
-        Keyboard keyboard = productRepository.save(KEYBOARD_1.생성());
+        Product product = productRepository.save(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성());
-        Long testReviewId = reviewRepository.save(REVIEW_RATING_5.작성(keyboard, member))
+        Long testReviewId = reviewRepository.save(REVIEW_RATING_5.작성(product, member))
                 .getId();
-        Long testKeyboardId = keyboard.getId();
+        Long testKeyboardId = product.getId();
         Long testMemberId = member.getId();
         entityManager.clear();
 
@@ -121,25 +121,25 @@ class ReviewRepositoryTest {
                 .get();
         Member targetMember = memberRepository.findById(testMemberId)
                 .get();
-        Keyboard targetKeyboard = productRepository.findById(testKeyboardId)
+        Product targetProduct = productRepository.findById(testKeyboardId)
                 .get();
 
         // then
         assertAll(
                 () -> assertThat(targetMember).isEqualTo(review.getMember()),
-                () -> assertThat(targetKeyboard).isEqualTo(review.getKeyboard())
+                () -> assertThat(targetProduct).isEqualTo(review.getProduct())
         );
     }
 
     @Test
     void 회원과_제품으로_작성된_리뷰가_존재하는지_확인한다() {
         // given
-        Keyboard keyboard = productRepository.save(KEYBOARD_1.생성());
+        Product product = productRepository.save(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성());
-        reviewRepository.save(REVIEW_RATING_5.작성(keyboard, member));
+        reviewRepository.save(REVIEW_RATING_5.작성(product, member));
 
         // when
-        boolean actual = reviewRepository.existsByMemberAndKeyboard(member, keyboard);
+        boolean actual = reviewRepository.existsByMemberAndProduct(member, product);
 
         // then
         assertThat(actual).isTrue();
