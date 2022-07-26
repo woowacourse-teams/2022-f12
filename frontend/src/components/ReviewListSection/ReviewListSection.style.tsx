@@ -8,7 +8,7 @@ export const Container = styled.section`
 `;
 
 export const Title = styled.h1`
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 `;
 
 export const Wrapper = styled.div<{ columns: number }>`
@@ -16,7 +16,4 @@ export const Wrapper = styled.div<{ columns: number }>`
   grid-template-columns: ${({ columns }) => `repeat(${columns}, 1fr)`};
   gap: 2rem 1rem;
   justify-items: center;
-  overflow: scroll;
-  height: 23rem;
-  padding: 1rem;
 `;

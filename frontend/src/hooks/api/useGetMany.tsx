@@ -21,7 +21,7 @@ function useGetMany<T>({
   sort,
   body,
   headers,
-}: Props): [T[], () => void] {
+}: Props): [T[], () => void, () => void] {
   const [data, setData] = useState<T[]>([]);
 
   const [page, setPage] = useState(0);
@@ -54,6 +54,9 @@ function useGetMany<T>({
 
   const refetch = () => {
     setRefetchTrigger((prevTrigger) => prevTrigger + 1);
+    setPage(0);
+    setHasNextPage(true);
+    setData([]);
   };
 
   useEffect(() => {
@@ -82,12 +85,9 @@ function useGetMany<T>({
   }, [nextPageTrigger, refetchTrigger]);
 
   useEffect(() => {
-    setPage(0);
-    setHasNextPage(true);
-    setData([]);
     refetch();
   }, [sort]);
 
-  return [data, getNextPage];
+  return [data, getNextPage, refetch];
 }
 export default useGetMany;

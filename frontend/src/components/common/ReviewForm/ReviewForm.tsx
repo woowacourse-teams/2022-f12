@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import RatingInput from '../RatingInput/RatingInput';
 import * as S from './ReviewForm.style';
 
 type Props = {
   handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
+  isEdit: boolean;
+  rating?: number;
+  content?: string;
 };
 
 const initialState = {
@@ -11,12 +14,22 @@ const initialState = {
   rating: 0,
 };
 
-function ReviewForm({ handleSubmit }: Props) {
-  const [content, setContent] = useState(initialState.content);
-  const [rating, setRating] = useState(initialState.rating);
+function ReviewForm({
+  handleSubmit,
+  isEdit,
+  rating: savedRating,
+  content: savedContent,
+}: Props) {
+  const [content, setContent] = useState(
+    savedContent ? savedContent : initialState.content
+  );
+  const [rating, setRating] = useState(
+    savedRating ? savedRating : initialState.rating
+  );
+  const [isFormInvalid, setInvalid] = useState(false);
 
-  const validateReviewInput = () => {
-    return !!content && rating !== 0 && content.length <= 1000;
+  const validateReviewInput = (contentInput: string, ratingInput: number) => {
+    return !!contentInput && ratingInput !== 0 && contentInput.length <= 1000;
   };
 
   const resetForm = () => {
@@ -24,16 +37,20 @@ function ReviewForm({ handleSubmit }: Props) {
     setRating(initialState.rating);
   };
 
-  const handleContentChange: React.ChangeEventHandler<HTMLTextAreaElement> = ({
-    target: { value },
-  }) => {
-    setContent(value);
+  const handleContentChange: React.ChangeEventHandler<HTMLTextAreaElement> =
+    useCallback(({ target: { value } }) => {
+      setContent(value);
+    }, []);
+
+  const handleFormChange: React.ChangeEventHandler<HTMLFormElement> = () => {
+    setInvalid(false);
   };
 
   const submitForm: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    if (!validateReviewInput()) {
-      alert('모든 항목을 작성해주세요');
+    if (!validateReviewInput(content.trim(), rating)) {
+      setInvalid(true);
+      throw Error('항목이 누락됨');
     }
 
     handleSubmit({ content, rating })
@@ -41,17 +58,34 @@ function ReviewForm({ handleSubmit }: Props) {
         resetForm();
       })
       .catch((error) => {
-        console.log(error);
+        throw error;
       });
   };
 
+  const isRatingEmpty = rating === 0;
+  const isContentEmpty = content.trim() === '';
+
   return (
     <S.Container>
-      <S.Title>리뷰 작성하기</S.Title>
-      <S.Form onSubmit={submitForm}>
-        <RatingInput rating={rating} setRating={setRating} />
-        <S.Textarea value={content} onChange={handleContentChange} required />
-        <S.SubmitButton>리뷰 추가</S.SubmitButton>
+      <S.Title>{isEdit ? '리뷰 수정하기' : '리뷰 작성하기'}</S.Title>
+      <S.Form onSubmit={submitForm} onChange={handleFormChange}>
+        <S.Label isInvalid={isFormInvalid && isRatingEmpty}>
+          <p>평점을 입력해주세요</p>
+          <RatingInput rating={rating} setRating={setRating} />
+        </S.Label>
+        <S.Label isInvalid={isFormInvalid && isContentEmpty}>
+          <S.LabelTop>
+            <p>총평을 입력해주세요</p>
+            <p>{content.length} / 1000</p>
+          </S.LabelTop>
+          <S.Textarea value={content} onChange={handleContentChange} required />
+        </S.Label>
+        <S.Footer>
+          <S.SubmitButton>{isEdit ? '리뷰 수정' : '리뷰 추가'}</S.SubmitButton>
+          {isFormInvalid && (
+            <S.ErrorMessage>모든 항목을 입력해주세요</S.ErrorMessage>
+          )}
+        </S.Footer>
       </S.Form>
     </S.Container>
   );

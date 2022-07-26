@@ -1,22 +1,30 @@
 package com.woowacourse.f12.acceptance;
 
+import static io.restassured.RestAssured.UNDEFINED_PORT;
+
+import com.woowacourse.f12.acceptance.support.DatabaseCleanup;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 public class AcceptanceTest {
 
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
+
     @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
+    void setUp() throws Exception {
+        if (RestAssured.port == UNDEFINED_PORT) {
+            RestAssured.port = port;
+            databaseCleanup.afterPropertiesSet();
+        }
+        databaseCleanup.execute();
     }
 }

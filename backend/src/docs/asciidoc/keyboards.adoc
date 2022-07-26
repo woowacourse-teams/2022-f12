@@ -1,0 +1,16 @@
+[[Keyboard]]
+== Keyboard API
+
+=== 키보드 단일 상품 조회
+
+operation::keyboards-get[snippets='http-request,http-response']
+
+=== 키보드 목록 페이지 조회
+
+==== sort 조건
+
+- `rating,desc`(평점순)
+- `reviewCount,desc`(리뷰 많은순)
+- 없을 경우 등록 순서
+
+operation::keyboards-page-get[snippets='http-request,http-response']

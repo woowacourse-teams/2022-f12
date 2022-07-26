@@ -6,7 +6,7 @@ import useProducts from '@/hooks/useProducts';
 import useReviews from '@/hooks/useReviews';
 
 function Home() {
-  const [keyboards] = useProducts({ size: 5, sort: 'rating,desc' });
+  const [keyboards] = useProducts({ size: 4, sort: 'rating,desc' });
   const [reviews, getNextPage] = useReviews({ size: 6 });
 
   const moreProductsLink = (
@@ -20,7 +20,7 @@ function Home() {
         data={!!keyboards && keyboards}
         addOn={moreProductsLink}
       />
-      <ReviewListSection columns={3} data={reviews} getNextPage={getNextPage} />
+      <ReviewListSection columns={2} data={reviews} getNextPage={getNextPage} />
     </>
   );
 }

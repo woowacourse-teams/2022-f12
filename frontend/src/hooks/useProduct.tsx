@@ -6,7 +6,7 @@ type Props = {
 };
 
 function useProduct({ productId }: Props): Product {
-  const product = useGetOne<Product>({
+  const [product] = useGetOne<Product>({
     url: `${ENDPOINTS.PRODUCT(productId)}`,
   });
 

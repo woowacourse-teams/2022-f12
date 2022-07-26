@@ -4,9 +4,21 @@ declare module '*.jpg' {
 }
 
 declare module '*.svg' {
-  const value: React.FC;
+  const value: React.FC<{ fill?: string; stroke?: string }>;
   export = value;
 }
+
+declare type Member = {
+  id: number;
+  gitHubId: string;
+  imageUrl: string;
+  name: string;
+};
+
+declare type UserData = {
+  member: Member;
+  token: string;
+};
 
 declare type Product = {
   id: number;
@@ -15,12 +27,24 @@ declare type Product = {
   rating: number;
 };
 
+declare type InventoryProduct = {
+  id: number;
+  selected: boolean;
+  product: Product;
+};
+
 declare type Review = {
   id: number;
-  profileImage: string;
-  username: string;
-  rating: number;
+  author: Exclude<Member, 'name'>;
+  product?: {
+    id: number;
+    name: string;
+    imageUrl: string;
+  };
+  productId?: number;
   content: string;
+  rating: number;
+  createdAt: string;
 };
 
 declare type ReviewInput = {

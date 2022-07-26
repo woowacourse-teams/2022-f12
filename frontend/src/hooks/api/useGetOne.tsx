@@ -7,8 +7,9 @@ type Props = {
   headers?: null | AxiosRequestHeaders;
 };
 
-function useGetOne<T>({ url, headers }: Props): T {
+function useGetOne<T>({ url, headers }: Props): [T, () => void] {
   const [data, setData] = useState<null | T>(null);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   const fetchData = async () => {
     const { data }: AxiosResponse<T> = await axiosInstance.get(url, {
@@ -16,6 +17,9 @@ function useGetOne<T>({ url, headers }: Props): T {
     });
 
     return data;
+  };
+  const refetch = () => {
+    setRefetchTrigger((prevValue) => prevValue + 1);
   };
 
   useEffect(() => {
@@ -26,8 +30,8 @@ function useGetOne<T>({ url, headers }: Props): T {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [refetchTrigger]);
 
-  return data;
+  return [data, refetch];
 }
 export default useGetOne;

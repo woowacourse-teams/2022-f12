@@ -1,5 +1,5 @@
 import ReviewListSection from './ReviewListSection';
-import { reviews } from '../../mocks/data';
+import { reviewsWithProduct } from '../../mocks/data';
 
 export default {
   component: ReviewListSection,
@@ -7,7 +7,11 @@ export default {
 };
 
 const Template = () => (
-  <ReviewListSection data={reviews} getNextPage={() => undefined} />
+  <ReviewListSection
+    columns={1}
+    data={reviewsWithProduct}
+    getNextPage={() => undefined}
+  />
 );
 
 export const Default = () => <Template />;
