@@ -8,5 +8,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Slice<Product> findPageBy(Pageable pageable);
 
-    Slice<Product> findPageByCategory(final Category category, Pageable pageable);
+    Slice<Product> findPageByCategory(Category category, Pageable pageable);
 }
