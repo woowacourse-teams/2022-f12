@@ -18,10 +18,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.inventoryproduct.InventoryProductService;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductException;
 import com.woowacourse.f12.exception.notfound.InventoryItemNotFoundException;
+import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,7 +140,8 @@ class InventoryProductControllerTest {
     void 멤버_id_로_조회한다() throws Exception {
         // given
         Long memberId = 1L;
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
+        Member member = MemberFixtures.CORINNE.생성(memberId);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성(1L));
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
@@ -168,7 +171,8 @@ class InventoryProductControllerTest {
     void 다른_멤버_id_로_조회한다() throws Exception {
         // given
         Long memberId = 1L;
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
+        Member member = MemberFixtures.CORINNE.생성(memberId);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성(1L));
         given(inventoryProductService.findByMemberId(memberId))
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
 

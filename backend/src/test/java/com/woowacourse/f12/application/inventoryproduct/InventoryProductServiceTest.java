@@ -12,11 +12,13 @@ import static org.mockito.BDDMockito.verify;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
+import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductException;
+import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -41,8 +43,9 @@ class InventoryProductServiceTest {
     void 대표_장비를_등록한다() {
         // given
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(1L, 2L);
-        InventoryProduct inventoryProduct1 = UNSELECTED_INVENTORY_PRODUCT.생성(1L, 1L, KEYBOARD_1.생성());
-        InventoryProduct inventoryProduct2 = SELECTED_INVENTORY_PRODUCT.생성(2L, 1L, KEYBOARD_2.생성());
+        Member member = MemberFixtures.CORINNE.생성(1L);
+        InventoryProduct inventoryProduct1 = UNSELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성());
+        InventoryProduct inventoryProduct2 = SELECTED_INVENTORY_PRODUCT.생성(2L, member, KEYBOARD_2.생성());
         given(memberRepository.existsById(1L))
                 .willReturn(true);
         given(inventoryProductRepository.findById(1L))
@@ -80,7 +83,8 @@ class InventoryProductServiceTest {
     void 등록된_장비를_멤버_id로_조회한다() {
         // given
         Long memberId = 1L;
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
+        Member member = MemberFixtures.CORINNE.생성(memberId);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성(1L));
         given(memberRepository.existsById(1L))
                 .willReturn(true);
         given(inventoryProductRepository.findByMemberId(memberId))

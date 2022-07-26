@@ -47,7 +47,7 @@ public class ReviewService {
         final Keyboard keyboard = keyboardRepository.findById(productId)
                 .orElseThrow(KeyboardNotFoundException::new);
         final Long reviewId = saveReview(reviewRequest, member, keyboard);
-        saveInventoryProduct(memberId, keyboard);
+        saveInventoryProduct(member, keyboard);
         return reviewId;
     }
 
@@ -64,12 +64,12 @@ public class ReviewService {
         }
     }
 
-    private void saveInventoryProduct(final Long memberId, final Keyboard keyboard) {
-        if (inventoryProductRepository.existsByMemberIdAndKeyboard(memberId, keyboard)) {
+    private void saveInventoryProduct(final Member member, final Keyboard keyboard) {
+        if (inventoryProductRepository.existsByMemberAndKeyboard(member, keyboard)) {
             return;
         }
         final InventoryProduct inventoryProduct = InventoryProduct.builder()
-                .memberId(memberId)
+                .member(member)
                 .keyboard(keyboard)
                 .build();
         inventoryProductRepository.save(inventoryProduct);
