@@ -1,7 +1,11 @@
 package com.woowacourse.f12.presentation.product;
 
+import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -40,7 +44,22 @@ class ProductControllerTest {
     @Test
     void 키보드_목록_페이지_조회_성공() throws Exception {
         // given
-        given(productService.findPage(any(Pageable.class)))
+        given(productService.findPage(eq(KEYBOARD), any(Pageable.class)))
+                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
+
+        // when
+        mockMvc.perform(get("/api/v1/products?category=KEYBOARD&page=0&size=150&sort=rating,desc"))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(productService).findPage(KEYBOARD, PageRequest.of(0, 150, Sort.by("rating").descending()));
+    }
+
+    @Test
+    void 제품_목록_페이지_조회_성공() throws Exception {
+        // given
+        given(productService.findPage(eq(null), any(Pageable.class)))
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
 
         // when
@@ -49,11 +68,11 @@ class ProductControllerTest {
                 .andDo(print());
 
         // then
-        verify(productService).findPage(PageRequest.of(0, 150, Sort.by("rating").descending()));
+        verify(productService).findPage(null, PageRequest.of(0, 150, Sort.by("rating").descending()));
     }
 
     @Test
-    void 키보드_단일_조회_성공() throws Exception {
+    void 제품_단일_조회_성공() throws Exception {
         // given
         given(productService.findById(anyLong()))
                 .willReturn(ProductResponse.from(KEYBOARD_1.생성(1L)));
@@ -68,7 +87,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void 키보드_단일_조회_실패_존재_하지_않는_아이디() throws Exception {
+    void 제품_단일_조회_실패_존재_하지_않는_아이디() throws Exception {
         // given
         given(productService.findById(anyLong()))
                 .willThrow(new KeyboardNotFoundException());
