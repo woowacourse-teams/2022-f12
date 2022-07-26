@@ -1,6 +1,6 @@
 package com.woowacourse.f12.presentation.product;
 
-import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
