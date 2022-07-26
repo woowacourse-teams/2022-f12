@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -13,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.product.ProductService;
+import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
@@ -70,6 +72,21 @@ class ProductControllerTest {
     }
 
     @Test
+    void 잘못된_카테고리로_조회하려는_경우_예외_발생() throws Exception {
+        // given
+        given(productService.findPage(eq(KEYBOARD), any(Pageable.class)))
+                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
+
+        // when
+        mockMvc.perform(get("/api/v1/products?category=INVALID&page=0&size=150&sort=rating,desc"))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        // then
+        verify(productService, times(0)).findPage(KEYBOARD, PageRequest.of(0, 150, Sort.by("rating").descending()));
+    }
+
+    @Test
     void 제품_단일_조회_성공() throws Exception {
         // given
         given(productService.findById(anyLong()))
@@ -97,5 +114,20 @@ class ProductControllerTest {
 
         // then
         verify(productService).findById(0L);
+    }
+
+    @Test
+    void 유효하지_않은_카테고리를_입력하면_예외가_발생() throws Exception {
+        // given
+        given(productService.findPage(any(Category.class), any(Pageable.class)))
+                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
+
+        // when
+        mockMvc.perform(get("/api/v1/products?category=INVALID&page=0&size=1"))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        // then
+        verify(productService, times(0)).findPage(any(Category.class), any(Pageable.class));
     }
 }

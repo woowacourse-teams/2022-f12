@@ -1,8 +1,8 @@
 package com.woowacourse.f12.presentation;
 
 import com.woowacourse.f12.dto.response.ExceptionResponse;
-import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
 import com.woowacourse.f12.exception.badrequest.InvalidValueException;
+import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
 import com.woowacourse.f12.exception.notfound.NotFoundException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @RestControllerAdvice
@@ -19,6 +20,7 @@ public class GlobalExceptionHandler {
 
     private static final String REQUEST_DATA_FORMAT_ERROR_MESSAGE = "요청으로 넘어온 값이 형식에 맞지 않습니다.";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "서버 오류가 발생했습니다";
+    private static final String METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION_MESSAGE = "형식에 맞지 않는 값을 입력했습니다.";
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleNotFoundException(final NotFoundException e) {
@@ -52,6 +54,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ForbiddenMemberException.class)
     public ResponseEntity<ExceptionResponse> handleForbiddenMemberException(final ForbiddenMemberException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ExceptionResponse.from(e));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ExceptionResponse> handleMethodArgumentTypeMismatchExceptionException() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse.from(METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION_MESSAGE));
     }
 
     @ExceptionHandler(Exception.class)
