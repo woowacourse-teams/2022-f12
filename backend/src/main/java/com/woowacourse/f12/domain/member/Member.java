@@ -1,5 +1,8 @@
 package com.woowacourse.f12.domain.member;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,6 +44,9 @@ public class Member {
     @Column(name = "job_type")
     @Enumerated(EnumType.STRING)
     private JobType jobType;
+
+    @OneToMany(mappedBy = "member")
+    private List<InventoryProduct> inventoryProducts = new ArrayList<>();
 
     protected Member() {
     }
