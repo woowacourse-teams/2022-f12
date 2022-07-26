@@ -1,5 +1,6 @@
 package com.woowacourse.f12.domain.product;
 
+import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
@@ -44,9 +45,9 @@ class ProductRepositoryTest {
     private EntityManager entityManager;
 
     @Test
-    void 키보드를_단일_조회_한다() {
+    void 제품을_단일_조회_한다() {
         // given
-        Product product = 키보드_저장(KEYBOARD_1.생성());
+        Product product = 제품_저장(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성(1L));
         리뷰_저장(REVIEW_RATING_4.작성(product, member));
         리뷰_저장(REVIEW_RATING_5.작성(product, member));
@@ -67,12 +68,12 @@ class ProductRepositoryTest {
     @Test
     void 키보드_전체_목록을_페이징하여_조회한다() {
         // given
-        Product product1 = 키보드_저장(KEYBOARD_1.생성());
-        키보드_저장(KEYBOARD_2.생성());
+        Product product1 = 제품_저장(KEYBOARD_1.생성());
+        제품_저장(KEYBOARD_2.생성());
         Pageable pageable = PageRequest.of(0, 1);
 
         // when
-        Slice<Product> slice = productRepository.findPageBy(pageable);
+        Slice<Product> slice = productRepository.findPageByCategory(KEYBOARD, pageable);
 
         // then
         assertAll(
@@ -84,8 +85,8 @@ class ProductRepositoryTest {
     @Test
     void 키보드_전체_목록을_리뷰_많은_순으로_페이징하여_조회한다() {
         // given
-        Product product1 = 키보드_저장(KEYBOARD_1.생성());
-        Product product2 = 키보드_저장(KEYBOARD_2.생성());
+        Product product1 = 제품_저장(KEYBOARD_1.생성());
+        Product product2 = 제품_저장(KEYBOARD_2.생성());
         Member member = memberRepository.save(CORINNE.생성(1L));
 
         리뷰_저장(REVIEW_RATING_5.작성(product1, member));
@@ -95,7 +96,7 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("reviewCount")));
 
         // when
-        Slice<Product> slice = productRepository.findPageBy(pageable);
+        Slice<Product> slice = productRepository.findPageByCategory(KEYBOARD, pageable);
 
         // then
         assertAll(
@@ -107,8 +108,8 @@ class ProductRepositoryTest {
     @Test
     void 키보드_전체_목록을_평균_평점_순으로_페이징하여_조회한다() {
         // given
-        Product product2 = 키보드_저장(KEYBOARD_1.생성());
-        Product product1 = 키보드_저장(KEYBOARD_2.생성());
+        Product product2 = 제품_저장(KEYBOARD_1.생성());
+        Product product1 = 제품_저장(KEYBOARD_2.생성());
         Member member = memberRepository.save(CORINNE.생성(1L));
 
         리뷰_저장(REVIEW_RATING_2.작성(product1, member));
@@ -119,7 +120,7 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating")));
 
         // when
-        Slice<Product> slice = productRepository.findPageBy(pageable);
+        Slice<Product> slice = productRepository.findPageByCategory(KEYBOARD, pageable);
 
         // then
         assertAll(
@@ -128,7 +129,7 @@ class ProductRepositoryTest {
         );
     }
 
-    private Product 키보드_저장(Product product) {
+    private Product 제품_저장(Product product) {
         return productRepository.save(product);
     }
 
