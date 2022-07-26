@@ -1,6 +1,6 @@
 package com.woowacourse.f12.documentation.product;
 
-import static com.woowacourse.f12.domain.product.Category.*;
+import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static org.mockito.BDDMockito.given;
@@ -72,7 +72,7 @@ class ProductDocumentation extends Documentation {
         );
 
         // then
-         resultActions.andExpect(status().isOk())
+        resultActions.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
                         document("keyboards-page-get")

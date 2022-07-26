@@ -1,10 +1,8 @@
 package com.woowacourse.f12.application.product;
 
-import static com.woowacourse.f12.domain.product.Category.*;
+import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
-import static com.woowacourse.f12.support.ProductFixture.MOUSE_2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
