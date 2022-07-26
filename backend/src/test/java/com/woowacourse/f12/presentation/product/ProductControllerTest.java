@@ -10,9 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woowacourse.f12.application.auth.JwtProvider;
-import com.woowacourse.f12.application.product.KeyboardService;
-import com.woowacourse.f12.dto.response.product.KeyboardPageResponse;
-import com.woowacourse.f12.dto.response.product.KeyboardResponse;
+import com.woowacourse.f12.application.product.ProductService;
+import com.woowacourse.f12.dto.response.product.ProductPageResponse;
+import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import java.util.List;
@@ -27,58 +27,58 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(KeyboardController.class)
+@WebMvcTest(ProductController.class)
 @Import({AuthTokenExtractor.class, JwtProvider.class})
-class KeyboardControllerTest {
+class ProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private KeyboardService keyboardService;
+    private ProductService productService;
 
     @Test
     void 키보드_목록_페이지_조회_성공() throws Exception {
         // given
-        given(keyboardService.findPage(any(Pageable.class)))
-                .willReturn(KeyboardPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
+        given(productService.findPage(any(Pageable.class)))
+                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
 
         // when
-        mockMvc.perform(get("/api/v1/keyboards?page=0&size=150&sort=rating,desc"))
+        mockMvc.perform(get("/api/v1/products?page=0&size=150&sort=rating,desc"))
                 .andExpect(status().isOk())
                 .andDo(print());
 
         // then
-        verify(keyboardService).findPage(PageRequest.of(0, 150, Sort.by("rating").descending()));
+        verify(productService).findPage(PageRequest.of(0, 150, Sort.by("rating").descending()));
     }
 
     @Test
     void 키보드_단일_조회_성공() throws Exception {
         // given
-        given(keyboardService.findById(anyLong()))
-                .willReturn(KeyboardResponse.from(KEYBOARD_1.생성(1L)));
+        given(productService.findById(anyLong()))
+                .willReturn(ProductResponse.from(KEYBOARD_1.생성(1L)));
 
         // when
-        mockMvc.perform(get("/api/v1/keyboards/" + 1L))
+        mockMvc.perform(get("/api/v1/products/" + 1L))
                 .andExpect(status().isOk())
                 .andDo(print());
 
         // then
-        verify(keyboardService).findById(1L);
+        verify(productService).findById(1L);
     }
 
     @Test
     void 키보드_단일_조회_실패_존재_하지_않는_아이디() throws Exception {
         // given
-        given(keyboardService.findById(anyLong()))
+        given(productService.findById(anyLong()))
                 .willThrow(new KeyboardNotFoundException());
 
         // when
-        mockMvc.perform(get("/api/v1/keyboards/0"))
+        mockMvc.perform(get("/api/v1/products/0"))
                 .andExpect(status().isNotFound())
                 .andDo(print());
 
         // then
-        verify(keyboardService).findById(0L);
+        verify(productService).findById(0L);
     }
 }

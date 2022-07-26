@@ -1,6 +1,6 @@
 package com.woowacourse.f12.domain.inventoryproduct;
 
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,17 +31,17 @@ public class InventoryProduct {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "keyboard_id")
-    private Keyboard keyboard;
+    private Product product;
 
     protected InventoryProduct() {
     }
 
     @Builder
-    private InventoryProduct(final Long id, final boolean selected, final Long memberId, final Keyboard keyboard) {
+    private InventoryProduct(final Long id, final boolean selected, final Long memberId, final Product product) {
         this.id = id;
         this.selected = selected;
         this.memberId = memberId;
-        this.keyboard = keyboard;
+        this.product = product;
     }
 
     public void updateSelected(boolean selected) {

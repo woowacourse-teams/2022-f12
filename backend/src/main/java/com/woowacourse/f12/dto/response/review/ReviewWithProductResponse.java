@@ -29,7 +29,7 @@ public class ReviewWithProductResponse {
     }
 
     public static ReviewWithProductResponse from(final Review review) {
-        final KeyboardForReviewResponse product = KeyboardForReviewResponse.from(review.getKeyboard());
+        final KeyboardForReviewResponse product = KeyboardForReviewResponse.from(review.getProduct());
         final ReviewAuthorResponse author = ReviewAuthorResponse.from(review.getMember());
         return new ReviewWithProductResponse(review.getId(), author, product, review.getContent(), review.getRating(),
                 review.getCreatedAt().toString());

@@ -1,6 +1,6 @@
 package com.woowacourse.f12.support;
 
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 
 public enum KeyboardFixtures {
 
@@ -16,12 +16,12 @@ public enum KeyboardFixtures {
         this.imageUrl = imageUrl;
     }
 
-    public Keyboard 생성() {
+    public Product 생성() {
         return 생성(null);
     }
 
-    public Keyboard 생성(final Long id) {
-        return Keyboard.builder()
+    public Product 생성(final Long id) {
+        return Product.builder()
                 .id(id)
                 .name(this.name)
                 .imageUrl(this.imageUrl)

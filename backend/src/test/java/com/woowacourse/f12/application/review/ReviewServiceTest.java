@@ -19,8 +19,8 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.domain.product.Keyboard;
-import com.woowacourse.f12.domain.product.KeyboardRepository;
+import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
@@ -54,7 +54,7 @@ class ReviewServiceTest {
     private ReviewRepository reviewRepository;
 
     @Mock
-    private KeyboardRepository keyboardRepository;
+    private ProductRepository productRepository;
 
     @Mock
     private MemberRepository memberRepository;
@@ -70,20 +70,20 @@ class ReviewServiceTest {
         // given
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
         Long productId = 1L;
-        Keyboard keyboard = KEYBOARD_1.생성(productId);
+        Product product = KEYBOARD_1.생성(productId);
         Long memberId = 1L;
         Member member = CORINNE.생성(memberId);
-        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, product);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
-        given(keyboardRepository.findById(productId))
-                .willReturn(Optional.of(keyboard));
-        given(inventoryProductRepository.existsByMemberIdAndKeyboard(memberId, keyboard))
+        given(productRepository.findById(productId))
+                .willReturn(Optional.of(product));
+        given(inventoryProductRepository.existsByMemberIdAndProduct(memberId, product))
                 .willReturn(false);
         given(inventoryProductRepository.save(inventoryProduct))
                 .willReturn(inventoryProduct);
-        given(reviewRepository.save(reviewRequest.toReview(keyboard, member)))
-                .willReturn(REVIEW_RATING_5.작성(1L, keyboard, member));
+        given(reviewRepository.save(reviewRequest.toReview(product, member)))
+                .willReturn(REVIEW_RATING_5.작성(1L, product, member));
 
         // when
         Long reviewId = reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest);
@@ -91,10 +91,10 @@ class ReviewServiceTest {
         // then
         assertAll(
                 () -> assertThat(reviewId).isEqualTo(1L),
-                () -> verify(keyboardRepository).findById(productId),
+                () -> verify(productRepository).findById(productId),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).save(any(Review.class)),
-                () -> verify(inventoryProductRepository).existsByMemberIdAndKeyboard(memberId, keyboard),
+                () -> verify(inventoryProductRepository).existsByMemberIdAndProduct(memberId, product),
                 () -> verify(inventoryProductRepository).save(inventoryProduct)
         );
     }
@@ -129,7 +129,7 @@ class ReviewServiceTest {
 
         given(memberRepository.findById(memberId))
                 .willReturn(Optional.of(member));
-        given(keyboardRepository.findById(productId))
+        given(productRepository.findById(productId))
                 .willReturn(Optional.empty());
 
         // when, then
@@ -137,7 +137,7 @@ class ReviewServiceTest {
                 () -> assertThatThrownBy(() -> reviewService.saveReviewAndInventoryProduct(1L, 1L, reviewRequest))
                         .isExactlyInstanceOf(KeyboardNotFoundException.class),
                 () -> verify(memberRepository).findById(memberId),
-                () -> verify(keyboardRepository).findById(productId),
+                () -> verify(productRepository).findById(productId),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
         );
     }
@@ -149,13 +149,13 @@ class ReviewServiceTest {
         Long productId = 1L;
         Member member = CORINNE.생성(memberId);
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
-        Keyboard keyboard = KEYBOARD_1.생성(productId);
+        Product product = KEYBOARD_1.생성(productId);
 
         given(memberRepository.findById(memberId))
                 .willReturn(Optional.of(member));
-        given(keyboardRepository.findById(productId))
-                .willReturn(Optional.of(keyboard));
-        given(reviewRepository.existsByMemberAndKeyboard(member, keyboard))
+        given(productRepository.findById(productId))
+                .willReturn(Optional.of(product));
+        given(reviewRepository.existsByMemberAndProduct(member, product))
                 .willReturn(true);
 
         // when, then
@@ -163,8 +163,8 @@ class ReviewServiceTest {
                 () -> assertThatThrownBy(() -> reviewService.saveReviewAndInventoryProduct(1L, 1L, reviewRequest))
                         .isExactlyInstanceOf(AlreadyWrittenReviewException.class),
                 () -> verify(memberRepository).findById(memberId),
-                () -> verify(keyboardRepository).findById(productId),
-                () -> verify(reviewRepository).existsByMemberAndKeyboard(member, keyboard),
+                () -> verify(productRepository).findById(productId),
+                () -> verify(reviewRepository).existsByMemberAndProduct(member, product),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
         );
     }
@@ -173,13 +173,13 @@ class ReviewServiceTest {
     void 특정_제품에_대한_리뷰_목록을_조회한다() {
         // given
         Long productId = 1L;
-        Keyboard keyboard = KEYBOARD_1.생성();
+        Product product = KEYBOARD_1.생성();
         Member member = CORINNE.생성(1L);
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
-        Review review = REVIEW_RATING_5.작성(1L, keyboard, member);
+        Review review = REVIEW_RATING_5.작성(1L, product, member);
         Slice<Review> slice = new SliceImpl<>(List.of(review), pageable, true);
 
-        given(keyboardRepository.existsById(productId))
+        given(productRepository.existsById(productId))
                 .willReturn(true);
         given(reviewRepository.findPageByProductId(productId, pageable))
                 .willReturn(slice);
@@ -193,7 +193,7 @@ class ReviewServiceTest {
                         .usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(ReviewResponse.from(review)),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
-                () -> verify(keyboardRepository).existsById(productId),
+                () -> verify(productRepository).existsById(productId),
                 () -> verify(reviewRepository).findPageByProductId(productId, pageable)
         );
     }
@@ -202,14 +202,14 @@ class ReviewServiceTest {
     void 존재하지_않는_제품에_대한_리뷰_목록을_조회하면_예외가_발생한다() {
         // given
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
-        given(keyboardRepository.existsById(0L))
+        given(productRepository.existsById(0L))
                 .willReturn(false);
 
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> reviewService.findPageByProductId(0L, pageable))
                         .isExactlyInstanceOf(KeyboardNotFoundException.class),
-                () -> verify(keyboardRepository).existsById(0L)
+                () -> verify(productRepository).existsById(0L)
         );
     }
 

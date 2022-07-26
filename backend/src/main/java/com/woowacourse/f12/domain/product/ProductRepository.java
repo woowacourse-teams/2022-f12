@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface KeyboardRepository extends JpaRepository<Keyboard, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    Slice<Keyboard> findPageBy(Pageable pageable);
+    Slice<Product> findPageBy(Pageable pageable);
 }

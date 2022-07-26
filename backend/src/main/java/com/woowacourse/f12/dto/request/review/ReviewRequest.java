@@ -1,7 +1,7 @@
 package com.woowacourse.f12.dto.request.review;
 
 import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.review.Review;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
@@ -23,9 +23,9 @@ public class ReviewRequest {
         this.rating = rating;
     }
 
-    public Review toReview(final Keyboard keyboard, final Member member) {
+    public Review toReview(final Product product, final Member member) {
         return Review.builder()
-                .keyboard(keyboard)
+                .product(product)
                 .member(member)
                 .content(this.content)
                 .rating(this.rating)

@@ -13,10 +13,10 @@ import lombok.Getter;
 import org.hibernate.annotations.Formula;
 
 @Entity
-@Table(name = "keyboard", uniqueConstraints = {
+@Table(name = "product", uniqueConstraints = {
         @UniqueConstraint(name = "NAME_UNIQUE", columnNames = {"name"})})
 @Getter
-public class Keyboard {
+public class Product {
 
     private static final int MAXIMUM_IMAGE_URL_LENGTH = 65535;
 
@@ -36,11 +36,11 @@ public class Keyboard {
     @Formula("(SELECT IFNULL(AVG(r.rating), 0) FROM review r WHERE r.product_id = id)")
     private double rating;
 
-    protected Keyboard() {
+    protected Product() {
     }
 
     @Builder
-    private Keyboard(final Long id, final String name, final String imageUrl) {
+    private Product(final Long id, final String name, final String imageUrl) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
@@ -51,11 +51,11 @@ public class Keyboard {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Keyboard)) {
+        if (!(o instanceof Product)) {
             return false;
         }
-        final Keyboard keyboard = (Keyboard) o;
-        return Objects.equals(id, keyboard.getId());
+        final Product product = (Product) o;
+        return Objects.equals(id, product.getId());
     }
 
     @Override
