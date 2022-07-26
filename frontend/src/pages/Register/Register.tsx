@@ -3,10 +3,10 @@ import * as S from '@/pages/Register/Register.style';
 import { useState } from 'react';
 
 type Careers = ['경력 없음', '0-2년차', '3-5년차', '5년차 이상'];
-type JobGroups = ['프론트엔드', '백엔드', '모바일', '기타'];
+type JobTypes = ['프론트엔드', '백엔드', '모바일', '기타'];
 type UserInfo = {
   career: string;
-  jobGroup: string;
+  jobType: string;
 };
 
 const messages = {
@@ -15,13 +15,13 @@ const messages = {
   3: '입력한 정보를 확인해주세요',
 };
 const careers: Careers = ['경력 없음', '0-2년차', '3-5년차', '5년차 이상'];
-const jobGroups: JobGroups = ['프론트엔드', '백엔드', '모바일', '기타'];
+const jobTypes: JobTypes = ['프론트엔드', '백엔드', '모바일', '기타'];
 
 function Register() {
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState(1);
   const [additionalInfo, setAdditionalInfo] = useState<UserInfo>({
     career: null,
-    jobGroup: null,
+    jobType: null,
   });
 
   const renderSelectButton = (step: number) => {
@@ -29,24 +29,24 @@ function Register() {
       case 1:
         return careers;
       case 2:
-        return jobGroups;
+        return jobTypes;
     }
   };
 
   const handleSelectButtonClick: React.MouseEventHandler<HTMLButtonElement> = (
     e
   ) => {
-    if (!(e.target instanceof HTMLElement)) return;
+    if (!(e.target instanceof HTMLButtonElement)) return;
 
     if (step === 1) {
       setAdditionalInfo({
         ...additionalInfo,
-        career: e.target.textContent,
+        career: e.target.value,
       });
     } else {
       setAdditionalInfo({
         ...additionalInfo,
-        jobGroup: e.target.textContent,
+        jobType: e.target.value,
       });
     }
   };
@@ -56,7 +56,7 @@ function Register() {
       alert('경력을 선택해주세요.');
       return;
     }
-    if (step === 2 && additionalInfo.jobGroup === null) {
+    if (step === 2 && additionalInfo.jobType === null) {
       alert('직군을 선택해주세요.');
       return;
     }
@@ -65,7 +65,7 @@ function Register() {
       return;
     }
     confirm(
-      `${additionalInfo.career}, ${additionalInfo.jobGroup} 개발자이신가요?`
+      `${additionalInfo.career}, ${additionalInfo.jobType} 개발자이신가요?`
     );
   };
 
@@ -81,15 +81,23 @@ function Register() {
         <S.Title>{messages[step]}</S.Title>
         <S.FlexGapWrapper>
           {(step === 1 || step === 2) &&
-            renderSelectButton(step).map((content, index: number) => (
-              <S.SelectButton key={index} onClick={handleSelectButtonClick}>
+            renderSelectButton(step).map((content: string, index: number) => (
+              <S.SelectButton
+                key={index}
+                onClick={handleSelectButtonClick}
+                value={content}
+                selected={
+                  content === additionalInfo.career ||
+                  content === additionalInfo.jobType
+                }
+              >
                 {content}
               </S.SelectButton>
             ))}
           {step === 3 && (
             <>
               <S.ConfirmInfo>{additionalInfo.career}</S.ConfirmInfo>
-              <S.ConfirmInfo>{additionalInfo.jobGroup}</S.ConfirmInfo>
+              <S.ConfirmInfo>{additionalInfo.jobType}</S.ConfirmInfo>
             </>
           )}
         </S.FlexGapWrapper>

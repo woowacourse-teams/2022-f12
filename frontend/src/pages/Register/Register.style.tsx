@@ -30,21 +30,17 @@ export const FlexGapWrapper = styled.div`
   gap: 1rem;
 `;
 
-export const SelectButton = styled.button`
-  background-color: #faf9f9;
+export const SelectButton = styled.button<{ selected: boolean }>`
+  background-color: ${({ selected }) => (selected ? '#f6bebe' : '#faf9f9')};
   width: 280px;
   height: 50px;
   border-radius: 8px;
   border: 1px solid #cfcfcf;
   font-size: 1rem;
   cursor: pointer;
-  box-shadow: 8px 8px 3px -3px #cfcfcf;
+  box-shadow: 8px 8px 3px -3px ${({ selected }) => (selected ? 'none' : '#cfcfcf')};
 
-  &:focus {
-    background-color: #f6bebe;
-    transition: ease-in 0.2s;
-    box-shadow: none;
-  }
+  transition: ease-in 0.2s;
 `;
 
 export const ConfirmButton = styled.button`
