@@ -1,8 +1,8 @@
 package com.woowacourse.f12.presentation;
 
-import com.woowacourse.f12.exception.InvalidPageNumberFormatException;
-import com.woowacourse.f12.exception.InvalidPageSizeException;
-import com.woowacourse.f12.exception.InvalidPageSizeFormatException;
+import com.woowacourse.f12.exception.badrequest.InvalidPageNumberFormatException;
+import com.woowacourse.f12.exception.badrequest.InvalidPageSizeException;
+import com.woowacourse.f12.exception.badrequest.InvalidPageSizeFormatException;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

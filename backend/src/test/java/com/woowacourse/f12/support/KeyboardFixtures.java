@@ -1,6 +1,6 @@
 package com.woowacourse.f12.support;
 
-import com.woowacourse.f12.domain.Keyboard;
+import com.woowacourse.f12.domain.product.Keyboard;
 
 public enum KeyboardFixtures {
 

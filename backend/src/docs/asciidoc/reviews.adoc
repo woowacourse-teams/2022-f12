@@ -5,6 +5,10 @@
 
 operation::reviews-create[snippets='http-request,http-response']
 
+=== 이미 리뷰를 작성한 회원이 같은 제품에 대해 리뷰를 남기면 예외 발생
+
+operation::reviews-create-already-written-exception[snippets='http-request,http-response']
+
 === 특정 제품의 리뷰 목록 페이지 조회
 
 ==== sort 조건

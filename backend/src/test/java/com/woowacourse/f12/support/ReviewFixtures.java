@@ -1,10 +1,10 @@
 package com.woowacourse.f12.support;
 
 import com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil;
-import com.woowacourse.f12.domain.Keyboard;
-import com.woowacourse.f12.domain.Member;
-import com.woowacourse.f12.domain.Review;
-import com.woowacourse.f12.dto.request.ReviewRequest;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.product.Keyboard;
+import com.woowacourse.f12.domain.review.Review;
+import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalDateTime;
