@@ -3,9 +3,13 @@ package com.woowacourse.f12.domain.inventoryproduct;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woowacourse.f12.config.JpaConfig;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.product.Keyboard;
 import com.woowacourse.f12.domain.product.KeyboardRepository;
 import java.util.List;
@@ -24,19 +28,22 @@ class InventoryProductRepositoryTest {
     @Autowired
     private KeyboardRepository keyboardRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @Test
     void 멤버_아이디로_인벤토리_상품_목록을_조회한다() {
         // given
-        Long myMemberId = 1L;
-        Long otherMemberId = 2L;
-        Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성(1L));
-        Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성(2L));
-        InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(myMemberId, keyboard1);
-        InventoryProduct inventoryProduct2 = SELECTED_INVENTORY_PRODUCT.생성(otherMemberId, keyboard2);
+        Member myMember = 회원을_저장한다(CORINNE.생성());
+        Member otherMember = 회원을_저장한다(MINCHO.생성());
+        Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성());
+        Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성());
+        InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(myMember, keyboard1);
+        InventoryProduct inventoryProduct2 = SELECTED_INVENTORY_PRODUCT.생성(otherMember, keyboard2);
         inventoryProductRepository.saveAll(List.of(inventoryProduct1, inventoryProduct2));
 
         // when
-        List<InventoryProduct> inventoryProducts = inventoryProductRepository.findByMemberId(myMemberId);
+        List<InventoryProduct> inventoryProducts = inventoryProductRepository.findByMemberId(myMember.getId());
 
         // then
         assertThat(inventoryProducts).containsOnly(inventoryProduct1);
@@ -45,13 +52,13 @@ class InventoryProductRepositoryTest {
     @Test
     void 멤버_아이디와_상품으로_인벤토리_상품_목록을_조회한다() {
         // given
-        Long memberId = 1L;
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성(1L));
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        Member member = 회원을_저장한다(CORINNE.생성());
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
         inventoryProductRepository.save(inventoryProduct);
 
         // when
-        boolean actual = inventoryProductRepository.existsByMemberIdAndKeyboard(memberId, keyboard);
+        boolean actual = inventoryProductRepository.existsByMemberAndKeyboard(member, keyboard);
 
         // then
         assertThat(actual).isTrue();
@@ -59,5 +66,9 @@ class InventoryProductRepositoryTest {
 
     private Keyboard 키보드를_저장한다(Keyboard keyboard) {
         return keyboardRepository.save(keyboard);
+    }
+
+    private Member 회원을_저장한다(Member member) {
+        return memberRepository.save(member);
     }
 }

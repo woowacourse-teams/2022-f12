@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
+import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Keyboard;
 import com.woowacourse.f12.domain.product.KeyboardRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
@@ -58,9 +59,8 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
         LoginResponse loginResponse = 로그인을_한다("1");
         String token = loginResponse.getToken();
-        Long memberId = loginResponse.getMember().getId();
-
-        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        Member member = loginResponse.getMember().toMember();
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
         InventoryProduct savedInventoryProduct = 인벤토리에_장비를_추가한다(inventoryProduct);
 
         // when
@@ -86,11 +86,10 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
         LoginResponse response = 로그인을_한다("1");
         String token = response.getToken();
-        Long memberId = response.getMember()
-                .getId();
-        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        Member member = response.getMember().toMember();
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
-        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
         InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);
 
         // when
@@ -111,17 +110,16 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     void 다른_회원의_아이디로_등록된_장비를_조회한다() {
         // given
         LoginResponse response = 로그인을_한다("1");
-        Long memberId = response.getMember()
-                .getId();
+        Member member = response.getMember().toMember();
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
-        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
-        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
         InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);
 
         // when
         ExtractableResponse<Response> profileProductResponse = GET_요청을_보낸다(
-                "/api/v1/members/" + memberId + "/inventoryProducts");
+                "/api/v1/members/" + member.getId() + "/inventoryProducts");
 
         // then
         assertAll(

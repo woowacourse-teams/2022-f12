@@ -47,7 +47,7 @@ class KeyboardRepositoryTest {
     void 키보드를_단일_조회_한다() {
         // given
         Keyboard keyboard = 키보드_저장(KEYBOARD_1.생성());
-        Member member = memberRepository.save(CORINNE.생성(1L));
+        Member member = memberRepository.save(CORINNE.생성());
         리뷰_저장(REVIEW_RATING_4.작성(keyboard, member));
         리뷰_저장(REVIEW_RATING_5.작성(keyboard, member));
         entityManager.flush();
@@ -86,7 +86,7 @@ class KeyboardRepositoryTest {
         // given
         Keyboard keyboard1 = 키보드_저장(KEYBOARD_1.생성());
         Keyboard keyboard2 = 키보드_저장(KEYBOARD_2.생성());
-        Member member = memberRepository.save(CORINNE.생성(1L));
+        Member member = memberRepository.save(CORINNE.생성());
 
         리뷰_저장(REVIEW_RATING_5.작성(keyboard1, member));
         리뷰_저장(REVIEW_RATING_5.작성(keyboard2, member));
@@ -109,7 +109,7 @@ class KeyboardRepositoryTest {
         // given
         Keyboard keyboard2 = 키보드_저장(KEYBOARD_1.생성());
         Keyboard keyboard1 = 키보드_저장(KEYBOARD_2.생성());
-        Member member = memberRepository.save(CORINNE.생성(1L));
+        Member member = memberRepository.save(CORINNE.생성());
 
         리뷰_저장(REVIEW_RATING_2.작성(keyboard1, member));
         리뷰_저장(REVIEW_RATING_1.작성(keyboard1, member));

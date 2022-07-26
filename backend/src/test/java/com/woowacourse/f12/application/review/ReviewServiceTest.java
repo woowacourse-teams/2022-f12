@@ -73,12 +73,12 @@ class ReviewServiceTest {
         Keyboard keyboard = KEYBOARD_1.생성(productId);
         Long memberId = 1L;
         Member member = CORINNE.생성(memberId);
-        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, keyboard);
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
         given(keyboardRepository.findById(productId))
                 .willReturn(Optional.of(keyboard));
-        given(inventoryProductRepository.existsByMemberIdAndKeyboard(memberId, keyboard))
+        given(inventoryProductRepository.existsByMemberAndKeyboard(member, keyboard))
                 .willReturn(false);
         given(inventoryProductRepository.save(inventoryProduct))
                 .willReturn(inventoryProduct);
@@ -94,7 +94,7 @@ class ReviewServiceTest {
                 () -> verify(keyboardRepository).findById(productId),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).save(any(Review.class)),
-                () -> verify(inventoryProductRepository).existsByMemberIdAndKeyboard(memberId, keyboard),
+                () -> verify(inventoryProductRepository).existsByMemberAndKeyboard(member, keyboard),
                 () -> verify(inventoryProductRepository).save(inventoryProduct)
         );
     }
