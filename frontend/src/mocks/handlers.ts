@@ -145,6 +145,15 @@ const getMyInfo = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(myData));
 };
 
+// 추가 정보 입력
+const submitAdditionalInfo = (req, res, ctx) => {
+  const token = req.headers.get('Authorization');
+  if (token === undefined) {
+    return res(ctx.status(401));
+  }
+  return res(ctx.status(200));
+};
+
 export const handlers = [
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
@@ -172,4 +181,5 @@ export const handlers = [
     patchInventoryProducts
   ),
   rest.get(`${BASE_URL}${ENDPOINTS.ME}`, getMyInfo),
+  rest.patch(`${BASE_URL}${ENDPOINTS.ME}`, submitAdditionalInfo),
 ];
