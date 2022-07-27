@@ -8,6 +8,7 @@ const initialState: UserData = {
     imageUrl: null,
     name: null,
   },
+  registerCompleted: false,
   token: null,
 };
 
@@ -21,7 +22,7 @@ export const LogoutContext = createContext<() => void | null>(null);
 function LoginContextProvider({ children }: PropsWithChildren) {
   const [userData, setUserData, removeUserData] =
     useSessionStorage<UserData>('userData');
-  const [isLoggedIn, setLoggedIn] = useState(true);
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   const handleLogout = () => {
     removeUserData();

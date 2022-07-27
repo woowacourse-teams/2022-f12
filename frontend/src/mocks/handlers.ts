@@ -108,6 +108,7 @@ const getToken = (req, res, ctx) => {
       imageUrl: sampleProfile,
       name: 'F12개발자',
     },
+    registerCompleted: false,
     token: 'iJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjU4MTQ4Mzg1LCJleHAiOjE2NTgxNTE',
   };
   return res(ctx.status(200), ctx.json(response));
