@@ -1,6 +1,7 @@
 package com.woowacourse.f12.presentation.product;
 
 import com.woowacourse.f12.domain.product.Category;
+import com.woowacourse.f12.exception.badrequest.InvalidCategoryValueException;
 import com.woowacourse.f12.presentation.ViewConstant;
 import java.util.Arrays;
 
@@ -23,14 +24,14 @@ public enum CategoryConstant implements ViewConstant {
         return Arrays.stream(values())
                 .filter(category -> category.hasViewValue(viewValue))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(InvalidCategoryValueException::new);
     }
 
     public static CategoryConstant fromDomain(final Category category) {
         return Arrays.stream(values())
                 .filter(constant -> constant.category.equals(category))
                 .findFirst()
-                .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(InvalidCategoryValueException::new);
     }
 
     public Category toDomain() {
