@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -42,14 +43,14 @@ public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implem
     }
 
     public BooleanExpression eqCareerLevel(final CareerLevel careerLevel) {
-        if (careerLevel == null) {
+        if (Objects.isNull(careerLevel)) {
             return null;
         }
         return member.careerLevel.eq(careerLevel);
     }
 
     public BooleanExpression eqJobType(final JobType jobType) {
-        if (jobType == null) {
+        if (Objects.isNull(jobType)) {
             return null;
         }
         return member.jobType.eq(jobType);

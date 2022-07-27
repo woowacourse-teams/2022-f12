@@ -41,7 +41,7 @@ public class FakeGitHubApiController {
     @GetMapping("/user")
     public ResponseEntity<GitHubProfileResponse> showFakeProfile(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION) final String authorizationHeaderValue) {
-        if (authorizationHeaderValue == null) {
+        if (Objects.isNull(authorizationHeaderValue)) {
             return ResponseEntity.badRequest().build();
         }
         final String[] splitValue = authorizationHeaderValue.split(" ");
