@@ -7,7 +7,20 @@ type Props = {
   triggerAnimation: boolean;
 };
 
+const CATEGORY = {
+  KEYBOARD: { key: 'keyboard', name: '키보드' },
+  MOUSE: { key: 'mouse', name: '마우스' },
+  MONITOR: { key: 'monitor', name: '모니터' },
+  STAND: { key: 'stand', name: '거치대' },
+  SOFTWARE: { key: 'software', name: '소프트웨어' },
+} as const;
+
 function CategoryNav({ handleTransitionEnd, triggerAnimation }: Props) {
+  const CategoryLinks = Object.values(CATEGORY).map(({ key, name }) => (
+    <Link key={key} to={`${ROUTES.PRODUCTS}?category=${key}`}>
+      {name}
+    </Link>
+  ));
   return (
     <S.Container
       onTransitionEnd={handleTransitionEnd}
@@ -15,11 +28,7 @@ function CategoryNav({ handleTransitionEnd, triggerAnimation }: Props) {
     >
       <S.Wrapper>
         <Link to={ROUTES.PRODUCTS}>전체 상품</Link>
-        <Link to={ROUTES.PRODUCTS}>키보드</Link>
-        <Link to={ROUTES.PRODUCTS}>마우스</Link>
-        <Link to={ROUTES.PRODUCTS}>모니터</Link>
-        <Link to={ROUTES.PRODUCTS}>거치대</Link>
-        <Link to={ROUTES.PRODUCTS}>소프트웨어</Link>
+        {CategoryLinks}
       </S.Wrapper>
     </S.Container>
   );
