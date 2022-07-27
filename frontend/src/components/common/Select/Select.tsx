@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import * as S from './Select.style';
+import * as S from '@/components/common/Select/Select.style';
 
 type Props = {
   value: string;

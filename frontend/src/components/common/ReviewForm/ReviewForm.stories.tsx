@@ -1,4 +1,4 @@
-import ReviewForm from './ReviewForm';
+import ReviewForm from '@/components/common/ReviewForm/ReviewForm';
 import { ComponentStory } from '@storybook/react';
 
 export default {
