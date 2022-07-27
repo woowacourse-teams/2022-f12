@@ -7,15 +7,13 @@ import Register from '@/pages/Register/Register';
 import ROUTES from '@/constants/routes';
 import InventoryContextProvider from '@/contexts/InventoryContextProvider';
 import Profile from '@/pages/Profile/Profile';
+import UserRoutes from '@/pages/common/UserRoutes/UserRoutes';
+import NonUserRoutes from '@/pages/common/NonUserRoutes/NonUserRoutes';
 
-export const PAGES = [
+const USER_ROUTES = [
   {
-    element: <PageLayout />,
+    element: <UserRoutes />,
     children: [
-      { path: ROUTES.HOME, element: <Home /> },
-      { path: ROUTES.PRODUCTS, element: <Products /> },
-      { path: `${ROUTES.PRODUCT}/:productId`, element: <Product /> },
-      { path: ROUTES.LOGIN, element: <Login /> },
       { path: ROUTES.REGISTER, element: <Register /> },
       {
         path: ROUTES.PROFILE,
@@ -25,6 +23,26 @@ export const PAGES = [
           </InventoryContextProvider>
         ),
       },
+    ],
+  },
+];
+
+const NON_USER_ROUTES = [
+  {
+    element: <NonUserRoutes />,
+    children: [{ path: ROUTES.LOGIN, element: <Login /> }],
+  },
+];
+
+export const PAGES = [
+  {
+    element: <PageLayout />,
+    children: [
+      { path: ROUTES.HOME, element: <Home /> },
+      { path: ROUTES.PRODUCTS, element: <Products /> },
+      { path: `${ROUTES.PRODUCT}/:productId`, element: <Product /> },
+      ...NON_USER_ROUTES,
+      ...USER_ROUTES,
     ],
   },
 ];
