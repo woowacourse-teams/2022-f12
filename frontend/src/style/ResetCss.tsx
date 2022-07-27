@@ -7,7 +7,7 @@ const ResetCss = createGlobalStyle`
 }
 
   html, body, div, span, h1, h2, h3, h4, h5, h6, p,
-a, img, strong, ol, ul, li,
+a, button, img, strong, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, embed, 
