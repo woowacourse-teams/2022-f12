@@ -22,7 +22,9 @@ export const LogoutContext = createContext<() => void | null>(null);
 function LoginContextProvider({ children }: PropsWithChildren) {
   const [userData, setUserData, removeUserData] =
     useSessionStorage<UserData>('userData');
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const checkLoginStatus = () => userData && !!userData.token;
+
+  const [isLoggedIn, setLoggedIn] = useState<boolean>(checkLoginStatus());
 
   const handleLogout = () => {
     removeUserData();
@@ -30,12 +32,7 @@ function LoginContextProvider({ children }: PropsWithChildren) {
   };
 
   useEffect(() => {
-    if (userData && userData.token) {
-      setLoggedIn(true);
-      return;
-    }
-
-    setLoggedIn(false);
+    setLoggedIn(checkLoginStatus());
   }, [userData]);
 
   return (

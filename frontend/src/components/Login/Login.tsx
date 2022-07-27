@@ -11,10 +11,15 @@ function Login() {
 
   useEffect(() => {
     login(searchParam.get('code'))
+      .then((userData) => {
+        if (userData.registerCompleted) {
+          navigate(ROUTES.HOME);
+          return;
+        }
+        navigate(ROUTES.REGISTER);
+      })
       .catch(() => {
         alert('로그인에 실패했습니다. 잠시 후 다시 시도해주세요.');
-      })
-      .finally(() => {
         navigate(ROUTES.HOME);
       });
   }, []);
