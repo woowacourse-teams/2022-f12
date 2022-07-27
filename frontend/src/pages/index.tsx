@@ -3,7 +3,7 @@ import Home from '@/pages/Home/Home';
 import Product from '@/pages/Product/Product';
 import Products from '@/pages/Products/Products';
 import Login from '@/components/Login/Login';
-import Register from './Register/Register';
+import Register from '@/pages/Register/Register';
 import ROUTES from '@/constants/routes';
 import InventoryContextProvider from '@/contexts/InventoryContextProvider';
 import Profile from '@/pages/Profile/Profile';

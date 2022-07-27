@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import RatingInput from '../RatingInput/RatingInput';
-import * as S from './ReviewForm.style';
+import RatingInput from '@/components/common/RatingInput/RatingInput';
+import * as S from '@/components/common/ReviewForm/ReviewForm.style';
 
 type Props = {
   handleSubmit: (reviewInput: ReviewInput) => Promise<void>;

@@ -1,4 +1,4 @@
-import * as S from './SectionHeader.style';
+import * as S from '@/components/common/SectionHeader/SectionHeader.style';
 
 type Prop = {
   children: React.ReactNode;

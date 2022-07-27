@@ -1,7 +1,11 @@
 export const BASE_URL = 'http://3.34.47.160:8080/api/v1';
 
-export const GITHUB_AUTH_URL =
-  'https://github.com/login/oauth/authorize?client_id=f1e73a9ac502f1b6712a';
+const githubClientId =
+  process.env.NODE_ENV === 'development'
+    ? '404072c5857d705db2d9'
+    : 'f1e73a9ac502f1b6712a';
+
+export const GITHUB_AUTH_URL = `https://github.com/login/oauth/authorize?client_id=${githubClientId}`;
 
 export const ENDPOINTS = {
   PRODUCTS: '/keyboards',
