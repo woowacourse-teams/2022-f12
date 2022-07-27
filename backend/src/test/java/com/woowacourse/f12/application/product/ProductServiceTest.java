@@ -1,6 +1,5 @@
 package com.woowacourse.f12.application.product;
 
-import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,11 +11,13 @@ import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
+import com.woowacourse.f12.presentation.product.CategoryConstant;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -73,15 +74,15 @@ class ProductServiceTest {
         // given
         Product product = KEYBOARD_1.생성(1L);
         Pageable pageable = PageRequest.of(0, 1);
-        given(productRepository.findPageByCategory(eq(KEYBOARD), any(Pageable.class)))
+        given(productRepository.findPageByCategory(eq(Category.KEYBOARD), any(Pageable.class)))
                 .willReturn(new SliceImpl<>(List.of(product), pageable, false));
 
         // when
-        ProductPageResponse productPageResponse = productService.findPage(KEYBOARD, pageable);
+        ProductPageResponse productPageResponse = productService.findPage(CategoryConstant.KEYBOARD, pageable);
 
         // then
         assertAll(
-                () -> verify(productRepository).findPageByCategory(eq(KEYBOARD), any(Pageable.class)),
+                () -> verify(productRepository).findPageByCategory(eq(Category.KEYBOARD), any(Pageable.class)),
                 () -> assertThat(productPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(productPageResponse.getItems()).hasSize(1)
                         .usingRecursiveFieldByFieldElementComparator()

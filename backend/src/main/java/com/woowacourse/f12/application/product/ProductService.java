@@ -6,6 +6,7 @@ import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
+import com.woowacourse.f12.presentation.product.CategoryConstant;
 import java.util.Objects;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,10 +28,12 @@ public class ProductService {
         return ProductResponse.from(product);
     }
 
-    public ProductPageResponse findPage(Category category, final Pageable pageable) {
-        if (Objects.isNull(category)) {
+    public ProductPageResponse findPage(CategoryConstant categoryConstant, final Pageable pageable) {
+        if (Objects.isNull(categoryConstant)) {
             return ProductPageResponse.from(productRepository.findPageBy(pageable));
         }
+
+        final Category category = categoryConstant.toDomain();
         return ProductPageResponse.from(productRepository.findPageByCategory(category, pageable));
     }
 }
