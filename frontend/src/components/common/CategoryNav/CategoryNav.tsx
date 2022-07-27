@@ -15,11 +15,11 @@ function CategoryNav({ handleTransitionEnd, triggerAnimation }: Props) {
     >
       <S.Wrapper>
         <Link to={ROUTES.PRODUCTS}>전체 상품</Link>
-        <Link to={ROUTES.PRODUCTS}>키보드</Link>
-        <Link to={ROUTES.PRODUCTS}>마우스</Link>
-        <Link to={ROUTES.PRODUCTS}>모니터</Link>
-        <Link to={ROUTES.PRODUCTS}>거치대</Link>
-        <Link to={ROUTES.PRODUCTS}>소프트웨어</Link>
+        <Link to={`${ROUTES.PRODUCTS}?category=keyboard`}>키보드</Link>
+        <Link to={`${ROUTES.PRODUCTS}?category=mouse`}>마우스</Link>
+        <Link to={`${ROUTES.PRODUCTS}?category=monitor`}>모니터</Link>
+        <Link to={`${ROUTES.PRODUCTS}?category=stand`}>거치대</Link>
+        <Link to={`${ROUTES.PRODUCTS}?category=software`}>소프트웨어</Link>
       </S.Wrapper>
     </S.Container>
   );

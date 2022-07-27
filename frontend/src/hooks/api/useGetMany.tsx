@@ -6,6 +6,7 @@ type Props = {
   url: string;
   size: number;
   sort?: string;
+  category?: string;
   body?: null | object;
   headers?: null | AxiosRequestHeaders;
 };
@@ -19,6 +20,7 @@ function useGetMany<T>({
   url,
   size,
   sort,
+  category,
   body,
   headers,
 }: Props): [T[], () => void, () => void] {
@@ -42,6 +44,7 @@ function useGetMany<T>({
         size,
         page,
         sort,
+        category,
       },
     });
 
@@ -86,7 +89,7 @@ function useGetMany<T>({
 
   useEffect(() => {
     refetch();
-  }, [sort]);
+  }, [sort, category]);
 
   return [data, getNextPage, refetch];
 }

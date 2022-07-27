@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import ProductListSection from '@/components/ProductListSection/ProductListSection';
 import Select from '@/components/common/Select/Select';
 import useProducts from '@/hooks/useProducts';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 type Option = { value: string; text: string };
 
@@ -26,9 +26,12 @@ const DefaultSort = options[1];
 function Products() {
   const location = useLocation();
   const [sort, setSort] = useState<Sort>(DefaultSort.value);
-  const [keyboards, getNextPage] = useProducts({
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get('category');
+  const [products, getNextPage] = useProducts({
     size: 12,
     sort,
+    category,
   });
 
   useEffect(() => {
@@ -40,7 +43,7 @@ function Products() {
   return (
     <ProductListSection
       title={location.hash === '#popular' ? '인기 상품 목록' : '모든 상품 목록'}
-      data={!!keyboards && keyboards}
+      data={!!products && products}
       getNextPage={getNextPage}
       addOn={<Select value={sort} setValue={setSort} options={options} />}
     />
