@@ -2,6 +2,9 @@ package com.woowacourse.f12.application.member;
 
 import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
 import static com.woowacourse.f12.domain.member.JobType.ETC;
+import static com.woowacourse.f12.dto.CareerLevelConstant.SENIOR;
+import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND;
+import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -9,18 +12,29 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.CareerLevel;
+import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
+import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.support.KeyboardFixtures;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -94,4 +108,29 @@ class MemberServiceTest {
         // then
         verify(memberRepository).findById(1L);
     }
+
+    @Test
+    void 키워드와_옵션으로_회원을_조회한다() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
+                KeyboardFixtures.KEYBOARD_1.생성(1L));
+        Member member = CORINNE.대표장비_추가(1L, inventoryProduct);
+
+        given(memberRepository.findByContains("cheese", CareerLevel.SENIOR, JobType.BACKEND, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+
+        // when
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", SENIOR, BACKEND);
+        MemberPageResponse memberPageResponse = memberService.findByContains(memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findByContains("cheese", CareerLevel.SENIOR, JobType.BACKEND, pageable),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.from(member))
+        );
+    }
+
 }
