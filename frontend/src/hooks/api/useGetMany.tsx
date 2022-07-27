@@ -2,11 +2,13 @@ import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
 import axiosInstance from '@/hooks/api/axiosInstance';
 
+type SearchParams = Record<string, string>;
+
+type GetManyParams = SearchParams & { size: string };
+
 type Props = {
   url: string;
-  size: number;
-  sort?: string;
-  category?: string;
+  params?: GetManyParams;
   body?: null | object;
   headers?: null | AxiosRequestHeaders;
 };
@@ -18,9 +20,7 @@ type Data<T> = {
 
 function useGetMany<T>({
   url,
-  size,
-  sort,
-  category,
+  params,
   body,
   headers,
 }: Props): [T[], () => void, () => void] {
@@ -41,10 +41,8 @@ function useGetMany<T>({
       data: body,
       headers,
       params: {
-        size,
         page,
-        sort,
-        category,
+        ...params,
       },
     });
 
@@ -87,9 +85,11 @@ function useGetMany<T>({
       });
   }, [nextPageTrigger, refetchTrigger]);
 
+  const searchParams = new URLSearchParams(params);
+
   useEffect(() => {
     refetch();
-  }, [sort, category]);
+  }, [searchParams.toString()]);
 
   return [data, getNextPage, refetch];
 }

@@ -1,10 +1,10 @@
 import useGetMany from '@/hooks/api/useGetMany';
 import { ENDPOINTS } from '@/constants/api';
 
-type Sort = 'default' | 'rating,desc' | 'reviewCount,desc';
+type Sort = 'rating,desc' | 'reviewCount,desc';
 
 type Props = {
-  size: number;
+  size: string;
   sort?: Sort;
   category?: string;
 };
@@ -12,11 +12,10 @@ type Props = {
 type ReturnType = [Product[], () => void];
 
 function useProducts({ size, sort, category }: Props): ReturnType {
+  const params = { size, sort, category };
   const [products, getNextPage] = useGetMany<Product>({
     url: `${ENDPOINTS.PRODUCTS}`,
-    size,
-    sort: sort === 'default' ? undefined : sort,
-    category,
+    params,
   });
 
   return [products, getNextPage];

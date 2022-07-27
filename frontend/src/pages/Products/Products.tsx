@@ -29,7 +29,7 @@ function Products() {
   const [searchParams] = useSearchParams();
   const category = searchParams.get('category');
   const [products, getNextPage] = useProducts({
-    size: 12,
+    size: '12',
     sort,
     category,
   });
