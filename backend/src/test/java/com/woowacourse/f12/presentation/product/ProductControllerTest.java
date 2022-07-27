@@ -114,19 +114,4 @@ class ProductControllerTest {
         // then
         verify(productService).findById(0L);
     }
-
-    @Test
-    void 유효하지_않은_카테고리를_입력하면_예외가_발생() throws Exception {
-        // given
-        given(productService.findPage(any(CategoryConstant.class), any(Pageable.class)))
-                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
-
-        // when
-        mockMvc.perform(get("/api/v1/products?category=INVALID&page=0&size=1"))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
-
-        // then
-        verify(productService, times(0)).findPage(any(CategoryConstant.class), any(Pageable.class));
-    }
 }
