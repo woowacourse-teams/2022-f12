@@ -1,6 +1,5 @@
 package com.woowacourse.f12.presentation;
 
-import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -13,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
+import com.woowacourse.f12.presentation.product.CategoryConstant;
 import com.woowacourse.f12.presentation.product.ProductController;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import java.util.List;
@@ -40,7 +40,7 @@ public class CustomPageableArgumentResolverTest {
     @Test
     void 페이징_실패_페이지_번호_숫자_형식_아님() throws Exception {
         // given
-        given(productService.findPage(eq(KEYBOARD), any(Pageable.class)))
+        given(productService.findPage(eq(CategoryConstant.KEYBOARD), any(Pageable.class)))
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
 
         // when
@@ -50,13 +50,13 @@ public class CustomPageableArgumentResolverTest {
 
         // then
         verify(productService, times(0))
-                .findPage(eq(KEYBOARD), any(Pageable.class));
+                .findPage(eq(CategoryConstant.KEYBOARD), any(Pageable.class));
     }
 
     @Test
     void 페이징_실패_최대_페이징_크기_초과() throws Exception {
         // given
-        given(productService.findPage(eq(KEYBOARD), any(Pageable.class)))
+        given(productService.findPage(eq(CategoryConstant.KEYBOARD), any(Pageable.class)))
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
 
         // when
@@ -66,13 +66,13 @@ public class CustomPageableArgumentResolverTest {
 
         // then
         verify(productService, times(0))
-                .findPage(KEYBOARD, PageRequest.of(0, 151, Sort.by("rating").descending()));
+                .findPage(CategoryConstant.KEYBOARD, PageRequest.of(0, 151, Sort.by("rating").descending()));
     }
 
     @Test
     void 페이징_실패_페이징_크기_숫자_형식_아님() throws Exception {
         // given
-        given(productService.findPage(eq(KEYBOARD), any(Pageable.class)))
+        given(productService.findPage(eq(CategoryConstant.KEYBOARD), any(Pageable.class)))
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
 
         // when
@@ -82,13 +82,13 @@ public class CustomPageableArgumentResolverTest {
 
         // then
         verify(productService, times(0))
-                .findPage(eq(KEYBOARD), any(Pageable.class));
+                .findPage(eq(CategoryConstant.KEYBOARD), any(Pageable.class));
     }
 
     @Test
     void 페이징_성공_페이징_값_지정_안할_경우_기본값으로_페이징() throws Exception {
         // given
-        given(productService.findPage(eq(KEYBOARD), any(Pageable.class)))
+        given(productService.findPage(eq(CategoryConstant.KEYBOARD), any(Pageable.class)))
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
 
         // when

@@ -91,7 +91,7 @@ class InventoryProductServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(inventoryProductsResponse.getKeyboards()).hasSize(1)
+                () -> assertThat(inventoryProductsResponse.getItems()).hasSize(1)
                         .usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(InventoryProductResponse.from(inventoryProduct)),
                 () -> verify(memberRepository).existsById(memberId),

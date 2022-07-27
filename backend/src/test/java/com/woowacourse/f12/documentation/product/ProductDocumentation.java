@@ -1,6 +1,6 @@
 package com.woowacourse.f12.documentation.product;
 
-import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static org.mockito.BDDMockito.given;
@@ -68,7 +68,7 @@ class ProductDocumentation extends Documentation {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/products?category=KEYBOARD&page=0&size=5&sort=rating,desc")
+                get("/api/v1/products?category=keyboard&page=0&size=5&sort=rating,desc")
         );
 
         // then

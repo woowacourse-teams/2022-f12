@@ -1,7 +1,6 @@
 package com.woowacourse.f12.presentation.product;
 
 import com.woowacourse.f12.application.product.ProductService;
-import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +22,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<ProductPageResponse> showPage(@RequestParam(required = false) final Category category,
+    public ResponseEntity<ProductPageResponse> showPage(@RequestParam(required = false) final CategoryConstant category,
                                                         final Pageable pageable) {
         return ResponseEntity.ok().body(productService.findPage(category, pageable));
     }

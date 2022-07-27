@@ -20,7 +20,6 @@ public class GlobalExceptionHandler {
 
     private static final String REQUEST_DATA_FORMAT_ERROR_MESSAGE = "요청으로 넘어온 값이 형식에 맞지 않습니다.";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "서버 오류가 발생했습니다";
-    private static final String METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION_MESSAGE = "형식에 맞지 않는 값을 입력했습니다.";
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleNotFoundException(final NotFoundException e) {
@@ -59,7 +58,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ExceptionResponse> handleMethodArgumentTypeMismatchExceptionException() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionResponse.from(METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION_MESSAGE));
+                .body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE));
     }
 
     @ExceptionHandler(Exception.class)

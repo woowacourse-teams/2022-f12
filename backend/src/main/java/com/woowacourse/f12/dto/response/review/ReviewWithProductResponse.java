@@ -1,7 +1,7 @@
 package com.woowacourse.f12.dto.response.review;
 
 import com.woowacourse.f12.domain.review.Review;
-import com.woowacourse.f12.dto.response.product.KeyboardForReviewResponse;
+import com.woowacourse.f12.dto.response.product.ProductForReviewResponse;
 import lombok.Getter;
 
 @Getter
@@ -9,7 +9,7 @@ public class ReviewWithProductResponse {
 
     private Long id;
     private ReviewAuthorResponse author;
-    private KeyboardForReviewResponse product;
+    private ProductForReviewResponse product;
     private String content;
     private int rating;
     private String createdAt;
@@ -18,7 +18,7 @@ public class ReviewWithProductResponse {
     }
 
     private ReviewWithProductResponse(final Long id, final ReviewAuthorResponse author,
-                                      final KeyboardForReviewResponse product,
+                                      final ProductForReviewResponse product,
                                       final String content, final int rating, final String createdAt) {
         this.id = id;
         this.author = author;
@@ -29,7 +29,7 @@ public class ReviewWithProductResponse {
     }
 
     public static ReviewWithProductResponse from(final Review review) {
-        final KeyboardForReviewResponse product = KeyboardForReviewResponse.from(review.getProduct());
+        final ProductForReviewResponse product = ProductForReviewResponse.from(review.getProduct());
         final ReviewAuthorResponse author = ReviewAuthorResponse.from(review.getMember());
         return new ReviewWithProductResponse(review.getId(), author, product, review.getContent(), review.getRating(),
                 review.getCreatedAt().toString());

@@ -45,7 +45,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         List<InventoryProductResponse> keyboardsInInventory =
                 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/inventoryProducts", token)
                         .as(InventoryProductsResponse.class)
-                        .getKeyboards();
+                        .getItems();
 
         // then
         assertThat(keyboardsInInventory).extracting("id")
@@ -71,7 +71,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         List<InventoryProductResponse> inventoryProductResponses = 로그인된_상태로_GET_요청을_보낸다(
                 "/api/v1/members/inventoryProducts",
                 token)
-                .as(InventoryProductsResponse.class).getKeyboards();
+                .as(InventoryProductsResponse.class).getItems();
 
         // then
         assertAll(
@@ -100,7 +100,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(profileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(profileProductResponse.as(InventoryProductsResponse.class).getKeyboards())
+                () -> assertThat(profileProductResponse.as(InventoryProductsResponse.class).getItems())
                         .usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(InventoryProductResponse.from(savedSelectedInventoryProduct),
                                 InventoryProductResponse.from(savedUnselectedInventoryProduct))
@@ -126,7 +126,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(profileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(profileProductResponse.as(InventoryProductsResponse.class).getKeyboards())
+                () -> assertThat(profileProductResponse.as(InventoryProductsResponse.class).getItems())
                         .usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(InventoryProductResponse.from(savedSelectedInventoryProduct),
                                 InventoryProductResponse.from(savedUnselectedInventoryProduct))

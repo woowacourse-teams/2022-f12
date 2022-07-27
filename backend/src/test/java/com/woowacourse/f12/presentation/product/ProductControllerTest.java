@@ -1,6 +1,6 @@
 package com.woowacourse.f12.presentation.product;
 
-import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.product.ProductService;
-import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
@@ -114,20 +113,5 @@ class ProductControllerTest {
 
         // then
         verify(productService).findById(0L);
-    }
-
-    @Test
-    void 유효하지_않은_카테고리를_입력하면_예외가_발생() throws Exception {
-        // given
-        given(productService.findPage(any(Category.class), any(Pageable.class)))
-                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
-
-        // when
-        mockMvc.perform(get("/api/v1/products?category=INVALID&page=0&size=1"))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
-
-        // then
-        verify(productService, times(0)).findPage(any(Category.class), any(Pageable.class));
     }
 }
