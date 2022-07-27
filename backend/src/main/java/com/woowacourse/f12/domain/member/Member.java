@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -45,6 +46,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private JobType jobType;
 
+    @BatchSize(size = 150)
     @OneToMany(mappedBy = "member")
     private List<InventoryProduct> inventoryProducts = new ArrayList<>();
 
@@ -53,13 +55,15 @@ public class Member {
 
     @Builder
     private Member(final Long id, final String gitHubId, final String name, final String imageUrl,
-                   final CareerLevel careerLevel, final JobType jobType) {
+                   final CareerLevel careerLevel, final JobType jobType,
+                   final List<InventoryProduct> inventoryProducts) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
+        this.inventoryProducts = inventoryProducts;
     }
 
     public void updateName(final String name) {
