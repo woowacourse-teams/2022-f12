@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled.div<{ triggerAnimation: boolean }>`
   position: absolute;
   bottom: -${({ theme }) => theme.headerHeight};
 
@@ -9,6 +9,12 @@ export const Container = styled.div`
 
   background-color: ${({ theme }) => theme.colors.white};
   z-index: 3;
+
+  transition: 300ms ease;
+
+  ${({ triggerAnimation }) =>
+    !triggerAnimation &&
+    'transform: translateY(-1rem); z-index: -1; opacity: 0'};
 
   &::after {
     position: absolute;

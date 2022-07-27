@@ -6,11 +6,14 @@ import { Link, useLocation } from 'react-router-dom';
 import * as S from '@/components/common/HeaderNav/HeaderNav.style';
 import { useEffect, useState } from 'react';
 import CategoryNav from '@/components/common/CategoryNav/CategoryNav';
+import useAnimation from '@/hooks/useAnimation';
 
 function HeaderNav() {
   const { logout, isLoggedIn } = useAuth();
 
   const [categoryOpen, setCategoryOpen] = useState(false);
+  const [shouldRenderCategory, handleTransitionEnd, triggerAnimation] =
+    useAnimation(categoryOpen);
 
   const location = useLocation();
 
@@ -58,7 +61,12 @@ function HeaderNav() {
           )}
         </S.FlexRightUl>
       </S.Wrapper>
-      {categoryOpen && <CategoryNav />}
+      {shouldRenderCategory && (
+        <CategoryNav
+          handleTransitionEnd={handleTransitionEnd}
+          triggerAnimation={triggerAnimation}
+        />
+      )}
     </S.Nav>
   );
 }
