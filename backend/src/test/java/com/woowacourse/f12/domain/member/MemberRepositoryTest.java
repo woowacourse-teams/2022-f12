@@ -98,7 +98,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains(keyword, CareerLevel.SENIOR, JobType.BACK_END,
+        Slice<Member> slice = memberRepository.findByContains(keyword, CareerLevel.SENIOR, JobType.BACKEND,
                 PageRequest.of(0, 2));
 
         // then

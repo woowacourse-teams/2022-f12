@@ -139,7 +139,7 @@ class MemberControllerTest {
         // given
         Map<String, Object> memberRequest = new HashMap<>();
         memberRequest.put("careerLevel", "SENIOR");
-        memberRequest.put("jobType", "BACK_END");
+        memberRequest.put("jobType", "BACKEND");
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))

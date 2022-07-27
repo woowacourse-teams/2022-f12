@@ -1,7 +1,7 @@
 package com.woowacourse.f12.documentation.member;
 
 import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACK_END;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -85,7 +85,7 @@ public class MemberDocumentation extends Documentation {
     @Test
     void 로그인된_상태에서_나의_회원정보를_수정_API_문서화() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest(JUNIOR, BACK_END);
+        MemberRequest memberRequest = new MemberRequest(JUNIOR, BACKEND);
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
