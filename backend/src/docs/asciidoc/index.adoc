@@ -7,6 +7,6 @@
 
 include::auth.adoc[]
 include::members.adoc[]
-include::keyboards.adoc[]
+include::products.adoc[]
 include::reviews.adoc[]
 include::inventoryProducts.adoc[]
