@@ -69,7 +69,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(MOUSE_1.생성());
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?category=MOUSE&page=0&size=1");
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?category=mouse&page=0&size=1");
 
         // then
         assertAll(
@@ -92,7 +92,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
         REVIEW_RATING_3.작성_요청을_보낸다(product2.getId(), token);
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?page=0&size=1&sort=reviewCount,desc");
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/products?category=keyboard&page=0&size=1&sort=reviewCount,desc");
 
         // then
         assertAll(
@@ -114,7 +115,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
         REVIEW_RATING_5.작성_요청을_보낸다(product2.getId(), token);
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?page=0&size=1&sort=rating,desc");
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/products?category=keyboard&page=0&size=1&sort=rating,desc");
 
         // then
         assertAll(
