@@ -38,7 +38,7 @@ class MemberRepositoryTest {
         assertAll(
                 () -> assertThat(slice.hasNext()).isFalse(),
                 () -> assertThat(slice.getContent()).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                        .contains(CORINNE.생성(), MINCHO.생성())
+                        .containsOnly(CORINNE.생성(), MINCHO.생성())
         );
     }
 
