@@ -21,7 +21,7 @@ export const RightSection = styled.div`
 export const ProfileImageWrapper = styled.div`
   position: absolute;
   left: -5.5rem;
-  top: 1.5rem;
+  top: 1.1rem;
   width: 9.5rem;
   height: 9.5rem;
   border-radius: 50%;
@@ -58,7 +58,7 @@ export const UserName = styled.span``;
 export const InventoryWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 6rem;
+  height: 5rem;
 `;
 
 export const LeftButton = styled.button`
