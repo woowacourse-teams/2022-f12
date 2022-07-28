@@ -138,7 +138,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
-        Member member = CORINNE.대표장비_추가(memberId, inventoryProduct);
+        Member member = CORINNE.대표장비를_추가해서_생성(memberId, inventoryProduct);
         MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
                 member);
         assertAll(
@@ -175,7 +175,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
-        Member member = CORINNE.대표장비_추가(memberId, inventoryProduct);
+        Member member = CORINNE.대표장비를_추가해서_생성(memberId, inventoryProduct);
         MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
                 member);
         assertAll(
@@ -212,7 +212,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
-        Member member = CORINNE.대표장비_추가(memberId, inventoryProduct);
+        Member member = CORINNE.대표장비를_추가해서_생성(memberId, inventoryProduct);
         MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
                 member);
         assertAll(

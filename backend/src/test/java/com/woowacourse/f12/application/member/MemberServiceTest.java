@@ -114,7 +114,7 @@ class MemberServiceTest {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
-        Member member = CORINNE.대표장비_추가(1L, inventoryProduct);
+        Member member = CORINNE.대표장비를_추가해서_생성(1L, inventoryProduct);
 
         given(memberRepository.findByContains("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
