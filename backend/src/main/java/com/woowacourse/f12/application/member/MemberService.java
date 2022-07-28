@@ -49,7 +49,6 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-
     public MemberPageResponse findByContains(final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
         final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
         final JobType jobType = parseJobType(memberSearchRequest);
