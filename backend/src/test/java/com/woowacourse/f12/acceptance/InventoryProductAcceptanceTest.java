@@ -4,6 +4,7 @@ import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한�
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
@@ -40,7 +41,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     void 리뷰를_작성하면_해당_장비가_인벤토리에_추가된다() {
         // given
         Long productId = 제품을_저장한다(KEYBOARD_1.생성()).getId();
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         REVIEW_RATING_5.작성_요청을_보낸다(productId, token);
 
         // when
@@ -58,7 +59,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     void 대표_장비가_없는_상태에서_대표_장비를_등록한다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        LoginResponse loginResponse = 로그인을_한다("1");
+        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
         String token = loginResponse.getToken();
         Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
 
@@ -86,9 +87,9 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     void 등록된_장비_목록을_대표_장비를_포함해서_조회한다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        LoginResponse response = 로그인을_한다("1");
-        String token = response.getToken();
-        Member member = 응답을_회원으로_변환한다(response.getMember());
+        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        String token = loginResponse.getToken();
+        Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
         InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, product);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
         InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
@@ -111,8 +112,8 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 다른_회원의_아이디로_등록된_장비를_조회한다() {
         // given
-        LoginResponse response = 로그인을_한다("1");
-        Member member = 응답을_회원으로_변환한다(response.getMember());
+        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, product);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);

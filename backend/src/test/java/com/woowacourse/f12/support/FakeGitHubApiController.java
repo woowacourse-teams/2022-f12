@@ -1,7 +1,11 @@
 package com.woowacourse.f12.support;
 
+import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.MINCHO_GITHUB;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
 
+import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.auth.GitHubTokenRequest;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.auth.GitHubTokenResponse;
@@ -19,19 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FakeGitHubApiController {
 
-    private Map<String, String> codeAndToken = Map.of("1", "token1", "2", "token2", CORINNE.생성().getGitHubId(),
-            "token3");
-    private Map<String, String> tokenAndGitHubId = Map.of("token1", "gitHubId1", "token2", "gitHubId2", "token3",
-            CORINNE.생성().getGitHubId());
+    private final Map<String, String> codeAndToken = Map.of(CORINNE_GITHUB.getCode(), CORINNE_GITHUB.getToken(),
+            MINCHO_GITHUB.getCode(), MINCHO_GITHUB.getToken());
 
-    private Map<String, String> tokenAndName = Map.of("token1", "name", "token2", "name", "token3",
-            CORINNE.생성().getName());
+    private final Map<String, Member> tokenAndMember = Map.of(CORINNE_GITHUB.getToken(), CORINNE.생성(),
+            MINCHO_GITHUB.getToken(), MINCHO.생성());
 
-    private Map<String, String> tokenAndImageUrl = Map.of("token1", "url", "token2", "url", "token3",
-            CORINNE.생성().getImageUrl());
-
-    private String clientId;
-    private String clientSecret;
+    private final String clientId;
+    private final String clientSecret;
 
     public FakeGitHubApiController(@Value("${github.client.id}") final String clientId,
                                    @Value("${github.client.secret}") final String clientSecret) {
@@ -59,9 +58,8 @@ public class FakeGitHubApiController {
         if (splitValue.length != 2 || !splitValue[0].equals("token")) {
             return ResponseEntity.badRequest().build();
         }
-
+        Member member = tokenAndMember.get(splitValue[1]);
         return ResponseEntity.ok(
-                new GitHubProfileResponse(tokenAndGitHubId.get(splitValue[1]), tokenAndName.get(splitValue[1]),
-                        tokenAndImageUrl.get(splitValue[1])));
+                new GitHubProfileResponse(member.getGitHubId(), member.getName(), member.getImageUrl()));
     }
 }
