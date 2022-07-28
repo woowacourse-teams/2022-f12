@@ -3,7 +3,7 @@ package com.woowacourse.f12.dto.response.member;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.CareerLevelConstant;
 import com.woowacourse.f12.dto.JobTypeConstant;
-import com.woowacourse.f12.dto.response.product.KeyboardResponse;
+import com.woowacourse.f12.dto.response.product.ProductResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -17,7 +17,7 @@ public class MemberWithProfileProductResponse {
     private String imageUrl;
     private CareerLevelConstant careerLevel;
     private JobTypeConstant jobType;
-    private List<KeyboardResponse> profileProducts;
+    private List<ProductResponse> profileProducts;
 
     private MemberWithProfileProductResponse() {
     }
@@ -25,7 +25,7 @@ public class MemberWithProfileProductResponse {
     public MemberWithProfileProductResponse(final Long id, final String gitHubId, final String name,
                                             final String imageUrl,
                                             final CareerLevelConstant careerLevel, final JobTypeConstant jobType,
-                                            final List<KeyboardResponse> profileProducts) {
+                                            final List<ProductResponse> profileProducts) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
@@ -36,9 +36,9 @@ public class MemberWithProfileProductResponse {
     }
 
     public static MemberWithProfileProductResponse from(final Member member) {
-        final List<KeyboardResponse> profileProducts = member.getInventoryProducts()
+        final List<ProductResponse> profileProducts = member.getInventoryProducts()
                 .stream()
-                .map(inventoryProduct -> KeyboardResponse.from(inventoryProduct.getKeyboard()))
+                .map(inventoryProduct -> ProductResponse.from(inventoryProduct.getProduct()))
                 .collect(Collectors.toList());
         return new MemberWithProfileProductResponse(member.getId(), member.getGitHubId(), member.getName(),
                 member.getImageUrl(), CareerLevelConstant.from(member.getCareerLevel()),

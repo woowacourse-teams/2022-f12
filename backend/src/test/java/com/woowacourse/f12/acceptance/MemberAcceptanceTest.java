@@ -10,16 +10,16 @@ import static com.woowacourse.f12.dto.CareerLevelConstant.JUNIOR_CONSTANT;
 import static com.woowacourse.f12.dto.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND_CONSTANT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.product.Keyboard;
-import com.woowacourse.f12.domain.product.KeyboardRepository;
+import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.response.auth.LoginMemberResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
@@ -35,7 +35,7 @@ import org.springframework.http.HttpStatus;
 public class MemberAcceptanceTest extends AcceptanceTest {
 
     @Autowired
-    private KeyboardRepository keyboardRepository;
+    private ProductRepository productRepository;
 
     @Test
     void 로그인_된_상태에서_내_회원정보를_업데이트한다() {
@@ -118,7 +118,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 회원정보를_키워드와_옵션을_입력하지않고_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
 
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
         LoginResponse firstLoginResponse = 로그인을_한다("1");
@@ -129,7 +129,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         Long memberId = secondLoginResponse.getMember().getId();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
 
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -137,7 +137,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
         Member member = CORINNE.대표장비를_추가해서_생성(memberId, inventoryProduct);
         MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
                 member);
@@ -155,7 +155,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 회원정보를_옵션으로_검색하여_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
 
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
         LoginResponse firstLoginResponse = 로그인을_한다("1");
@@ -166,7 +166,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         Long memberId = secondLoginResponse.getMember().getId();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
 
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -174,7 +174,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
         Member member = CORINNE.대표장비를_추가해서_생성(memberId, inventoryProduct);
         MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
                 member);
@@ -192,7 +192,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 회원정보를_키워드와_옵션으로_검색하여_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
 
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
         LoginResponse firstLoginResponse = 로그인을_한다("1");
@@ -203,7 +203,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         Long memberId = secondLoginResponse.getMember().getId();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
 
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -211,7 +211,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
         Member member = CORINNE.대표장비를_추가해서_생성(memberId, inventoryProduct);
         MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
                 member);
@@ -226,8 +226,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Keyboard 키보드를_저장한다(Keyboard keyboard) {
-        return keyboardRepository.save(keyboard);
+    private Product 제품을_저장한다(Product product) {
+        return productRepository.save(product);
     }
 
     private Member 응답을_회원으로_변환한다(LoginMemberResponse loginMemberResponse) {

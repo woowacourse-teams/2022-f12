@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
+import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
-import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.auth.LoginMemberResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
@@ -89,7 +89,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         LoginResponse response = 로그인을_한다("1");
         String token = response.getToken();
         Member member = 응답을_회원으로_변환한다(response.getMember());
-        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, product);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
         InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
         InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);
@@ -114,7 +114,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         LoginResponse response = 로그인을_한다("1");
         Member member = 응답을_회원으로_변환한다(response.getMember());
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, product);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
         InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
         InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);

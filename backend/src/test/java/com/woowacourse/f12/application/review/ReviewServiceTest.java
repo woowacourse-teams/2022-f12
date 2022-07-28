@@ -1,9 +1,9 @@
 package com.woowacourse.f12.application.review;
 
 import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -76,7 +76,7 @@ class ReviewServiceTest {
         InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
-        given(keyboardRepository.findById(productId))
+        given(productRepository.findById(productId))
                 .willReturn(Optional.of(product));
         given(inventoryProductRepository.existsByMemberAndProduct(member, product))
                 .willReturn(false);

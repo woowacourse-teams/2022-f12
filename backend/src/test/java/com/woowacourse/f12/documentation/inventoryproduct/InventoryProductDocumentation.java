@@ -78,8 +78,8 @@ class InventoryProductDocumentation extends Documentation {
         // given
         Long memberId = 1L;
         Member member = MemberFixtures.CORINNE.생성(memberId);
-        InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
-        InventoryProduct inventoryProduct2 = SELECTED_INVENTORY_PRODUCT.생성(2L, memberId, MOUSE_1.생성(1L));
+        InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성(1L));
+        InventoryProduct inventoryProduct2 = SELECTED_INVENTORY_PRODUCT.생성(2L, member, MOUSE_1.생성(1L));
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
@@ -105,8 +105,8 @@ class InventoryProductDocumentation extends Documentation {
         // given
         Long memberId = 1L;
         Member member = MemberFixtures.CORINNE.생성(memberId);
-        InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
-        InventoryProduct inventoryProduct2 = SELECTED_INVENTORY_PRODUCT.생성(2L, memberId, MOUSE_1.생성(1L));
+        InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성(1L));
+        InventoryProduct inventoryProduct2 = SELECTED_INVENTORY_PRODUCT.생성(2L, member, MOUSE_1.생성(1L));
         given(inventoryProductService.findByMemberId(memberId))
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct1, inventoryProduct2)));
 

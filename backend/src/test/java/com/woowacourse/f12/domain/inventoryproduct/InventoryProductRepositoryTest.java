@@ -36,8 +36,8 @@ class InventoryProductRepositoryTest {
         // given
         Member me = 회원을_저장한다(CORINNE.생성());
         Member otherMember = 회원을_저장한다(MINCHO.생성());
-        Product product1 = 키보드를_저장한다(KEYBOARD_1.생성(1L));
-        Product product2 = 키보드를_저장한다(KEYBOARD_2.생성(2L));
+        Product product1 = 제품을_저장한다(KEYBOARD_1.생성(1L));
+        Product product2 = 제품을_저장한다(KEYBOARD_2.생성(2L));
         InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(me, product1);
         InventoryProduct inventoryProduct2 = SELECTED_INVENTORY_PRODUCT.생성(otherMember, product2);
         inventoryProductRepository.saveAll(List.of(inventoryProduct1, inventoryProduct2));
@@ -51,9 +51,9 @@ class InventoryProductRepositoryTest {
 
     @Test
     void 멤버_아이디와_상품으로_인벤토리_상품_목록을_조회한다() {
-        // given
+        // given다
         Member member = 회원을_저장한다(CORINNE.생성());
-        Product product = 키보드를_저장한다(KEYBOARD_1.생성(1L));
+        Product product = 제품을_저장한다(KEYBOARD_1.생성(1L));
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, product);
         inventoryProductRepository.save(inventoryProduct);
 
