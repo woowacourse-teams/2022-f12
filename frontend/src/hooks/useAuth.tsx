@@ -6,10 +6,9 @@ import {
 } from '@/contexts/LoginContextProvider';
 import useGet from '@/hooks/api/useGet';
 import { useContext } from 'react';
-import { flushSync } from 'react-dom';
 
 type Return = {
-  login: (githubCode: string) => Promise<UserData>;
+  login: (githubCode: string) => Promise<void>;
   logout: () => void;
   isLoggedIn: boolean;
 };
@@ -23,10 +22,7 @@ function useAuth(): Return {
 
   const login = async (githubCode: string) => {
     const userData = await fetchUserData({ code: githubCode });
-    flushSync(() => {
-      setUserData(userData);
-    });
-    return userData;
+    setUserData(userData);
   };
 
   const logout = () => {
