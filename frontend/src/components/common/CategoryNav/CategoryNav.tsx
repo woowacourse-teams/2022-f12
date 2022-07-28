@@ -7,16 +7,16 @@ type Props = {
   triggerAnimation: boolean;
 };
 
-const CATEGORY = {
-  KEYBOARD: { key: 'keyboard', name: '키보드' },
-  MOUSE: { key: 'mouse', name: '마우스' },
-  MONITOR: { key: 'monitor', name: '모니터' },
-  STAND: { key: 'stand', name: '거치대' },
-  SOFTWARE: { key: 'software', name: '소프트웨어' },
+export const CATEGORY = {
+  keyboard: '키보드',
+  mouse: '마우스',
+  monitor: '모니터',
+  stand: '거치대',
+  software: '소프트웨어',
 } as const;
 
 function CategoryNav({ handleTransitionEnd, triggerAnimation }: Props) {
-  const CategoryLinks = Object.values(CATEGORY).map(({ key, name }) => (
+  const CategoryLinks = Object.entries(CATEGORY).map(([key, name]) => (
     <Link key={key} to={`${ROUTES.PRODUCTS}?category=${key}`}>
       {name}
     </Link>

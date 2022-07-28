@@ -4,6 +4,7 @@ import ProductListSection from '@/components/ProductListSection/ProductListSecti
 import Select from '@/components/common/Select/Select';
 import useProducts from '@/hooks/useProducts';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import { CATEGORY } from '@/components/common/CategoryNav/CategoryNav';
 
 type Option = { value: string; text: string };
 
@@ -25,7 +26,9 @@ const DefaultSort = options[1];
 
 function Products() {
   const location = useLocation();
-  const [sort, setSort] = useState<Sort>(DefaultSort.value);
+  const [sort, setSort] = useState<Sort>(
+    location.hash === '#popular' ? PopularSort.value : DefaultSort.value
+  );
   const [searchParams] = useSearchParams();
   const category = searchParams.get('category');
   const [products, getNextPage] = useProducts({
@@ -33,6 +36,13 @@ function Products() {
     sort,
     category,
   });
+
+  const categoryTitle = CATEGORY[category as keyof typeof CATEGORY] || '상품';
+
+  const title =
+    location.hash === '#popular'
+      ? '인기 상품 목록'
+      : `모든 ${categoryTitle} 목록`;
 
   useEffect(() => {
     setSort(
@@ -42,7 +52,7 @@ function Products() {
 
   return (
     <ProductListSection
-      title={location.hash === '#popular' ? '인기 상품 목록' : '모든 상품 목록'}
+      title={title}
       data={!!products && products}
       getNextPage={getNextPage}
       addOn={<Select value={sort} setValue={setSort} options={options} />}
