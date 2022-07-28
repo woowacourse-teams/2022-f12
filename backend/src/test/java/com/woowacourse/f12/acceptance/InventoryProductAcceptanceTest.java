@@ -37,9 +37,9 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 리뷰를_작성하면_해당_장비가_인벤토리에_추가된다() {
         // given
-        Long keyboardId = 제품을_저장한다(KEYBOARD_1.생성()).getId();
+        Long productId = 제품을_저장한다(KEYBOARD_1.생성()).getId();
         String token = 로그인을_한다("1").getToken();
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboardId, token);
+        REVIEW_RATING_5.작성_요청을_보낸다(productId, token);
 
         // when
         List<InventoryProductResponse> keyboardsInInventory =
@@ -49,7 +49,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(keyboardsInInventory).extracting("id")
-                .containsOnly(keyboardId);
+                .containsOnly(productId);
     }
 
     @Test

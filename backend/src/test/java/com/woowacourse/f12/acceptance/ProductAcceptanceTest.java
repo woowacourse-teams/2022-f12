@@ -2,6 +2,7 @@ package com.woowacourse.f12.acceptance;
 
 import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
@@ -15,6 +16,7 @@ import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
+import com.woowacourse.f12.presentation.product.CategoryConstant;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
@@ -35,9 +37,12 @@ class ProductAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products/" + product.getId());
 
         // then
+        ProductResponse productResponse = response.as(ProductResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(ProductResponse.class)).usingRecursiveComparison()
+                () -> assertThat(productResponse.getCategory()).isEqualTo(KEYBOARD_CONSTANT),
+                () -> assertThat(productResponse).usingRecursiveComparison()
+                        .ignoringFieldsOfTypes(CategoryConstant.class)
                         .isEqualTo(product)
         );
     }

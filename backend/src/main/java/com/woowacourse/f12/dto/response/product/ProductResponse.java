@@ -34,7 +34,7 @@ public class ProductResponse {
                 product.getImageUrl(),
                 product.getReviewCount(),
                 product.getRating(),
-                CategoryConstant.fromDomain(product.getCategory())
+                CategoryConstant.from(product.getCategory())
         );
     }
 }

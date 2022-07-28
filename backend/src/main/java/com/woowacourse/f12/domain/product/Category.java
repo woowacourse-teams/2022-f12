@@ -5,5 +5,5 @@ public enum Category {
     MOUSE,
     MONITOR,
     STAND,
-    SOFTWARE
+    SOFTWARE;
 }

@@ -1,6 +1,6 @@
 package com.woowacourse.f12.presentation.product;
 
-import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
@@ -43,16 +43,16 @@ class ProductControllerTest {
     @Test
     void 키보드_목록_페이지_조회_성공() throws Exception {
         // given
-        given(productService.findPage(eq(KEYBOARD), any(Pageable.class)))
+        given(productService.findPage(eq(KEYBOARD_CONSTANT), any(Pageable.class)))
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
 
         // when
-        mockMvc.perform(get("/api/v1/products?category=KEYBOARD&page=0&size=150&sort=rating,desc"))
+        mockMvc.perform(get("/api/v1/products?category=keyboard&page=0&size=150&sort=rating,desc"))
                 .andExpect(status().isOk())
                 .andDo(print());
 
         // then
-        verify(productService).findPage(KEYBOARD, PageRequest.of(0, 150, Sort.by("rating").descending()));
+        verify(productService).findPage(KEYBOARD_CONSTANT, PageRequest.of(0, 150, Sort.by("rating").descending()));
     }
 
     @Test
@@ -73,7 +73,7 @@ class ProductControllerTest {
     @Test
     void 잘못된_카테고리로_조회하려는_경우_예외_발생() throws Exception {
         // given
-        given(productService.findPage(eq(KEYBOARD), any(Pageable.class)))
+        given(productService.findPage(eq(KEYBOARD_CONSTANT), any(Pageable.class)))
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
 
         // when
@@ -82,7 +82,8 @@ class ProductControllerTest {
                 .andDo(print());
 
         // then
-        verify(productService, times(0)).findPage(KEYBOARD, PageRequest.of(0, 150, Sort.by("rating").descending()));
+        verify(productService, times(0)).findPage(KEYBOARD_CONSTANT,
+                PageRequest.of(0, 150, Sort.by("rating").descending()));
     }
 
     @Test

@@ -3,7 +3,7 @@
 
 === 제품 단일 상품 조회
 
-operation::keyboards-get[snippets='http-request,http-response']
+operation::products-get[snippets='http-request,http-response']
 
 === 제품 목록 페이지 조회
 
@@ -22,4 +22,4 @@ operation::keyboards-get[snippets='http-request,http-response']
 - `reviewCount,desc`(리뷰 많은순)
 - 없을 경우 등록 순서
 
-operation::keyboards-page-get[snippets='http-request,http-response']
+operation::products-page-get[snippets='http-request,http-response']
