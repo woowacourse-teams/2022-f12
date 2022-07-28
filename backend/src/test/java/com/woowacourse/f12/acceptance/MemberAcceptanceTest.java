@@ -119,13 +119,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void 회원정보를_검색하여_조회한다() {
         // given
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+
         MemberRequest memberRequest = new MemberRequest(SENIOR, BACKEND);
-        LoginResponse loginResponse1 = 로그인을_한다("1");
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", loginResponse1.getToken(), memberRequest);
-        LoginResponse loginResponse = 로그인을_한다("hamcheeseburger");
-        String token = loginResponse.getToken();
-        Long memberId = loginResponse.getMember().getId();
+        LoginResponse firstLoginResponse = 로그인을_한다("1");
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
+
+        LoginResponse secondLoginResponse = 로그인을_한다("hamcheeseburger");
+        String token = secondLoginResponse.getToken();
+        Long memberId = secondLoginResponse.getMember().getId();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+
         REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
 
         // when
@@ -153,13 +156,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void 회원정보를_옵션으로_검색하여_조회한다() {
         // given
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+
         MemberRequest memberRequest = new MemberRequest(SENIOR, BACKEND);
-        LoginResponse loginResponse1 = 로그인을_한다("1");
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", loginResponse1.getToken(), memberRequest);
-        LoginResponse loginResponse = 로그인을_한다("hamcheeseburger");
-        String token = loginResponse.getToken();
-        Long memberId = loginResponse.getMember().getId();
+        LoginResponse firstLoginResponse = 로그인을_한다("1");
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
+
+        LoginResponse secondLoginResponse = 로그인을_한다("hamcheeseburger");
+        String token = secondLoginResponse.getToken();
+        Long memberId = secondLoginResponse.getMember().getId();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+
         REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
 
         // when
@@ -187,13 +193,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void 회원정보를_키워드와_옵션으로_검색하여_조회한다() {
         // given
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+
         MemberRequest memberRequest = new MemberRequest(SENIOR, BACKEND);
-        LoginResponse loginResponse1 = 로그인을_한다("1");
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", loginResponse1.getToken(), memberRequest);
-        LoginResponse loginResponse = 로그인을_한다("hamcheeseburger");
-        String token = loginResponse.getToken();
-        Long memberId = loginResponse.getMember().getId();
+        LoginResponse firstLoginResponse = 로그인을_한다("1");
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
+
+        LoginResponse secondLoginResponse = 로그인을_한다("hamcheeseburger");
+        String token = secondLoginResponse.getToken();
+        Long memberId = secondLoginResponse.getMember().getId();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+
         REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
 
         // when
