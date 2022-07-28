@@ -8,9 +8,6 @@ public enum JobType {
     FRONTEND,
     BACKEND,
     MOBILE,
-    ETC,
+    ETC
     ;
-
-    JobType() {
-    }
 }
