@@ -25,8 +25,6 @@ function ProfileCard() {
     setPositionX(positionX - 112);
   };
 
-  console.log(positionX);
-
   return (
     <S.Container>
       <S.LeftSection>
