@@ -20,10 +20,10 @@ export const RightSection = styled.div`
 
 export const ProfileImageWrapper = styled.div`
   position: absolute;
-  left: -5rem;
-  top: 1rem;
-  width: 9rem;
-  height: 9rem;
+  left: -5.5rem;
+  top: 1.5rem;
+  width: 9.5rem;
+  height: 9.5rem;
   border-radius: 50%;
   overflow: hidden;
 `;
@@ -36,6 +36,7 @@ export const ProfileImage = styled.img`
 
 export const UserInfoWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   gap: 0.4rem;
 `;
