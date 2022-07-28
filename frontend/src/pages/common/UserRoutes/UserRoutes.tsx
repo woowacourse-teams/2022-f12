@@ -2,8 +2,9 @@ import useAuth from '@/hooks/useAuth';
 import ProtectedRoute from '@/pages/common/ProtectedRoute/ProtectedRoutes';
 
 function UserRoutes() {
-  const { isLoggedIn } = useAuth();
-  return <ProtectedRoute condition={isLoggedIn} />;
+  const { isLoggedIn: isUser } = useAuth();
+
+  return <ProtectedRoute when={isUser} />;
 }
 
 export default UserRoutes;

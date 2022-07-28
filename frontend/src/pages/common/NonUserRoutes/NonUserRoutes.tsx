@@ -3,7 +3,9 @@ import ProtectedRoute from '@/pages/common/ProtectedRoute/ProtectedRoutes';
 
 function NonUserRoutes() {
   const { isLoggedIn } = useAuth();
-  return <ProtectedRoute condition={!isLoggedIn} />;
+  const isNonUser = !isLoggedIn;
+
+  return <ProtectedRoute when={isNonUser} />;
 }
 
 export default NonUserRoutes;
