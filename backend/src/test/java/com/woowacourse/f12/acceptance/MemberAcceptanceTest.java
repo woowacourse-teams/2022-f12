@@ -67,7 +67,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // given
         LoginResponse loginResponse = 로그인을_한다("1");
         String token = loginResponse.getToken();
-        LoginMemberResponse loginMemberResponse = loginResponse.getMember();
 
         MemberRequest memberRequest = new MemberRequest(JUNIOR, BACKEND);
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
@@ -76,7 +75,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", token);
 
         // then
-        Member expectedMember = loginMemberResponse.toMember();
+        Member expectedMember = 응답을_회원으로_변환한다(loginResponse.getMember());
         expectedMember.updateCareerLevel(CareerLevel.JUNIOR);
         expectedMember.updateJobType(JobType.BACKEND);
 
@@ -220,5 +219,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private Keyboard 키보드를_저장한다(Keyboard keyboard) {
         return keyboardRepository.save(keyboard);
+    }
+
+    private Member 응답을_회원으로_변환한다(LoginMemberResponse loginMemberResponse) {
+        return Member.builder()
+                .id(loginMemberResponse.getId())
+                .gitHubId(loginMemberResponse.getGitHubId())
+                .name(loginMemberResponse.getName())
+                .imageUrl(loginMemberResponse.getImageUrl())
+                .build();
     }
 }
