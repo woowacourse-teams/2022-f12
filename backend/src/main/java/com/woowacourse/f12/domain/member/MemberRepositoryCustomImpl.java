@@ -20,8 +20,9 @@ public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implem
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public Slice<Member> findByContains(final String keyword, final CareerLevel careerLevel, final JobType jobType,
-                                        final Pageable pageable) {
+    public Slice<Member> findBySearchConditions(final String keyword, final CareerLevel careerLevel,
+                                                final JobType jobType,
+                                                final Pageable pageable) {
         final JPAQuery<Member> jpaQuery = jpaQueryFactory.select(member)
                 .from(member)
                 .where(

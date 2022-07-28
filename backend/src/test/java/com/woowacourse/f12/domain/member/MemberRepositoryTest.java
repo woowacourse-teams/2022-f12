@@ -1,5 +1,7 @@
 package com.woowacourse.f12.domain.member;
 
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,13 +32,13 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains(null, null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findBySearchConditions(null, null, null, PageRequest.of(0, 2));
 
         // then
         assertAll(
                 () -> assertThat(slice.hasNext()).isFalse(),
                 () -> assertThat(slice.getContent()).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                        .contains(CORINNE.생성(), MINCHO.생성())
+                        .containsOnly(CORINNE.생성(), MINCHO.생성())
         );
     }
 
@@ -46,7 +48,8 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains("hamcheeseburger", null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findBySearchConditions("hamcheeseburger", null, null,
+                PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -62,7 +65,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains("cheese", null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findBySearchConditions("cheese", null, null, PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -75,12 +78,12 @@ class MemberRepositoryTest {
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"cheese"})
-    void 회원의_연차를_옵션으로_조회한다(String keyword) {
+    void 회원을_키워드와_연차_옵션으로_조회한다(String keyword) {
         // given
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains(keyword, CareerLevel.SENIOR, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, null, PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -93,12 +96,12 @@ class MemberRepositoryTest {
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"cheese"})
-    void 회원의_직군을_옵션으로_조회한다(String keyword) {
+    void 회원을_키워드와_연차와_직군_옵션으로_조회한다(String keyword) {
         // given
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains(keyword, CareerLevel.SENIOR, JobType.BACKEND,
+        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, BACKEND,
                 PageRequest.of(0, 2));
 
         // then

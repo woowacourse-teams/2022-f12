@@ -1,8 +1,11 @@
 package com.woowacourse.f12.presentation.member;
 
-import static com.woowacourse.f12.dto.CareerLevelConstant.NONE;
-import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND;
+import static com.woowacourse.f12.dto.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.dto.CareerLevelConstant.NONE_CONSTANT;
+import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.dto.JobTypeConstant.ETC_CONSTANT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,14 +25,11 @@ import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.member.MemberService;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.dto.CareerLevelConstant;
-import com.woowacourse.f12.dto.JobTypeConstant;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import com.woowacourse.f12.support.KeyboardFixtures;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +37,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
@@ -46,7 +45,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(MemberController.class)
-@Import({CareerLevelParamConverter.class, JobTypeParamConverter.class})
 class MemberControllerTest {
 
     @Autowired
@@ -123,7 +121,7 @@ class MemberControllerTest {
     @Test
     void 로그인된_상태에서_나의_회원정보를_수정_성공() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest(CareerLevelConstant.JUNIOR, JobTypeConstant.ETC);
+        MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, ETC_CONSTANT);
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
@@ -245,11 +243,11 @@ class MemberControllerTest {
     @Test
     void 키워드와_옵션으로_회원을_조회한다() throws Exception {
         // given
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE, BACKEND);
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE_CONSTANT, BACKEND_CONSTANT);
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
-                KeyboardFixtures.KEYBOARD_1.생성(1L));
-        Member member = CORINNE.대표장비_추가(1L, inventoryProduct);
+                KEYBOARD_1.생성(1L));
+        Member member = CORINNE.대표장비를_추가해서_생성(1L, inventoryProduct);
 
         MemberPageResponse memberPageResponse = MemberPageResponse.from(
                 new SliceImpl<>(List.of(member), pageable, false));
@@ -284,8 +282,8 @@ class MemberControllerTest {
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
-                KeyboardFixtures.KEYBOARD_1.생성(1L));
-        Member member = CORINNE.대표장비_추가(1L, inventoryProduct);
+                KEYBOARD_1.생성(1L));
+        Member member = CORINNE.대표장비를_추가해서_생성(1L, inventoryProduct);
 
         MemberPageResponse memberPageResponse = MemberPageResponse.from(
                 new SliceImpl<>(List.of(member), pageable, false));

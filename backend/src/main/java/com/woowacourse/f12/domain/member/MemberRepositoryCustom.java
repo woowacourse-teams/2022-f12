@@ -5,5 +5,5 @@ import org.springframework.data.domain.Slice;
 
 public interface MemberRepositoryCustom {
 
-    Slice<Member> findByContains(String keyword, CareerLevel careerLevel, JobType jobType, Pageable pageable);
+    Slice<Member> findBySearchConditions(String keyword, CareerLevel careerLevel, JobType jobType, Pageable pageable);
 }

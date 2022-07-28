@@ -6,7 +6,4 @@ public enum CareerLevel {
     JUNIOR,
     MID_LEVEL,
     SENIOR;
-
-    CareerLevel() {
-    }
 }

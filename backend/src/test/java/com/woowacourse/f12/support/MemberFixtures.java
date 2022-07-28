@@ -52,7 +52,7 @@ public enum MemberFixtures {
         return new GitHubProfileResponse(this.gitHubId, this.name, this.imageUrl);
     }
 
-    public Member 대표장비_추가(final Long id, final InventoryProduct inventoryProduct) {
+    public Member 대표장비를_추가해서_생성(final Long id, final InventoryProduct inventoryProduct) {
         return Member.builder()
                 .id(id)
                 .gitHubId(this.gitHubId)

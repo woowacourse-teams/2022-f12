@@ -17,6 +17,7 @@ import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Keyboard;
 import com.woowacourse.f12.domain.product.KeyboardRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
+import com.woowacourse.f12.dto.response.auth.LoginMemberResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
@@ -59,7 +60,8 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
         LoginResponse loginResponse = 로그인을_한다("1");
         String token = loginResponse.getToken();
-        Member member = loginResponse.getMember().toMember();
+        Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
+
         InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
         InventoryProduct savedInventoryProduct = 인벤토리에_장비를_추가한다(inventoryProduct);
 
@@ -86,7 +88,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
         LoginResponse response = 로그인을_한다("1");
         String token = response.getToken();
-        Member member = response.getMember().toMember();
+        Member member = 응답을_회원으로_변환한다(response.getMember());
         InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
         InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
@@ -110,7 +112,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     void 다른_회원의_아이디로_등록된_장비를_조회한다() {
         // given
         LoginResponse response = 로그인을_한다("1");
-        Member member = response.getMember().toMember();
+        Member member = 응답을_회원으로_변환한다(response.getMember());
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
         InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, keyboard);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
@@ -137,5 +139,14 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
 
     private InventoryProduct 인벤토리에_장비를_추가한다(InventoryProduct inventoryProduct) {
         return inventoryProductRepository.save(inventoryProduct);
+    }
+
+    private Member 응답을_회원으로_변환한다(LoginMemberResponse loginMemberResponse) {
+        return Member.builder()
+                .id(loginMemberResponse.getId())
+                .gitHubId(loginMemberResponse.getGitHubId())
+                .name(loginMemberResponse.getName())
+                .imageUrl(loginMemberResponse.getImageUrl())
+                .build();
     }
 }

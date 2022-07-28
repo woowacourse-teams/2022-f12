@@ -1,8 +1,13 @@
 package com.woowacourse.f12.application.member;
 
-import static com.woowacourse.f12.dto.CareerLevelConstant.SENIOR;
-import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.dto.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.dto.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.dto.JobTypeConstant.ETC_CONSTANT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,12 +16,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.member.CareerLevel;
-import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.dto.CareerLevelConstant;
-import com.woowacourse.f12.dto.JobTypeConstant;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
@@ -24,7 +25,6 @@ import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import com.woowacourse.f12.support.KeyboardFixtures;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -103,7 +103,7 @@ class MemberServiceTest {
                 .willReturn(Optional.of(CORINNE.생성(1L)));
 
         // when
-        memberService.updateMember(1L, new MemberRequest(CareerLevelConstant.JUNIOR, JobTypeConstant.ETC));
+        memberService.updateMember(1L, new MemberRequest(JUNIOR_CONSTANT, ETC_CONSTANT));
 
         // then
         verify(memberRepository).findById(1L);
@@ -113,20 +113,19 @@ class MemberServiceTest {
     void 키워드와_옵션으로_회원을_조회한다() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
-                KeyboardFixtures.KEYBOARD_1.생성(1L));
-        Member member = CORINNE.대표장비_추가(1L, inventoryProduct);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
+        Member member = CORINNE.대표장비를_추가해서_생성(1L, inventoryProduct);
 
-        given(memberRepository.findByContains("cheese", CareerLevel.SENIOR, JobType.BACKEND, pageable))
+        given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
 
         // when
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", SENIOR, BACKEND);
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", SENIOR_CONSTANT, BACKEND_CONSTANT);
         MemberPageResponse memberPageResponse = memberService.findByContains(memberSearchRequest, pageable);
 
         // then
         assertAll(
-                () -> verify(memberRepository).findByContains("cheese", CareerLevel.SENIOR, JobType.BACKEND, pageable),
+                () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.from(member))

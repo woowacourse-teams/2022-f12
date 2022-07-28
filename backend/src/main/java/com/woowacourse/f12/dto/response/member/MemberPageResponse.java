@@ -12,7 +12,7 @@ public class MemberPageResponse {
     private boolean hasNext;
     private List<MemberWithProfileProductResponse> items;
 
-    public MemberPageResponse() {
+    private MemberPageResponse() {
     }
 
     private MemberPageResponse(final boolean hasNext, final List<MemberWithProfileProductResponse> items) {
