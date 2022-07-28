@@ -1,8 +1,8 @@
-package com.woowacourse.f12.domain.product;
+package com.woowacourse.f12.domain.review;
 
 import java.util.List;
 
-public interface ProductRepositoryCustom {
+public interface ReviewRepositoryCustom {
 
     List<CareerLevelCount> findCareerLevelCountByProductId(Long productId);
 

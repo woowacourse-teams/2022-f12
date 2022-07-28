@@ -1,12 +1,7 @@
 package com.woowacourse.f12.domain.product;
 
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.domain.member.JobType.MOBILE;
 import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
@@ -21,7 +16,6 @@ import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
@@ -133,67 +127,6 @@ class ProductRepositoryTest {
                 () -> assertThat(slice.hasNext()).isTrue(),
                 () -> assertThat(slice.getContent()).containsExactly(product2)
         );
-    }
-
-    @Test
-    void 제품에_대한_사용자_연차의_총_개수를_반환한다() {
-        // given
-        Product product = 제품_저장(KEYBOARD_1.생성());
-
-        Member corinne = CORINNE.생성();
-        corinne.updateCareerLevel(SENIOR);
-        corinne.updateJobType(MOBILE);
-        corinne = memberRepository.save(corinne);
-
-        Member mincho = MINCHO.생성();
-        mincho.updateCareerLevel(JUNIOR);
-        mincho.updateJobType(BACKEND);
-        mincho = memberRepository.save(mincho);
-
-        리뷰_저장(REVIEW_RATING_2.작성(product, corinne));
-        리뷰_저장(REVIEW_RATING_1.작성(product, mincho));
-
-        // when
-        List<CareerLevelCount> careerLevelCounts = productRepository.findCareerLevelCountByProductId(
-                product.getId());
-
-        // then
-        assertThat(careerLevelCounts).usingRecursiveFieldByFieldElementComparator()
-                .hasSize(2)
-                .containsOnly(
-                        new CareerLevelCount(JUNIOR, 1),
-                        new CareerLevelCount(SENIOR, 1)
-                );
-    }
-
-    @Test
-    void 제품에_대한_사용자_직군의_총_개수를_반환한다() {
-        // given
-        Product product = 제품_저장(KEYBOARD_1.생성());
-
-        Member corinne = CORINNE.생성();
-        corinne.updateCareerLevel(SENIOR);
-        corinne.updateJobType(MOBILE);
-        corinne = memberRepository.save(corinne);
-
-        Member mincho = MINCHO.생성();
-        mincho.updateCareerLevel(JUNIOR);
-        mincho.updateJobType(BACKEND);
-        mincho = memberRepository.save(mincho);
-
-        리뷰_저장(REVIEW_RATING_2.작성(product, corinne));
-        리뷰_저장(REVIEW_RATING_1.작성(product, mincho));
-
-        // when
-        List<JobTypeCount> jobTypeCounts = productRepository.findJobTypeCountByProductId(product.getId());
-
-        // then
-        assertThat(jobTypeCounts).usingRecursiveFieldByFieldElementComparator()
-                .hasSize(2)
-                .containsOnly(
-                        new JobTypeCount(MOBILE, 1),
-                        new JobTypeCount(BACKEND, 1)
-                );
     }
 
     private Product 제품_저장(Product product) {
