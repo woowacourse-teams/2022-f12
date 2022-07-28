@@ -1,6 +1,6 @@
 package com.woowacourse.f12.documentation.product;
 
-import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static org.mockito.BDDMockito.given;
@@ -51,7 +51,7 @@ class ProductDocumentation extends Documentation {
         resultActions.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
-                        document("keyboards-get")
+                        document("products-get")
                 );
     }
 
@@ -63,7 +63,7 @@ class ProductDocumentation extends Documentation {
         PageRequest pageable = PageRequest.of(0, 5, Sort.by("rating").descending());
         SliceImpl<Product> keyboards = new SliceImpl<>(List.of(product1, product2), pageable, false);
 
-        given(productService.findPage(KEYBOARD, pageable))
+        given(productService.findPage(KEYBOARD_CONSTANT, pageable))
                 .willReturn(ProductPageResponse.from(keyboards));
 
         // when
@@ -75,7 +75,7 @@ class ProductDocumentation extends Documentation {
         resultActions.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
-                        document("keyboards-page-get")
+                        document("products-page-get")
                 );
     }
 }
