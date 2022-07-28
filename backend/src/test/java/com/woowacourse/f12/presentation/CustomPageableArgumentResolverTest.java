@@ -1,6 +1,7 @@
 package com.woowacourse.f12.presentation;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -9,9 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woowacourse.f12.application.auth.JwtProvider;
-import com.woowacourse.f12.application.product.KeyboardService;
-import com.woowacourse.f12.dto.response.product.KeyboardPageResponse;
-import com.woowacourse.f12.presentation.product.KeyboardController;
+import com.woowacourse.f12.application.product.ProductService;
+import com.woowacourse.f12.dto.response.product.ProductPageResponse;
+import com.woowacourse.f12.presentation.product.CategoryConstant;
+import com.woowacourse.f12.presentation.product.ProductController;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(KeyboardController.class)
+@WebMvcTest(ProductController.class)
 @Import({AuthTokenExtractor.class, JwtProvider.class})
 public class CustomPageableArgumentResolverTest {
 
@@ -33,69 +35,69 @@ public class CustomPageableArgumentResolverTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private KeyboardService keyboardService;
+    private ProductService productService;
 
     @Test
     void 페이징_실패_페이지_번호_숫자_형식_아님() throws Exception {
         // given
-        given(keyboardService.findPage(any(Pageable.class)))
-                .willReturn(KeyboardPageResponse.from(new SliceImpl<>(List.of())));
+        given(productService.findPage(eq(CategoryConstant.KEYBOARD_CONSTANT), any(Pageable.class)))
+                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
 
         // when
-        mockMvc.perform(get("/api/v1/keyboards?page=abc&size=10&sort=rating,desc"))
+        mockMvc.perform(get("/api/v1/products?category=keyboard&page=abc&size=10&sort=rating,desc"))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
         // then
-        verify(keyboardService, times(0))
-                .findPage(any(Pageable.class));
+        verify(productService, times(0))
+                .findPage(eq(CategoryConstant.KEYBOARD_CONSTANT), any(Pageable.class));
     }
 
     @Test
     void 페이징_실패_최대_페이징_크기_초과() throws Exception {
         // given
-        given(keyboardService.findPage(any(Pageable.class)))
-                .willReturn(KeyboardPageResponse.from(new SliceImpl<>(List.of())));
+        given(productService.findPage(eq(CategoryConstant.KEYBOARD_CONSTANT), any(Pageable.class)))
+                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
 
         // when
-        mockMvc.perform(get("/api/v1/keyboards?page=0&size=151&sort=rating,desc"))
+        mockMvc.perform(get("/api/v1/products?category=keyboard&page=0&size=151&sort=rating,desc"))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
         // then
-        verify(keyboardService, times(0))
-                .findPage(PageRequest.of(0, 151, Sort.by("rating").descending()));
+        verify(productService, times(0))
+                .findPage(CategoryConstant.KEYBOARD_CONSTANT, PageRequest.of(0, 151, Sort.by("rating").descending()));
     }
 
     @Test
     void 페이징_실패_페이징_크기_숫자_형식_아님() throws Exception {
         // given
-        given(keyboardService.findPage(any(Pageable.class)))
-                .willReturn(KeyboardPageResponse.from(new SliceImpl<>(List.of())));
+        given(productService.findPage(eq(CategoryConstant.KEYBOARD_CONSTANT), any(Pageable.class)))
+                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
 
         // when
-        mockMvc.perform(get("/api/v1/keyboards?page=0&size=abc&sort=rating,desc"))
+        mockMvc.perform(get("/api/v1/products?category=keyboard&page=0&size=abc&sort=rating,desc"))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
         // then
-        verify(keyboardService, times(0))
-                .findPage(any(Pageable.class));
+        verify(productService, times(0))
+                .findPage(eq(CategoryConstant.KEYBOARD_CONSTANT), any(Pageable.class));
     }
 
     @Test
     void 페이징_성공_페이징_값_지정_안할_경우_기본값으로_페이징() throws Exception {
         // given
-        given(keyboardService.findPage(any(Pageable.class)))
-                .willReturn(KeyboardPageResponse.from(new SliceImpl<>(List.of())));
+        given(productService.findPage(eq(CategoryConstant.KEYBOARD_CONSTANT), any(Pageable.class)))
+                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
 
         // when
-        mockMvc.perform(get("/api/v1/keyboards"))
+        mockMvc.perform(get("/api/v1/products"))
                 .andExpect(status().isOk())
                 .andDo(print());
 
         // then
-        verify(keyboardService)
-                .findPage(PageRequest.of(0, 20));
+        verify(productService)
+                .findPage(null, PageRequest.of(0, 20));
     }
 }

@@ -1,7 +1,8 @@
 package com.woowacourse.f12.documentation.inventoryproduct;
 
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -74,14 +75,15 @@ class InventoryProductDocumentation extends Documentation {
     void 멤버_id_로_인벤토리_상품_조회하는_API_문서화() throws Exception {
         // given
         Long memberId = 1L;
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
+        InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
+        InventoryProduct inventoryProduct2 = SELECTED_INVENTORY_PRODUCT.생성(2L, memberId, MOUSE_1.생성(1L));
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
         given(inventoryProductService.findByMemberId(memberId))
-                .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
+                .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct1, inventoryProduct2)));
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -99,9 +101,10 @@ class InventoryProductDocumentation extends Documentation {
     void 다른_멤버_id_로_인벤토리_상품_조회하는_API_문서화() throws Exception {
         // given
         Long memberId = 1L;
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
+        InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, memberId, KEYBOARD_1.생성(1L));
+        InventoryProduct inventoryProduct2 = SELECTED_INVENTORY_PRODUCT.생성(2L, memberId, MOUSE_1.생성(1L));
         given(inventoryProductService.findByMemberId(memberId))
-                .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
+                .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct1, inventoryProduct2)));
 
         // when
         ResultActions resultActions = mockMvc.perform(

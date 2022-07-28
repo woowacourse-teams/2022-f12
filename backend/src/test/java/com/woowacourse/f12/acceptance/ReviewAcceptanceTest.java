@@ -4,15 +4,15 @@ import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한�
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PUT_요청을_보낸다;
-import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
-import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.woowacourse.f12.domain.product.Keyboard;
-import com.woowacourse.f12.domain.product.KeyboardRepository;
+import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.ExceptionResponse;
 import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
@@ -28,16 +28,16 @@ import org.springframework.http.HttpStatus;
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
     @Autowired
-    private KeyboardRepository keyboardRepository;
+    private ProductRepository productRepository;
 
     @Test
     void 키보드가_저장되어있고_키보드에_대한_리뷰를_작성한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 키보드를_저장한다(KEYBOARD_1.생성());
         String token = 로그인을_한다("1").getToken();
 
         // when
-        ExtractableResponse<Response> response = REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+        ExtractableResponse<Response> response = REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
 
         // then
         assertAll(
@@ -49,12 +49,12 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 같은_회원이_같은_제품에_리뷰를_중복해서_작성하면_예외가_발생한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 키보드를_저장한다(KEYBOARD_1.생성());
         String token = 로그인을_한다("1").getToken();
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
 
         // when
-        ExtractableResponse<Response> response = REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+        ExtractableResponse<Response> response = REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
 
         // then
         assertAll(
@@ -67,14 +67,14 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 특정_제품_리뷰_목록을_최신순으로_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 키보드를_저장한다(KEYBOARD_1.생성());
         String token = 로그인을_한다("1").getToken();
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
         String token2 = 로그인을_한다("2").getToken();
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token2));
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token2));
 
         // when
-        String url = "/api/v1/keyboards/" + keyboard.getId() + "/reviews?size=1&page=0&sort=createdAt,desc";
+        String url = "/api/v1/products/" + product.getId() + "/reviews?size=1&page=0&sort=createdAt,desc";
         ExtractableResponse<Response> response = GET_요청을_보낸다(url);
 
         // then
@@ -91,14 +91,14 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 특정_제품_리뷰_목록을_평점순으로_조회한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 키보드를_저장한다(KEYBOARD_1.생성());
         String token = 로그인을_한다("1").getToken();
-        REVIEW_RATING_4.작성_요청을_보낸다(keyboard.getId(), token);
+        REVIEW_RATING_4.작성_요청을_보낸다(product.getId(), token);
         String token2 = 로그인을_한다("2").getToken();
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token2));
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token2));
 
         // when
-        String url = "/api/v1/keyboards/" + keyboard.getId() + "/reviews?size=1&page=0&sort=rating,desc";
+        String url = "/api/v1/products/" + product.getId() + "/reviews?size=1&page=0&sort=rating,desc";
         ExtractableResponse<Response> response = GET_요청을_보낸다(url);
 
         // then
@@ -115,11 +115,11 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 전체_리뷰_목록을_최신순으로_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드를_저장한다(KEYBOARD_1.생성());
-        Keyboard keyboard2 = 키보드를_저장한다(KEYBOARD_2.생성());
+        Product product1 = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product2 = 키보드를_저장한다(KEYBOARD_2.생성());
         String token = 로그인을_한다("1").getToken();
-        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(keyboard1.getId(), token));
-        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(keyboard2.getId(), token));
+        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token));
+        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product2.getId(), token));
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -138,9 +138,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰를_수정한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 키보드를_저장한다(KEYBOARD_1.생성());
         String token = 로그인을_한다("1").getToken();
-        long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token));
+        long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token));
         ReviewRequest requestBody = new ReviewRequest("수정된 내용", 4);
 
         // when
@@ -162,9 +162,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰를_삭제한다() {
         // given
-        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product = 키보드를_저장한다(KEYBOARD_1.생성());
         String token = 로그인을_한다("1").getToken();
-        long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token));
+        long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token));
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다(
@@ -186,7 +186,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 .split("/")[4]);
     }
 
-    private Keyboard 키보드를_저장한다(Keyboard keyboard) {
-        return keyboardRepository.save(keyboard);
+    private Product 키보드를_저장한다(Product product) {
+        return productRepository.save(product);
     }
 }
