@@ -1,5 +1,8 @@
 package com.woowacourse.f12.domain.member;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,9 +12,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -41,18 +46,24 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private JobType jobType;
 
+    @BatchSize(size = 150)
+    @OneToMany(mappedBy = "member")
+    private List<InventoryProduct> inventoryProducts = new ArrayList<>();
+
     protected Member() {
     }
 
     @Builder
     private Member(final Long id, final String gitHubId, final String name, final String imageUrl,
-                   final CareerLevel careerLevel, final JobType jobType) {
+                   final CareerLevel careerLevel, final JobType jobType,
+                   final List<InventoryProduct> inventoryProducts) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
+        this.inventoryProducts = inventoryProducts;
     }
 
     public void updateName(final String name) {

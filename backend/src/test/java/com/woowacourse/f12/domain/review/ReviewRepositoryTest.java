@@ -45,7 +45,7 @@ class ReviewRepositoryTest {
     void 특정_제품의_리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
         Product product = productRepository.save(KEYBOARD_1.생성());
-        Member member = memberRepository.save(CORINNE.생성(1L));
+        Member member = memberRepository.save(CORINNE.생성());
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
         리뷰_저장(REVIEW_RATING_5.작성(product, member));
         Review review = 리뷰_저장(REVIEW_RATING_5.작성(product, member));
@@ -66,7 +66,7 @@ class ReviewRepositoryTest {
     void 특정_제품의_리뷰_목록을_평점순으로_페이징하여_조회한다() {
         // given
         Product product = productRepository.save(KEYBOARD_1.생성());
-        Member member = memberRepository.save(CORINNE.생성(1L));
+        Member member = memberRepository.save(CORINNE.생성());
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("rating")));
         Review review = 리뷰_저장(REVIEW_RATING_5.작성(product, member));
         리뷰_저장(REVIEW_RATING_4.작성(product, member));
@@ -88,7 +88,7 @@ class ReviewRepositoryTest {
         // given
         Product product1 = productRepository.save(KEYBOARD_1.생성());
         Product product2 = productRepository.save(KEYBOARD_2.생성());
-        Member member = memberRepository.save(CORINNE.생성(1L));
+        Member member = memberRepository.save(CORINNE.생성());
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
         리뷰_저장(REVIEW_RATING_5.작성(product1, member));
         Review review = 리뷰_저장(REVIEW_RATING_5.작성(product2, member));

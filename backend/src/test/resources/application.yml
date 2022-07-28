@@ -10,6 +10,16 @@ spring:
 server:
   port: 8888
 
+logging:
+  level:
+    org:
+      hibernate:
+        sql: debug
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
+
 github:
   client:
     id: clientId

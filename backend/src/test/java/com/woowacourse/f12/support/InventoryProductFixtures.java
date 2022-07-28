@@ -1,6 +1,7 @@
 package com.woowacourse.f12.support;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Product;
 
 public enum InventoryProductFixtures {
@@ -15,15 +16,15 @@ public enum InventoryProductFixtures {
         this.selected = selected;
     }
 
-    public InventoryProduct 생성(final Long memberId, final Product product) {
-        return 생성(null, memberId, product);
+    public InventoryProduct 생성(final Member member, final Product product) {
+        return 생성(null, member, product);
     }
 
-    public InventoryProduct 생성(final Long id, final Long memberId, final Product product) {
+    public InventoryProduct 생성(final Long id, final Member member, final Product product) {
         return InventoryProduct.builder()
                 .id(id)
                 .selected(this.selected)
-                .memberId(memberId)
+                .member(member)
                 .product(product)
                 .build();
     }
