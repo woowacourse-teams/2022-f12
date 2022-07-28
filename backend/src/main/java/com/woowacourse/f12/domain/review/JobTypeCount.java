@@ -2,7 +2,9 @@ package com.woowacourse.f12.domain.review;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.woowacourse.f12.domain.member.JobType;
+import lombok.Getter;
 
+@Getter
 public class JobTypeCount {
 
     private final JobType jobType;
