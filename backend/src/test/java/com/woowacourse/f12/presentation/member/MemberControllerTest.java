@@ -46,6 +46,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(MemberController.class)
+@Import({CareerLevelParamConverter.class, JobTypeParamConverter.class})
 class MemberControllerTest {
 
     @Autowired
@@ -241,4 +242,63 @@ class MemberControllerTest {
         );
     }
 
+    @Test
+    void 키워드와_옵션으로_회원을_조회한다() throws Exception {
+        // given
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE, BACKEND);
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
+                KeyboardFixtures.KEYBOARD_1.생성(1L));
+        Member member = CORINNE.대표장비_추가(1L, inventoryProduct);
+
+        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+                new SliceImpl<>(List.of(member), pageable, false));
+        given(memberService.findByContains(any(MemberSearchRequest.class), any(PageRequest.class)))
+                .willReturn(memberPageResponse);
+
+        // when
+        mockMvc.perform(
+                        get("/api/v1/members?query=cheese&careerLevel=none&jobType=backend&page=0&size=10")
+                ).andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(memberService).findByContains(refEq(memberSearchRequest), refEq(pageable));
+    }
+
+    @Test
+    void 회원_조회_실패_옵션값이_올바르지_않을때() throws Exception {
+        // when
+        mockMvc.perform(
+                        get("/api/v1/members?query=cheese&careerLevel=invalid&jobType=invalid&page=0&size=10")
+                ).andExpect(status().isBadRequest())
+                .andDo(print());
+
+        // then
+        verify(memberService, times(0)).findByContains(any(MemberSearchRequest.class), any(PageRequest.class));
+    }
+
+    @Test
+    void 회원_조회_성공_키워드와_옵션값이_주어지지_않을때() throws Exception {
+        // given
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
+                KeyboardFixtures.KEYBOARD_1.생성(1L));
+        Member member = CORINNE.대표장비_추가(1L, inventoryProduct);
+
+        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+                new SliceImpl<>(List.of(member), pageable, false));
+        given(memberService.findByContains(any(MemberSearchRequest.class), any(PageRequest.class)))
+                .willReturn(memberPageResponse);
+
+        // when
+        mockMvc.perform(
+                        get("/api/v1/members?page=0&size=10")
+                ).andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(memberService).findByContains(refEq(memberSearchRequest), refEq(pageable));
+    }
 }

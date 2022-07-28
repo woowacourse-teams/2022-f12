@@ -115,4 +115,110 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                         .isEqualTo(MemberResponse.from(expectedMember))
         );
     }
+
+    @Test
+    void 회원정보를_검색하여_조회한다() {
+        // given
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        MemberRequest memberRequest = new MemberRequest(SENIOR, BACKEND);
+        LoginResponse loginResponse1 = 로그인을_한다("1");
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", loginResponse1.getToken(), memberRequest);
+        LoginResponse loginResponse = 로그인을_한다("hamcheeseburger");
+        String token = loginResponse.getToken();
+        Long memberId = loginResponse.getMember().getId();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/members?page=0&size=2");
+
+        // then
+        MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
+        Member member = CORINNE.대표장비_추가(memberId, inventoryProduct);
+        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
+                member);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(
+                        memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparatorIgnoringFields(
+                                "profileProducts")
+                        .hasSize(2)
+                        .contains(memberWithProfileProductResponse)
+        );
+    }
+
+    @Test
+    void 회원정보를_옵션으로_검색하여_조회한다() {
+        // given
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        MemberRequest memberRequest = new MemberRequest(SENIOR, BACKEND);
+        LoginResponse loginResponse1 = 로그인을_한다("1");
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", loginResponse1.getToken(), memberRequest);
+        LoginResponse loginResponse = 로그인을_한다("hamcheeseburger");
+        String token = loginResponse.getToken();
+        Long memberId = loginResponse.getMember().getId();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/members?page=0&size=2&careerLevel=senior&jobType=backend");
+
+        // then
+        MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
+        Member member = CORINNE.대표장비_추가(memberId, inventoryProduct);
+        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
+                member);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(
+                        memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparatorIgnoringFields(
+                                "profileProducts")
+                        .hasSize(2)
+                        .contains(memberWithProfileProductResponse)
+        );
+    }
+
+    @Test
+    void 회원정보를_키워드와_옵션으로_검색하여_조회한다() {
+        // given
+        Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
+        MemberRequest memberRequest = new MemberRequest(SENIOR, BACKEND);
+        LoginResponse loginResponse1 = 로그인을_한다("1");
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", loginResponse1.getToken(), memberRequest);
+        LoginResponse loginResponse = 로그인을_한다("hamcheeseburger");
+        String token = loginResponse.getToken();
+        Long memberId = loginResponse.getMember().getId();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/members?page=0&size=2&query=cheese&careerLevel=senior&jobType=backend");
+
+        // then
+        MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
+        Member member = CORINNE.대표장비_추가(memberId, inventoryProduct);
+        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
+                member);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(
+                        memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparatorIgnoringFields(
+                                "profileProducts")
+                        .hasSize(1)
+                        .containsOnly(memberWithProfileProductResponse)
+        );
+    }
+
+    private Keyboard 키보드를_저장한다(Keyboard keyboard) {
+        return keyboardRepository.save(keyboard);
+    }
 }

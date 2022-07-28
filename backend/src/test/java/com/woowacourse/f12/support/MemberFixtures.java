@@ -5,10 +5,12 @@ import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
+import java.util.List;
 
 public enum MemberFixtures {
 
@@ -48,5 +50,17 @@ public enum MemberFixtures {
 
     public GitHubProfileResponse 깃허브_프로필() {
         return new GitHubProfileResponse(this.gitHubId, this.name, this.imageUrl);
+    }
+
+    public Member 대표장비_추가(final Long id, final InventoryProduct inventoryProduct) {
+        return Member.builder()
+                .id(id)
+                .gitHubId(this.gitHubId)
+                .name(this.name)
+                .imageUrl(this.imageUrl)
+                .careerLevel(this.careerLevel)
+                .jobType(this.jobType)
+                .inventoryProducts(List.of(inventoryProduct))
+                .build();
     }
 }
