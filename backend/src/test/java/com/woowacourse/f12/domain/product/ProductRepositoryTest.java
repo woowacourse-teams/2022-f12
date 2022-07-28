@@ -48,7 +48,7 @@ class ProductRepositoryTest {
     void 제품을_단일_조회_한다() {
         // given
         Product product = 제품_저장(KEYBOARD_1.생성());
-        Member member = memberRepository.save(CORINNE.생성(1L));
+        Member member = memberRepository.save(CORINNE.생성());
         리뷰_저장(REVIEW_RATING_4.작성(product, member));
         리뷰_저장(REVIEW_RATING_5.작성(product, member));
         entityManager.flush();
@@ -87,7 +87,7 @@ class ProductRepositoryTest {
         // given
         Product product1 = 제품_저장(KEYBOARD_1.생성());
         Product product2 = 제품_저장(KEYBOARD_2.생성());
-        Member member = memberRepository.save(CORINNE.생성(1L));
+        Member member = memberRepository.save(CORINNE.생성());
 
         리뷰_저장(REVIEW_RATING_5.작성(product1, member));
         리뷰_저장(REVIEW_RATING_5.작성(product2, member));
@@ -110,7 +110,7 @@ class ProductRepositoryTest {
         // given
         Product product2 = 제품_저장(KEYBOARD_1.생성());
         Product product1 = 제품_저장(KEYBOARD_2.생성());
-        Member member = memberRepository.save(CORINNE.생성(1L));
+        Member member = memberRepository.save(CORINNE.생성());
 
         리뷰_저장(REVIEW_RATING_2.작성(product1, member));
         리뷰_저장(REVIEW_RATING_1.작성(product1, member));

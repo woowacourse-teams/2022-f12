@@ -1,6 +1,8 @@
 package com.woowacourse.f12.dto.response.member;
 
 import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.dto.CareerLevelConstant;
+import com.woowacourse.f12.dto.JobTypeConstant;
 import lombok.Getter;
 
 @Getter
@@ -10,14 +12,15 @@ public class MemberResponse {
     private String gitHubId;
     private String name;
     private String imageUrl;
-    private String careerLevel;
-    private String jobType;
+    private CareerLevelConstant careerLevel;
+    private JobTypeConstant jobType;
 
     private MemberResponse() {
     }
 
-    private MemberResponse(final Long id, final String gitHubId, final String name, final String imageUrl,
-                           final String careerLevel, final String jobType) {
+    public MemberResponse(final Long id, final String gitHubId, final String name, final String imageUrl,
+                          final CareerLevelConstant careerLevel,
+                          final JobTypeConstant jobType) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
@@ -28,6 +31,7 @@ public class MemberResponse {
 
     public static MemberResponse from(final Member member) {
         return new MemberResponse(member.getId(), member.getGitHubId(), member.getName(), member.getImageUrl(),
-                member.getCareerLevel().name(), member.getJobType().name());
+                CareerLevelConstant.from(member.getCareerLevel()),
+                JobTypeConstant.from(member.getJobType()));
     }
 }

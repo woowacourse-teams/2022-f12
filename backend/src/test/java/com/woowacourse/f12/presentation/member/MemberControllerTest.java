@@ -1,11 +1,16 @@
 package com.woowacourse.f12.presentation.member;
 
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.JobType.ETC;
+import static com.woowacourse.f12.dto.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.dto.CareerLevelConstant.NONE_CONSTANT;
+import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.dto.JobTypeConstant.ETC_CONSTANT;
+import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
@@ -18,15 +23,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.member.MemberService;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -108,7 +121,7 @@ class MemberControllerTest {
     @Test
     void 로그인된_상태에서_나의_회원정보를_수정_성공() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest(JUNIOR, ETC);
+        MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, ETC_CONSTANT);
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
@@ -138,8 +151,8 @@ class MemberControllerTest {
     void 로그인된_상태에서_나의_회원정보를_수정_성공_Enum의_name값으로_요청을_보낼때() throws Exception {
         // given
         Map<String, Object> memberRequest = new HashMap<>();
-        memberRequest.put("careerLevel", "SENIOR");
-        memberRequest.put("jobType", "BACK_END");
+        memberRequest.put("careerLevel", "senior");
+        memberRequest.put("jobType", "backend");
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -227,4 +240,63 @@ class MemberControllerTest {
         );
     }
 
+    @Test
+    void 키워드와_옵션으로_회원을_조회한다() throws Exception {
+        // given
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE_CONSTANT, BACKEND_CONSTANT);
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
+                KEYBOARD_1.생성(1L));
+        Member member = CORINNE.대표장비를_추가해서_생성(1L, inventoryProduct);
+
+        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+                new SliceImpl<>(List.of(member), pageable, false));
+        given(memberService.findByContains(any(MemberSearchRequest.class), any(PageRequest.class)))
+                .willReturn(memberPageResponse);
+
+        // when
+        mockMvc.perform(
+                        get("/api/v1/members?query=cheese&careerLevel=none&jobType=backend&page=0&size=10")
+                ).andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(memberService).findByContains(refEq(memberSearchRequest), refEq(pageable));
+    }
+
+    @Test
+    void 회원_조회_실패_옵션값이_올바르지_않을때() throws Exception {
+        // when
+        mockMvc.perform(
+                        get("/api/v1/members?query=cheese&careerLevel=invalid&jobType=invalid&page=0&size=10")
+                ).andExpect(status().isBadRequest())
+                .andDo(print());
+
+        // then
+        verify(memberService, times(0)).findByContains(any(MemberSearchRequest.class), any(PageRequest.class));
+    }
+
+    @Test
+    void 회원_조회_성공_키워드와_옵션값이_주어지지_않을때() throws Exception {
+        // given
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
+                KEYBOARD_1.생성(1L));
+        Member member = CORINNE.대표장비를_추가해서_생성(1L, inventoryProduct);
+
+        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+                new SliceImpl<>(List.of(member), pageable, false));
+        given(memberService.findByContains(any(MemberSearchRequest.class), any(PageRequest.class)))
+                .willReturn(memberPageResponse);
+
+        // when
+        mockMvc.perform(
+                        get("/api/v1/members?page=0&size=10")
+                ).andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(memberService).findByContains(refEq(memberSearchRequest), refEq(pageable));
+    }
 }

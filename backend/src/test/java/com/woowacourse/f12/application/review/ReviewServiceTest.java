@@ -1,9 +1,9 @@
 package com.woowacourse.f12.application.review;
 
 import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -73,12 +73,12 @@ class ReviewServiceTest {
         Product product = KEYBOARD_1.생성(productId);
         Long memberId = 1L;
         Member member = CORINNE.생성(memberId);
-        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, product);
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
         given(productRepository.findById(productId))
                 .willReturn(Optional.of(product));
-        given(inventoryProductRepository.existsByMemberIdAndProduct(memberId, product))
+        given(inventoryProductRepository.existsByMemberAndProduct(member, product))
                 .willReturn(false);
         given(inventoryProductRepository.save(inventoryProduct))
                 .willReturn(inventoryProduct);
@@ -94,7 +94,7 @@ class ReviewServiceTest {
                 () -> verify(productRepository).findById(productId),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).save(any(Review.class)),
-                () -> verify(inventoryProductRepository).existsByMemberIdAndProduct(memberId, product),
+                () -> verify(inventoryProductRepository).existsByMemberAndProduct(member, product),
                 () -> verify(inventoryProductRepository).save(inventoryProduct)
         );
     }

@@ -13,9 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
+import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
+import com.woowacourse.f12.dto.response.auth.LoginMemberResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
@@ -58,9 +60,9 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         LoginResponse loginResponse = 로그인을_한다("1");
         String token = loginResponse.getToken();
-        Long memberId = loginResponse.getMember().getId();
+        Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
 
-        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, product);
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
         InventoryProduct savedInventoryProduct = 인벤토리에_장비를_추가한다(inventoryProduct);
 
         // when
@@ -86,11 +88,10 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         LoginResponse response = 로그인을_한다("1");
         String token = response.getToken();
-        Long memberId = response.getMember()
-                .getId();
-        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, product);
+        Member member = 응답을_회원으로_변환한다(response.getMember());
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, product);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
-        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, product);
+        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
         InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);
 
         // when
@@ -111,17 +112,16 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     void 다른_회원의_아이디로_등록된_장비를_조회한다() {
         // given
         LoginResponse response = 로그인을_한다("1");
-        Long memberId = response.getMember()
-                .getId();
+        Member member = 응답을_회원으로_변환한다(response.getMember());
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(memberId, product);
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, product);
         InventoryProduct savedSelectedInventoryProduct = 인벤토리에_장비를_추가한다(selectedInventoryProduct);
-        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(memberId, product);
+        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
         InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);
 
         // when
         ExtractableResponse<Response> profileProductResponse = GET_요청을_보낸다(
-                "/api/v1/members/" + memberId + "/inventoryProducts");
+                "/api/v1/members/" + member.getId() + "/inventoryProducts");
 
         // then
         assertAll(
@@ -139,5 +139,14 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
 
     private InventoryProduct 인벤토리에_장비를_추가한다(InventoryProduct inventoryProduct) {
         return inventoryProductRepository.save(inventoryProduct);
+    }
+
+    private Member 응답을_회원으로_변환한다(LoginMemberResponse loginMemberResponse) {
+        return Member.builder()
+                .id(loginMemberResponse.getId())
+                .gitHubId(loginMemberResponse.getGitHubId())
+                .name(loginMemberResponse.getName())
+                .imageUrl(loginMemberResponse.getImageUrl())
+                .build();
     }
 }

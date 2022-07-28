@@ -2,19 +2,21 @@ package com.woowacourse.f12.support;
 
 import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
 import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACK_END;
-import static com.woowacourse.f12.domain.member.JobType.FRONT_END;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
+import java.util.List;
 
 public enum MemberFixtures {
 
-    CORINNE("hamcheeseburger", "유현지", "corinne_url", SENIOR, BACK_END),
-    MINCHO("jswith", "홍영민", "mincho_url", JUNIOR, FRONT_END),
-    CORINNE_UPDATED("hamcheeseburger", "괴물개발자", "corinne_url", SENIOR, BACK_END);
+    CORINNE("hamcheeseburger", "유현지", "corinne_url", SENIOR, BACKEND),
+    MINCHO("jswith", "홍영민", "mincho_url", JUNIOR, FRONTEND),
+    CORINNE_UPDATED("hamcheeseburger", "괴물개발자", "corinne_url", SENIOR, BACKEND);
 
     private final String gitHubId;
     private final String name;
@@ -48,5 +50,17 @@ public enum MemberFixtures {
 
     public GitHubProfileResponse 깃허브_프로필() {
         return new GitHubProfileResponse(this.gitHubId, this.name, this.imageUrl);
+    }
+
+    public Member 대표장비를_추가해서_생성(final Long id, final InventoryProduct inventoryProduct) {
+        return Member.builder()
+                .id(id)
+                .gitHubId(this.gitHubId)
+                .name(this.name)
+                .imageUrl(this.imageUrl)
+                .careerLevel(this.careerLevel)
+                .jobType(this.jobType)
+                .inventoryProducts(List.of(inventoryProduct))
+                .build();
     }
 }
