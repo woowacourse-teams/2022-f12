@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ExceptionResponse> handleMethodArgumentTypeMismatchExceptionException() {
+    public ResponseEntity<ExceptionResponse> handleMethodArgumentTypeMismatchException() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE));
     }
