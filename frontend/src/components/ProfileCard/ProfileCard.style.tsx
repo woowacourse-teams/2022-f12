@@ -21,7 +21,7 @@ export const RightSection = styled.div`
 export const ProfileImageWrapper = styled.div`
   position: absolute;
   left: -5.5rem;
-  top: 1.1rem;
+  top: 1.6rem;
   width: 9.5rem;
   height: 9.5rem;
   border-radius: 50%;
@@ -38,6 +38,7 @@ export const UserInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin-bottom: 0.9rem;
   gap: 0.4rem;
 `;
 
@@ -81,10 +82,18 @@ export const ProfileViewButton = styled.button`
   background-color: ${({ theme }) => theme.colors.primary};
 `;
 
-export const InventoryList = styled.div`
+export const InventoryListWrapper = styled.div`
+  overflow: hidden;
+`;
+
+export const InventoryList = styled.div<{ positionX: number }>`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 2rem;
+  width: 192px;
+  height: 100px;
+  transform: ${({ positionX }) => `translateX(${positionX}px)`};
+  transition: linear 0.2s;
 `;
 
 export const InventoryItem = styled.div`

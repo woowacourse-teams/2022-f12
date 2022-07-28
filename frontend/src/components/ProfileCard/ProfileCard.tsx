@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import * as S from '@/components/ProfileCard/ProfileCard.style';
 import sampleProfile from '@/mocks/sample_profile.jpg';
 import sampleKeyboard from '@/mocks/sample_keyboard.jpg';
@@ -5,6 +7,26 @@ import GithubIcon from '@/assets/github.svg';
 import Chip from '@/components/common/Chip/Chip';
 
 function ProfileCard() {
+  const [positionX, setPositionX] = useState(0);
+
+  const handleLeftButtonClick = () => {
+    if (positionX === 0) {
+      setPositionX(-224);
+      return;
+    }
+    setPositionX(positionX + 112);
+  };
+
+  const handleRightButtonClick = () => {
+    if (positionX <= -224) {
+      setPositionX(0);
+      return;
+    }
+    setPositionX(positionX - 112);
+  };
+
+  console.log(positionX);
+
   return (
     <S.Container>
       <S.LeftSection>
@@ -28,24 +50,24 @@ function ProfileCard() {
           </S.UserCareer>
         </S.UserInfoWrapper>
         <S.InventoryWrapper>
-          <S.LeftButton>{`<`}</S.LeftButton>
-          <S.InventoryList>
-            <S.InventoryItem>
-              <S.ProductImageWrapper>
-                <S.ProductImage src={sampleKeyboard}></S.ProductImage>
-                <S.ProductTitle>
-                  너무너무 긴 제목을 가진 마우스 마우스 마우스
-                </S.ProductTitle>
-              </S.ProductImageWrapper>
-            </S.InventoryItem>
-            <S.InventoryItem>
-              <S.ProductImageWrapper>
-                <S.ProductImage src={sampleKeyboard}></S.ProductImage>
-                <S.ProductTitle>로지텍 MX Master 2S</S.ProductTitle>
-              </S.ProductImageWrapper>
-            </S.InventoryItem>
-          </S.InventoryList>
-          <S.RightButton>{`>`}</S.RightButton>
+          <S.LeftButton onClick={handleLeftButtonClick}>{`<`}</S.LeftButton>
+          <S.InventoryListWrapper>
+            <S.InventoryList positionX={positionX}>
+              {['키보드', '마우스', '모니터', '거치대'].map(
+                (product, index) => {
+                  return (
+                    <S.InventoryItem key={index}>
+                      <S.ProductImageWrapper>
+                        <S.ProductImage src={sampleKeyboard}></S.ProductImage>
+                        <S.ProductTitle>{product}</S.ProductTitle>
+                      </S.ProductImageWrapper>
+                    </S.InventoryItem>
+                  );
+                }
+              )}
+            </S.InventoryList>
+          </S.InventoryListWrapper>
+          <S.RightButton onClick={handleRightButtonClick}>{`>`}</S.RightButton>
         </S.InventoryWrapper>
         <S.ProfileViewButton>프로필 보기</S.ProfileViewButton>
       </S.RightSection>
