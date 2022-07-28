@@ -45,6 +45,7 @@ class ProductServiceTest {
 
         given(productRepository.findById(anyLong()))
                 .willReturn(Optional.of(product));
+
         // when
         ProductResponse productResponse = productService.findById(1L);
 
@@ -61,6 +62,7 @@ class ProductServiceTest {
         // given
         given(productRepository.findById(anyLong()))
                 .willReturn(Optional.empty());
+
         // when then
         assertAll(
                 () -> assertThatThrownBy(() -> productService.findById(1L))
@@ -78,7 +80,7 @@ class ProductServiceTest {
                 .willReturn(new SliceImpl<>(List.of(product), pageable, false));
 
         // when
-        ProductPageResponse productPageResponse = productService.findPage(CategoryConstant.KEYBOARD, pageable);
+        ProductPageResponse productPageResponse = productService.findPage(CategoryConstant.KEYBOARD_CONSTANT, pageable);
 
         // then
         assertAll(
