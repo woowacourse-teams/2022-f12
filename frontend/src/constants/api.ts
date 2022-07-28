@@ -8,10 +8,10 @@ const githubClientId =
 export const GITHUB_AUTH_URL = `https://github.com/login/oauth/authorize?client_id=${githubClientId}`;
 
 export const ENDPOINTS = {
-  PRODUCTS: '/keyboards',
-  PRODUCT: (id: number | ':id') => `/keyboards/${id}`,
+  PRODUCTS: '/products',
+  PRODUCT: (id: number | ':id') => `/products/${id}`,
   REVIEWS: '/reviews',
-  REVIEWS_BY_PRODUCT_ID: (id: number | ':id') => `/keyboards/${id}/reviews`,
+  REVIEWS_BY_PRODUCT_ID: (id: number | ':id') => `/products/${id}/reviews`,
   REVIEWS_BY_REVIEW_ID: (reviewId: number | ':id') => `/reviews/${reviewId}`,
   LOGIN: '/login',
   INVENTORY_PRODUCTS: '/members/inventoryProducts',

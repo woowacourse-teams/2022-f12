@@ -1,15 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-export const Main = styled.main`
-  display: flex;
-  flex-direction: column;
-  max-width: 1320px;
-  width: 100%;
-  margin: 50px auto;
-  gap: 3rem;
-`;
-
 export const Wrapper = styled.div`
   max-width: 1320px;
   width: 100%;
@@ -57,7 +48,7 @@ export const FlexRightUl = styled(FlexLeftUl)`
 
 export const LoginButton = styled.a``;
 
-export const LogoutButton = styled.button`
+export const TransparentButton = styled.button`
   background-color: transparent;
   border: none;
   font-size: 1rem;

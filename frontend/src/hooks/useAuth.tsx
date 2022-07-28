@@ -22,7 +22,6 @@ function useAuth(): Return {
 
   const login = async (githubCode: string) => {
     const userData = await fetchUserData({ code: githubCode });
-
     setUserData(userData);
   };
 

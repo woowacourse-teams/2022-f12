@@ -18,6 +18,7 @@ declare type Member = {
 declare type UserData = {
   member: Member;
   token: string;
+  registerCompleted: boolean;
 };
 
 declare type Product = {
