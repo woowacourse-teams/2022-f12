@@ -1,6 +1,8 @@
 package com.woowacourse.f12.dto.response.member;
 
 import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.dto.CareerLevelConstant;
+import com.woowacourse.f12.dto.JobTypeConstant;
 import lombok.Getter;
 
 @Getter
@@ -28,6 +30,7 @@ public class MemberResponse {
 
     public static MemberResponse from(final Member member) {
         return new MemberResponse(member.getId(), member.getGitHubId(), member.getName(), member.getImageUrl(),
-                member.getCareerLevel().name(), member.getJobType().name());
+                CareerLevelConstant.findByCareerLevel(member.getCareerLevel()).getViewValue(),
+                JobTypeConstant.findByJobType(member.getJobType()).getViewValue());
     }
 }

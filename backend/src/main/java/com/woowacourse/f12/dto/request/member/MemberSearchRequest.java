@@ -2,22 +2,21 @@ package com.woowacourse.f12.dto.request.member;
 
 import com.woowacourse.f12.dto.CareerLevelConstant;
 import com.woowacourse.f12.dto.JobTypeConstant;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class MemberRequest {
+public class MemberSearchRequest {
 
-    @NotNull(message = "직업 경력 내용이 없습니다.")
+    private String query;
     private CareerLevelConstant careerLevel;
-
-    @NotNull(message = "직무 내용이 없습니다.")
     private JobTypeConstant jobType;
 
-    private MemberRequest() {
+    private MemberSearchRequest() {
     }
 
-    public MemberRequest(final CareerLevelConstant careerLevel, final JobTypeConstant jobType) {
+    public MemberSearchRequest(final String query, final CareerLevelConstant careerLevel,
+                               final JobTypeConstant jobType) {
+        this.query = query;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
     }

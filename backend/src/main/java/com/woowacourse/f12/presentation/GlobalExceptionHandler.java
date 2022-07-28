@@ -1,14 +1,15 @@
 package com.woowacourse.f12.presentation;
 
 import com.woowacourse.f12.dto.response.ExceptionResponse;
-import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
 import com.woowacourse.f12.exception.badrequest.InvalidValueException;
+import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
 import com.woowacourse.f12.exception.notfound.NotFoundException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,6 +33,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException() {
+        return ResponseEntity.badRequest().body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE));
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ExceptionResponse> handleBindException() {
         return ResponseEntity.badRequest().body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE));
     }
 

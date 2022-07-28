@@ -2,12 +2,16 @@ package com.woowacourse.f12.presentation.member;
 
 import com.woowacourse.f12.application.member.MemberService;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.presentation.auth.LoginRequired;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
 import javax.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,5 +47,12 @@ public class MemberController {
                                          @Valid @RequestBody final MemberRequest memberRequest) {
         memberService.updateMember(memberId, memberRequest);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<MemberPageResponse> searchMembers(
+            @ModelAttribute final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
+        final MemberPageResponse memberPageResponse = memberService.findByContains(memberSearchRequest, pageable);
+        return ResponseEntity.ok(memberPageResponse);
     }
 }

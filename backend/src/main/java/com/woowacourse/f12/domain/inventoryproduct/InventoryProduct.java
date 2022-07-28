@@ -31,7 +31,7 @@ public class InventoryProduct {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "keyboard_id")
     private Keyboard keyboard;
 
