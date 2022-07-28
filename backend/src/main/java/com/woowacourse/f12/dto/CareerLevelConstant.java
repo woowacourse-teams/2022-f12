@@ -30,14 +30,14 @@ public enum CareerLevelConstant implements ViewConstant {
     public static CareerLevelConstant findByViewValue(final String source) {
         return Arrays.stream(values())
                 .filter(careerLevel -> careerLevel.value.equals(source))
-                .findFirst()
+                .findAny()
                 .orElseThrow(InvalidCareerLevelException::new);
     }
 
     public static CareerLevelConstant findByCareerLevel(final CareerLevel careerLevel) {
         return Arrays.stream(values())
                 .filter(it -> it.careerLevel.equals(careerLevel))
-                .findFirst()
+                .findAny()
                 .orElseThrow(InvalidCareerLevelException::new);
     }
 

@@ -30,14 +30,14 @@ public enum JobTypeConstant implements ViewConstant {
     public static JobTypeConstant findByViewValue(final String source) {
         return Arrays.stream(values())
                 .filter(jobType -> jobType.value.equals(source))
-                .findFirst()
+                .findAny()
                 .orElseThrow(InvalidJobTypeException::new);
     }
 
     public static JobTypeConstant findByJobType(final JobType jobType) {
         return Arrays.stream(values())
                 .filter(it -> it.jobType.equals(jobType))
-                .findFirst()
+                .findAny()
                 .orElseThrow(InvalidJobTypeException::new);
     }
 
