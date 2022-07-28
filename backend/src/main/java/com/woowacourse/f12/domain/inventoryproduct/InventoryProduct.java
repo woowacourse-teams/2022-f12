@@ -30,7 +30,7 @@ public class InventoryProduct {
     private Long memberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "keyboard_id")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     protected InventoryProduct() {
