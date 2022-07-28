@@ -40,8 +40,8 @@ public class MemberService {
     @Transactional
     public void updateMember(final Long memberId, final MemberRequest memberRequest) {
         final Member member = findMember(memberId);
-        member.updateCareerLevel(memberRequest.getCareerLevel());
-        member.updateJobType(memberRequest.getJobType());
+        member.updateCareerLevel(memberRequest.getCareerLevel().toCareerLevel());
+        member.updateJobType(memberRequest.getJobType().toJobType());
     }
 
     private Member findMember(final Long memberId) {

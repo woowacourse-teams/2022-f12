@@ -1,7 +1,5 @@
 package com.woowacourse.f12.application.member;
 
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.JobType.ETC;
 import static com.woowacourse.f12.dto.CareerLevelConstant.SENIOR;
 import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
@@ -17,6 +15,8 @@ import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.dto.CareerLevelConstant;
+import com.woowacourse.f12.dto.JobTypeConstant;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
@@ -103,7 +103,7 @@ class MemberServiceTest {
                 .willReturn(Optional.of(CORINNE.생성(1L)));
 
         // when
-        memberService.updateMember(1L, new MemberRequest(JUNIOR, ETC));
+        memberService.updateMember(1L, new MemberRequest(CareerLevelConstant.JUNIOR, JobTypeConstant.ETC));
 
         // then
         verify(memberRepository).findById(1L);

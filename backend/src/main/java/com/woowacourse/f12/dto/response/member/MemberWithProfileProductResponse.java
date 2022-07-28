@@ -1,6 +1,8 @@
 package com.woowacourse.f12.dto.response.member;
 
 import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.dto.CareerLevelConstant;
+import com.woowacourse.f12.dto.JobTypeConstant;
 import com.woowacourse.f12.dto.response.product.KeyboardResponse;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +41,7 @@ public class MemberWithProfileProductResponse {
                 .map(inventoryProduct -> KeyboardResponse.from(inventoryProduct.getKeyboard()))
                 .collect(Collectors.toList());
         return new MemberWithProfileProductResponse(member.getId(), member.getGitHubId(), member.getName(),
-                member.getImageUrl(), member.getCareerLevel().name(), member.getJobType().name(), profileProducts);
+                member.getImageUrl(), CareerLevelConstant.findByCareerLevel(member.getCareerLevel()).getViewValue(),
+                JobTypeConstant.findByJobType(member.getJobType()).getViewValue(), profileProducts);
     }
 }

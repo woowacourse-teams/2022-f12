@@ -1,8 +1,8 @@
 package com.woowacourse.f12.documentation.member;
 
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -15,6 +15,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.member.MemberService;
 import com.woowacourse.f12.documentation.Documentation;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.dto.CareerLevelConstant;
+import com.woowacourse.f12.dto.JobTypeConstant;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.presentation.member.MemberController;
@@ -85,7 +89,7 @@ public class MemberDocumentation extends Documentation {
     @Test
     void 로그인된_상태에서_나의_회원정보를_수정_API_문서화() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest(JUNIOR, BACKEND);
+        MemberRequest memberRequest = new MemberRequest(CareerLevelConstant.JUNIOR, JobTypeConstant.BACKEND);
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);

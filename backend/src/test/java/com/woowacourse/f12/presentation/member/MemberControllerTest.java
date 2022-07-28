@@ -1,11 +1,13 @@
 package com.woowacourse.f12.presentation.member;
 
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.JobType.ETC;
+import static com.woowacourse.f12.dto.CareerLevelConstant.NONE;
+import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND;
+import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
@@ -18,15 +20,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.member.MemberService;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.dto.CareerLevelConstant;
+import com.woowacourse.f12.dto.JobTypeConstant;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.support.KeyboardFixtures;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -108,7 +122,7 @@ class MemberControllerTest {
     @Test
     void 로그인된_상태에서_나의_회원정보를_수정_성공() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest(JUNIOR, ETC);
+        MemberRequest memberRequest = new MemberRequest(CareerLevelConstant.JUNIOR, JobTypeConstant.ETC);
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
@@ -138,8 +152,8 @@ class MemberControllerTest {
     void 로그인된_상태에서_나의_회원정보를_수정_성공_Enum의_name값으로_요청을_보낼때() throws Exception {
         // given
         Map<String, Object> memberRequest = new HashMap<>();
-        memberRequest.put("careerLevel", "SENIOR");
-        memberRequest.put("jobType", "BACKEND");
+        memberRequest.put("careerLevel", "senior");
+        memberRequest.put("jobType", "backend");
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
