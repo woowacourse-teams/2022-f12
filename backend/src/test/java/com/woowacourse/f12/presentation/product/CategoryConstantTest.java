@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 class CategoryConstantTest {
 
     @ParameterizedTest
-    @CsvSource(value = {"keyboard:KEYBOARD", "software:SOFTWARE"}, delimiter = ':')
+    @CsvSource(value = {"keyboard,KEYBOARD_CONSTANT", "software,SOFTWARE_CONSTANT"})
     void 뷰에서_전달된_이름으로_찾아서_반환한다(String viewValue, CategoryConstant expect) {
         // given, when
         CategoryConstant actual = CategoryConstant.findByViewValue(viewValue);
@@ -24,7 +24,7 @@ class CategoryConstantTest {
     @Test
     void 뷰에서_잘못된_이름을_전달하면_예외_발생한다() {
         // given
-        final String invalidViewName = "invalid";
+        String invalidViewName = "invalid";
 
         // when, then
         assertThatThrownBy(() -> CategoryConstant.findByViewValue(invalidViewName))
@@ -32,10 +32,10 @@ class CategoryConstantTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"KEYBOARD:KEYBOARD", "SOFTWARE:SOFTWARE"}, delimiter = ':')
-    void 도메인_열거형으로_찾아서_반환한다(Category category, CategoryConstant expect) {
+    @CsvSource(value = {"KEYBOARD,KEYBOARD_CONSTANT", "SOFTWARE,SOFTWARE_CONSTANT"})
+    void 뷰_열거형을_도메인_열거형으로_찾아서_반환한다(Category category, CategoryConstant expect) {
         // given, when
-        CategoryConstant actual = CategoryConstant.fromDomain(category);
+        CategoryConstant actual = CategoryConstant.from(category);
 
         // then
         assertThat(actual).isEqualTo(expect);
@@ -44,15 +44,15 @@ class CategoryConstantTest {
     @Test
     void 도메인_열거형으로_찾을_수_없는_경우_예외_발생한다() {
         // given, when, then
-        assertThatThrownBy(() -> CategoryConstant.fromDomain(null))
+        assertThatThrownBy(() -> CategoryConstant.from(null))
                 .isExactlyInstanceOf(InvalidCategoryValueException.class);
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"KEYBOARD:KEYBOARD", "SOFTWARE:SOFTWARE"}, delimiter = ':')
-    void 도메인_열거형을_찾아서_반환한다(CategoryConstant constant, Category expect) {
+    @CsvSource(value = {"KEYBOARD_CONSTANT,KEYBOARD", "SOFTWARE_CONSTANT,SOFTWARE"})
+    void 도메인_열거형을_뷰_열거형으로_찾아서_반환한다(CategoryConstant constant, Category expect) {
         // given, when
-        Category actual = constant.toDomain();
+        Category actual = constant.toCategory();
 
         // then
         assertThat(actual).isEqualTo(expect);
