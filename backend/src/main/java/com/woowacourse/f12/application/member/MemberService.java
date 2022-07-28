@@ -53,7 +53,7 @@ public class MemberService {
     public MemberPageResponse findByContains(final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
         final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
         final JobType jobType = parseJobType(memberSearchRequest);
-        final Slice<Member> slice = memberRepository.findByContains(memberSearchRequest.getQuery(), careerLevel,
+        final Slice<Member> slice = memberRepository.findBySearchConditions(memberSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
         return MemberPageResponse.from(slice);
     }

@@ -32,7 +32,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains(null, null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findBySearchConditions(null, null, null, PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -48,7 +48,8 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains("hamcheeseburger", null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findBySearchConditions("hamcheeseburger", null, null,
+                PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -64,7 +65,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains("cheese", null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findBySearchConditions("cheese", null, null, PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -82,7 +83,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains(keyword, SENIOR, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, null, PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -100,7 +101,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains(keyword, SENIOR, BACKEND,
+        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, BACKEND,
                 PageRequest.of(0, 2));
 
         // then

@@ -116,7 +116,7 @@ class MemberServiceTest {
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
         Member member = CORINNE.대표장비를_추가해서_생성(1L, inventoryProduct);
 
-        given(memberRepository.findByContains("cheese", SENIOR, BACKEND, pageable))
+        given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
 
         // when
@@ -125,7 +125,7 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findByContains("cheese", SENIOR, BACKEND, pageable),
+                () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.from(member))
