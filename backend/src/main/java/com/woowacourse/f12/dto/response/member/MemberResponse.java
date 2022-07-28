@@ -31,7 +31,7 @@ public class MemberResponse {
 
     public static MemberResponse from(final Member member) {
         return new MemberResponse(member.getId(), member.getGitHubId(), member.getName(), member.getImageUrl(),
-                CareerLevelConstant.findByCareerLevel(member.getCareerLevel()),
-                JobTypeConstant.findByJobType(member.getJobType()));
+                CareerLevelConstant.from(member.getCareerLevel()),
+                JobTypeConstant.from(member.getJobType()));
     }
 }

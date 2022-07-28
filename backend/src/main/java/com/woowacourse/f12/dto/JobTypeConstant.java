@@ -34,7 +34,7 @@ public enum JobTypeConstant implements ViewConstant {
                 .orElseThrow(InvalidJobTypeException::new);
     }
 
-    public static JobTypeConstant findByJobType(final JobType jobType) {
+    public static JobTypeConstant from(final JobType jobType) {
         return Arrays.stream(values())
                 .filter(it -> it.jobType.equals(jobType))
                 .findAny()

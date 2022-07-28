@@ -41,7 +41,7 @@ public class MemberWithProfileProductResponse {
                 .map(inventoryProduct -> KeyboardResponse.from(inventoryProduct.getKeyboard()))
                 .collect(Collectors.toList());
         return new MemberWithProfileProductResponse(member.getId(), member.getGitHubId(), member.getName(),
-                member.getImageUrl(), CareerLevelConstant.findByCareerLevel(member.getCareerLevel()),
-                JobTypeConstant.findByJobType(member.getJobType()), profileProducts);
+                member.getImageUrl(), CareerLevelConstant.from(member.getCareerLevel()),
+                JobTypeConstant.from(member.getJobType()), profileProducts);
     }
 }
