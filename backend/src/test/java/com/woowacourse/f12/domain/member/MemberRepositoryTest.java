@@ -78,7 +78,7 @@ class MemberRepositoryTest {
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"cheese"})
-    void 회원의_연차를_옵션으로_조회한다(String keyword) {
+    void 회원을_키워드와_연차_옵션으로_조회한다(String keyword) {
         // given
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
@@ -96,7 +96,7 @@ class MemberRepositoryTest {
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"cheese"})
-    void 회원의_직군을_옵션으로_조회한다(String keyword) {
+    void 회원을_키워드와_연차와_직군_옵션으로_조회한다(String keyword) {
         // given
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 

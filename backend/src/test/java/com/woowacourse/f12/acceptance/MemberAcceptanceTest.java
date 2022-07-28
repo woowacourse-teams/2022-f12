@@ -116,7 +116,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 회원정보를_검색하여_조회한다() {
+    void 회원정보를_키워드와_옵션을_입력하지않고_조회한다() {
         // given
         Keyboard keyboard = 키보드를_저장한다(KEYBOARD_1.생성());
 
