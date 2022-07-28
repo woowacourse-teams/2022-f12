@@ -3,6 +3,7 @@ package com.woowacourse.f12.application.member;
 import static com.woowacourse.f12.dto.CareerLevelConstant.SENIOR;
 import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -24,7 +25,6 @@ import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import com.woowacourse.f12.support.KeyboardFixtures;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -113,8 +113,7 @@ class MemberServiceTest {
     void 키워드와_옵션으로_회원을_조회한다() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
-                KeyboardFixtures.KEYBOARD_1.생성(1L));
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
         Member member = CORINNE.대표장비_추가(1L, inventoryProduct);
 
         given(memberRepository.findByContains("cheese", CareerLevel.SENIOR, JobType.BACKEND, pageable))

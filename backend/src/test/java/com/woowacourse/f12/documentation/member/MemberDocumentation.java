@@ -1,6 +1,7 @@
 package com.woowacourse.f12.documentation.member;
 
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -24,7 +25,6 @@ import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.presentation.member.MemberController;
-import com.woowacourse.f12.support.KeyboardFixtures;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,7 +123,7 @@ public class MemberDocumentation extends Documentation {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
-                KeyboardFixtures.KEYBOARD_1.생성(1L));
+                KEYBOARD_1.생성(1L));
         Member member = CORINNE.대표장비_추가(1L, inventoryProduct);
 
         MemberPageResponse memberPageResponse = MemberPageResponse.from(

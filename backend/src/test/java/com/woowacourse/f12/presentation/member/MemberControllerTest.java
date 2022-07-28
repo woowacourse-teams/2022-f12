@@ -3,6 +3,7 @@ package com.woowacourse.f12.presentation.member;
 import static com.woowacourse.f12.dto.CareerLevelConstant.NONE;
 import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +30,6 @@ import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import com.woowacourse.f12.support.KeyboardFixtures;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -248,7 +248,7 @@ class MemberControllerTest {
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE, BACKEND);
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
-                KeyboardFixtures.KEYBOARD_1.생성(1L));
+                KEYBOARD_1.생성(1L));
         Member member = CORINNE.대표장비_추가(1L, inventoryProduct);
 
         MemberPageResponse memberPageResponse = MemberPageResponse.from(
@@ -284,7 +284,7 @@ class MemberControllerTest {
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
-                KeyboardFixtures.KEYBOARD_1.생성(1L));
+                KEYBOARD_1.생성(1L));
         Member member = CORINNE.대표장비_추가(1L, inventoryProduct);
 
         MemberPageResponse memberPageResponse = MemberPageResponse.from(
