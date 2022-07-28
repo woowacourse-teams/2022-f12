@@ -166,6 +166,36 @@ class ProductRepositoryTest {
                 );
     }
 
+    @Test
+    void 제품에_대한_사용자_직군의_총_개수를_반환한다() {
+        // given
+        Product product = 제품_저장(KEYBOARD_1.생성());
+
+        Member corinne = CORINNE.생성();
+        corinne.updateCareerLevel(SENIOR);
+        corinne.updateJobType(MOBILE);
+        corinne = memberRepository.save(corinne);
+
+        Member mincho = MINCHO.생성();
+        mincho.updateCareerLevel(JUNIOR);
+        mincho.updateJobType(BACKEND);
+        mincho = memberRepository.save(mincho);
+
+        리뷰_저장(REVIEW_RATING_2.작성(product, corinne));
+        리뷰_저장(REVIEW_RATING_1.작성(product, mincho));
+
+        // when
+        List<JobTypeCount> jobTypeCounts = productRepository.findJobTypeCountByProductId(product.getId());
+
+        // then
+        assertThat(jobTypeCounts).usingRecursiveFieldByFieldElementComparator()
+                .hasSize(2)
+                .containsOnly(
+                        new JobTypeCount(MOBILE, 1),
+                        new JobTypeCount(BACKEND, 1)
+                );
+    }
+
     private Product 제품_저장(Product product) {
         return productRepository.save(product);
     }

@@ -30,4 +30,16 @@ public class ProductRepositoryCustomImpl extends QuerydslRepositorySupport imple
                 );
         return jpaQuery.fetch();
     }
+
+    @Override
+    public List<JobTypeCount> findJobTypeCountByProductId(final Long productId) {
+        final JPAQuery<JobTypeCount> jpaQuery = jpaQueryFactory.from(review)
+                .innerJoin(review.member, member)
+                .where(review.product.id.eq(productId))
+                .groupBy(member.jobType)
+                .select(
+                        new QJobTypeCount(member.jobType, member.id.count())
+                );
+        return jpaQuery.fetch();
+    }
 }
