@@ -2,8 +2,8 @@ package com.woowacourse.f12.application.inventoryproduct;
 
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
-import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -91,7 +91,7 @@ class InventoryProductServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(inventoryProductsResponse.getKeyboards()).hasSize(1)
+                () -> assertThat(inventoryProductsResponse.getItems()).hasSize(1)
                         .usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(InventoryProductResponse.from(inventoryProduct)),
                 () -> verify(memberRepository).existsById(memberId),
