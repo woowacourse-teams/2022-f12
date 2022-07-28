@@ -1,5 +1,7 @@
 package com.woowacourse.f12.presentation.product;
 
+import static com.woowacourse.f12.domain.product.Category.*;
+
 import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.exception.badrequest.InvalidCategoryValueException;
 import com.woowacourse.f12.presentation.ViewConstant;
@@ -7,11 +9,11 @@ import java.util.Arrays;
 
 public enum CategoryConstant implements ViewConstant {
 
-    KEYBOARD_CONSTANT("keyboard", Category.KEYBOARD),
-    MOUSE_CONSTANT("mouse", Category.MOUSE),
-    MONITOR_CONSTANT("monitor", Category.MONITOR),
-    STAND_CONSTANT("stand", Category.STAND),
-    SOFTWARE_CONSTANT("software", Category.SOFTWARE);
+    KEYBOARD_CONSTANT("keyboard", KEYBOARD),
+    MOUSE_CONSTANT("mouse", MOUSE),
+    MONITOR_CONSTANT("monitor", MONITOR),
+    STAND_CONSTANT("stand", STAND),
+    SOFTWARE_CONSTANT("software", SOFTWARE);
 
     private final String viewValue;
     private final Category category;
