@@ -6,11 +6,12 @@ import com.woowacourse.f12.presentation.ViewConstant;
 import java.util.Arrays;
 
 public enum CategoryConstant implements ViewConstant {
-    KEYBOARD("keyboard", Category.KEYBOARD),
-    MOUSE("mouse", Category.MOUSE),
-    MONITOR("monitor", Category.MONITOR),
-    STAND("stand", Category.STAND),
-    SOFTWARE("software", Category.SOFTWARE);
+
+    KEYBOARD_CONSTANT("keyboard", Category.KEYBOARD),
+    MOUSE_CONSTANT("mouse", Category.MOUSE),
+    MONITOR_CONSTANT("monitor", Category.MONITOR),
+    STAND_CONSTANT("stand", Category.STAND),
+    SOFTWARE_CONSTANT("software", Category.SOFTWARE);
 
     private final String viewValue;
     private final Category category;
@@ -23,18 +24,18 @@ public enum CategoryConstant implements ViewConstant {
     public static CategoryConstant findByViewValue(final String viewValue) {
         return Arrays.stream(values())
                 .filter(category -> category.hasViewValue(viewValue))
-                .findFirst()
+                .findAny()
                 .orElseThrow(InvalidCategoryValueException::new);
     }
 
-    public static CategoryConstant fromDomain(final Category category) {
+    public static CategoryConstant from(final Category category) {
         return Arrays.stream(values())
                 .filter(constant -> constant.category.equals(category))
                 .findFirst()
                 .orElseThrow(InvalidCategoryValueException::new);
     }
 
-    public Category toDomain() {
+    public Category toCategory() {
         return this.category;
     }
 
