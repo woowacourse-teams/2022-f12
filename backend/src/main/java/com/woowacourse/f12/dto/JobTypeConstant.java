@@ -1,5 +1,10 @@
 package com.woowacourse.f12.dto;
 
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.ETC;
+import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
+import static com.woowacourse.f12.domain.member.JobType.MOBILE;
+
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.exception.badrequest.InvalidJobTypeException;
 import com.woowacourse.f12.presentation.ViewConstant;
@@ -9,10 +14,10 @@ import lombok.Getter;
 @Getter
 public enum JobTypeConstant implements ViewConstant {
 
-    FRONTEND("frontend", JobType.FRONTEND),
-    BACKEND("backend", JobType.BACKEND),
-    MOBILE("mobile", JobType.MOBILE),
-    ETC("etc", JobType.ETC);
+    FRONTEND_CONSTANT("frontend", FRONTEND),
+    BACKEND_CONSTANT("backend", BACKEND),
+    MOBILE_CONSTANT("mobile", MOBILE),
+    ETC_CONSTANT("etc", ETC);
 
     private final String value;
     private final JobType jobType;

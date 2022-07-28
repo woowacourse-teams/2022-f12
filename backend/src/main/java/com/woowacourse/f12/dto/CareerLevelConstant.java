@@ -1,5 +1,10 @@
 package com.woowacourse.f12.dto;
 
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.MID_LEVEL;
+import static com.woowacourse.f12.domain.member.CareerLevel.NONE;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.exception.badrequest.InvalidCareerLevelException;
 import com.woowacourse.f12.presentation.ViewConstant;
@@ -9,10 +14,10 @@ import lombok.Getter;
 @Getter
 public enum CareerLevelConstant implements ViewConstant {
 
-    NONE("none", CareerLevel.NONE),
-    JUNIOR("junior", CareerLevel.JUNIOR),
-    MID_LEVEL("midlevel", CareerLevel.MID_LEVEL),
-    SENIOR("senior", CareerLevel.SENIOR);
+    NONE_CONSTANT("none", NONE),
+    JUNIOR_CONSTANT("junior", JUNIOR),
+    MID_LEVEL_CONSTANT("midlevel", MID_LEVEL),
+    SENIOR_CONSTANT("senior", SENIOR);
 
     private final String value;
     private final CareerLevel careerLevel;

@@ -1,5 +1,7 @@
 package com.woowacourse.f12.domain.member;
 
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,7 +82,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains(keyword, CareerLevel.SENIOR, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findByContains(keyword, SENIOR, null, PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -98,7 +100,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findByContains(keyword, CareerLevel.SENIOR, JobType.BACKEND,
+        Slice<Member> slice = memberRepository.findByContains(keyword, SENIOR, BACKEND,
                 PageRequest.of(0, 2));
 
         // then
