@@ -28,12 +28,12 @@ public class ProductService {
         return ProductResponse.from(product);
     }
 
-    public ProductPageResponse findPage(CategoryConstant categoryConstant, final Pageable pageable) {
+    public ProductPageResponse findPage(final CategoryConstant categoryConstant, final Pageable pageable) {
         if (Objects.isNull(categoryConstant)) {
             return ProductPageResponse.from(productRepository.findPageBy(pageable));
         }
 
-        final Category category = categoryConstant.toDomain();
+        final Category category = categoryConstant.toCategory();
         return ProductPageResponse.from(productRepository.findPageByCategory(category, pageable));
     }
 }
