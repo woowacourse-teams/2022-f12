@@ -3,6 +3,7 @@ package com.woowacourse.f12.acceptance;
 import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
@@ -91,7 +92,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         REVIEW_RATING_5.작성_요청을_보낸다(product1.getId(), token);
         REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token);
         REVIEW_RATING_3.작성_요청을_보낸다(product2.getId(), token);
@@ -115,7 +116,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token);
         REVIEW_RATING_5.작성_요청을_보낸다(product2.getId(), token);
 
