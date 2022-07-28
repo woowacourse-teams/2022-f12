@@ -15,17 +15,17 @@ public class MemberWithProfileProductResponse {
     private String gitHubId;
     private String name;
     private String imageUrl;
-    private String careerLevel;
-    private String jobType;
+    private CareerLevelConstant careerLevel;
+    private JobTypeConstant jobType;
     private List<KeyboardResponse> profileProducts;
 
     private MemberWithProfileProductResponse() {
     }
 
-
-    private MemberWithProfileProductResponse(final Long id, final String gitHubId, final String name,
-                                             final String imageUrl, final String careerLevel,
-                                             final String jobType, final List<KeyboardResponse> profileProducts) {
+    public MemberWithProfileProductResponse(final Long id, final String gitHubId, final String name,
+                                            final String imageUrl,
+                                            final CareerLevelConstant careerLevel, final JobTypeConstant jobType,
+                                            final List<KeyboardResponse> profileProducts) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
@@ -41,7 +41,7 @@ public class MemberWithProfileProductResponse {
                 .map(inventoryProduct -> KeyboardResponse.from(inventoryProduct.getKeyboard()))
                 .collect(Collectors.toList());
         return new MemberWithProfileProductResponse(member.getId(), member.getGitHubId(), member.getName(),
-                member.getImageUrl(), CareerLevelConstant.findByCareerLevel(member.getCareerLevel()).getViewValue(),
-                JobTypeConstant.findByJobType(member.getJobType()).getViewValue(), profileProducts);
+                member.getImageUrl(), CareerLevelConstant.findByCareerLevel(member.getCareerLevel()),
+                JobTypeConstant.findByJobType(member.getJobType()), profileProducts);
     }
 }
