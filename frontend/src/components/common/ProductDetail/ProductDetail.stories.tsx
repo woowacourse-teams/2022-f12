@@ -1,7 +1,7 @@
-import ProductDetail from './ProductDetail';
+import ProductDetail from '@/components/common/ProductDetail/ProductDetail';
 import { ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
-import { products } from '../../../mocks/data';
+import { products } from '@/mocks/data';
 
 export default {
   component: ProductDetail,

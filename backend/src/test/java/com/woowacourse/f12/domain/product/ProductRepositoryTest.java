@@ -1,8 +1,9 @@
 package com.woowacourse.f12.domain.product;
 
-import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
-import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_2;
+import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
@@ -29,10 +30,10 @@ import org.springframework.data.domain.Sort.Order;
 
 @DataJpaTest
 @Import(JpaConfig.class)
-class KeyboardRepositoryTest {
+class ProductRepositoryTest {
 
     @Autowired
-    private KeyboardRepository keyboardRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -44,92 +45,92 @@ class KeyboardRepositoryTest {
     private EntityManager entityManager;
 
     @Test
-    void 키보드를_단일_조회_한다() {
+    void 제품을_단일_조회_한다() {
         // given
-        Keyboard keyboard = 키보드_저장(KEYBOARD_1.생성());
+        Product product = 제품_저장(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성());
-        리뷰_저장(REVIEW_RATING_4.작성(keyboard, member));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard, member));
+        리뷰_저장(REVIEW_RATING_4.작성(product, member));
+        리뷰_저장(REVIEW_RATING_5.작성(product, member));
         entityManager.flush();
-        entityManager.refresh(keyboard);
+        entityManager.refresh(product);
 
         // when
-        Keyboard savedKeyboard = keyboardRepository.findById(keyboard.getId())
+        Product savedProduct = productRepository.findById(product.getId())
                 .orElseThrow(IllegalArgumentException::new);
 
         // then
         assertAll(
-                () -> assertThat(savedKeyboard.getRating()).isEqualTo(4.5),
-                () -> assertThat(savedKeyboard.getReviewCount()).isEqualTo(2)
+                () -> assertThat(savedProduct.getRating()).isEqualTo(4.5),
+                () -> assertThat(savedProduct.getReviewCount()).isEqualTo(2)
         );
     }
 
     @Test
     void 키보드_전체_목록을_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드_저장(KEYBOARD_1.생성());
-        키보드_저장(KEYBOARD_2.생성());
+        Product product1 = 제품_저장(KEYBOARD_1.생성());
+        제품_저장(KEYBOARD_2.생성());
         Pageable pageable = PageRequest.of(0, 1);
 
         // when
-        Slice<Keyboard> slice = keyboardRepository.findPageBy(pageable);
+        Slice<Product> slice = productRepository.findPageByCategory(KEYBOARD, pageable);
 
         // then
         assertAll(
                 () -> assertThat(slice.hasNext()).isTrue(),
-                () -> assertThat(slice.getContent()).containsExactly(keyboard1)
+                () -> assertThat(slice.getContent()).containsExactly(product1)
         );
     }
 
     @Test
     void 키보드_전체_목록을_리뷰_많은_순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard1 = 키보드_저장(KEYBOARD_1.생성());
-        Keyboard keyboard2 = 키보드_저장(KEYBOARD_2.생성());
+        Product product1 = 제품_저장(KEYBOARD_1.생성());
+        Product product2 = 제품_저장(KEYBOARD_2.생성());
         Member member = memberRepository.save(CORINNE.생성());
 
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard1, member));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard2, member));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard2, member));
+        리뷰_저장(REVIEW_RATING_5.작성(product1, member));
+        리뷰_저장(REVIEW_RATING_5.작성(product2, member));
+        리뷰_저장(REVIEW_RATING_5.작성(product2, member));
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("reviewCount")));
 
         // when
-        Slice<Keyboard> slice = keyboardRepository.findPageBy(pageable);
+        Slice<Product> slice = productRepository.findPageByCategory(KEYBOARD, pageable);
 
         // then
         assertAll(
                 () -> assertThat(slice.hasNext()).isTrue(),
-                () -> assertThat(slice.getContent()).containsExactly(keyboard2)
+                () -> assertThat(slice.getContent()).containsExactly(product2)
         );
     }
 
     @Test
     void 키보드_전체_목록을_평균_평점_순으로_페이징하여_조회한다() {
         // given
-        Keyboard keyboard2 = 키보드_저장(KEYBOARD_1.생성());
-        Keyboard keyboard1 = 키보드_저장(KEYBOARD_2.생성());
+        Product product2 = 제품_저장(KEYBOARD_1.생성());
+        Product product1 = 제품_저장(KEYBOARD_2.생성());
         Member member = memberRepository.save(CORINNE.생성());
 
-        리뷰_저장(REVIEW_RATING_2.작성(keyboard1, member));
-        리뷰_저장(REVIEW_RATING_1.작성(keyboard1, member));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard2, member));
-        리뷰_저장(REVIEW_RATING_4.작성(keyboard2, member));
+        리뷰_저장(REVIEW_RATING_2.작성(product1, member));
+        리뷰_저장(REVIEW_RATING_1.작성(product1, member));
+        리뷰_저장(REVIEW_RATING_5.작성(product2, member));
+        리뷰_저장(REVIEW_RATING_4.작성(product2, member));
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating")));
 
         // when
-        Slice<Keyboard> slice = keyboardRepository.findPageBy(pageable);
+        Slice<Product> slice = productRepository.findPageByCategory(KEYBOARD, pageable);
 
         // then
         assertAll(
                 () -> assertThat(slice.hasNext()).isTrue(),
-                () -> assertThat(slice.getContent()).containsExactly(keyboard2)
+                () -> assertThat(slice.getContent()).containsExactly(product2)
         );
     }
 
-    private Keyboard 키보드_저장(Keyboard keyboard) {
-        return keyboardRepository.save(keyboard);
+    private Product 제품_저장(Product product) {
+        return productRepository.save(product);
     }
 
     private Review 리뷰_저장(Review review) {

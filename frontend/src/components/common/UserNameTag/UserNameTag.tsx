@@ -1,4 +1,4 @@
-import * as S from './UserNameTag.style';
+import * as S from '@/components/common/UserNameTag/UserNameTag.style';
 
 type Props = {
   profileImage: string;

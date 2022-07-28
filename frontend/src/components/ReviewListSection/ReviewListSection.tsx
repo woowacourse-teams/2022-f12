@@ -1,7 +1,7 @@
-import InfiniteScroll from '../common/InfiniteScroll/InfiniteScroll';
-import ReviewCard from '../common/ReviewCard/ReviewCard';
+import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
+import ReviewCard from '@/components/common/ReviewCard/ReviewCard';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
-import * as S from './ReviewListSection.style';
+import * as S from '@/components/ReviewListSection/ReviewListSection.style';
 import { useContext } from 'react';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 

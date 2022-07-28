@@ -53,7 +53,7 @@ class AuthInterceptorTest {
                 .willReturn(1L);
         // when
         mockMvc.perform(
-                        post("/api/v1/keyboards/" + 1L + "/reviews")
+                        post("/api/v1/products/" + 1L + "/reviews")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))

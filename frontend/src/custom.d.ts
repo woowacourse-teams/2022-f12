@@ -35,7 +35,11 @@ declare type InventoryProduct = {
 
 declare type Review = {
   id: number;
-  author: Exclude<Member, 'name'>;
+  author: {
+    id: number;
+    gitHubId: string;
+    imageUrl: string;
+  };
   product?: {
     id: number;
     name: string;

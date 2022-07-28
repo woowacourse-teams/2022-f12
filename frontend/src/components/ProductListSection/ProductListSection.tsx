@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import ProductCard from '../common/ProductCard/ProductCard';
-import SectionHeader from '../common/SectionHeader/SectionHeader';
+import ProductCard from '@/components/common/ProductCard/ProductCard';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
-import * as S from './ProductListSection.style';
-import ROUTES from '../../constants/routes';
-import InfiniteScroll from '../common/InfiniteScroll/InfiniteScroll';
-import Masonry from '../common/Masonry/Masonry';
+import * as S from '@/components/ProductListSection/ProductListSection.style';
+import ROUTES from '@/constants/routes';
+import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
+import Masonry from '@/components/common/Masonry/Masonry';
 
 type Props = {
   title: string;

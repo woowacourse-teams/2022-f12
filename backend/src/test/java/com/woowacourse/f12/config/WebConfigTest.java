@@ -24,7 +24,7 @@ class WebConfigTest {
     @Test
     void CORS가_허용되어있다() throws Exception {
         mockMvc.perform(
-                        options("/api/v1/keyboards")
+                        options("/api/v1/products")
                                 .header(HttpHeaders.ORIGIN, "http://localhost:8080")
                                 .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET")
                 )

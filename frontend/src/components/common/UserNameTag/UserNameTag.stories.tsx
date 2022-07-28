@@ -1,5 +1,5 @@
-import UserNameTag from './UserNameTag';
-import profileImage from '../../../mocks/sample_profile.jpg';
+import UserNameTag from '@/components/common/UserNameTag/UserNameTag';
+import profileImage from '@/mocks/sample_profile.jpg';
 import { ComponentStory } from '@storybook/react';
 
 export default {

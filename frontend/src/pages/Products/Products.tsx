@@ -25,7 +25,9 @@ const DefaultSort = options[1];
 
 function Products() {
   const location = useLocation();
-  const [sort, setSort] = useState<Sort>(DefaultSort.value);
+  const [sort, setSort] = useState<Sort>(
+    location.hash === '#popular' ? PopularSort.value : DefaultSort.value
+  );
   const [keyboards, getNextPage] = useProducts({
     size: 12,
     sort,

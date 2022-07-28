@@ -53,6 +53,14 @@ ext {
     set('snippetsDir', file("build/generated-snippets"))
 }
 
+task copySubmodule(type: Copy) {
+    copy {
+        from 'security'
+        include "*.yml"
+        into 'src/main/resources'
+    }
+}
+
 tasks.named('test') {
     outputs.dir snippetsDir
     useJUnitPlatform()

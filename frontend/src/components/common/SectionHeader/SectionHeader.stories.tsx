@@ -1,4 +1,4 @@
-import SectionHeader from './SectionHeader';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
 export default {
   component: SectionHeader,

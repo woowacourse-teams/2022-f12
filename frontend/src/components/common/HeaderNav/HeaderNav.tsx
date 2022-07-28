@@ -3,7 +3,7 @@ import ROUTES from '@/constants/routes';
 import useAuth from '@/hooks/useAuth';
 import { Link } from 'react-router-dom';
 
-import * as S from './HeaderNav.style';
+import * as S from '@/components/common/HeaderNav/HeaderNav.style';
 
 function HeaderNav() {
   const { logout, isLoggedIn } = useAuth();

@@ -38,3 +38,4 @@ out/
 
 ### auth ###
 application-auth.yml
+application-h2.yml
