@@ -6,23 +6,25 @@ import sampleKeyboard from '@/mocks/sample_keyboard.jpg';
 import GithubIcon from '@/assets/github.svg';
 import Chip from '@/components/common/Chip/Chip';
 
+const DISTANCE_DIFFERENCE = 116;
+
 function ProfileCard() {
   const [positionX, setPositionX] = useState(0);
 
   const handleLeftButtonClick = () => {
     if (positionX === 0) {
-      setPositionX(-232);
+      setPositionX(DISTANCE_DIFFERENCE * -2);
       return;
     }
-    setPositionX(positionX + 116);
+    setPositionX(positionX + DISTANCE_DIFFERENCE * 1);
   };
 
   const handleRightButtonClick = () => {
-    if (positionX <= -224) {
+    if (positionX <= DISTANCE_DIFFERENCE * -2) {
       setPositionX(0);
       return;
     }
-    setPositionX(positionX - 116);
+    setPositionX(positionX + DISTANCE_DIFFERENCE * -1);
   };
 
   return (
