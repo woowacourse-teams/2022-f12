@@ -82,13 +82,15 @@ function Product() {
     <>
       <S.Container>
         <StickyWrapper>
-          <AsyncWrapper
-            fallback={<Loading />}
-            isReady={isProductReady}
-            isError={isProductError}
-          >
-            <ProductDetail product={product} />
-          </AsyncWrapper>
+          <S.ProductDetailWrapper>
+            <AsyncWrapper
+              fallback={<Loading />}
+              isReady={isProductReady}
+              isError={isProductError}
+            >
+              <ProductDetail product={product} />
+            </AsyncWrapper>
+          </S.ProductDetailWrapper>
         </StickyWrapper>
         <S.Wrapper ref={reviewListRef}>
           {!isSheetOpen && isLoggedIn && (
