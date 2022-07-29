@@ -97,8 +97,8 @@ class ProductDocumentation extends Documentation {
         // given
         Map<CareerLevel, Double> careerLevel = Map.of(NONE, 0.0, JUNIOR, 0.5,
                 MID_LEVEL, 0.0, SENIOR, 0.5);
-        Map<JobType, Double> jobType = Map.of(FRONTEND, 0.5, BACKEND,
-                0.5, MOBILE, 0.0, ETC, 0.0);
+        Map<JobType, Double> jobType = Map.of(FRONTEND, 0.33, BACKEND,
+                0.33, MOBILE, 0.33, ETC, 0.0);
         given(productService.calculateMemberStatisticsById(anyLong()))
                 .willReturn(ProductStatisticsResponse.of(careerLevel, jobType));
 
