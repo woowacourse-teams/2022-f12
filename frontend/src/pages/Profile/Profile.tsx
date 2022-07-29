@@ -25,13 +25,17 @@ function Profile() {
   const {
     keyboards,
     isReady: isInventoryProductsReady,
-    refetchInventoryProducts,
+    refetch: refetchInventoryProducts,
     selectedProduct,
     setSelectedProduct,
     otherProducts,
     updateProfileProduct,
   } = useInventory();
-  const [myData, , isMyDataReady] = useGetOne<Member>({
+  const {
+    data: myData,
+    isReady: isMyDataReady,
+    isError: isMyDataError,
+  } = useGetOne<Member>({
     url: ENDPOINTS.ME,
     headers: { Authorization: `Bearer ${userData?.token}` },
   });
@@ -39,7 +43,11 @@ function Profile() {
   return (
     <S.Container>
       <S.ProfileSection>
-        <AsyncWrapper fallback={<Loading />} isReady={isMyDataReady}>
+        <AsyncWrapper
+          fallback={<Loading />}
+          isReady={isMyDataReady}
+          isError={isMyDataError}
+        >
           <UserInfo userData={myData} />
         </AsyncWrapper>
         <ProductSelect
@@ -54,7 +62,11 @@ function Profile() {
         <SectionHeader>
           <S.Title>보유한 장비 목록</S.Title>
         </SectionHeader>
-        <AsyncWrapper fallback={<Loading />} isReady={isInventoryProductsReady}>
+        <AsyncWrapper
+          fallback={<Loading />}
+          isReady={isInventoryProductsReady}
+          isError={isMyDataError}
+        >
           <InventoryProductList products={keyboards} />
         </AsyncWrapper>
       </S.InventorySection>
