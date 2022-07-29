@@ -18,6 +18,7 @@ type ReturnTypeWithoutProductId = {
   reviews: Review[];
   isReady: boolean;
   isLoading: boolean;
+  isError: boolean;
   getNextPage: () => void;
   refetch: () => void;
 };
@@ -43,6 +44,7 @@ function useReviews({ size, productId }: Props): ReturnType {
     refetch,
     isReady,
     isLoading,
+    isError,
   } = useGetMany<Review>({
     url:
       productId !== undefined
@@ -73,6 +75,7 @@ function useReviews({ size, productId }: Props): ReturnType {
     reviews,
     isReady,
     isLoading,
+    isError,
     getNextPage,
     refetch,
     postReview,

@@ -20,11 +20,14 @@ function Product() {
   const { productId: id } = useParams();
   const productId = Number(id);
 
-  const [product, isReady] = useProduct({ productId: Number(productId) });
+  const [product, isProductReady, isProductError] = useProduct({
+    productId: Number(productId),
+  });
   const {
     reviews,
     isLoading: isReviewLoading,
     isReady: isReviewReady,
+    isError: isReviewError,
     getNextPage,
     refetch: refetchReview,
     postReview,
@@ -79,7 +82,11 @@ function Product() {
     <>
       <S.Container>
         <StickyWrapper>
-          <AsyncWrapper fallback={<Loading />} isReady={isReady}>
+          <AsyncWrapper
+            fallback={<Loading />}
+            isReady={isProductReady}
+            isError={isProductError}
+          >
             <ProductDetail product={product} />
           </AsyncWrapper>
         </StickyWrapper>
@@ -97,6 +104,7 @@ function Product() {
             handleEdit={handleReviewEdit}
             isLoading={isReviewLoading}
             isReady={isReviewReady}
+            isError={isReviewError}
           />
           {isSheetOpen && isLoggedIn && (
             <ReviewBottomSheet

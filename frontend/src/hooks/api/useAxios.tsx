@@ -10,13 +10,24 @@ type ErrorResponseBody = {
   errorCode: keyof typeof API_ERROR_MESSAGES;
 };
 
-function useAxios(): [AxiosInstance, boolean] {
+type Return = {
+  axiosInstance: AxiosInstance;
+  isLoading: boolean;
+  isError: boolean;
+};
+
+function useAxios(): Return {
   const [isLoading, setLoading] = useState(false);
+  const [isError, setError] = useState(false);
 
   const axiosInstance = axios.create({ baseURL: BASE_URL });
 
   const handleAPIError = (error: AxiosError<ErrorResponseBody>) => {
     const errorResponseBody = error.response.data;
+
+    setError(true);
+    setLoading(false);
+
     if (!('errorCode' in errorResponseBody)) {
       throw new Error(API_ERROR_CODE_EXCEPTION_MESSAGES.NO_CODE);
     }
@@ -29,6 +40,7 @@ function useAxios(): [AxiosInstance, boolean] {
   };
 
   axiosInstance.interceptors.request.use((request) => {
+    setError(false);
     setLoading(true);
     return request;
   });
@@ -38,7 +50,7 @@ function useAxios(): [AxiosInstance, boolean] {
     return response;
   }, handleAPIError);
 
-  return [axiosInstance, isLoading];
+  return { axiosInstance, isLoading, isError };
 }
 
 export default useAxios;

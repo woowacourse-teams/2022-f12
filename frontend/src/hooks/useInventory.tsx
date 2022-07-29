@@ -11,20 +11,25 @@ type InventoryResponse = {
 type Return = {
   keyboards: InventoryProduct[];
   isReady: boolean;
+  isError: boolean;
   selectedProduct: InventoryProduct | null;
   setSelectedProduct: React.Dispatch<React.SetStateAction<InventoryProduct>>;
   otherProducts: InventoryProduct[];
-  refetchInventoryProducts: () => void;
+  refetch: () => void;
   updateProfileProduct: () => Promise<void>;
 };
 
 function useInventory(): Return {
   const userData = useContext(UserDataContext);
-  const [inventoryProducts, refetchInventoryProducts, isReady] =
-    useGetOne<InventoryResponse>({
-      url: ENDPOINTS.INVENTORY_PRODUCTS,
-      headers: { Authorization: `Bearer ${userData?.token}` },
-    });
+  const {
+    data: inventoryProducts,
+    refetch,
+    isReady,
+    isError,
+  } = useGetOne<InventoryResponse>({
+    url: ENDPOINTS.INVENTORY_PRODUCTS,
+    headers: { Authorization: `Bearer ${userData?.token}` },
+  });
 
   const [selectedProduct, setSelectedProduct] =
     useState<InventoryProduct | null>(null);
@@ -76,10 +81,11 @@ function useInventory(): Return {
   return {
     keyboards: inventoryProducts?.keyboards,
     isReady,
+    isError,
     selectedProduct,
     setSelectedProduct,
     otherProducts,
-    refetchInventoryProducts,
+    refetch,
     updateProfileProduct,
   };
 }

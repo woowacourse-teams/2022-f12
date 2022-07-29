@@ -14,6 +14,7 @@ type ReturnType = {
   getNextPage: () => void;
   isLoading: boolean;
   isReady: boolean;
+  isError: boolean;
 };
 
 function useProducts({ size, sort, category }: Props): ReturnType {
@@ -23,12 +24,13 @@ function useProducts({ size, sort, category }: Props): ReturnType {
     getNextPage,
     isLoading,
     isReady,
+    isError,
   } = useGetMany<Product>({
     url: `${ENDPOINTS.PRODUCTS}`,
     params,
   });
 
-  return { products, getNextPage, isLoading, isReady };
+  return { products, getNextPage, isLoading, isReady, isError };
 }
 
 export default useProducts;
