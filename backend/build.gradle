@@ -53,6 +53,12 @@ ext {
     set('snippetsDir', file("build/generated-snippets"))
 }
 
+task copySubmodule(type: Copy) {
+    from 'security'
+    include "*.yml"
+    into 'src/main/resources'
+}
+
 tasks.named('test') {
     outputs.dir snippetsDir
     useJUnitPlatform()
@@ -74,13 +80,6 @@ task copyDocument(type: Copy) {
     into file("src/main/resources/static")
 }
 
-task copySubmodule(type: Copy) {
-    from 'security'
-    include "*.yml"
-    into 'src/main/resources'
-}
-
 bootJar {
     dependsOn copyDocument
-    dependsOn copySubmodule
 }
