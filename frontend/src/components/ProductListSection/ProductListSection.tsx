@@ -8,6 +8,7 @@ import ROUTES from '@/constants/routes';
 import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
 import Masonry from '@/components/common/Masonry/Masonry';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
 
 type Props = {
   title: string;
@@ -41,7 +42,7 @@ function ProductListSection({
         {addOn}
       </SectionHeader>
       <S.Wrapper>
-        <AsyncWrapper fallback={<div>로딩 중</div>} isReady={isReady}>
+        <AsyncWrapper fallback={<Loading />} isReady={isReady}>
           {getNextPage !== undefined ? (
             <InfiniteScroll
               handleContentLoad={getNextPage}

@@ -1,3 +1,4 @@
+import Loading from '@/components/common/Loading/Loading';
 import { PropsWithChildren, useEffect, useMemo, useRef } from 'react';
 
 type Props = {
@@ -31,7 +32,7 @@ function InfiniteScroll({
   return (
     <>
       {children}
-      {isLoading && <div>로딩중..</div>}
+      {isLoading && <Loading />}
       <div ref={endRef} />
     </>
   );

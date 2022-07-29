@@ -9,6 +9,7 @@ import { UserDataContext } from '@/contexts/LoginContextProvider';
 import useGetOne from '@/hooks/api/useGetOne';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import InventoryProductList from '@/components/InventoryProductList/InventoryProductList';
+import Loading from '@/components/common/Loading/Loading';
 
 type Member = {
   id: string;
@@ -38,7 +39,7 @@ function Profile() {
   return (
     <S.Container>
       <S.ProfileSection>
-        <AsyncWrapper fallback={<div>로딩 중</div>} isReady={isMyDataReady}>
+        <AsyncWrapper fallback={<Loading />} isReady={isMyDataReady}>
           <UserInfo userData={myData} />
         </AsyncWrapper>
         <ProductSelect
@@ -53,10 +54,7 @@ function Profile() {
         <SectionHeader>
           <S.Title>보유한 장비 목록</S.Title>
         </SectionHeader>
-        <AsyncWrapper
-          fallback={<div>로딩 중</div>}
-          isReady={isInventoryProductsReady}
-        >
+        <AsyncWrapper fallback={<Loading />} isReady={isInventoryProductsReady}>
           <InventoryProductList products={keyboards} />
         </AsyncWrapper>
       </S.InventorySection>

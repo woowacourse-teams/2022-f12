@@ -88,7 +88,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
   const searchParams = new URLSearchParams(params);
 
   useEffect(() => {
-    if (refetchTrigger === 0) return; // 최초 렌더링 시 refetch 방지 임시 조치
+    if (data.length === 0) return; // 최초 렌더링 시 refetch 방지 임시 조치
     refetch();
   }, [searchParams.toString()]);
 

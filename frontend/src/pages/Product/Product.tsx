@@ -13,6 +13,7 @@ import Plus from '@/assets/plus.svg';
 import theme from '@/style/theme';
 import useAuth from '@/hooks/useAuth';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
 
 function Product() {
   const { isLoggedIn } = useAuth();
@@ -78,7 +79,7 @@ function Product() {
     <>
       <S.Container>
         <StickyWrapper>
-          <AsyncWrapper fallback={<div>로딩</div>} isReady={isReady}>
+          <AsyncWrapper fallback={<Loading />} isReady={isReady}>
             <ProductDetail product={product} />
           </AsyncWrapper>
         </StickyWrapper>

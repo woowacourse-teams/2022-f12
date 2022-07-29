@@ -5,6 +5,7 @@ import * as S from '@/components/ReviewListSection/ReviewListSection.style';
 import { useContext } from 'react';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
 
 type Props = {
   columns: number;
@@ -50,7 +51,7 @@ function ReviewListSection({
         <S.Title>최근 후기</S.Title>
       </SectionHeader>
       <S.Wrapper columns={columns}>
-        <AsyncWrapper fallback={<div>로딩 중</div>} isReady={isReady}>
+        <AsyncWrapper fallback={<Loading />} isReady={isReady}>
           <InfiniteScroll handleContentLoad={getNextPage} isLoading={isLoading}>
             {reviewCardList}
           </InfiniteScroll>
