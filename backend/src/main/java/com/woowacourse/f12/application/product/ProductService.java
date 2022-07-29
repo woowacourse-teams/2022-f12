@@ -5,7 +5,7 @@ import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
-import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
+import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.presentation.product.CategoryConstant;
 import java.util.Objects;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +24,7 @@ public class ProductService {
 
     public ProductResponse findById(final Long id) {
         final Product product = productRepository.findById(id)
-                .orElseThrow(KeyboardNotFoundException::new);
+                .orElseThrow(ProductNotFoundException::new);
         return ProductResponse.from(product);
     }
 

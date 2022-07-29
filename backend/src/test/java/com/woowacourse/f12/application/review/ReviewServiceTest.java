@@ -30,8 +30,8 @@ import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
-import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -135,7 +135,7 @@ class ReviewServiceTest {
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> reviewService.saveReviewAndInventoryProduct(1L, 1L, reviewRequest))
-                        .isExactlyInstanceOf(KeyboardNotFoundException.class),
+                        .isExactlyInstanceOf(ProductNotFoundException.class),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(productRepository).findById(productId),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
@@ -208,7 +208,7 @@ class ReviewServiceTest {
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> reviewService.findPageByProductId(0L, pageable))
-                        .isExactlyInstanceOf(KeyboardNotFoundException.class),
+                        .isExactlyInstanceOf(ProductNotFoundException.class),
                 () -> verify(productRepository).existsById(0L)
         );
     }

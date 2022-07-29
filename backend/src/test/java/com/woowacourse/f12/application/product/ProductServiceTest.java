@@ -16,7 +16,7 @@ import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
-import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
+import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.presentation.product.CategoryConstant;
 import java.util.List;
 import java.util.Optional;
@@ -66,7 +66,7 @@ class ProductServiceTest {
         // when then
         assertAll(
                 () -> assertThatThrownBy(() -> productService.findById(1L))
-                        .isExactlyInstanceOf(KeyboardNotFoundException.class),
+                        .isExactlyInstanceOf(ProductNotFoundException.class),
                 () -> verify(productRepository).findById(1L)
         );
     }
