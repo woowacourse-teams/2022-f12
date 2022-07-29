@@ -68,6 +68,14 @@ asciidoctor {
     dependsOn test
 }
 
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    copy {
+        from file("${asciidoctor.outputDir}")
+        into file("src/main/resources/static")
+    }
+}
+
 task copySubmodule(type: Copy) {
     copy {
         from 'security'
@@ -77,9 +85,6 @@ task copySubmodule(type: Copy) {
 }
 
 bootJar {
-    dependsOn asciidoctor
-    copy {
-        from file("${asciidoctor.outputDir}")
-        into file("src/main/resources/static")
-    }
+    dependsOn copyDocument
+    dependsOn copySubmodule
 }
