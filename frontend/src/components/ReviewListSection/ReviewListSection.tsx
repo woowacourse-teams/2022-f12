@@ -52,8 +52,8 @@ function ReviewListSection({
       <SectionHeader>
         <S.Title>최근 후기</S.Title>
       </SectionHeader>
-      <S.Wrapper columns={columns}>
-        <AsyncWrapper fallback={<Loading />} isReady={isReady}>
+      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
+        <S.Wrapper columns={columns}>
           <InfiniteScroll
             handleContentLoad={getNextPage}
             isLoading={isLoading}
@@ -61,8 +61,8 @@ function ReviewListSection({
           >
             {reviewCardList}
           </InfiniteScroll>
-        </AsyncWrapper>
-      </S.Wrapper>
+        </S.Wrapper>
+      </AsyncWrapper>
     </S.Container>
   );
 }

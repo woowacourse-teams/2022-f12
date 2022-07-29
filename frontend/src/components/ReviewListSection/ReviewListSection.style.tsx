@@ -5,6 +5,8 @@ export const Container = styled.section`
   flex-direction: column;
   gap: 1rem;
   width: 100%;
+
+  min-height: 10rem;
 `;
 
 export const Title = styled.h1`
