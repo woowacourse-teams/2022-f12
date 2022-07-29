@@ -91,7 +91,7 @@ export const InventoryList = styled.div<{ positionX: number }>`
   display: flex;
   align-items: flex-start;
   gap: 2rem;
-  width: 192px;
+  width: 200px;
   height: 100px;
   transform: ${({ positionX }) => `translateX(${positionX}px)`};
   transition: linear 0.2s;
@@ -100,6 +100,7 @@ export const InventoryList = styled.div<{ positionX: number }>`
 export const InventoryItem = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 0 2px;
 `;
 
 export const ProductImage = styled.img`

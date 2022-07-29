@@ -11,10 +11,10 @@ function ProfileCard() {
 
   const handleLeftButtonClick = () => {
     if (positionX === 0) {
-      setPositionX(-224);
+      setPositionX(-232);
       return;
     }
-    setPositionX(positionX + 112);
+    setPositionX(positionX + 116);
   };
 
   const handleRightButtonClick = () => {
@@ -22,7 +22,7 @@ function ProfileCard() {
       setPositionX(0);
       return;
     }
-    setPositionX(positionX - 112);
+    setPositionX(positionX - 116);
   };
 
   return (
