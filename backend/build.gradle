@@ -61,7 +61,7 @@ task copySubmodule(type: Copy) {
     }
 }
 
-tasks.named('test') {
+test {
     outputs.dir snippetsDir
     useJUnitPlatform()
 }
