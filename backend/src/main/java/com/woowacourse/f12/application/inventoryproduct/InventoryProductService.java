@@ -6,7 +6,7 @@ import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductException;
-import com.woowacourse.f12.exception.notfound.InventoryItemNotFoundException;
+import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import java.util.List;
 import java.util.Objects;
@@ -51,7 +51,7 @@ public class InventoryProductService {
 
     private void updateProfileProduct(final Long inventoryItemId, final boolean selected) {
         final InventoryProduct inventoryProduct = inventoryProductRepository.findById(inventoryItemId)
-                .orElseThrow(InventoryItemNotFoundException::new);
+                .orElseThrow(InventoryProductNotFoundException::new);
         inventoryProduct.updateSelected(selected);
     }
 

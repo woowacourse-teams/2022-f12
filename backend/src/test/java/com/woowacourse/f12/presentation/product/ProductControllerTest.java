@@ -16,7 +16,7 @@ import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
-import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
+import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -105,7 +105,7 @@ class ProductControllerTest {
     void 제품_단일_조회_실패_존재_하지_않는_아이디() throws Exception {
         // given
         given(productService.findById(anyLong()))
-                .willThrow(new KeyboardNotFoundException());
+                .willThrow(new ProductNotFoundException());
 
         // when
         mockMvc.perform(get("/api/v1/products/0"))

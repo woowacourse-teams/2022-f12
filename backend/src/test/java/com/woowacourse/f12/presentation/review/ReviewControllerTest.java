@@ -1,7 +1,7 @@
 package com.woowacourse.f12.presentation.review;
 
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,8 +30,8 @@ import com.woowacourse.f12.exception.badrequest.BlankContentException;
 import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
 import com.woowacourse.f12.exception.badrequest.InvalidRatingValueException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
-import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import java.util.HashMap;
@@ -261,7 +261,7 @@ class ReviewControllerTest {
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
-                .willThrow(new KeyboardNotFoundException());
+                .willThrow(new ProductNotFoundException());
 
         // when
         mockMvc.perform(
@@ -374,7 +374,7 @@ class ReviewControllerTest {
     void 특정_상품의_리뷰_페이지_조회_실패_상품_존재_하지않음() throws Exception {
         // given
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
-                .willThrow(new KeyboardNotFoundException());
+                .willThrow(new ProductNotFoundException());
 
         // when
         mockMvc.perform(get("/api/v1/products/" + 0L + "/reviews?size=150&page=0&sort=rating,desc"))
