@@ -26,6 +26,7 @@ export const ProfileImageWrapper = styled.div`
   height: 9.5rem;
   border-radius: 50%;
   overflow: hidden;
+  box-shadow: 5px 5px 10px ${({ theme }) => theme.colors.secondary};
 `;
 
 export const ProfileImage = styled.img`
