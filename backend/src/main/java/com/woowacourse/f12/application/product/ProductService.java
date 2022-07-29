@@ -7,13 +7,13 @@ import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.domain.review.CareerLevelCount;
 import com.woowacourse.f12.domain.review.JobTypeCount;
+import com.woowacourse.f12.domain.review.MemberInfoStatistics;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.presentation.product.CategoryConstant;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -52,48 +52,22 @@ public class ProductService {
         if (!productRepository.existsById(productId)) {
             throw new ProductNotFoundException();
         }
-        final List<CareerLevelCount> careerLevelCounts = reviewRepository.findCareerLevelCountByProductId(productId);
-        final List<JobTypeCount> jobTypeCounts = reviewRepository.findJobTypeCountByProductId(productId);
-
-        final Map<CareerLevel, Double> careerLevel = calculateCareerLevelStatistics(careerLevelCounts);
-        final Map<JobType, Double> jobType = calculateJobTypeStatistics(jobTypeCounts);
+        final Map<CareerLevel, Double> careerLevel = calculateWithCareerLevel(productId);
+        final Map<JobType, Double> jobType = calculateWithJobType(productId);
 
         return ProductStatisticsResponse.of(careerLevel, jobType);
     }
 
-    private Map<CareerLevel, Double> calculateCareerLevelStatistics(
-            final List<CareerLevelCount> careerLevelCounts) {
-        final Map<CareerLevel, Double> careerLevel = new EnumMap<>(CareerLevel.class);
-        final long totalCareerLevelCount = careerLevelCounts.stream()
-                .mapToLong(CareerLevelCount::getCount)
-                .sum();
-
-        for (CareerLevel careerLevel1 : CareerLevel.values()) {
-            careerLevel.put(careerLevel1, 0.0);
-        }
-
-        for (CareerLevelCount careerLevelCount : careerLevelCounts) {
-            final CareerLevel key = careerLevelCount.getCareerLevel();
-            careerLevel.put(key, careerLevelCount.getCount() / (double) totalCareerLevelCount);
-        }
-
-        return careerLevel;
+    private Map<JobType, Double> calculateWithJobType(final Long productId) {
+        final List<JobTypeCount> jobTypeCounts = reviewRepository.findJobTypeCountByProductId(productId);
+        final MemberInfoStatistics<JobTypeCount, JobType> jobTypeStatistics = new MemberInfoStatistics<>(jobTypeCounts);
+        return jobTypeStatistics.calculateStatistics(JobType.values());
     }
 
-    private Map<JobType, Double> calculateJobTypeStatistics(final List<JobTypeCount> jobTypeCounts) {
-        final Map<JobType, Double> jobType = new EnumMap<>(JobType.class);
-        final long totalJobTypeCount = jobTypeCounts.stream()
-                .mapToLong(JobTypeCount::getCount)
-                .sum();
-
-        for (JobType jobType1 : JobType.values()) {
-            jobType.put(jobType1, 0.0);
-        }
-
-        for (JobTypeCount jobTypeCount : jobTypeCounts) {
-            final JobType key = jobTypeCount.getJobType();
-            jobType.put(key, jobTypeCount.getCount() / (double) totalJobTypeCount);
-        }
-        return jobType;
+    private Map<CareerLevel, Double> calculateWithCareerLevel(final Long productId) {
+        final List<CareerLevelCount> careerLevelCounts = reviewRepository.findCareerLevelCountByProductId(productId);
+        final MemberInfoStatistics<CareerLevelCount, CareerLevel> careerLevelStatistics = new MemberInfoStatistics<>(
+                careerLevelCounts);
+        return careerLevelStatistics.calculateStatistics(CareerLevel.values());
     }
 }
