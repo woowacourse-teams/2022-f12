@@ -54,9 +54,11 @@ ext {
 }
 
 task copySubmodule(type: Copy) {
-    from 'security'
-    include "*.yml"
-    into 'src/main/resources'
+    copy {
+        from 'security'
+        include "*.yml"
+        into 'src/main/resources'
+    }
 }
 
 tasks.named('test') {
