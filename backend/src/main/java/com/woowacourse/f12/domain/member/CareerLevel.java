@@ -1,6 +1,6 @@
 package com.woowacourse.f12.domain.member;
 
-public enum CareerLevel {
+public enum CareerLevel implements MemberInfo {
 
     NONE,
     JUNIOR,
