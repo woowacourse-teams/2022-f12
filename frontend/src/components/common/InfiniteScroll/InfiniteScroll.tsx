@@ -1,17 +1,22 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { PropsWithChildren, useEffect, useMemo, useRef } from 'react';
 
 type Props = {
   handleContentLoad: () => void;
-  children: React.ReactNode;
+  isLoading: boolean;
 };
 
-function InfiniteScroll({ handleContentLoad, children }: Props) {
+function InfiniteScroll({
+  handleContentLoad,
+  isLoading,
+  children,
+}: PropsWithChildren<Props>) {
   const endRef = useRef<HTMLDivElement>(null);
 
   const endOfContentObserver = useMemo(
     () =>
       new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
+          console.log(1);
           handleContentLoad();
         }
       }),
@@ -26,6 +31,7 @@ function InfiniteScroll({ handleContentLoad, children }: Props) {
   return (
     <>
       {children}
+      {isLoading && <div>로딩중..</div>}
       <div ref={endRef} />
     </>
   );

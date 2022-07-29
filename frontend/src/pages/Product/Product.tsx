@@ -20,14 +20,16 @@ function Product() {
   const productId = Number(id);
 
   const [product, isReady] = useProduct({ productId: Number(productId) });
-  const [
+  const {
     reviews,
+    isLoading: isReviewLoading,
+    isReady: isReviewReady,
     getNextPage,
-    refetchReview,
+    refetch: refetchReview,
     postReview,
     deleteReview,
-    editReview,
-  ] = useReviews({
+    putReview: editReview,
+  } = useReviews({
     size: '6',
     productId,
   });
@@ -92,6 +94,8 @@ function Product() {
             getNextPage={getNextPage}
             handleDelete={handleReviewDeletion}
             handleEdit={handleReviewEdit}
+            isLoading={isReviewLoading}
+            isReady={isReviewReady}
           />
           {isSheetOpen && isLoggedIn && (
             <ReviewBottomSheet
