@@ -6,10 +6,10 @@ import useSessionStorage from '@/hooks/useSessionStorage';
 
 import { ENDPOINTS } from '@/constants/api';
 
-type PropsWithoutProductId = { size: number };
+type PropsWithoutProductId = { size: string };
 type PropsWithProductId = PropsWithoutProductId & { productId: number };
 type Props = {
-  size: number;
+  size: string;
   productId?: number;
   reviewId?: number;
 };
@@ -44,8 +44,10 @@ function useReviews({ size, productId }: Props): ReturnType {
       productId !== undefined
         ? `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`
         : `${ENDPOINTS.REVIEWS}`,
-    size,
-    sort: 'createdAt,desc',
+    params: {
+      size,
+      sort: 'createdAt,desc',
+    },
   });
 
   const postReview = usePost<ReviewInput>({

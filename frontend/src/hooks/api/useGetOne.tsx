@@ -1,16 +1,16 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
-import axiosInstance from '@/hooks/api/axiosInstance';
+import useAxios from '@/hooks/api/useAxios';
 
 type Props = {
   url: string;
   headers?: null | AxiosRequestHeaders;
 };
 
-function useGetOne<T>({ url, headers }: Props): [T, () => void] {
+function useGetOne<T>({ url, headers }: Props): [T, () => void, boolean] {
   const [data, setData] = useState<null | T>(null);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
-
+  const [axiosInstance, isLoading] = useAxios();
   const fetchData = async () => {
     const { data }: AxiosResponse<T> = await axiosInstance.get(url, {
       headers,
@@ -32,6 +32,8 @@ function useGetOne<T>({ url, headers }: Props): [T, () => void] {
       });
   }, [refetchTrigger]);
 
-  return [data, refetch];
+  const isReady = !isLoading && !!data;
+
+  return [data, refetch, isReady];
 }
 export default useGetOne;

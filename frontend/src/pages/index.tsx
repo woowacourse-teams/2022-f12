@@ -5,7 +5,6 @@ import Products from '@/pages/Products/Products';
 import Login from '@/components/Login/Login';
 import Register from '@/pages/Register/Register';
 import ROUTES from '@/constants/routes';
-import InventoryContextProvider from '@/contexts/InventoryContextProvider';
 import Profile from '@/pages/Profile/Profile';
 import UserRoutes from '@/pages/common/UserRoutes/UserRoutes';
 import NonUserRoutes from '@/pages/common/NonUserRoutes/NonUserRoutes';
@@ -17,11 +16,7 @@ const USER_ROUTES = [
       { path: ROUTES.REGISTER, element: <Register /> },
       {
         path: ROUTES.PROFILE,
-        element: (
-          <InventoryContextProvider>
-            <Profile />
-          </InventoryContextProvider>
-        ),
+        element: <Profile />,
       },
     ],
   },

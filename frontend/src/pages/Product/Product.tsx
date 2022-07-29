@@ -12,13 +12,14 @@ import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
 import Plus from '@/assets/plus.svg';
 import theme from '@/style/theme';
 import useAuth from '@/hooks/useAuth';
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 
 function Product() {
   const { isLoggedIn } = useAuth();
   const { productId: id } = useParams();
   const productId = Number(id);
 
-  const product = useProduct({ productId: Number(productId) });
+  const [product, isReady] = useProduct({ productId: Number(productId) });
   const [
     reviews,
     getNextPage,
@@ -27,7 +28,7 @@ function Product() {
     deleteReview,
     editReview,
   ] = useReviews({
-    size: 6,
+    size: '6',
     productId,
   });
 
@@ -72,40 +73,36 @@ function Product() {
   };
 
   return (
-    !!product && (
-      <>
-        <S.Container>
-          <StickyWrapper>
-            <ProductDetail
-              imageUrl={product.imageUrl}
-              name={product.name}
-              rating={product.rating}
+    <>
+      <S.Container>
+        <StickyWrapper>
+          <AsyncWrapper fallback={<div>로딩</div>} isReady={isReady}>
+            <ProductDetail product={product} />
+          </AsyncWrapper>
+        </StickyWrapper>
+        <S.Wrapper ref={reviewListRef}>
+          {!isSheetOpen && isLoggedIn && (
+            <FloatingButton clickHandler={toggleSheetOpen}>
+              <Plus stroke={theme.colors.white} />
+            </FloatingButton>
+          )}
+          <ReviewListSection
+            columns={1}
+            data={reviews}
+            getNextPage={getNextPage}
+            handleDelete={handleReviewDeletion}
+            handleEdit={handleReviewEdit}
+          />
+          {isSheetOpen && isLoggedIn && (
+            <ReviewBottomSheet
+              handleClose={toggleSheetOpen}
+              handleSubmit={handleReviewSubmit}
+              isEdit={false}
             />
-          </StickyWrapper>
-          <S.Wrapper ref={reviewListRef}>
-            {!isSheetOpen && isLoggedIn && (
-              <FloatingButton clickHandler={toggleSheetOpen}>
-                <Plus stroke={theme.colors.white} />
-              </FloatingButton>
-            )}
-            <ReviewListSection
-              columns={1}
-              data={reviews}
-              getNextPage={getNextPage}
-              handleDelete={handleReviewDeletion}
-              handleEdit={handleReviewEdit}
-            />
-            {isSheetOpen && isLoggedIn && (
-              <ReviewBottomSheet
-                handleClose={toggleSheetOpen}
-                handleSubmit={handleReviewSubmit}
-                isEdit={false}
-              />
-            )}
-          </S.Wrapper>
-        </S.Container>
-      </>
-    )
+          )}
+        </S.Wrapper>
+      </S.Container>
+    </>
   );
 }
 

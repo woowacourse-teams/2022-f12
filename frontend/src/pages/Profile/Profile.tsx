@@ -1,16 +1,14 @@
-import ProductBar from '@/components/common/ProductBar/ProductBar';
 import UserInfo from '@/components/common/UserInfo/UserInfo';
 import * as S from '@/pages/Profile/Profile.style';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import ProductSelect from '@/components/common/ProductSelect/ProductSelect';
-import useAuth from '@/hooks/useAuth';
-import { Navigate } from 'react-router-dom';
-import ROUTES from '@/constants/routes';
 import useInventory from '@/hooks/useInventory';
 import { ENDPOINTS } from '@/constants/api';
 import { useContext } from 'react';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 import useGetOne from '@/hooks/api/useGetOne';
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import InventoryProductList from '@/components/InventoryProductList/InventoryProductList';
 
 type Member = {
   id: string;
@@ -23,39 +21,46 @@ type Member = {
 
 function Profile() {
   const userData = useContext(UserDataContext);
-  const { isLoggedIn } = useAuth();
-  const { keyboards, refetchInventoryProducts } = useInventory();
-  const [myData] = useGetOne<Member>({
+  const {
+    keyboards,
+    isReady: isInventoryProductsReady,
+    refetchInventoryProducts,
+    selectedProduct,
+    setSelectedProduct,
+    otherProducts,
+    updateProfileProduct,
+  } = useInventory();
+  const [myData, , isMyDataReady] = useGetOne<Member>({
     url: ENDPOINTS.ME,
     headers: { Authorization: `Bearer ${userData?.token}` },
   });
 
-  return isLoggedIn ? (
+  return (
     <S.Container>
       <S.ProfileSection>
-        <UserInfo
-          profileImageUrl={myData?.imageUrl}
-          username={`@${myData?.gitHubId}`}
+        <AsyncWrapper fallback={<div>로딩 중</div>} isReady={isMyDataReady}>
+          <UserInfo userData={myData} />
+        </AsyncWrapper>
+        <ProductSelect
+          submitHandler={refetchInventoryProducts}
+          selectedProduct={selectedProduct}
+          setSelectedProduct={setSelectedProduct}
+          otherProducts={otherProducts}
+          updateProfileProduct={updateProfileProduct}
         />
-        <ProductSelect submitHandler={refetchInventoryProducts} />
       </S.ProfileSection>
       <S.InventorySection>
         <SectionHeader>
           <S.Title>보유한 장비 목록</S.Title>
         </SectionHeader>
-        <S.InventoryProductList>
-          {keyboards.map(({ id: inventoryId, selected, product: { name } }) => (
-            <ProductBar
-              key={inventoryId}
-              name={name}
-              barType={selected ? 'selected' : 'default'}
-            />
-          ))}
-        </S.InventoryProductList>
+        <AsyncWrapper
+          fallback={<div>로딩 중</div>}
+          isReady={isInventoryProductsReady}
+        >
+          <InventoryProductList products={keyboards} />
+        </AsyncWrapper>
       </S.InventorySection>
     </S.Container>
-  ) : (
-    <Navigate to={ROUTES.HOME} />
   );
 }
 
