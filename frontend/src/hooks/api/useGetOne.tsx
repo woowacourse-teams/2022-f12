@@ -10,7 +10,7 @@ type Props = {
 function useGetOne<T>({ url, headers }: Props): [T, () => void, boolean] {
   const [data, setData] = useState<null | T>(null);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
-  const [axiosInstance, isLoading] = useAxios();
+  const { axiosInstance, isLoading } = useAxios();
   const fetchData = async () => {
     const { data }: AxiosResponse<T> = await axiosInstance.get(url, {
       headers,

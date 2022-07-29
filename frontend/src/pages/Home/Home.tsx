@@ -8,6 +8,7 @@ import useReviews from '@/hooks/useReviews';
 function Home() {
   const {
     products,
+    isError: isProductError,
     isLoading: isProductLoading,
     isReady: isProductReady,
   } = useProducts({
@@ -19,6 +20,7 @@ function Home() {
     getNextPage,
     isLoading: isReviewLoading,
     isReady: isReviewReady,
+    isError: isReviewError,
   } = useReviews({ size: '6' });
 
   const moreProductsLink = (
@@ -32,6 +34,7 @@ function Home() {
         data={products}
         isLoading={isProductLoading}
         isReady={isProductReady}
+        isError={isProductError}
         addOn={moreProductsLink}
       />
       <ReviewListSection
@@ -40,6 +43,7 @@ function Home() {
         getNextPage={getNextPage}
         isLoading={isReviewLoading}
         isReady={isReviewReady}
+        isError={isReviewError}
       />
     </>
   );

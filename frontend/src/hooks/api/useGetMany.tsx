@@ -1,6 +1,7 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
 import useAxios from '@/hooks/api/useAxios';
+import logError from '@/utils/logError';
 
 type SearchParams = Record<string, string>;
 
@@ -22,6 +23,7 @@ type Return<T> = {
   data: T[];
   isLoading: boolean;
   isReady: boolean;
+  isError: boolean;
   getNextPage: () => void;
   refetch: () => void;
 };
@@ -35,7 +37,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
   const [nextPageTrigger, setNextPageTrigger] = useState(0);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
 
-  const [axiosInstance, isLoading] = useAxios();
+  const { axiosInstance, isLoading, isError } = useAxios();
 
   const fetchData = async () => {
     const {
@@ -53,16 +55,23 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
   };
 
   const getNextPage = () => {
-    console.log('getting next page');
     setNextPageTrigger((prevTrigger) => prevTrigger + 1);
   };
 
   const refetch = () => {
-    console.log('refetching');
     setRefetchTrigger((prevTrigger) => prevTrigger + 1);
     setPage(0);
     setHasNextPage(true);
     setData([]);
+  };
+
+  const getCurrentParamString = () =>
+    Object.entries(params)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('\n    ');
+
+  const getErrorStateMessage = () => {
+    return `@useGetMany\n상태:\n    url: ${url}\n    ${getCurrentParamString()}\n    page: ${page}`;
   };
 
   useEffect(() => {
@@ -80,8 +89,9 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
           setHasNextPage(false);
         }
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((error: Error) => {
+        logError(error, getErrorStateMessage());
+        alert('사용자에게 표시할 오류 메시지');
       });
   }, [nextPageTrigger, refetchTrigger]);
 
@@ -94,6 +104,6 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
 
   const isReady = data.length !== 0;
 
-  return { data, getNextPage, refetch, isLoading, isReady };
+  return { data, getNextPage, refetch, isLoading, isReady, isError };
 }
 export default useGetMany;

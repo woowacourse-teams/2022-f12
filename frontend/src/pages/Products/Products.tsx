@@ -31,7 +31,7 @@ function Products() {
   );
   const [searchParams] = useSearchParams();
   const category = searchParams.get('category');
-  const { products, getNextPage, isLoading, isReady } = useProducts({
+  const { products, getNextPage, isLoading, isReady, isError } = useProducts({
     size: '12',
     sort,
     category,
@@ -58,6 +58,7 @@ function Products() {
       addOn={<Select value={sort} setValue={setSort} options={options} />}
       isLoading={isLoading}
       isReady={isReady}
+      isError={isError}
     />
   );
 }

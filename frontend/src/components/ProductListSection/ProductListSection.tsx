@@ -16,6 +16,7 @@ type Props = {
   data: Product[];
   isLoading: boolean;
   isReady: boolean;
+  isError: boolean;
   getNextPage?: () => void;
 };
 
@@ -25,6 +26,7 @@ function ProductListSection({
   data,
   isLoading,
   isReady,
+  isError,
   getNextPage,
 }: Props) {
   const ProductCardList = (data: Product[]) => {
@@ -42,18 +44,25 @@ function ProductListSection({
         {addOn}
       </SectionHeader>
       <S.Wrapper>
-        <AsyncWrapper fallback={<Loading />} isReady={isReady}>
-          {getNextPage !== undefined ? (
+        {getNextPage !== undefined ? (
+          <AsyncWrapper fallback={<Loading />} isReady={isReady}>
             <InfiniteScroll
               handleContentLoad={getNextPage}
               isLoading={isLoading}
+              isError={isError}
             >
               <Masonry columnCount={4}>{ProductCardList(data)}</Masonry>
             </InfiniteScroll>
-          ) : (
+          </AsyncWrapper>
+        ) : (
+          <AsyncWrapper
+            fallback={<Loading />}
+            isReady={isReady}
+            isError={isError}
+          >
             <Masonry columnCount={4}>{ProductCardList(data)}</Masonry>
-          )}
-        </AsyncWrapper>
+          </AsyncWrapper>
+        )}
       </S.Wrapper>
     </S.Container>
   );

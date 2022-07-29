@@ -12,6 +12,7 @@ type Props = {
   data: Review[];
   isLoading: boolean;
   isReady: boolean;
+  isError: boolean;
   getNextPage: () => void;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => void;
@@ -25,6 +26,7 @@ function ReviewListSection({
   handleEdit,
   isLoading,
   isReady,
+  isError,
 }: Props) {
   const userData = useContext(UserDataContext);
   const loginUserGithubId = userData?.member.gitHubId;
@@ -52,7 +54,11 @@ function ReviewListSection({
       </SectionHeader>
       <S.Wrapper columns={columns}>
         <AsyncWrapper fallback={<Loading />} isReady={isReady}>
-          <InfiniteScroll handleContentLoad={getNextPage} isLoading={isLoading}>
+          <InfiniteScroll
+            handleContentLoad={getNextPage}
+            isLoading={isLoading}
+            isError={isError}
+          >
             {reviewCardList}
           </InfiniteScroll>
         </AsyncWrapper>

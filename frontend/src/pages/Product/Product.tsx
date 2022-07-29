@@ -25,6 +25,7 @@ function Product() {
     reviews,
     isLoading: isReviewLoading,
     isReady: isReviewReady,
+    isError: isReviewError,
     getNextPage,
     refetch: refetchReview,
     postReview,
@@ -97,6 +98,7 @@ function Product() {
             handleEdit={handleReviewEdit}
             isLoading={isReviewLoading}
             isReady={isReviewReady}
+            isError={isReviewError}
           />
           {isSheetOpen && isLoggedIn && (
             <ReviewBottomSheet
