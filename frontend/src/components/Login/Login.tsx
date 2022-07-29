@@ -1,3 +1,4 @@
+import Loading from '@/components/common/Loading/Loading';
 import ROUTES from '@/constants/routes';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 import useAuth from '@/hooks/useAuth';
@@ -28,7 +29,7 @@ function Login() {
     navigate(ROUTES.REGISTER);
   }, [userData]);
 
-  return <div>로그인 진행중..</div>;
+  return <Loading />;
 }
 
 export default Login;

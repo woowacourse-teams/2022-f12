@@ -6,29 +6,27 @@ import useSessionStorage from '@/hooks/useSessionStorage';
 
 import { ENDPOINTS } from '@/constants/api';
 
-type PropsWithoutProductId = { size: number };
+type PropsWithoutProductId = { size: string };
 type PropsWithProductId = PropsWithoutProductId & { productId: number };
 type Props = {
-  size: number;
+  size: string;
   productId?: number;
   reviewId?: number;
 };
 
-type ReturnTypeWithoutProductId = [Review[], () => void, () => void];
-type ReturnTypeWithProductId = [
-  ...ReturnTypeWithoutProductId,
-  (reviewInput: ReviewInput) => Promise<void>,
-  (id: number) => Promise<void>,
-  (reviewInput: ReviewInput, id: number) => Promise<void>
-];
-type ReturnType = [
-  Review[],
-  () => void,
-  () => void,
-  ((reviewInput: ReviewInput) => Promise<void>)?,
-  ((id: number) => Promise<void>)?,
-  ((reviewInput: ReviewInput, id: number) => Promise<void>)?
-];
+type ReturnTypeWithoutProductId = {
+  reviews: Review[];
+  isReady: boolean;
+  isLoading: boolean;
+  getNextPage: () => void;
+  refetch: () => void;
+};
+type ReturnTypeWithProductId = ReturnTypeWithoutProductId & {
+  postReview: (reviewInput: ReviewInput) => Promise<void>;
+  deleteReview: (id: number) => Promise<void>;
+  putReview: (reviewInput: ReviewInput, id: number) => Promise<void>;
+};
+type ReturnType = ReturnTypeWithoutProductId & ReturnTypeWithProductId;
 
 function useReviews({
   size,
@@ -39,13 +37,21 @@ function useReviews({
 }: PropsWithProductId): ReturnTypeWithProductId;
 function useReviews({ size, productId }: Props): ReturnType {
   const [data] = useSessionStorage<UserData>('userData');
-  const [reviews, getNextPage, refetch] = useGetMany<Review>({
+  const {
+    data: reviews,
+    getNextPage,
+    refetch,
+    isReady,
+    isLoading,
+  } = useGetMany<Review>({
     url:
       productId !== undefined
         ? `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`
         : `${ENDPOINTS.REVIEWS}`,
-    size,
-    sort: 'createdAt,desc',
+    params: {
+      size,
+      sort: 'createdAt,desc',
+    },
   });
 
   const postReview = usePost<ReviewInput>({
@@ -63,14 +69,16 @@ function useReviews({ size, productId }: Props): ReturnType {
     headers: { Authorization: `Bearer ${data?.token}` },
   });
 
-  return [
+  return {
     reviews,
+    isReady,
+    isLoading,
     getNextPage,
     refetch,
-    productId !== undefined && postReview,
+    postReview,
     deleteReview,
     putReview,
-  ];
+  };
 }
 
 export default useReviews;

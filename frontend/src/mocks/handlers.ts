@@ -21,7 +21,7 @@ const getKeyboards = (req, res, ctx) => {
     hasNext: page < 2,
     items: products.slice(startIndex, endIndex),
   };
-  return res(ctx.status(200), ctx.json(response));
+  return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
 // 상품 상세 조회
@@ -32,7 +32,7 @@ const getKeyboard = (req, res, ctx) => {
     ({ id: productId }) => productId === Number(id)
   );
 
-  return res(ctx.status(200), ctx.json(response));
+  return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
 // 전체 리뷰 목록 조회
@@ -47,7 +47,7 @@ const getReviews = (req, res, ctx) => {
     hasNext: page < 2,
     items: reviewsWithProduct.slice(startIndex, endIndex),
   };
-  return res(ctx.status(200), ctx.json(response));
+  return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
 // 상품 별 리뷰 목록 조회
@@ -63,7 +63,7 @@ const getReviewsByProductId = (req, res, ctx) => {
     items: reviewsWithOutProduct.slice(startIndex, endIndex),
   };
 
-  return res(ctx.status(200), ctx.json(response));
+  return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
 // 리뷰 작성
@@ -111,7 +111,7 @@ const getToken = (req, res, ctx) => {
     registerCompleted: false,
     token: 'iJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjU4MTQ4Mzg1LCJleHAiOjE2NTgxNTE',
   };
-  return res(ctx.status(200), ctx.json(response));
+  return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
 const getInventoryProducts = (req, res, ctx) => {
@@ -120,7 +120,7 @@ const getInventoryProducts = (req, res, ctx) => {
     return res(ctx.status(401));
   }
 
-  return res(ctx.status(200), ctx.json(InventoryProducts));
+  return res(ctx.status(200), ctx.json(InventoryProducts), ctx.delay());
 };
 
 const patchInventoryProducts = (req, res, ctx) => {
@@ -143,7 +143,7 @@ const getMyInfo = (req, res, ctx) => {
   if (token === undefined) {
     return res(ctx.status(401));
   }
-  return res(ctx.status(200), ctx.json(myData));
+  return res(ctx.status(200), ctx.json(myData), ctx.delay());
 };
 
 // 추가 정보 입력

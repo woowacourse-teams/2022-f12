@@ -6,8 +6,20 @@ import useProducts from '@/hooks/useProducts';
 import useReviews from '@/hooks/useReviews';
 
 function Home() {
-  const [keyboards] = useProducts({ size: '4', sort: 'rating,desc' });
-  const [reviews, getNextPage] = useReviews({ size: 6 });
+  const {
+    products,
+    isLoading: isProductLoading,
+    isReady: isProductReady,
+  } = useProducts({
+    size: '4',
+    sort: 'rating,desc',
+  });
+  const {
+    reviews,
+    getNextPage,
+    isLoading: isReviewLoading,
+    isReady: isReviewReady,
+  } = useReviews({ size: '6' });
 
   const moreProductsLink = (
     <CustomLink to={ROUTES.PRODUCTS}>+더보기</CustomLink>
@@ -17,10 +29,18 @@ function Home() {
     <>
       <ProductListSection
         title={'인기 있는 상품'}
-        data={!!keyboards && keyboards}
+        data={products}
+        isLoading={isProductLoading}
+        isReady={isProductReady}
         addOn={moreProductsLink}
       />
-      <ReviewListSection columns={2} data={reviews} getNextPage={getNextPage} />
+      <ReviewListSection
+        columns={2}
+        data={reviews}
+        getNextPage={getNextPage}
+        isLoading={isReviewLoading}
+        isReady={isReviewReady}
+      />
     </>
   );
 }

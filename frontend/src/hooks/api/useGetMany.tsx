@@ -1,6 +1,6 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
-import axiosInstance from '@/hooks/api/axiosInstance';
+import useAxios from '@/hooks/api/useAxios';
 
 type SearchParams = Record<string, string>;
 
@@ -18,12 +18,15 @@ type Data<T> = {
   items: T[];
 };
 
-function useGetMany<T>({
-  url,
-  params,
-  body,
-  headers,
-}: Props): [T[], () => void, () => void] {
+type Return<T> = {
+  data: T[];
+  isLoading: boolean;
+  isReady: boolean;
+  getNextPage: () => void;
+  refetch: () => void;
+};
+
+function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
   const [data, setData] = useState<T[]>([]);
 
   const [page, setPage] = useState(0);
@@ -32,7 +35,7 @@ function useGetMany<T>({
   const [nextPageTrigger, setNextPageTrigger] = useState(0);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
 
-  const [isLoading, setLoading] = useState(false);
+  const [axiosInstance, isLoading] = useAxios();
 
   const fetchData = async () => {
     const {
@@ -50,10 +53,12 @@ function useGetMany<T>({
   };
 
   const getNextPage = () => {
+    console.log('getting next page');
     setNextPageTrigger((prevTrigger) => prevTrigger + 1);
   };
 
   const refetch = () => {
+    console.log('refetching');
     setRefetchTrigger((prevTrigger) => prevTrigger + 1);
     setPage(0);
     setHasNextPage(true);
@@ -62,8 +67,6 @@ function useGetMany<T>({
 
   useEffect(() => {
     if (!hasNextPage || isLoading) return;
-
-    setLoading(true);
 
     fetchData()
       .then(({ hasNext, items }) => {
@@ -79,18 +82,18 @@ function useGetMany<T>({
       })
       .catch((error) => {
         console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }, [nextPageTrigger, refetchTrigger]);
 
   const searchParams = new URLSearchParams(params);
 
   useEffect(() => {
+    if (data.length === 0) return; // 최초 렌더링 시 refetch 방지 임시 조치
     refetch();
   }, [searchParams.toString()]);
 
-  return [data, getNextPage, refetch];
+  const isReady = data.length !== 0;
+
+  return { data, getNextPage, refetch, isLoading, isReady };
 }
 export default useGetMany;
