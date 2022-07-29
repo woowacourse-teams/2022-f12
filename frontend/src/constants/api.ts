@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://3.34.47.160:8080/api/v1';
+export const BASE_URL = __API_URL__;
 
 export const GITHUB_AUTH_URL =
   'https://github.com/login/oauth/authorize?client_id=f1e73a9ac502f1b6712a';
