@@ -52,7 +52,7 @@ function ReviewListSection({
       <SectionHeader>
         <S.Title>최근 후기</S.Title>
       </SectionHeader>
-      <AsyncWrapper fallback={<Loading />} isReady={isReady}>
+      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
         <S.Wrapper columns={columns}>
           <InfiniteScroll
             handleContentLoad={getNextPage}

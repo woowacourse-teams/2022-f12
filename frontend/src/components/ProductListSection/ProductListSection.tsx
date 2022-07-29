@@ -45,7 +45,11 @@ function ProductListSection({
       </SectionHeader>
       <S.Wrapper>
         {getNextPage !== undefined ? (
-          <AsyncWrapper fallback={<Loading />} isReady={isReady}>
+          <AsyncWrapper
+            fallback={<Loading />}
+            isReady={isReady}
+            isError={isError}
+          >
             <InfiniteScroll
               handleContentLoad={getNextPage}
               isLoading={isLoading}
