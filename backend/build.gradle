@@ -53,7 +53,15 @@ ext {
     set('snippetsDir', file("build/generated-snippets"))
 }
 
-tasks.named('test') {
+task copySubmodule(type: Copy) {
+    copy {
+        from 'security'
+        include "*.yml"
+        into 'src/main/resources'
+    }
+}
+
+test {
     outputs.dir snippetsDir
     useJUnitPlatform()
 }
@@ -68,18 +76,12 @@ asciidoctor {
     dependsOn test
 }
 
-task copySubmodule(type: Copy) {
-    copy {
-        from 'security'
-        include "*.yml"
-        into 'src/main/resources'
-    }
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("${asciidoctor.outputDir}")
+    into file("build/resources/main/static")
 }
 
 bootJar {
-    dependsOn asciidoctor
-    copy {
-        from file("${asciidoctor.outputDir}")
-        into file("src/main/resources/static")
-    }
+    dependsOn copyDocument
 }
