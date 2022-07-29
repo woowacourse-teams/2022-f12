@@ -1,8 +1,27 @@
-import { PropsWithChildren } from 'react';
 import * as S from '@/components/common/Chip/Chip.style';
 
-function Chip({ children }: PropsWithChildren) {
-  return <S.Container>{children}</S.Container>;
+type Props = {
+  paddingTopBottom: number;
+  paddingLeftRight: number;
+  fontSize: number;
+  children: React.ReactNode;
+};
+
+function Chip({
+  paddingTopBottom,
+  paddingLeftRight,
+  fontSize,
+  children,
+}: Props) {
+  return (
+    <S.Container
+      paddingTopBottom={paddingTopBottom}
+      paddingLeftRight={paddingLeftRight}
+      fontSize={fontSize}
+    >
+      {children}
+    </S.Container>
+  );
 }
 
 export default Chip;
