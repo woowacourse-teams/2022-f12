@@ -1,25 +1,35 @@
 import { ENDPOINTS } from '@/constants/api';
-import {
-  InventoryProductsContext,
-  RefetchInventoryProductsContext,
-} from '@/contexts/InventoryContextProvider';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
+import useGetOne from '@/hooks/api/useGetOne';
 import usePatch from '@/hooks/api/usePatch';
 import { useContext, useEffect, useMemo, useState } from 'react';
 
+type InventoryResponse = {
+  keyboards: InventoryProduct[];
+};
+
 type Return = {
   keyboards: InventoryProduct[];
+  isReady: boolean;
+  isError: boolean;
   selectedProduct: InventoryProduct | null;
   setSelectedProduct: React.Dispatch<React.SetStateAction<InventoryProduct>>;
   otherProducts: InventoryProduct[];
-  refetchInventoryProducts: () => void;
+  refetch: () => void;
   updateProfileProduct: () => Promise<void>;
 };
 
 function useInventory(): Return {
   const userData = useContext(UserDataContext);
-  const keyboards = useContext(InventoryProductsContext);
-  const refetchInventoryProducts = useContext(RefetchInventoryProductsContext);
+  const {
+    data: inventoryProducts,
+    refetch,
+    isReady,
+    isError,
+  } = useGetOne<InventoryResponse>({
+    url: ENDPOINTS.INVENTORY_PRODUCTS,
+    headers: { Authorization: `Bearer ${userData?.token}` },
+  });
 
   const [selectedProduct, setSelectedProduct] =
     useState<InventoryProduct | null>(null);
@@ -27,9 +37,11 @@ function useInventory(): Return {
     url: ENDPOINTS.INVENTORY_PRODUCTS,
     headers: { Authorization: `Bearer ${userData?.token}` },
   });
+
   const initialSelectedProduct = useMemo<InventoryProduct>(
-    () => keyboards && keyboards.find(({ selected }) => selected),
-    [keyboards]
+    () =>
+      isReady && inventoryProducts.keyboards.find(({ selected }) => selected),
+    [inventoryProducts]
   );
 
   const updateProfileProduct = async () => {
@@ -48,24 +60,32 @@ function useInventory(): Return {
     await patchProfileProduct(patchBody);
   };
 
-  const otherProducts = selectedProduct
-    ? keyboards.filter(({ id }) => id !== selectedProduct.id)
-    : keyboards;
+  const otherProducts =
+    isReady &&
+    (selectedProduct
+      ? inventoryProducts.keyboards.filter(
+          ({ id }) => id !== selectedProduct.id
+        )
+      : inventoryProducts.keyboards);
 
   useEffect(() => {
-    if (!keyboards) return;
+    if (!isReady) return;
 
-    const newSelectedProduct = keyboards.find(({ selected }) => selected);
+    const newSelectedProduct = inventoryProducts.keyboards.find(
+      ({ selected }) => selected
+    );
 
     setSelectedProduct(newSelectedProduct);
-  }, [keyboards]);
+  }, [inventoryProducts]);
 
   return {
-    keyboards,
+    keyboards: inventoryProducts?.keyboards,
+    isReady,
+    isError,
     selectedProduct,
     setSelectedProduct,
     otherProducts,
-    refetchInventoryProducts,
+    refetch,
     updateProfileProduct,
   };
 }

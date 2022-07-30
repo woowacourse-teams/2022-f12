@@ -4,13 +4,22 @@ import DownArrow from '@/assets/down_arrow.svg';
 
 import * as S from '@/components/common/ProductSelect/ProductSelect.style';
 import theme from '@/style/theme';
-import useInventory from '@/hooks/useInventory';
 
 type Props = {
   submitHandler: () => void;
+  selectedProduct: InventoryProduct;
+  setSelectedProduct: React.Dispatch<React.SetStateAction<InventoryProduct>>;
+  otherProducts: InventoryProduct[];
+  updateProfileProduct: () => Promise<void>;
 };
 
-function ProductSelect({ submitHandler }: Props) {
+function ProductSelect({
+  submitHandler,
+  selectedProduct,
+  setSelectedProduct,
+  otherProducts,
+  updateProfileProduct,
+}: Props) {
   const [isEditMode, setEditMode] = useReducer(
     (isEditMode: boolean) => !isEditMode,
     false
@@ -19,12 +28,6 @@ function ProductSelect({ submitHandler }: Props) {
     (isOptionsOpen: boolean) => !isOptionsOpen,
     false
   );
-  const {
-    selectedProduct,
-    setSelectedProduct,
-    otherProducts,
-    updateProfileProduct,
-  } = useInventory();
 
   const handleProductSelect = (value: InventoryProduct) => {
     setSelectedProduct(value);

@@ -60,6 +60,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@lottiefiles/react-lottie-player": "^3.4.7",
     "axios": "^0.27.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -5,10 +5,10 @@ import Products from '@/pages/Products/Products';
 import Login from '@/components/Login/Login';
 import Register from '@/pages/Register/Register';
 import ROUTES from '@/constants/routes';
-import InventoryContextProvider from '@/contexts/InventoryContextProvider';
 import Profile from '@/pages/Profile/Profile';
 import UserRoutes from '@/pages/common/UserRoutes/UserRoutes';
 import NonUserRoutes from '@/pages/common/NonUserRoutes/NonUserRoutes';
+import NotFound from '@/pages/NotFound/NotFound';
 
 const USER_ROUTES = [
   {
@@ -17,11 +17,7 @@ const USER_ROUTES = [
       { path: ROUTES.REGISTER, element: <Register /> },
       {
         path: ROUTES.PROFILE,
-        element: (
-          <InventoryContextProvider>
-            <Profile />
-          </InventoryContextProvider>
-        ),
+        element: <Profile />,
       },
     ],
   },
@@ -43,6 +39,7 @@ export const PAGES = [
       { path: `${ROUTES.PRODUCT}/:productId`, element: <Product /> },
       ...NON_USER_ROUTES,
       ...USER_ROUTES,
+      { path: ROUTES.NOT_FOUND, element: <NotFound /> },
     ],
   },
 ];

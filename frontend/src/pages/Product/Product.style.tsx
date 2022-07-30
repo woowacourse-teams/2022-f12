@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Container = styled.main`
+export const Container = styled.section`
   display: flex;
   justify-content: space-around;
   max-width: 1320px;
@@ -8,6 +8,10 @@ export const Container = styled.main`
   margin: auto;
   padding: 50px 0;
   gap: 3rem;
+`;
+
+export const ProductDetailWrapper = styled.div`
+  width: 30rem;
 `;
 
 export const Wrapper = styled.div`

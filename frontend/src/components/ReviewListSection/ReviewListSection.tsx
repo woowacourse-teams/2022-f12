@@ -4,10 +4,15 @@ import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import * as S from '@/components/ReviewListSection/ReviewListSection.style';
 import { useContext } from 'react';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
 
 type Props = {
   columns: number;
   data: Review[];
+  isLoading: boolean;
+  isReady: boolean;
+  isError: boolean;
   getNextPage: () => void;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => void;
@@ -19,6 +24,9 @@ function ReviewListSection({
   getNextPage,
   handleDelete,
   handleEdit,
+  isLoading,
+  isReady,
+  isError,
 }: Props) {
   const userData = useContext(UserDataContext);
   const loginUserGithubId = userData?.member.gitHubId;
@@ -44,11 +52,15 @@ function ReviewListSection({
       <SectionHeader>
         <S.Title>최근 후기</S.Title>
       </SectionHeader>
-      <S.Wrapper columns={columns}>
-        <InfiniteScroll handleContentLoad={getNextPage}>
-          {reviewCardList}
+      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
+        <InfiniteScroll
+          handleContentLoad={getNextPage}
+          isLoading={isLoading}
+          isError={isError}
+        >
+          <S.Wrapper columns={columns}>{reviewCardList}</S.Wrapper>
         </InfiniteScroll>
-      </S.Wrapper>
+      </AsyncWrapper>
     </S.Container>
   );
 }
