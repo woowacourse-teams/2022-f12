@@ -5,7 +5,6 @@ export const Container = styled.div`
   flex-direction: column;
   padding: 1rem;
   gap: 1rem;
-  width: 30rem;
 `;
 
 export const Image = styled.img`

@@ -1,6 +1,7 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
-import axiosInstance from '@/hooks/api/axiosInstance';
+import useAxios from '@/hooks/api/useAxios';
+import logError from '@/utils/logError';
 
 type SearchParams = Record<string, string>;
 
@@ -18,12 +19,16 @@ type Data<T> = {
   items: T[];
 };
 
-function useGetMany<T>({
-  url,
-  params,
-  body,
-  headers,
-}: Props): [T[], () => void, () => void] {
+type Return<T> = {
+  data: T[];
+  isLoading: boolean;
+  isReady: boolean;
+  isError: boolean;
+  getNextPage: () => void;
+  refetch: () => void;
+};
+
+function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
   const [data, setData] = useState<T[]>([]);
 
   const [page, setPage] = useState(0);
@@ -32,7 +37,7 @@ function useGetMany<T>({
   const [nextPageTrigger, setNextPageTrigger] = useState(0);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
 
-  const [isLoading, setLoading] = useState(false);
+  const { axiosInstance, isLoading, isError } = useAxios();
 
   const fetchData = async () => {
     const {
@@ -60,10 +65,17 @@ function useGetMany<T>({
     setData([]);
   };
 
+  const getCurrentParamString = () =>
+    Object.entries(params)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('\n    ');
+
+  const getErrorStateMessage = () => {
+    return `@useGetMany\n상태:\n    url: ${url}\n    ${getCurrentParamString()}\n    page: ${page}`;
+  };
+
   useEffect(() => {
     if (!hasNextPage || isLoading) return;
-
-    setLoading(true);
 
     fetchData()
       .then(({ hasNext, items }) => {
@@ -77,20 +89,21 @@ function useGetMany<T>({
           setHasNextPage(false);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
+      .catch((error: Error) => {
+        logError(error, getErrorStateMessage());
+        alert('사용자에게 표시할 오류 메시지');
       });
   }, [nextPageTrigger, refetchTrigger]);
 
   const searchParams = new URLSearchParams(params);
 
   useEffect(() => {
+    if (data.length === 0) return; // 최초 렌더링 시 refetch 방지 임시 조치
     refetch();
   }, [searchParams.toString()]);
 
-  return [data, getNextPage, refetch];
+  const isReady = data.length !== 0;
+
+  return { data, getNextPage, refetch, isLoading, isReady, isError };
 }
 export default useGetMany;

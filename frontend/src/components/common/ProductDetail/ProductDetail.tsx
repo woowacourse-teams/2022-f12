@@ -2,12 +2,12 @@ import Rating from '@/components/common/Rating/Rating';
 import * as S from '@/components/common/ProductDetail/ProductDetail.style';
 
 type Props = {
-  imageUrl?: string;
-  name: string;
-  rating: number;
+  product: Product;
 };
 
-function ProductDetail({ imageUrl, name, rating }: Props) {
+function ProductDetail({ product }: Props) {
+  const { imageUrl, name, rating } = product;
+
   return (
     <S.Container>
       <S.Image src={imageUrl} />
