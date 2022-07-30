@@ -79,45 +79,43 @@ function Product() {
   };
 
   return (
-    <>
-      <S.Container>
-        <StickyWrapper>
-          <S.ProductDetailWrapper>
-            <AsyncWrapper
-              fallback={<Loading />}
-              isReady={isProductReady}
-              isError={isProductError}
-            >
-              <ProductDetail product={product} />
-            </AsyncWrapper>
-          </S.ProductDetailWrapper>
-        </StickyWrapper>
-        <S.Wrapper ref={reviewListRef}>
-          {!isSheetOpen && isLoggedIn && (
-            <FloatingButton clickHandler={toggleSheetOpen}>
-              <Plus stroke={theme.colors.white} />
-            </FloatingButton>
-          )}
-          <ReviewListSection
-            columns={1}
-            data={reviews}
-            getNextPage={getNextPage}
-            handleDelete={handleReviewDeletion}
-            handleEdit={handleReviewEdit}
-            isLoading={isReviewLoading}
-            isReady={isReviewReady}
-            isError={isReviewError}
+    <S.Container>
+      <StickyWrapper>
+        <S.ProductDetailWrapper>
+          <AsyncWrapper
+            fallback={<Loading />}
+            isReady={isProductReady}
+            isError={isProductError}
+          >
+            <ProductDetail product={product} />
+          </AsyncWrapper>
+        </S.ProductDetailWrapper>
+      </StickyWrapper>
+      <S.Wrapper ref={reviewListRef}>
+        {!isSheetOpen && isLoggedIn && (
+          <FloatingButton clickHandler={toggleSheetOpen}>
+            <Plus stroke={theme.colors.white} />
+          </FloatingButton>
+        )}
+        <ReviewListSection
+          columns={1}
+          data={reviews}
+          getNextPage={getNextPage}
+          handleDelete={handleReviewDeletion}
+          handleEdit={handleReviewEdit}
+          isLoading={isReviewLoading}
+          isReady={isReviewReady}
+          isError={isReviewError}
+        />
+        {isSheetOpen && isLoggedIn && (
+          <ReviewBottomSheet
+            handleClose={toggleSheetOpen}
+            handleSubmit={handleReviewSubmit}
+            isEdit={false}
           />
-          {isSheetOpen && isLoggedIn && (
-            <ReviewBottomSheet
-              handleClose={toggleSheetOpen}
-              handleSubmit={handleReviewSubmit}
-              isEdit={false}
-            />
-          )}
-        </S.Wrapper>
-      </S.Container>
-    </>
+        )}
+      </S.Wrapper>
+    </S.Container>
   );
 }
 
