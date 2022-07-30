@@ -8,6 +8,7 @@ import ROUTES from '@/constants/routes';
 import Profile from '@/pages/Profile/Profile';
 import UserRoutes from '@/pages/common/UserRoutes/UserRoutes';
 import NonUserRoutes from '@/pages/common/NonUserRoutes/NonUserRoutes';
+import NotFound from '@/pages/NotFound/NotFound';
 
 const USER_ROUTES = [
   {
@@ -38,6 +39,7 @@ export const PAGES = [
       { path: `${ROUTES.PRODUCT}/:productId`, element: <Product /> },
       ...NON_USER_ROUTES,
       ...USER_ROUTES,
+      { path: ROUTES.NOT_FOUND, element: <NotFound /> },
     ],
   },
 ];

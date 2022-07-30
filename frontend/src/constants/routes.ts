@@ -5,6 +5,7 @@ const ROUTES = {
   REGISTER: '/register',
   LOGIN: '/login',
   PROFILE: '/profile',
+  NOT_FOUND: '*',
 } as const;
 
 export default ROUTES;
