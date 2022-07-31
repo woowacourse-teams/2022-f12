@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom';
 import * as S from '@/components/common/Modal/Modal.style';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 
 type Props = {
   handleClose: () => void;
@@ -12,8 +12,19 @@ function Modal({
   handleConfirm,
   children,
 }: PropsWithChildren<Props>) {
+  const [scrollOffset, setScrollOffset] = useState(0);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    setScrollOffset(window.pageYOffset);
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   return createPortal(
-    <S.Container>
+    <S.Container scrollOffset={scrollOffset}>
       <S.Backdrop onClick={handleClose} />
       <S.Content>
         {children}
