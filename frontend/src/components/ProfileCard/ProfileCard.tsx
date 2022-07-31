@@ -42,7 +42,7 @@ function ProfileCard() {
           </S.UserNameWrapper>
           <S.UserCareer>
             <Chip paddingTopBottom={0.2} paddingLeftRight={0.4} fontSize={0.7}>
-              0-3년차
+              0-2년차
             </Chip>
             <Chip paddingTopBottom={0.2} paddingLeftRight={0.4} fontSize={0.7}>
               프론트엔드

@@ -4,7 +4,7 @@ export const Container = styled.div`
   display: flex;
   background-color: white;
   padding: 1rem;
-  width: 360px;
+  width: 380px;
   border-radius: 0.4rem;
   box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
 `;
@@ -20,7 +20,7 @@ export const RightSection = styled.div`
 
 export const ProfileImageWrapper = styled.div`
   position: absolute;
-  left: -5.5rem;
+  left: -6rem;
   top: 1.6rem;
   width: 9.5rem;
   height: 9.5rem;

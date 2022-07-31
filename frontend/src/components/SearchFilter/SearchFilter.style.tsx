@@ -12,6 +12,6 @@ export const Wrapper = styled.div`
 `;
 
 export const FilterTitle = styled.span`
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   margin-right: 0.2rem;
 `;
