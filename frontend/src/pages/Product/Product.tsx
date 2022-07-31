@@ -14,6 +14,7 @@ import theme from '@/style/theme';
 import useAuth from '@/hooks/useAuth';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
+import useModal from '@/hooks/useModal';
 
 function Product() {
   const { isLoggedIn } = useAuth();
@@ -42,6 +43,7 @@ function Product() {
     (isSheetOpen: boolean) => !isSheetOpen,
     false
   );
+  const { showAlert, getConfirm } = useModal();
 
   const reviewListRef = useRef<HTMLDivElement | null>();
 
@@ -58,7 +60,7 @@ function Product() {
   const handleReviewEdit = (reviewInput: ReviewInput, id: number) => {
     editReview(reviewInput, id)
       .then(() => {
-        alert('리뷰가 수정되었습니다.');
+        showAlert('리뷰가 수정되었습니다.');
         refetchReview();
       })
       .catch((error) => {
@@ -66,8 +68,9 @@ function Product() {
       });
   };
 
-  const handleReviewDeletion = (id: number) => {
-    if (!confirm('리뷰를 삭제하시겠습니까?')) return;
+  const handleReviewDeletion = async (id: number) => {
+    const confirmation = await getConfirm('리뷰를 삭제하시겠습니까?');
+    if (!confirmation) return;
 
     deleteReview(id)
       .then(() => {

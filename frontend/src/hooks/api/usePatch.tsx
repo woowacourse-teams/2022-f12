@@ -1,6 +1,6 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import useAxios from '@/hooks/api/useAxios';
-import handleError from '@/utils/handleError';
+import useError from '@/hooks/useError';
 
 type Props = {
   url: string;
@@ -12,6 +12,7 @@ function usePatch<T>({
   headers,
 }: Props): (data: Record<string, unknown>) => Promise<AxiosResponse<T>> {
   const { axiosInstance } = useAxios();
+  const handleError = useError();
 
   const patchData = async (data: Record<string, unknown>) => {
     try {

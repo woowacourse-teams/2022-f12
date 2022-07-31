@@ -1,6 +1,6 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
-import handleError from '@/utils/handleError';
 import useAxios from '@/hooks/api/useAxios';
+import useError from '@/hooks/useError';
 
 type Props = {
   url: string;
@@ -12,6 +12,7 @@ function useGet<T>({
   headers,
 }: Props): (params: Record<string, unknown>) => Promise<T> {
   const { axiosInstance } = useAxios();
+  const handleError = useError();
 
   const fetchData = async (params: unknown) => {
     try {

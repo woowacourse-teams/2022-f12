@@ -1,6 +1,6 @@
 import { AxiosRequestHeaders } from 'axios';
 import useAxios from '@/hooks/api/useAxios';
-import handleError from '@/utils/handleError';
+import useError from '@/hooks/useError';
 
 type Props = {
   url: string;
@@ -9,6 +9,7 @@ type Props = {
 
 function useDelete({ url, headers }: Props): (id: number) => Promise<void> {
   const { axiosInstance } = useAxios();
+  const handleError = useError();
 
   const deleteData = async (id: number) => {
     try {
