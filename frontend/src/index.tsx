@@ -6,6 +6,7 @@ import { ThemeProvider } from 'styled-components';
 import theme from '@/style/theme';
 import GlobalStyles from '@/style/GlobalStyles';
 import LoginContextProvider from '@/contexts/LoginContextProvider';
+import ModalContextProvider from '@/contexts/ModalContextProvider';
 
 /* eslint-disable */
 
@@ -35,7 +36,9 @@ root.render(
       <GlobalStyles />
       <BrowserRouter>
         <LoginContextProvider>
-          <App />
+          <ModalContextProvider>
+            <App />
+          </ModalContextProvider>
         </LoginContextProvider>
       </BrowserRouter>
     </ThemeProvider>

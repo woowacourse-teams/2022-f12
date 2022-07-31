@@ -6,6 +6,7 @@ import { UserDataContext } from '@/contexts/LoginContextProvider';
 import { ENDPOINTS } from '@/constants/api';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '@/constants/routes';
+import useModal from '@/hooks/useModal';
 
 const messages = {
   1: '경력을 선택해주세요',
@@ -38,6 +39,7 @@ function Register() {
     career: null,
     jobType: null,
   });
+  const { showAlert, getConfirm } = useModal();
 
   const userData = useContext(UserDataContext);
 
@@ -76,12 +78,11 @@ function Register() {
     }
   };
 
-  const handleAdditionalInfoSubmit = (input: UserInfo) => {
-    if (
-      confirm(
-        `${careers[input.career]}, ${jobTypes[input.jobType]} 개발자이신가요?`
-      )
-    ) {
+  const handleAdditionalInfoSubmit = async (input: UserInfo) => {
+    const confirmation = await getConfirm(
+      `${careers[input.career]}, ${jobTypes[input.jobType]} 개발자이신가요?`
+    );
+    if (confirmation) {
       patchAdditionalInfo(input)
         .then(() => {
           navigate(ROUTES.HOME);
@@ -92,13 +93,13 @@ function Register() {
     }
   };
 
-  const handleConfirmButtonClick = () => {
+  const handleConfirmButtonClick = async () => {
     if (step === 1 && additionalInfo.career === null) {
-      alert('경력을 선택해주세요.');
+      showAlert('경력을 선택해주세요.');
       return;
     }
     if (step === 2 && additionalInfo.jobType === null) {
-      alert('직군을 선택해주세요.');
+      showAlert('직군을 선택해주세요.');
       return;
     }
     if (step === 1 || step === 2) {
@@ -106,7 +107,7 @@ function Register() {
       return;
     }
 
-    handleAdditionalInfoSubmit(additionalInfo);
+    await handleAdditionalInfoSubmit(additionalInfo);
   };
 
   const handleEditButtonClick = () => {

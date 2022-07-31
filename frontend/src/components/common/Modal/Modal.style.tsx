@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 
-export const Container = styled.section`
+export const Container = styled.section<{ scrollOffset: number }>`
+  position: absolute;
+  top: ${({ scrollOffset }) => scrollOffset}px;
+  left: 0;
+
   width: 100vw;
   height: 100vh;
 
@@ -17,7 +21,7 @@ export const Backdrop = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 10;
 
   background-color: #00000033;
 
@@ -29,11 +33,13 @@ export const Content = styled.section`
   min-height: 10rem;
   padding: 1.5rem;
 
-  z-index: 2;
+  position: relative;
+
+  z-index: 15;
 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 1.5rem;
 
