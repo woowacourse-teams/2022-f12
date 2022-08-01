@@ -1,4 +1,4 @@
-name: Cypress Tests
+name: frontend
 
 on: [pull_request]
 jobs:
