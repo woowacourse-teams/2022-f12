@@ -4,7 +4,7 @@ export const Container = styled.div`
   display: flex;
   background-color: white;
   padding: 1rem;
-  width: 360px;
+  width: 380px;
   border-radius: 0.4rem;
   box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
 `;
@@ -20,7 +20,7 @@ export const RightSection = styled.div`
 
 export const ProfileImageWrapper = styled.div`
   position: absolute;
-  left: -5.5rem;
+  left: -6rem;
   top: 1.6rem;
   width: 9.5rem;
   height: 9.5rem;
@@ -60,7 +60,7 @@ export const UserName = styled.span``;
 export const InventoryWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 5rem;
+  height: 5.2rem;
 `;
 
 export const LeftButton = styled.button`
@@ -110,7 +110,7 @@ export const ProductImage = styled.img`
 `;
 
 export const ProductTitle = styled.p`
-  font-size: 0.5rem;
+  font-size: 0.3rem;
 `;
 
 export const ProductImageWrapper = styled.div`
