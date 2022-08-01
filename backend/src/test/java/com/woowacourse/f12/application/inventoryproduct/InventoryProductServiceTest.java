@@ -1,7 +1,9 @@
 package com.woowacourse.f12.application.inventoryproduct;
 
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -15,6 +17,7 @@ import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileProductException;
 import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
 import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
@@ -83,6 +86,29 @@ class InventoryProductServiceTest {
                 () -> verify(inventoryProductRepository).updateBulkProfileProductByMember(member),
                 () -> verify(inventoryProductRepository).updateBulkProfileProductByMemberAndIds(member,
                         selectedInventoryProductIds)
+        );
+    }
+
+    @Test
+    void 대표장비_변경_요청에_카테고리가_중복되면_예외를_반환한다() {
+        // given
+        List<Long> selectedInventoryProductIds = List.of(1L, 2L);
+        ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
+        Member member = MemberFixtures.CORINNE.생성(1L);
+        InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성());
+        InventoryProduct inventoryProduct2 = UNSELECTED_INVENTORY_PRODUCT.생성(2L, member, KEYBOARD_2.생성());
+
+        given(memberRepository.findById(1L))
+                .willReturn(Optional.of(member));
+        given(inventoryProductRepository.findAllById(selectedInventoryProductIds))
+                .willReturn(List.of(inventoryProduct1, inventoryProduct2));
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> inventoryProductService.updateProfileProducts(1L, profileProductRequest))
+                        .isExactlyInstanceOf(InvalidProfileProductException.class),
+                () -> verify(memberRepository).findById(1L),
+                () -> verify(inventoryProductRepository).findAllById(selectedInventoryProductIds)
         );
     }
 

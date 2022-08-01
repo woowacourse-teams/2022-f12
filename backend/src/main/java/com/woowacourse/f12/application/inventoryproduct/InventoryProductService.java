@@ -6,6 +6,7 @@ import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileProductException;
 import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import java.util.List;
@@ -29,12 +30,29 @@ public class InventoryProductService {
     public void updateProfileProducts(final Long memberId, final ProfileProductRequest profileProductRequest) {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
-        updateProfileProduct(member, profileProductRequest);
+        final List<Long> selectedInventoryProductIds = profileProductRequest.getSelectedInventoryProductIds();
+        validateCategoryNotDuplicated(selectedInventoryProductIds);
+        cancelProfileProducts(member);
+        registerProfileProducts(member, selectedInventoryProductIds);
     }
 
-    private void updateProfileProduct(final Member member, final ProfileProductRequest profileProductRequest) {
-        final List<Long> selectedInventoryProductIds = profileProductRequest.getSelectedInventoryProductIds();
+    private void validateCategoryNotDuplicated(final List<Long> selectedInventoryProductIds) {
+        final List<InventoryProduct> inventoryProducts = inventoryProductRepository.findAllById(
+                selectedInventoryProductIds);
+        final long distinctCount = inventoryProducts.stream()
+                .map(it -> it.getProduct().getCategory())
+                .distinct()
+                .count();
+        if (distinctCount != inventoryProducts.size()) {
+            throw new InvalidProfileProductException();
+        }
+    }
+
+    private void cancelProfileProducts(final Member member) {
         inventoryProductRepository.updateBulkProfileProductByMember(member);
+    }
+
+    private void registerProfileProducts(final Member member, final List<Long> selectedInventoryProductIds) {
         final int updateCount = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
                 selectedInventoryProductIds);
         if (updateCount != selectedInventoryProductIds.size()) {
