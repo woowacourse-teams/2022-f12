@@ -2,14 +2,13 @@ package com.woowacourse.f12.application.inventoryproduct;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
+import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileProductException;
-import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
+import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import java.util.List;
-import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,31 +27,19 @@ public class InventoryProductService {
 
     @Transactional
     public void updateProfileProducts(final Long memberId, final ProfileProductRequest profileProductRequest) {
-        validateMember(memberId);
-        validateInvalidProfileProductRequest(profileProductRequest);
-        updateProfileProduct(profileProductRequest);
+        final Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+        updateProfileProduct(member, profileProductRequest);
     }
 
-    private void validateInvalidProfileProductRequest(final ProfileProductRequest profileProductRequest) {
-        if (Objects.isNull(profileProductRequest.getSelectedInventoryProductId()) && Objects.isNull(
-                profileProductRequest.getUnselectedInventoryProductId())) {
-            throw new InvalidProfileProductException();
+    private void updateProfileProduct(final Member member, final ProfileProductRequest profileProductRequest) {
+        final List<Long> selectedInventoryProductIds = profileProductRequest.getSelectedInventoryProductIds();
+        inventoryProductRepository.updateBulkProfileProductByMember(member);
+        final int updateCount = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
+                selectedInventoryProductIds);
+        if (updateCount != selectedInventoryProductIds.size()) {
+            throw new SqlUpdateException();
         }
-    }
-
-    private void updateProfileProduct(final ProfileProductRequest profileProductRequest) {
-        if (!Objects.isNull(profileProductRequest.getSelectedInventoryProductId())) {
-            updateProfileProduct(profileProductRequest.getSelectedInventoryProductId(), true);
-        }
-        if (!Objects.isNull(profileProductRequest.getUnselectedInventoryProductId())) {
-            updateProfileProduct(profileProductRequest.getUnselectedInventoryProductId(), false);
-        }
-    }
-
-    private void updateProfileProduct(final Long inventoryItemId, final boolean selected) {
-        final InventoryProduct inventoryProduct = inventoryProductRepository.findById(inventoryItemId)
-                .orElseThrow(InventoryProductNotFoundException::new);
-        inventoryProduct.updateSelected(selected);
     }
 
     public InventoryProductsResponse findByMemberId(final Long memberId) {

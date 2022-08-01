@@ -69,7 +69,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> profileProductResponse = 로그인된_상태로_PATCH_요청을_보낸다(
                 "api/v1/members/inventoryProducts", token,
-                new ProfileProductRequest(savedInventoryProduct.getId(), null));
+                new ProfileProductRequest(List.of(savedInventoryProduct.getId())));
 
         List<InventoryProductResponse> inventoryProductResponses = 로그인된_상태로_GET_요청을_보낸다(
                 "/api/v1/members/inventoryProducts",
@@ -80,6 +80,34 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(profileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(inventoryProductResponses.get(0).isSelected()).isTrue()
+        );
+    }
+
+    @Test
+    void 대표_장비가_있는_상태에서_대표_장비를_모두_해제한다() {
+        // given
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
+        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        String token = loginResponse.getToken();
+        Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
+
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, product);
+        InventoryProduct savedInventoryProduct = 인벤토리에_장비를_추가한다(inventoryProduct);
+
+        // when
+        ExtractableResponse<Response> profileProductResponse = 로그인된_상태로_PATCH_요청을_보낸다(
+                "api/v1/members/inventoryProducts", token,
+                new ProfileProductRequest(List.of()));
+
+        List<InventoryProductResponse> inventoryProductResponses = 로그인된_상태로_GET_요청을_보낸다(
+                "/api/v1/members/inventoryProducts",
+                token)
+                .as(InventoryProductsResponse.class).getItems();
+
+        // then
+        assertAll(
+                () -> assertThat(profileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(inventoryProductResponses.get(0).isSelected()).isFalse()
         );
     }
 

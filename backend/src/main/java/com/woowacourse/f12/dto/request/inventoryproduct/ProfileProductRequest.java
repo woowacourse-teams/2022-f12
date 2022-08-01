@@ -1,18 +1,19 @@
 package com.woowacourse.f12.dto.request.inventoryproduct;
 
+import java.util.List;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
 public class ProfileProductRequest {
 
-    private Long selectedInventoryProductId;
-    private Long unselectedInventoryProductId;
+    @NotNull(message = "등록할 대표장비가 없습니다.")
+    private List<Long> selectedInventoryProductIds;
 
     private ProfileProductRequest() {
     }
 
-    public ProfileProductRequest(final Long selectedInventoryProductId, final Long unselectedInventoryProductId) {
-        this.selectedInventoryProductId = selectedInventoryProductId;
-        this.unselectedInventoryProductId = unselectedInventoryProductId;
+    public ProfileProductRequest(final List<Long> selectedInventoryProductIds) {
+        this.selectedInventoryProductIds = selectedInventoryProductIds;
     }
 }
