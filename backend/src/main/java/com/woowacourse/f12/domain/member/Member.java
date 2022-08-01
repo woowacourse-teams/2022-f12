@@ -1,9 +1,11 @@
 package com.woowacourse.f12.domain.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.product.Product;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -80,6 +82,13 @@ public class Member {
 
     public boolean isRegisterCompleted() {
         return Objects.nonNull(this.careerLevel) && Objects.nonNull(this.jobType);
+    }
+
+    public List<Product> findProfileProducts() {
+        return this.inventoryProducts.stream()
+                .filter(InventoryProduct::isSelected)
+                .map(InventoryProduct::getProduct)
+                .collect(Collectors.toList());
     }
 
     @Override
