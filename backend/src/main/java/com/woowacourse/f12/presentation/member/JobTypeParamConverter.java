@@ -1,6 +1,5 @@
 package com.woowacourse.f12.presentation.member;
 
-import com.woowacourse.f12.dto.JobTypeConstant;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

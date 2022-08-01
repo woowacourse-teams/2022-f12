@@ -1,4 +1,4 @@
-package com.woowacourse.f12.dto;
+package com.woowacourse.f12.presentation.member;
 
 import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
 import static com.woowacourse.f12.domain.member.CareerLevel.MID_LEVEL;

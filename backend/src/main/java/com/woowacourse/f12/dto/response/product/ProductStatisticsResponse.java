@@ -2,8 +2,8 @@ package com.woowacourse.f12.dto.response.product;
 
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
-import com.woowacourse.f12.dto.CareerLevelConstant;
-import com.woowacourse.f12.dto.JobTypeConstant;
+import com.woowacourse.f12.presentation.member.CareerLevelConstant;
+import com.woowacourse.f12.presentation.member.JobTypeConstant;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
