@@ -20,4 +20,4 @@ const Template: ComponentStory<typeof ProductDetail> = (args) => (
 
 const defaultArgs = products[0];
 
-export const Default = () => <Template {...defaultArgs} />;
+export const Default = () => <Template product={defaultArgs} />;

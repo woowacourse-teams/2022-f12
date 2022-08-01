@@ -6,12 +6,30 @@ export default {
   title: 'Components/ProfileCard',
 };
 
-const Template: ComponentStory<typeof ProfileCard> = () => (
+const Template: ComponentStory<typeof ProfileCard> = (args) => (
   <div
     style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
   >
-    <ProfileCard />
+    <ProfileCard {...args} />
   </div>
 );
 
-export const Default = () => <Template />;
+const defaultArgs = {
+  id: 1,
+  gitHubId: 'jswith',
+  imageUrl: 'https://avatars.githubusercontent.com/u/64275588?v=4',
+  careerLevel: 'junior',
+  jobType: 'frontend',
+  profileProducts: [
+    {
+      id: 1,
+      name: '키보드',
+      imageUrl: 'https://avatars.githubusercontent.com/u/64275588?v=4',
+      reviewCount: 3,
+      rating: 4,
+      category: 'keyboard',
+    },
+  ],
+};
+
+export const Default = () => <Template {...defaultArgs} />;
