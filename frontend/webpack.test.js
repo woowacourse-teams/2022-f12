@@ -6,7 +6,7 @@ module.exports = merge(common, {
   mode: 'production',
   plugins: [
     new DefinePlugin({
-      __API_URL__: JSON.stringify('http://3.34.47.160:8080/api/v1'),
+      __API_URL__: JSON.stringify('https://dev.f12.app/api/v1'),
     }),
   ],
 });

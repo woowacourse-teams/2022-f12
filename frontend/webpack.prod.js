@@ -7,7 +7,7 @@ module.exports = merge(common, {
   mode: 'production',
   plugins: [
     new DefinePlugin({
-      __API_URL__: JSON.stringify('main 서버 API 주소'),
+      __API_URL__: JSON.stringify('https://prod.f12.app/api/v1'),
     }),
   ],
 });
