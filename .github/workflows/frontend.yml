@@ -12,3 +12,14 @@ jobs:
         with:
           start: npm run start
           working-directory: frontend
+    chromatic-deployment:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - name: Install dependencies
+          run: npm install
+        - name: Publish to Chromatic
+          uses: chromaui/action@v1
+          with:
+            projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+            working-directory: frontend
