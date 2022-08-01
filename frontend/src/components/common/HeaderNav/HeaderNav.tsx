@@ -47,6 +47,7 @@ function HeaderNav() {
           <Link to={{ pathname: ROUTES.PRODUCTS, hash: '#popular' }}>
             인기 상품 목록
           </Link>
+          <Link to={ROUTES.PROFILE_SEARCH}>다른 회원의 프로필</Link>
         </S.FlexLeftUl>
         <S.FlexRightUl>
           {isLoggedIn ? (

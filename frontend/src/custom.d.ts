@@ -56,3 +56,22 @@ declare type ReviewInput = {
   content: string;
   rating: number;
 };
+
+declare type ProfileSearchResult = {
+  id: number;
+  gitHubId: string;
+  name: string;
+  imageUrl: string;
+  careerLevel: string;
+  jobType: string;
+  profileProducts: [
+    {
+      id: number;
+      name: string;
+      imageUrl: string;
+      reviewCount: number;
+      rating: number;
+      category: string;
+    }
+  ];
+};
