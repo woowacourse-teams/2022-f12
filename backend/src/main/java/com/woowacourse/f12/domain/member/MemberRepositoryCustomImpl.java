@@ -23,8 +23,7 @@ public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implem
     public Slice<Member> findBySearchConditions(final String keyword, final CareerLevel careerLevel,
                                                 final JobType jobType,
                                                 final Pageable pageable) {
-        final JPAQuery<Member> jpaQuery = jpaQueryFactory.select(member)
-                .from(member)
+        final JPAQuery<Member> jpaQuery = jpaQueryFactory.selectFrom(member)
                 .where(
                         containsKeyword(keyword),
                         eqCareerLevel(careerLevel),
@@ -37,7 +36,7 @@ public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implem
     }
 
     private BooleanExpression containsKeyword(final String keyword) {
-        if (keyword == null || keyword.isBlank()) {
+        if (Objects.isNull(keyword) || keyword.isBlank()) {
             return null;
         }
         return member.gitHubId.contains(keyword);
@@ -57,7 +56,7 @@ public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implem
         return member.jobType.eq(jobType);
     }
 
-    private SliceImpl<Member> toSlice(final Pageable pageable, final List<Member> members) {
+    private Slice<Member> toSlice(final Pageable pageable, final List<Member> members) {
         if (members.size() > pageable.getPageSize()) {
             members.remove(members.size() - 1);
             return new SliceImpl<>(members, pageable, true);
