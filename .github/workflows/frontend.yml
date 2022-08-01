@@ -1,6 +1,11 @@
 name: frontend
 
 on: [pull_request]
+
+defaults:
+  run:
+    working-directory: frontend
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
