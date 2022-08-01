@@ -6,6 +6,6 @@ import com.woowacourse.f12.exception.ErrorCode;
 public class NotFoundException extends CustomException {
 
     public NotFoundException(final String message, final ErrorCode errorCode) {
-        super(message, errorCode);
+        super(errorCode, message);
     }
 }

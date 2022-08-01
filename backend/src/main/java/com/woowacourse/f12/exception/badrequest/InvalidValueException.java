@@ -6,6 +6,6 @@ import com.woowacourse.f12.exception.ErrorCode;
 public class InvalidValueException extends CustomException {
 
     public InvalidValueException(final String message, final ErrorCode errorCode) {
-        super(message, errorCode);
+        super(errorCode, message);
     }
 }

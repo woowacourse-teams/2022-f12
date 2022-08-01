@@ -6,6 +6,6 @@ import com.woowacourse.f12.exception.ErrorCode;
 public class ExternalServerException extends CustomException {
 
     public ExternalServerException(final String message, final ErrorCode errorCode) {
-        super(message, errorCode);
+        super(errorCode, message);
     }
 }
