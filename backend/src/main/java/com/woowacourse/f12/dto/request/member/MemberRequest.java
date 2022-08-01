@@ -1,7 +1,7 @@
 package com.woowacourse.f12.dto.request.member;
 
-import com.woowacourse.f12.dto.CareerLevelConstant;
-import com.woowacourse.f12.dto.JobTypeConstant;
+import com.woowacourse.f12.presentation.member.CareerLevelConstant;
+import com.woowacourse.f12.presentation.member.JobTypeConstant;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 

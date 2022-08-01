@@ -2,10 +2,10 @@ package com.woowacourse.f12.application.member;
 
 import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.dto.CareerLevelConstant.JUNIOR_CONSTANT;
-import static com.woowacourse.f12.dto.CareerLevelConstant.SENIOR_CONSTANT;
-import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.dto.JobTypeConstant.ETC_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
