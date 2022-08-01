@@ -22,6 +22,7 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileProductException;
 import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
@@ -130,6 +131,36 @@ class InventoryProductControllerTest {
                 () -> verify(jwtProvider, times(0)).getPayload(authorizationHeader),
                 () -> verify(inventoryProductService, times(0)).updateProfileProducts(anyLong(),
                         any(ProfileProductRequest.class))
+        );
+    }
+
+    @Test
+    void 대표_장비_등록_실패_요청된_장비가_중복된_카테고리인_경우() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        ProfileProductRequest profileProductRequest = new ProfileProductRequest(List.of(1L, 2L));
+        willThrow(new InvalidProfileProductException())
+                .given(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
+
+        // when
+        mockMvc.perform(
+                        patch("/api/v1/members/inventoryProducts")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .content(objectMapper.writeValueAsString(profileProductRequest))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class))
         );
     }
 
