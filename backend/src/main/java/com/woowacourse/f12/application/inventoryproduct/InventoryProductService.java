@@ -1,15 +1,18 @@
 package com.woowacourse.f12.application.inventoryproduct;
 
+import static com.woowacourse.f12.domain.product.Category.SOFTWARE;
+
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
+import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileProductException;
-import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
+import com.woowacourse.f12.exception.badrequest.DuplicatedCategoryProfileProductException;
+import com.woowacourse.f12.exception.badrequest.InvalidCategoryProfileProductException;
+import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import java.util.List;
-import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,31 +31,50 @@ public class InventoryProductService {
 
     @Transactional
     public void updateProfileProducts(final Long memberId, final ProfileProductRequest profileProductRequest) {
-        validateMember(memberId);
-        validateInvalidProfileProductRequest(profileProductRequest);
-        updateProfileProduct(profileProductRequest);
+        final Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+        final List<Long> selectedInventoryProductIds = profileProductRequest.getSelectedInventoryProductIds();
+        validateProfileProducts(selectedInventoryProductIds);
+        cancelProfileProducts(member);
+        registerProfileProducts(member, selectedInventoryProductIds);
     }
 
-    private void validateInvalidProfileProductRequest(final ProfileProductRequest profileProductRequest) {
-        if (Objects.isNull(profileProductRequest.getSelectedInventoryProductId()) && Objects.isNull(
-                profileProductRequest.getUnselectedInventoryProductId())) {
-            throw new InvalidProfileProductException();
+    private void validateProfileProducts(final List<Long> selectedInventoryProductIds) {
+        final List<InventoryProduct> inventoryProducts = inventoryProductRepository.findAllById(
+                selectedInventoryProductIds);
+        validateContainsSoftware(inventoryProducts);
+        validateCategoryNotDuplicated(inventoryProducts);
+    }
+
+    private void validateContainsSoftware(final List<InventoryProduct> inventoryProducts) {
+        final boolean hasSoftware = inventoryProducts.stream()
+                .map(it -> it.getProduct().getCategory())
+                .anyMatch(it -> it.equals(SOFTWARE));
+        if (hasSoftware) {
+            throw new InvalidCategoryProfileProductException();
         }
     }
 
-    private void updateProfileProduct(final ProfileProductRequest profileProductRequest) {
-        if (!Objects.isNull(profileProductRequest.getSelectedInventoryProductId())) {
-            updateProfileProduct(profileProductRequest.getSelectedInventoryProductId(), true);
-        }
-        if (!Objects.isNull(profileProductRequest.getUnselectedInventoryProductId())) {
-            updateProfileProduct(profileProductRequest.getUnselectedInventoryProductId(), false);
+    private void validateCategoryNotDuplicated(final List<InventoryProduct> inventoryProducts) {
+        final long distinctCount = inventoryProducts.stream()
+                .map(it -> it.getProduct().getCategory())
+                .distinct()
+                .count();
+        if (distinctCount != inventoryProducts.size()) {
+            throw new DuplicatedCategoryProfileProductException();
         }
     }
 
-    private void updateProfileProduct(final Long inventoryItemId, final boolean selected) {
-        final InventoryProduct inventoryProduct = inventoryProductRepository.findById(inventoryItemId)
-                .orElseThrow(InventoryProductNotFoundException::new);
-        inventoryProduct.updateSelected(selected);
+    private void cancelProfileProducts(final Member member) {
+        inventoryProductRepository.updateBulkProfileProductByMember(member);
+    }
+
+    private void registerProfileProducts(final Member member, final List<Long> selectedInventoryProductIds) {
+        final int updateCount = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
+                selectedInventoryProductIds);
+        if (updateCount != selectedInventoryProductIds.size()) {
+            throw new SqlUpdateException();
+        }
     }
 
     public InventoryProductsResponse findByMemberId(final Long memberId) {

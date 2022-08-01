@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -21,7 +22,8 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileProductException;
+import com.woowacourse.f12.exception.badrequest.DuplicatedCategoryProfileProductException;
+import com.woowacourse.f12.exception.badrequest.InvalidCategoryProfileProductException;
 import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
@@ -55,7 +57,7 @@ class InventoryProductControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        ProfileProductRequest profileProductRequest = new ProfileProductRequest(1L, 2L);
+        ProfileProductRequest profileProductRequest = new ProfileProductRequest(List.of(1L));
         willDoNothing().given(inventoryProductService).updateProfileProducts(1L, profileProductRequest);
 
         // when
@@ -84,7 +86,7 @@ class InventoryProductControllerTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        ProfileProductRequest profileProductRequest = new ProfileProductRequest(1L, 2L);
+        ProfileProductRequest profileProductRequest = new ProfileProductRequest(List.of(1L));
         willThrow(new InventoryProductNotFoundException()).given(inventoryProductService)
                 .updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
 
@@ -112,11 +114,68 @@ class InventoryProductControllerTest {
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
+        ProfileProductRequest profileProductRequest = new ProfileProductRequest(null);
+
+        // when
+        mockMvc.perform(
+                        patch("/api/v1/members/inventoryProducts")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .content(objectMapper.writeValueAsString(profileProductRequest))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider, times(0)).getPayload(authorizationHeader),
+                () -> verify(inventoryProductService, times(0)).updateProfileProducts(anyLong(),
+                        any(ProfileProductRequest.class))
+        );
+    }
+
+    @Test
+    void 대표_장비_등록_실패_요청된_장비가_중복된_카테고리인_경우() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        ProfileProductRequest profileProductRequest = new ProfileProductRequest(null, null);
-        willThrow(new InvalidProfileProductException()).given(inventoryProductService)
-                .updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
+        ProfileProductRequest profileProductRequest = new ProfileProductRequest(List.of(1L, 2L));
+        willThrow(new DuplicatedCategoryProfileProductException())
+                .given(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
+
+        // when
+        mockMvc.perform(
+                        patch("/api/v1/members/inventoryProducts")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .content(objectMapper.writeValueAsString(profileProductRequest))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class))
+        );
+    }
+
+    @Test
+    void 대표_장비_등록_실패_요청된_장비에_소프트웨어_카테고리가_포함된_경우() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        ProfileProductRequest profileProductRequest = new ProfileProductRequest(List.of(1L, 2L));
+        willThrow(new InvalidCategoryProfileProductException())
+                .given(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
 
         // when
         mockMvc.perform(

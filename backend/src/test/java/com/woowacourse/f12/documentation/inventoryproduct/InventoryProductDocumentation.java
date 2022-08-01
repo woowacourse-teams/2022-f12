@@ -54,7 +54,7 @@ class InventoryProductDocumentation extends Documentation {
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
         Long memberId = 1L;
-        ProfileProductRequest profileProductRequest = new ProfileProductRequest(1L, 2L);
+        ProfileProductRequest profileProductRequest = new ProfileProductRequest(List.of(1L));
         willDoNothing().given(inventoryProductService).updateProfileProducts(memberId, profileProductRequest);
 
         // when
