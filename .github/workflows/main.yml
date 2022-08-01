@@ -1,12 +1,9 @@
 name: Cypress Tests
 
-on:
-  pull_request:
-    paths:
-      - "frontend/**"
+on: [pull_request]
+
 defaults:
   run:
-    working-directory: frontend
 
 jobs:
   cypress-run:
@@ -18,3 +15,4 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           start: npm run start
+          working-directory: frontend
