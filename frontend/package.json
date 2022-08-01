@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx webpack build --config webpack.prod.js",
+    "build-main": "npx webpack build --config webpack.prod.js",
     "build-release": "npx webpack build --config webpack.test.js",
     "start": "npx webpack serve --config webpack.dev.js",
     "storybook": "start-storybook -p 6006",
