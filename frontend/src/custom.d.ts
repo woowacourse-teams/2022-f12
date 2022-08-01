@@ -57,4 +57,19 @@ declare type ReviewInput = {
   rating: number;
 };
 
+declare type Statistics = {
+  careerLevel: {
+    midlevel: number;
+    senior: number;
+    none: number;
+    junior: number;
+  };
+  jobType: {
+    frontend: number;
+    backend: number;
+    mobile: number;
+    etc: number;
+  };
+};
+
 declare const __API_URL__: string;
