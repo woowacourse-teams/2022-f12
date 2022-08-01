@@ -2,6 +2,7 @@ package com.woowacourse.f12.domain.review;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.woowacourse.f12.domain.member.JobType;
+import com.woowacourse.f12.domain.member.MemberInfo;
 
 public class JobTypeCount implements Countable {
 
@@ -15,7 +16,7 @@ public class JobTypeCount implements Countable {
     }
 
     @Override
-    public Enum getValue() {
+    public MemberInfo getValue() {
         return jobType;
     }
 

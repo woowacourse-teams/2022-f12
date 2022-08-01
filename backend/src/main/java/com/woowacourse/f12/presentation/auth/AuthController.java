@@ -20,6 +20,6 @@ public class AuthController {
 
     @GetMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestParam final String code) {
-        return ResponseEntity.ok().body(authService.login(code));
+        return ResponseEntity.ok(authService.login(code));
     }
 }

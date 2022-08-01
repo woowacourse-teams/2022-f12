@@ -25,16 +25,16 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ProductPageResponse> showPage(@RequestParam(required = false) final CategoryConstant category,
                                                         final Pageable pageable) {
-        return ResponseEntity.ok().body(productService.findPage(category, pageable));
+        return ResponseEntity.ok(productService.findPage(category, pageable));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> show(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(productService.findById(id));
+        return ResponseEntity.ok(productService.findById(id));
     }
 
     @GetMapping("/{id}/statistics")
     public ResponseEntity<ProductStatisticsResponse> showStatistics(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(productService.calculateMemberStatisticsById(id));
+        return ResponseEntity.ok(productService.calculateMemberStatisticsById(id));
     }
 }
