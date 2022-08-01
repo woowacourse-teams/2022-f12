@@ -3,7 +3,8 @@ package com.woowacourse.f12.support;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
+import com.woowacourse.f12.exception.unauthorized.TokenInvalidException;
+import com.woowacourse.f12.exception.unauthorized.TokenNotExistsException;
 import org.junit.jupiter.api.Test;
 
 class AuthTokenExtractorTest {
@@ -25,7 +26,7 @@ class AuthTokenExtractorTest {
     @Test
     void Authorization_헤더가_null_이면_예외가_발생한다() {
         assertThatThrownBy(() -> authTokenExtractor.extractToken(null, "Bearer"))
-                .isExactlyInstanceOf(UnauthorizedException.class);
+                .isExactlyInstanceOf(TokenNotExistsException.class);
     }
 
     @Test
@@ -35,7 +36,7 @@ class AuthTokenExtractorTest {
 
         // when, then
         assertThatThrownBy(() -> authTokenExtractor.extractToken(authorizationHeader, "Bearer"))
-                .isExactlyInstanceOf(UnauthorizedException.class);
+                .isExactlyInstanceOf(TokenInvalidException.class);
     }
 
     @Test
@@ -45,6 +46,6 @@ class AuthTokenExtractorTest {
 
         // when, then
         assertThatThrownBy(() -> authTokenExtractor.extractToken(authorizationHeader, "Bearer"))
-                .isExactlyInstanceOf(UnauthorizedException.class);
+                .isExactlyInstanceOf(TokenInvalidException.class);
     }
 }

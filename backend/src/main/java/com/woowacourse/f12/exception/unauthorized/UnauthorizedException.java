@@ -1,8 +1,11 @@
 package com.woowacourse.f12.exception.unauthorized;
 
-public class UnauthorizedException extends RuntimeException {
+import com.woowacourse.f12.exception.CustomException;
+import com.woowacourse.f12.exception.ErrorCode;
 
-    public UnauthorizedException() {
-        super("로그인이 필요합니다.");
+public class UnauthorizedException extends CustomException {
+
+    public UnauthorizedException(final String message, final ErrorCode errorCode) {
+        super(message, errorCode);
     }
 }

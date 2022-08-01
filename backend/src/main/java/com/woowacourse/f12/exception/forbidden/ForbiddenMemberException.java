@@ -1,8 +1,11 @@
 package com.woowacourse.f12.exception.forbidden;
 
-public class ForbiddenMemberException extends RuntimeException {
+import com.woowacourse.f12.exception.CustomException;
+import com.woowacourse.f12.exception.ErrorCode;
 
-    public ForbiddenMemberException(final String message) {
-        super(message);
+public class ForbiddenMemberException extends CustomException {
+
+    public ForbiddenMemberException(final String message, final ErrorCode errorCode) {
+        super(message, errorCode);
     }
 }
