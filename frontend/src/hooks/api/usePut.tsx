@@ -2,7 +2,8 @@ import { AxiosRequestHeaders } from 'axios';
 import { useContext } from 'react';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 import useAxios from '@/hooks/api/useAxios';
-import handleError from '@/utils/handleError';
+import useModal from '@/hooks/useModal';
+import useError from '@/hooks/useError';
 
 type Props = {
   url: string;
@@ -16,10 +17,12 @@ function usePut<T>({
   const userData = useContext(UserDataContext);
 
   const { axiosInstance } = useAxios();
+  const { showAlert } = useModal();
+  const handleError = useError();
 
   const putData = async (body: T, id: number) => {
     if (!userData || !userData.token) {
-      alert('로그인이 필요합니다.');
+      showAlert('로그인이 필요합니다.');
       return;
     }
 

@@ -1,8 +1,9 @@
 import { AxiosRequestHeaders } from 'axios';
 import { useContext } from 'react';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
-import handleError from '@/utils/handleError';
 import useAxios from '@/hooks/api/useAxios';
+import useModal from '@/hooks/useModal';
+import useError from '@/hooks/useError';
 
 type Props = {
   url: string;
@@ -13,10 +14,12 @@ function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
   const userData = useContext(UserDataContext);
 
   const { axiosInstance } = useAxios();
+  const { showAlert } = useModal();
+  const handleError = useError();
 
   const postData = async (body: T) => {
     if (!userData || !userData.token) {
-      alert('로그인이 필요합니다.');
+      showAlert('로그인이 필요합니다.');
       return;
     }
 
