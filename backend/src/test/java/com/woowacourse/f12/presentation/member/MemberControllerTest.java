@@ -1,9 +1,9 @@
 package com.woowacourse.f12.presentation.member;
 
-import static com.woowacourse.f12.dto.CareerLevelConstant.JUNIOR_CONSTANT;
-import static com.woowacourse.f12.dto.CareerLevelConstant.NONE_CONSTANT;
-import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.dto.JobTypeConstant.ETC_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
