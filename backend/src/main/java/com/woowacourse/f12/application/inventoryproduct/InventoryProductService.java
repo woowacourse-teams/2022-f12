@@ -1,12 +1,15 @@
 package com.woowacourse.f12.application.inventoryproduct;
 
+import static com.woowacourse.f12.domain.product.Category.SOFTWARE;
+
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileProductException;
+import com.woowacourse.f12.exception.badrequest.DuplicatedCategoryProfileProductException;
+import com.woowacourse.f12.exception.badrequest.InvalidCategoryProfileProductException;
 import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import java.util.List;
@@ -31,20 +34,34 @@ public class InventoryProductService {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
         final List<Long> selectedInventoryProductIds = profileProductRequest.getSelectedInventoryProductIds();
-        validateCategoryNotDuplicated(selectedInventoryProductIds);
+        validateProfileProducts(selectedInventoryProductIds);
         cancelProfileProducts(member);
         registerProfileProducts(member, selectedInventoryProductIds);
     }
 
-    private void validateCategoryNotDuplicated(final List<Long> selectedInventoryProductIds) {
+    private void validateProfileProducts(final List<Long> selectedInventoryProductIds) {
         final List<InventoryProduct> inventoryProducts = inventoryProductRepository.findAllById(
                 selectedInventoryProductIds);
+        validateContainsSoftware(inventoryProducts);
+        validateCategoryNotDuplicated(inventoryProducts);
+    }
+
+    private void validateContainsSoftware(final List<InventoryProduct> inventoryProducts) {
+        final boolean hasSoftware = inventoryProducts.stream()
+                .map(it -> it.getProduct().getCategory())
+                .anyMatch(it -> it.equals(SOFTWARE));
+        if (hasSoftware) {
+            throw new InvalidCategoryProfileProductException();
+        }
+    }
+
+    private void validateCategoryNotDuplicated(final List<InventoryProduct> inventoryProducts) {
         final long distinctCount = inventoryProducts.stream()
                 .map(it -> it.getProduct().getCategory())
                 .distinct()
                 .count();
         if (distinctCount != inventoryProducts.size()) {
-            throw new InvalidProfileProductException();
+            throw new DuplicatedCategoryProfileProductException();
         }
     }
 
