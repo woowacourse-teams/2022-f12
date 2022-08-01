@@ -5,8 +5,11 @@ import static com.woowacourse.f12.exception.ErrorCode.INVALID_REQUEST_BODY;
 import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
 
 import com.woowacourse.f12.dto.response.ExceptionResponse;
+import com.woowacourse.f12.exception.CustomException;
 import com.woowacourse.f12.exception.badrequest.InvalidValueException;
 import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
+import com.woowacourse.f12.exception.internalserver.ExternalServerException;
+import com.woowacourse.f12.exception.internalserver.InternalServerException;
 import com.woowacourse.f12.exception.notfound.NotFoundException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +68,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ForbiddenMemberException.class)
     public ResponseEntity<ExceptionResponse> handleForbiddenMemberException(final ForbiddenMemberException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ExceptionResponse.from(e));
+    }
+
+    @ExceptionHandler({ExternalServerException.class, InternalServerException.class})
+    public ResponseEntity<ExceptionResponse> handleInternalException(final CustomException e) {
+        return ResponseEntity.internalServerError().body(ExceptionResponse.from(e));
     }
 
     @ExceptionHandler(Exception.class)
