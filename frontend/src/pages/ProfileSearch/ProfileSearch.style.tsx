@@ -15,11 +15,3 @@ export const SearchWrapper = styled.div`
   align-items: center;
   gap: 0.8rem;
 `;
-
-export const ProfileCardWrapper = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 3rem 12rem;
-  justify-items: center;
-  margin-top: 5rem;
-`;

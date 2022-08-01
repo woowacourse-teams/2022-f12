@@ -60,7 +60,7 @@ export const UserName = styled.span``;
 export const InventoryWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 5rem;
+  height: 5.2rem;
 `;
 
 export const LeftButton = styled.button`
@@ -110,7 +110,7 @@ export const ProductImage = styled.img`
 `;
 
 export const ProductTitle = styled.p`
-  font-size: 0.5rem;
+  font-size: 0.3rem;
 `;
 
 export const ProductImageWrapper = styled.div`

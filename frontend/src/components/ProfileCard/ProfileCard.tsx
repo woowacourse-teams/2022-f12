@@ -1,14 +1,48 @@
 import { useState } from 'react';
 
 import * as S from '@/components/ProfileCard/ProfileCard.style';
-import sampleProfile from '@/mocks/sample_profile.jpg';
-import sampleKeyboard from '@/mocks/sample_keyboard.jpg';
 import GithubIcon from '@/assets/github.svg';
 import Chip from '@/components/common/Chip/Chip';
 
 const DISTANCE_DIFFERENCE = 116;
 
-function ProfileCard() {
+type ProfileProduct = {
+  id: number;
+  name: string;
+  imageUrl: string;
+  reviewCount: number;
+  rating: number;
+  category: string;
+};
+
+type Props = {
+  id: number;
+  gitHubId: string;
+  imageUrl: string;
+  careerLevel: string;
+  jobType: string;
+  profileProducts: ProfileProduct[];
+};
+
+const chipMapper = {
+  frontend: '프론트엔드',
+  backend: '백엔드',
+  mobile: '모바일',
+  etc: '기타',
+  none: '경력 없음',
+  junior: '0-2년차',
+  midlevel: '3-5년차',
+  senior: '6년차 이상',
+};
+
+function ProfileCard({
+  id,
+  gitHubId,
+  imageUrl,
+  careerLevel,
+  jobType,
+  profileProducts,
+}: Props) {
   const [positionX, setPositionX] = useState(0);
 
   const handleLeftButtonClick = () => {
@@ -27,25 +61,37 @@ function ProfileCard() {
     setPositionX(positionX + DISTANCE_DIFFERENCE * -1);
   };
 
+  const keyboard = profileProducts.find(
+    (product) => product.category === 'keyboard'
+  );
+
+  console.log(keyboard);
+
   return (
     <S.Container>
       <S.LeftSection>
         <S.ProfileImageWrapper>
-          <S.ProfileImage src={sampleProfile} />
+          <S.ProfileImage src={imageUrl} />
         </S.ProfileImageWrapper>
       </S.LeftSection>
       <S.RightSection>
         <S.UserInfoWrapper>
           <S.UserNameWrapper>
-            <S.UserName>칙촉</S.UserName>
-            <GithubIcon />
+            <S.UserName>{gitHubId}</S.UserName>
+            <a
+              href={`https://github.com/${gitHubId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GithubIcon />
+            </a>
           </S.UserNameWrapper>
           <S.UserCareer>
             <Chip paddingTopBottom={0.2} paddingLeftRight={0.4} fontSize={0.7}>
-              0-2년차
+              {chipMapper[careerLevel]}
             </Chip>
             <Chip paddingTopBottom={0.2} paddingLeftRight={0.4} fontSize={0.7}>
-              프론트엔드
+              {chipMapper[jobType]}
             </Chip>
           </S.UserCareer>
         </S.UserInfoWrapper>
@@ -53,13 +99,15 @@ function ProfileCard() {
           <S.LeftButton onClick={handleLeftButtonClick}>{`<`}</S.LeftButton>
           <S.InventoryListWrapper>
             <S.InventoryList positionX={positionX}>
-              {['키보드', '마우스', '모니터', '거치대'].map(
-                (product, index) => {
+              {[keyboard.name, '마우스', '모니터', '거치대'].map(
+                (productCategory, index) => {
                   return (
                     <S.InventoryItem key={index}>
                       <S.ProductImageWrapper>
-                        <S.ProductImage src={sampleKeyboard}></S.ProductImage>
-                        <S.ProductTitle>{product}</S.ProductTitle>
+                        <S.ProductImage
+                          src={keyboard.imageUrl}
+                        ></S.ProductImage>
+                        <S.ProductTitle>{productCategory}</S.ProductTitle>
                       </S.ProductImageWrapper>
                     </S.InventoryItem>
                   );

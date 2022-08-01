@@ -12,7 +12,7 @@ const careerLevels = {
   none: '경력 없음',
   junior: '0-2년차',
   midlevel: '3-5년차',
-  senior: '5년차 이상',
+  senior: '6년차 이상',
 } as const;
 
 const jobTypes = {

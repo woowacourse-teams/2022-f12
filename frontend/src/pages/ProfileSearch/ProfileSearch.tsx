@@ -2,13 +2,28 @@ import { useState } from 'react';
 
 import SearchBar from '@/components/common/SearchBar/SearchBar';
 import SearchFilter from '@/components/SearchFilter/SearchFilter';
-import ProfileCard from '@/components/ProfileCard/ProfileCard';
 
 import * as S from '@/pages/ProfileSearch/ProfileSearch.style';
+import useProfileSearch from '@/hooks/useProfileSearch';
+import ProfileSearchResult from '@/components/ProfileSearchResult/ProfileSearchResult';
 
 function ProfileSearch() {
   const [careerLevelFilter, setCareerLevelFilter] = useState('');
   const [jobTypeFilter, setJobTypeFilter] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+
+  const {
+    profiles,
+    getNextPage,
+    isError: isProfileSearchError,
+    isLoading: isProfileSearchLoading,
+    isReady: isProfileSearchReady,
+  } = useProfileSearch({
+    query: searchInput,
+    careerLevel: careerLevelFilter,
+    jobType: jobTypeFilter,
+    size: '4',
+  });
 
   const handleCareerLevelFilterClick: React.MouseEventHandler<
     HTMLButtonElement
@@ -27,10 +42,7 @@ function ProfileSearch() {
   return (
     <S.Container>
       <S.SearchWrapper>
-        <SearchBar
-          careerLevelFilter={careerLevelFilter}
-          jobTypeFilter={jobTypeFilter}
-        />
+        <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
         <SearchFilter
           careerLevelFilter={careerLevelFilter}
           jobTypeFilter={jobTypeFilter}
@@ -38,14 +50,13 @@ function ProfileSearch() {
           handleJobTypeFilterClick={handleJobTypeFilterClick}
         />
       </S.SearchWrapper>
-      <S.ProfileCardWrapper>
-        <ProfileCard />
-        <ProfileCard />
-        <ProfileCard />
-        <ProfileCard />
-        <ProfileCard />
-        <ProfileCard />
-      </S.ProfileCardWrapper>
+      <ProfileSearchResult
+        data={profiles}
+        getNextPage={getNextPage}
+        isLoading={isProfileSearchLoading}
+        isReady={isProfileSearchReady}
+        isError={isProfileSearchError}
+      />
     </S.Container>
   );
 }
