@@ -51,3 +51,5 @@ declare type ReviewInput = {
   content: string;
   rating: number;
 };
+
+declare const __API_URL__: string;
