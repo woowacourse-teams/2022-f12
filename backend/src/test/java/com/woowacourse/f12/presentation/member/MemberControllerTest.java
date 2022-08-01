@@ -40,6 +40,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -244,7 +245,7 @@ class MemberControllerTest {
     void 키워드와_옵션으로_회원을_조회한다() throws Exception {
         // given
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE_CONSTANT, BACKEND_CONSTANT);
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
                 KEYBOARD_1.생성(1L));
         Member member = CORINNE.대표장비를_추가해서_생성(1L, inventoryProduct);
@@ -280,7 +281,7 @@ class MemberControllerTest {
     void 회원_조회_성공_키워드와_옵션값이_주어지지_않을때() throws Exception {
         // given
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
                 KEYBOARD_1.생성(1L));
         Member member = CORINNE.대표장비를_추가해서_생성(1L, inventoryProduct);

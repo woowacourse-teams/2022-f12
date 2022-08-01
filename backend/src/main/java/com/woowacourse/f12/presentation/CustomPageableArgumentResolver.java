@@ -7,7 +7,9 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.core.MethodParameter;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -32,7 +34,13 @@ public class CustomPageableArgumentResolver extends PageableHandlerMethodArgumen
         validatePage(pageArgument);
         final String sizeArgument = webRequest.getParameter("size");
         validateSize(sizeArgument);
-        return super.resolveArgument(methodParameter, mavContainer, webRequest, binderFactory);
+        final Pageable pageable = super.resolveArgument(methodParameter, mavContainer, webRequest, binderFactory);
+        return addSecondarySortById(pageable);
+    }
+
+    private Pageable addSecondarySortById(final Pageable pageable) {
+        final Sort sort = pageable.getSort().and(Sort.by("id").descending());
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
     }
 
     private void validatePage(final String pageArgument) {
