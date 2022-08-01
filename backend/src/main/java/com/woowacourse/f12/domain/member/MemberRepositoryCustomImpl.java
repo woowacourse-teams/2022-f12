@@ -1,5 +1,7 @@
 package com.woowacourse.f12.domain.member;
 
+import static com.woowacourse.f12.domain.member.QMember.member;
+
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -12,7 +14,6 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implements MemberRepositoryCustom {
 
-    private final QMember member = QMember.member;
     private final JPAQueryFactory jpaQueryFactory;
 
     public MemberRepositoryCustomImpl(final JPAQueryFactory jpaQueryFactory) {
