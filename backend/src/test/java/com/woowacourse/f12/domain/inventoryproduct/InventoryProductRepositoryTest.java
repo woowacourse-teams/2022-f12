@@ -1,6 +1,7 @@
 package com.woowacourse.f12.domain.inventoryproduct;
 
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
@@ -62,6 +63,37 @@ class InventoryProductRepositoryTest {
 
         // then
         assertThat(actual).isTrue();
+    }
+
+    @Test
+    void 인벤토리_상품_모두를_대표_장비에서_해제한다() {
+        // given
+        Member member = 회원을_저장한다(CORINNE.생성());
+        Product product = 제품을_저장한다(KEYBOARD_1.생성(1L));
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
+        inventoryProductRepository.save(inventoryProduct);
+
+        // when
+        int actual = inventoryProductRepository.updateBulkProfileProductByMember(member);
+
+        // then
+        assertThat(actual).isOne();
+    }
+
+    @Test
+    void 인벤토리_상품을_대표_장비로_등록한다() {
+        // given
+        Member member = 회원을_저장한다(CORINNE.생성());
+        Product product = 제품을_저장한다(KEYBOARD_1.생성(1L));
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
+        inventoryProductRepository.save(inventoryProduct);
+
+        // when
+        int actual = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
+                List.of(inventoryProduct.getId()));
+
+        // then
+        assertThat(actual).isOne();
     }
 
     private Product 제품을_저장한다(Product product) {
