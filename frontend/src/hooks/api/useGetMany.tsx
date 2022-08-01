@@ -2,6 +2,7 @@ import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
 import useAxios from '@/hooks/api/useAxios';
 import logError from '@/utils/logError';
+import useModal from '@/hooks/useModal';
 
 type SearchParams = Record<string, string>;
 
@@ -38,6 +39,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
   const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   const { axiosInstance, isLoading, isError } = useAxios();
+  const { showAlert } = useModal();
 
   const fetchData = async () => {
     const {
@@ -91,7 +93,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
       })
       .catch((error: Error) => {
         logError(error, getErrorStateMessage());
-        alert('사용자에게 표시할 오류 메시지');
+        showAlert('사용자에게 표시할 오류 메시지');
       });
   }, [nextPageTrigger, refetchTrigger]);
 
