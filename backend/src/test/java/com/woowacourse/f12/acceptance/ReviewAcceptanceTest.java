@@ -4,6 +4,8 @@ import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한�
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PUT_요청을_보낸다;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.MINCHO_GITHUB;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
@@ -34,7 +36,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void 키보드가_저장되어있고_키보드에_대한_리뷰를_작성한다() {
         // given
         Product product = 키보드를_저장한다(KEYBOARD_1.생성());
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
 
         // when
         ExtractableResponse<Response> response = REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
@@ -50,7 +52,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void 같은_회원이_같은_제품에_리뷰를_중복해서_작성하면_예외가_발생한다() {
         // given
         Product product = 키보드를_저장한다(KEYBOARD_1.생성());
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
 
         // when
@@ -68,9 +70,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void 특정_제품_리뷰_목록을_최신순으로_조회한다() {
         // given
         Product product = 키보드를_저장한다(KEYBOARD_1.생성());
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
-        String token2 = 로그인을_한다("2").getToken();
+        String token2 = 로그인을_한다(MINCHO_GITHUB.getCode()).getToken();
         Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token2));
 
         // when
@@ -92,9 +94,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void 특정_제품_리뷰_목록을_평점순으로_조회한다() {
         // given
         Product product = 키보드를_저장한다(KEYBOARD_1.생성());
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         REVIEW_RATING_4.작성_요청을_보낸다(product.getId(), token);
-        String token2 = 로그인을_한다("2").getToken();
+        String token2 = 로그인을_한다(MINCHO_GITHUB.getCode()).getToken();
         Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token2));
 
         // when
@@ -117,7 +119,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         // given
         Product product1 = 키보드를_저장한다(KEYBOARD_1.생성());
         Product product2 = 키보드를_저장한다(KEYBOARD_2.생성());
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         Long reviewId1 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token));
         Long reviewId2 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product2.getId(), token));
 
@@ -139,7 +141,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰를_수정한다() {
         // given
         Product product = 키보드를_저장한다(KEYBOARD_1.생성());
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token));
         ReviewRequest requestBody = new ReviewRequest("수정된 내용", 4);
 
@@ -163,7 +165,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰를_삭제한다() {
         // given
         Product product = 키보드를_저장한다(KEYBOARD_1.생성());
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token));
 
         // when

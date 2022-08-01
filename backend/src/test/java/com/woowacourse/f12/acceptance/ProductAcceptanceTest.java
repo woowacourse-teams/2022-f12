@@ -2,7 +2,18 @@ package com.woowacourse.f12.acceptance;
 
 import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
+import static com.woowacourse.f12.dto.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.dto.CareerLevelConstant.MID_LEVEL_CONSTANT;
+import static com.woowacourse.f12.dto.CareerLevelConstant.NONE_CONSTANT;
+import static com.woowacourse.f12.dto.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.dto.JobTypeConstant.ETC_CONSTANT;
+import static com.woowacourse.f12.dto.JobTypeConstant.FRONTEND_CONSTANT;
+import static com.woowacourse.f12.dto.JobTypeConstant.MOBILE_CONSTANT;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.MINCHO_GITHUB;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
@@ -14,11 +25,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
+import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
+import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.presentation.product.CategoryConstant;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -91,7 +106,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         REVIEW_RATING_5.작성_요청을_보낸다(product1.getId(), token);
         REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token);
         REVIEW_RATING_3.작성_요청을_보낸다(product2.getId(), token);
@@ -115,7 +130,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
-        String token = 로그인을_한다("1").getToken();
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token);
         REVIEW_RATING_5.작성_요청을_보낸다(product2.getId(), token);
 
@@ -130,6 +145,39 @@ class ProductAcceptanceTest extends AcceptanceTest {
                         .extracting("id")
                         .containsExactly(product2.getId()),
                 () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isTrue()
+        );
+    }
+
+    @Test
+    void 제품의_사용자_통계를_조회한다() {
+        // given
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
+
+        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
+        String firstToken = firstLoginResponse.getToken();
+        MemberRequest firstMemberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstToken, firstMemberRequest);
+        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), firstToken);
+
+        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        String secondToken = secondLoginResponse.getToken();
+        MemberRequest secondMemberRequest = new MemberRequest(JUNIOR_CONSTANT, FRONTEND_CONSTANT);
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", secondToken, secondMemberRequest);
+        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), secondToken);
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products/" + product.getId() + "/statistics");
+        ProductStatisticsResponse productStatisticsResponse = response.as(ProductStatisticsResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(productStatisticsResponse.getCareerLevel()).usingRecursiveComparison()
+                        .isEqualTo(Map.of(NONE_CONSTANT, 0.0, JUNIOR_CONSTANT, 0.5, MID_LEVEL_CONSTANT, 0.0,
+                                SENIOR_CONSTANT, 0.5)),
+                () -> assertThat(productStatisticsResponse.getJobType()).usingRecursiveComparison()
+                        .isEqualTo(Map.of(FRONTEND_CONSTANT, 0.5, BACKEND_CONSTANT, 0.5, MOBILE_CONSTANT, 0.0,
+                                ETC_CONSTANT, 0.0))
         );
     }
 
