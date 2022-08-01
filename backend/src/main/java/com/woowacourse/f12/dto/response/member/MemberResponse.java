@@ -1,8 +1,8 @@
 package com.woowacourse.f12.dto.response.member;
 
 import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.dto.CareerLevelConstant;
-import com.woowacourse.f12.dto.JobTypeConstant;
+import com.woowacourse.f12.presentation.member.CareerLevelConstant;
+import com.woowacourse.f12.presentation.member.JobTypeConstant;
 import lombok.Getter;
 
 @Getter
