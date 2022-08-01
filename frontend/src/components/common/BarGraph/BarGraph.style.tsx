@@ -2,11 +2,26 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
-  width: 500px;
+  width: 448px;
   padding: 3rem 1rem;
   background-color: #ffffff;
+`;
+
+export const BarGraphTitleWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  bottom: 0rem;
+`;
+
+export const BarGraphTitle = styled.button`
+  font-size: 1.1rem;
+  background-color: #fff;
+  padding: 0.2rem;
 `;
 
 export const DataWrapper = styled.div`
@@ -51,12 +66,12 @@ export const PercentWrapper = styled.div`
   position: relative;
   justify-content: center;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 1.2rem;
 `;
 
 export const Percent = styled.div`
   position: absolute;
-  top: -1rem;
+  top: -1.3rem;
   color: ${({ theme }) => theme.colors.black};
 `;
 
@@ -71,5 +86,5 @@ export const JobType = styled.div`
   justify-content: center;
   align-items: center;
   width: calc(320px / 4);
-  font-size: 0.8rem;
+  font-size: 1.1rem;
 `;
