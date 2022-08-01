@@ -74,4 +74,18 @@ declare type ProfileSearchResult = {
       category: string;
     }
   ];
+
+declare type Statistics = {
+  careerLevel: {
+    midlevel: number;
+    senior: number;
+    none: number;
+    junior: number;
+  };
+  jobType: {
+    frontend: number;
+    backend: number;
+    mobile: number;
+    etc: number;
+  };
 };
