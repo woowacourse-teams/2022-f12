@@ -54,14 +54,7 @@ public class ProductService {
         }
         final Map<CareerLevel, Double> careerLevel = calculateWithCareerLevel(productId);
         final Map<JobType, Double> jobType = calculateWithJobType(productId);
-
         return ProductStatisticsResponse.of(careerLevel, jobType);
-    }
-
-    private Map<JobType, Double> calculateWithJobType(final Long productId) {
-        final List<JobTypeCount> jobTypeCounts = reviewRepository.findJobTypeCountByProductId(productId);
-        final MemberInfoStatistics<JobTypeCount, JobType> jobTypeStatistics = new MemberInfoStatistics<>(jobTypeCounts);
-        return jobTypeStatistics.calculateStatistics(JobType.values());
     }
 
     private Map<CareerLevel, Double> calculateWithCareerLevel(final Long productId) {
@@ -69,5 +62,11 @@ public class ProductService {
         final MemberInfoStatistics<CareerLevelCount, CareerLevel> careerLevelStatistics = new MemberInfoStatistics<>(
                 careerLevelCounts);
         return careerLevelStatistics.calculateStatistics(CareerLevel.values());
+    }
+
+    private Map<JobType, Double> calculateWithJobType(final Long productId) {
+        final List<JobTypeCount> jobTypeCounts = reviewRepository.findJobTypeCountByProductId(productId);
+        final MemberInfoStatistics<JobTypeCount, JobType> jobTypeStatistics = new MemberInfoStatistics<>(jobTypeCounts);
+        return jobTypeStatistics.calculateStatistics(JobType.values());
     }
 }
