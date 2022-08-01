@@ -6,9 +6,11 @@ import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로�
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
 import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.dto.CareerLevelConstant.JUNIOR_CONSTANT;
-import static com.woowacourse.f12.dto.CareerLevelConstant.SENIOR_CONSTANT;
-import static com.woowacourse.f12.dto.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.MINCHO_GITHUB;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
@@ -40,7 +42,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인_된_상태에서_내_회원정보를_업데이트한다() {
         // given
-        LoginResponse loginResponse = 로그인을_한다("1");
+        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
         String token = loginResponse.getToken();
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -65,7 +67,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인_된_상태에서_내_회원정보를_조회한다() {
         // given
-        LoginResponse loginResponse = 로그인을_한다("1");
+        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
         String token = loginResponse.getToken();
 
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
@@ -89,7 +91,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 비로그인_상태에서_회원정보를_조회한다() {
         // given
-        LoginResponse loginResponse = 로그인을_한다("1");
+        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
         String token = loginResponse.getToken();
         LoginMemberResponse loginMemberResponse = loginResponse.getMember();
 
@@ -121,10 +123,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
 
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        LoginResponse firstLoginResponse = 로그인을_한다("1");
+        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다("hamcheeseburger");
+        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
         String token = secondLoginResponse.getToken();
         Long memberId = secondLoginResponse.getMember().getId();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
@@ -158,10 +160,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
 
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        LoginResponse firstLoginResponse = 로그인을_한다("1");
+        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다("hamcheeseburger");
+        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
         String token = secondLoginResponse.getToken();
         Long memberId = secondLoginResponse.getMember().getId();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
@@ -195,10 +197,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
 
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        LoginResponse firstLoginResponse = 로그인을_한다("1");
+        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다("hamcheeseburger");
+        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
         String token = secondLoginResponse.getToken();
         Long memberId = secondLoginResponse.getMember().getId();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);

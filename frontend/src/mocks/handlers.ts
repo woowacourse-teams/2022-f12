@@ -35,6 +35,26 @@ const getKeyboard = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
+// 상품 사용자 통계 조회
+// 상품 상세 조회
+const getStatistics = (req, res, ctx) => {
+  const response = {
+    careerLevel: {
+      midlevel: 0.2,
+      senior: 0.3,
+      none: 0.1,
+      junior: 0.4,
+    },
+    jobType: {
+      frontend: 0.45,
+      backend: 0.25,
+      mobile: 0.2,
+      etc: 0.1,
+    },
+  };
+  return res(ctx.status(200), ctx.json(response), ctx.delay());
+};
+
 // 전체 리뷰 목록 조회
 const getReviews = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
@@ -158,6 +178,7 @@ const submitAdditionalInfo = (req, res, ctx) => {
 export const handlers = [
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
+  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}/statistics`, getStatistics),
   rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS}`, getReviews),
   rest.get(
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,

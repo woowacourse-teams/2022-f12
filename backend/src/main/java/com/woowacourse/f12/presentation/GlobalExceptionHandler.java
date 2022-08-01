@@ -1,5 +1,9 @@
 package com.woowacourse.f12.presentation;
 
+import static com.woowacourse.f12.exception.ErrorCode.INTERNAL_SERVER_ERROR;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_REQUEST_BODY;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
+
 import com.woowacourse.f12.dto.response.ExceptionResponse;
 import com.woowacourse.f12.exception.badrequest.InvalidValueException;
 import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
@@ -34,12 +38,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException() {
-        return ResponseEntity.badRequest().body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE));
+        return ResponseEntity.badRequest()
+                .body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE, INVALID_REQUEST_BODY));
     }
 
-    @ExceptionHandler(BindException.class)
-    public ResponseEntity<ExceptionResponse> handleBindException() {
-        return ResponseEntity.badRequest().body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE));
+    @ExceptionHandler({BindException.class, MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<ExceptionResponse> handleInvalidQueryParameterException() {
+        return ResponseEntity.badRequest()
+                .body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE, INVALID_SEARCH_PARAM));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -48,7 +54,7 @@ public class GlobalExceptionHandler {
         final StringBuilder stringBuilder = new StringBuilder();
         exception.getBindingResult().getAllErrors().forEach((error) -> stringBuilder.append(error.getDefaultMessage())
                 .append(System.lineSeparator()));
-        return ResponseEntity.badRequest().body(ExceptionResponse.from(stringBuilder.toString()));
+        return ResponseEntity.badRequest().body(ExceptionResponse.from(stringBuilder.toString(), INVALID_REQUEST_BODY));
     }
 
     @ExceptionHandler(UnauthorizedException.class)
@@ -61,15 +67,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ExceptionResponse.from(e));
     }
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ExceptionResponse> handleMethodArgumentTypeMismatchException() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE));
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleUnhandledException(final Exception e) {
         log.error("[ERROR]", e);
-        return ResponseEntity.internalServerError().body(ExceptionResponse.from(INTERNAL_SERVER_ERROR_MESSAGE));
+        return ResponseEntity.internalServerError()
+                .body(ExceptionResponse.from(INTERNAL_SERVER_ERROR_MESSAGE, INTERNAL_SERVER_ERROR));
     }
 }

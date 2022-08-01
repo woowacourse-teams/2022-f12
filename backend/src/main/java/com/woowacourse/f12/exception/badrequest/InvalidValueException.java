@@ -1,8 +1,11 @@
 package com.woowacourse.f12.exception.badrequest;
 
-public class InvalidValueException extends RuntimeException {
+import com.woowacourse.f12.exception.CustomException;
+import com.woowacourse.f12.exception.ErrorCode;
 
-    public InvalidValueException(final String message) {
-        super(message);
+public class InvalidValueException extends CustomException {
+
+    public InvalidValueException(final String message, final ErrorCode errorCode) {
+        super(errorCode, message);
     }
 }

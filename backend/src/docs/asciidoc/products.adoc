@@ -23,3 +23,7 @@ operation::products-get[snippets='http-request,http-response']
 - 없을 경우 등록 순서
 
 operation::products-page-get[snippets='http-request,http-response']
+
+=== 특정 제품의 사용자 통계를 조회
+
+operation::products-member-statistics-get[snippets='http-request,http-response']

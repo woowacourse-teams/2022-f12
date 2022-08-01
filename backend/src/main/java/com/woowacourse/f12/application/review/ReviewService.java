@@ -13,8 +13,8 @@ import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
-import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -45,7 +45,7 @@ public class ReviewService {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
         final Product product = productRepository.findById(productId)
-                .orElseThrow(KeyboardNotFoundException::new);
+                .orElseThrow(ProductNotFoundException::new);
         final Long reviewId = saveReview(reviewRequest, member, product);
         saveInventoryProduct(member, product);
         return reviewId;
@@ -83,7 +83,7 @@ public class ReviewService {
 
     private void validateKeyboardExists(final Long productId) {
         if (!productRepository.existsById(productId)) {
-            throw new KeyboardNotFoundException();
+            throw new ProductNotFoundException();
         }
     }
 

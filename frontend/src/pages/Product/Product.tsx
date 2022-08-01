@@ -15,6 +15,8 @@ import useAuth from '@/hooks/useAuth';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
 import useModal from '@/hooks/useModal';
+import BarGraph from '@/components/common/BarGraph/BarGraph';
+import useStatistics from '@/hooks/useStatistics';
 
 function Product() {
   const { isLoggedIn } = useAuth();
@@ -37,6 +39,9 @@ function Product() {
   } = useReviews({
     size: '6',
     productId,
+  });
+  const [statistics, isStatisticsReady, isStatisticsError] = useStatistics({
+    productId: Number(productId),
   });
 
   const [isSheetOpen, toggleSheetOpen] = useReducer(
@@ -92,6 +97,15 @@ function Product() {
           >
             <ProductDetail product={product} />
           </AsyncWrapper>
+          <S.BarGraphWrapper>
+            <AsyncWrapper
+              fallback={<Loading />}
+              isReady={isStatisticsReady}
+              isError={isStatisticsError}
+            >
+              <BarGraph statistics={statistics} />
+            </AsyncWrapper>
+          </S.BarGraphWrapper>
         </S.ProductDetailWrapper>
       </StickyWrapper>
       <S.Wrapper ref={reviewListRef}>
