@@ -1,9 +1,13 @@
 name: Cypress Tests
 
-on: [pull_request]
+on:
+  pull_request:
+    paths:
+      - "frontend/**"
 defaults:
   run:
     working-directory: frontend
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
