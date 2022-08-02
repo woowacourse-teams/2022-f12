@@ -2,23 +2,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    show-sql: true
     properties:
       hibernate:
         format_sql: true
 
 server:
   port: 8888
-
-logging:
-  level:
-    org:
-      hibernate:
-        sql: debug
-        type:
-          descriptor:
-            sql:
-              BasicBinder: trace
 
 github:
   client:
@@ -32,3 +21,6 @@ security:
   jwt:
     secret-key: testfkjasl123jl1kjdklfha2h3eoi1eojqdoiq112lkdldk
     expire-length: 3600000
+
+logging:
+  config: classpath:log4j2/log4j2-local.xml
