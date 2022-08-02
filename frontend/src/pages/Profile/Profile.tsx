@@ -23,7 +23,7 @@ type Member = {
 function Profile() {
   const userData = useContext(UserDataContext);
   const {
-    keyboards,
+    items,
     isReady: isInventoryProductsReady,
     refetch: refetchInventoryProducts,
     selectedProduct,
@@ -67,7 +67,7 @@ function Profile() {
           isReady={isInventoryProductsReady}
           isError={isMyDataError}
         >
-          <InventoryProductList products={keyboards} />
+          <InventoryProductList products={items} />
         </AsyncWrapper>
       </S.InventorySection>
     </S.Container>

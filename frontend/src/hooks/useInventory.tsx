@@ -5,11 +5,11 @@ import usePatch from '@/hooks/api/usePatch';
 import { useContext, useEffect, useMemo, useState } from 'react';
 
 type InventoryResponse = {
-  keyboards: InventoryProduct[];
+  items: InventoryProduct[];
 };
 
 type Return = {
-  keyboards: InventoryProduct[];
+  items: InventoryProduct[];
   isReady: boolean;
   isError: boolean;
   selectedProduct: InventoryProduct | null;
@@ -39,8 +39,7 @@ function useInventory(): Return {
   });
 
   const initialSelectedProduct = useMemo<InventoryProduct>(
-    () =>
-      isReady && inventoryProducts.keyboards.find(({ selected }) => selected),
+    () => isReady && inventoryProducts.items.find(({ selected }) => selected),
     [inventoryProducts]
   );
 
@@ -64,15 +63,13 @@ function useInventory(): Return {
   const otherProducts =
     isReady &&
     (selectedProduct
-      ? inventoryProducts.keyboards.filter(
-          ({ id }) => id !== selectedProduct.id
-        )
-      : inventoryProducts.keyboards);
+      ? inventoryProducts.items.filter(({ id }) => id !== selectedProduct.id)
+      : inventoryProducts.items);
 
   useEffect(() => {
     if (!isReady) return;
 
-    const newSelectedProduct = inventoryProducts.keyboards.find(
+    const newSelectedProduct = inventoryProducts.items.find(
       ({ selected }) => selected
     );
 
@@ -80,7 +77,7 @@ function useInventory(): Return {
   }, [inventoryProducts]);
 
   return {
-    keyboards: inventoryProducts?.keyboards,
+    items: inventoryProducts?.items,
     isReady,
     isError,
     selectedProduct,
