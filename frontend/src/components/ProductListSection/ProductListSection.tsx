@@ -30,7 +30,6 @@ function ProductListSection({
   isError,
   getNextPage,
 }: Props) {
-
   return (
     <S.Container aria-label={title}>
       <SectionHeader>
@@ -71,7 +70,7 @@ const ProductCardList = ({ data }: { data: Product[] }) => {
     <Masonry columnCount={4}>
       {data.map(({ id, imageUrl, name, rating }) => (
         <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
-          <ProductCard productImage={imageUrl} name={name} rating={rating} />
+          <ProductCard imageUrl={imageUrl} name={name} rating={rating} />
         </Link>
       ))}
       {data.length === 0 && <NoDataPlaceholder />}
