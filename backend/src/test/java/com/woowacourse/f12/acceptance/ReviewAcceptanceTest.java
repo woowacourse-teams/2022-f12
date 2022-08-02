@@ -12,6 +12,7 @@ import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
@@ -31,6 +32,11 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Test
+    void 실패() {
+        fail();
+    }
 
     @Test
     void 키보드가_저장되어있고_키보드에_대한_리뷰를_작성한다() {
