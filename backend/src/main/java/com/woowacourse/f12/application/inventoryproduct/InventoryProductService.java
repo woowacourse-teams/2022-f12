@@ -9,7 +9,7 @@ import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
-import com.woowacourse.f12.exception.badrequest.InvalidCategoryProfileProductException;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import java.util.List;
@@ -51,7 +51,7 @@ public class InventoryProductService {
                 .map(it -> it.getProduct().getCategory())
                 .anyMatch(it -> it.equals(SOFTWARE));
         if (hasSoftware) {
-            throw new InvalidCategoryProfileProductException();
+            throw new InvalidProfileProductCategoryException();
         }
     }
 

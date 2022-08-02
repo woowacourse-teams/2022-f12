@@ -19,7 +19,7 @@ import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
-import com.woowacourse.f12.exception.badrequest.InvalidCategoryProfileProductException;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
 import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
@@ -131,7 +131,7 @@ class InventoryProductServiceTest {
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> inventoryProductService.updateProfileProducts(1L, profileProductRequest))
-                        .isExactlyInstanceOf(InvalidCategoryProfileProductException.class),
+                        .isExactlyInstanceOf(InvalidProfileProductCategoryException.class),
                 () -> verify(memberRepository).findById(1L),
                 () -> verify(inventoryProductRepository).findAllById(selectedInventoryProductIds)
         );
