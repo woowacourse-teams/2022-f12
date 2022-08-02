@@ -2,17 +2,17 @@ name: frontend
 
 on:
   push:
-      branches:
-        - main
-        - release
-      paths:
-        - 'frontend/**'
-    pull_request:
-      branches:
-        - main
-        - release
-      paths:
-        - 'frontend/**'
+    branches:
+      - main
+      - release
+    paths:
+      - 'frontend/**'
+  pull_request:
+    branches:
+      - main
+      - release
+    paths:
+      - 'frontend/**'
 
 defaults:
   run:
