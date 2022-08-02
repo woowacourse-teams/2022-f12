@@ -5,23 +5,30 @@ export const Container = styled.article`
   position: relative;
   flex-direction: column;
   align-items: center;
+  gap: 1.25rem;
   width: 448px;
   padding: 3rem 1rem;
   background-color: #ffffff;
 `;
 
 export const BarGraphTitleWrapper = styled.div`
-  position: absolute;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 1rem;
-  margin-bottom: 0.5rem;
-  bottom: 0rem;
+  width: 100%;
 `;
 
-export const BarGraphTitle = styled.button`
+export const BarGraphTitle = styled.h1`
+  font-size: 1.5rem;
+`;
+
+export const BarGraphToggleButton = styled.button`
   font-size: 1.1rem;
   background-color: #fff;
   padding: 0.2rem;
+  text-decoration: underline;
+  align-self: flex-end;
 `;
 
 export const DataWrapper = styled.div`
