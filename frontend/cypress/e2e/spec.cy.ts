@@ -30,7 +30,7 @@ describe('비회원 사용자 기본 플로우', () => {
         .should('be.visible');
     });
 
-    it.only('홈 페이지에서 스크롤을 내리면 후기가 추가 로딩이 된다.', () => {
+    it('홈 페이지에서 스크롤을 내리면 후기가 추가 로딩이 된다.', () => {
       cy.wait('@reviewsRequest').then(() => {
         cy.findByRole('region', { name: /후기/ }).isCardImageLoadDone();
       });
