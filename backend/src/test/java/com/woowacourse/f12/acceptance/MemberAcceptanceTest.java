@@ -32,6 +32,8 @@ import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
+import com.woowacourse.f12.dto.response.product.ProductResponse;
+import com.woowacourse.f12.support.InventoryProductFixtures;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;

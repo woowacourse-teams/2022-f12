@@ -93,7 +93,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
 
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, product);
-        InventoryProduct savedInventoryProduct = 인벤토리에_장비를_추가한다(inventoryProduct);
+        인벤토리에_장비를_추가한다(inventoryProduct);
 
         // when
         ExtractableResponse<Response> profileProductResponse = 로그인된_상태로_PATCH_요청을_보낸다(

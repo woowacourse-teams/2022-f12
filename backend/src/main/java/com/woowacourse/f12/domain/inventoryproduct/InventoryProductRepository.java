@@ -14,11 +14,11 @@ public interface InventoryProductRepository extends JpaRepository<InventoryProdu
     boolean existsByMemberAndProduct(Member member, Product product);
 
     @Modifying(clearAutomatically = true)
-    @Query("update InventoryProduct i set i.selected = false where i.member = :member")
-    int updateBulkProfileProductByMember(Member member);
+    @Query("update InventoryProduct i set i.selected = :selected where i.member = :member")
+    int updateBulkProfileProductByMember(Member member, boolean selected);
 
     @Modifying(clearAutomatically = true)
-    @Query("update InventoryProduct i set i.selected = true "
+    @Query("update InventoryProduct i set i.selected = :selected "
             + "where i.member = :member and i.id in :selectedInventoryProductIds")
-    int updateBulkProfileProductByMemberAndIds(Member member, List<Long> selectedInventoryProductIds);
+    int updateBulkProfileProductByMemberAndIds(Member member, List<Long> selectedInventoryProductIds, boolean selected);
 }

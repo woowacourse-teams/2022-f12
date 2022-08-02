@@ -12,6 +12,7 @@ import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
+import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -67,14 +68,14 @@ public class InventoryProductService {
     }
 
     private void cancelProfileProducts(final Member member) {
-        inventoryProductRepository.updateBulkProfileProductByMember(member);
+        inventoryProductRepository.updateBulkProfileProductByMember(member, false);
     }
 
     private void registerProfileProducts(final Member member, final List<Long> selectedInventoryProductIds) {
-        final int updateCount = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
-                selectedInventoryProductIds);
-        if (updateCount != selectedInventoryProductIds.size()) {
-            throw new SqlUpdateException();
+        final int updatedCount = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
+                selectedInventoryProductIds, true);
+        if (updatedCount != selectedInventoryProductIds.size()) {
+            throw new NotUpdatableException();
         }
     }
 
