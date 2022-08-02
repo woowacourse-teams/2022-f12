@@ -127,7 +127,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 리뷰_갯수가_같은_상태에서_제품_목록을_리뷰가_많은_순서로_페이징하여_조회하면_id_역순으로_조회된다() {
+    void 리뷰_개수가_같은_상태에서_제품_목록을_리뷰가_많은_순서로_페이징하여_조회하면_id_역순으로_조회된다() {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
@@ -145,6 +145,27 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.as(ProductPageResponse.class).getItems())
                         .extracting("id")
                         .containsExactly(product2.getId(), product1.getId()),
+                () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 정렬_조건으로_id_역순으로_페이징하여_조회하면_id_역순으로_조회된다() {
+        // given
+        Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
+        Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
+        Product product3 = 제품을_저장한다(MOUSE_1.생성());
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/products?page=0&size=3&sort=id,desc");
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(ProductPageResponse.class).getItems())
+                        .extracting("id")
+                        .containsExactly(product3.getId(), product2.getId(), product1.getId()),
                 () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isFalse()
         );
     }
