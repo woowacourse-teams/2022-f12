@@ -12,6 +12,7 @@ import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CO
 import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
 import static com.woowacourse.f12.support.GitHubProfileFixtures.MINCHO_GITHUB;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.InventoryProductFixtures.대표_장비_업데이트_한다;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
@@ -31,7 +32,6 @@ import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
-import com.woowacourse.f12.support.InventoryProductFixtures;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -213,7 +213,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
         REVIEW_RATING_4.작성_요청을_보낸다(mouse.getId(), token);
-        InventoryProductFixtures.대표_장비_업데이트_한다(List.of(keyboard), token);
+        대표_장비_업데이트_한다(List.of(keyboard), token);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(

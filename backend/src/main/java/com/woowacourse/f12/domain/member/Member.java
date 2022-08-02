@@ -84,7 +84,7 @@ public class Member {
         return Objects.nonNull(this.careerLevel) && Objects.nonNull(this.jobType);
     }
 
-    public List<Product> findProfileProducts() {
+    public List<Product> getProfileProducts() {
         return this.inventoryProducts.stream()
                 .filter(InventoryProduct::isSelected)
                 .map(InventoryProduct::getProduct)

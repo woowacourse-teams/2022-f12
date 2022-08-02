@@ -36,7 +36,7 @@ public class MemberWithProfileProductResponse {
     }
 
     public static MemberWithProfileProductResponse from(final Member member) {
-        final List<ProductResponse> profileProducts = member.findProfileProducts()
+        final List<ProductResponse> profileProducts = member.getProfileProducts()
                 .stream()
                 .map(ProductResponse::from)
                 .collect(Collectors.toList());
