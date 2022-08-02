@@ -1,0 +1,32 @@
+name: frontend
+
+on: [pull_request]
+
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
+        with:
+          start: npm run start
+          working-directory: frontend
+  chromatic-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install dependencies
+        run: npm install
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: frontend
