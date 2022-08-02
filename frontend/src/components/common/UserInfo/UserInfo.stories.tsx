@@ -1,5 +1,4 @@
 import UserInfo from '@/components/common/UserInfo/UserInfo';
-import sampleProfile from '@/mocks/sample_profile.jpg';
 import { ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
 
@@ -21,7 +20,7 @@ const defaultArg = {
   id: '1',
   gitHubId: '아저씨',
   name: '아저씨',
-  imageUrl: sampleProfile,
+  imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
   careerLevel: '경력없음',
   jobType: '프론트엔드',
 };

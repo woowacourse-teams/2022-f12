@@ -1,25 +1,12 @@
-// import { rest } from 'msw';
-// import { BASE_URL, ENDPOINTS } from '@/constants/api';
-// import {
-//   InventoryProducts,
-//   myData,
-//   products,
-//   reviewsWithOutProduct,
-//   reviewsWithProduct,
-// } from '@/mocks/data';
-
-// import sampleProfile from '@/mocks/sample_profile.jpg';
 import { rest } from 'msw';
-import { BASE_URL, ENDPOINTS } from '../constants/api';
+import { BASE_URL, ENDPOINTS } from '@/constants/api';
 import {
   InventoryProducts,
   myData,
   products,
   reviewsWithOutProduct,
   reviewsWithProduct,
-} from './data';
-
-import sampleProfile from './sample_profile.jpg';
+} from '@/mocks/data';
 
 // 상품 목록 조회
 const getKeyboards = (req, res, ctx) => {
@@ -136,7 +123,7 @@ const getToken = (req, res, ctx) => {
     member: {
       id: 1,
       gitHubId: '사용자2',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
       name: 'F12개발자',
     },
     registerCompleted: false,
