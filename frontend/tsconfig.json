@@ -11,5 +11,5 @@
     },
     "types": ["cypress", "@testing-library/cypress"]
   },
-  "include": ["src", "./src/custom.d.ts"]
+  "include": ["src", "./src/custom.d.ts", "cypress/**/*.ts"]
 }
