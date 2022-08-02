@@ -17,7 +17,7 @@ export const CATEGORY = {
 
 function CategoryNav({ handleTransitionEnd, triggerAnimation }: Props) {
   const CategoryLinks = Object.entries(CATEGORY).map(([key, name]) => (
-    <Link key={key} to={`${ROUTES.PRODUCTS}?category=${key}`}>
+    <Link key={key} to={`${ROUTES.PRODUCTS}?category=${key}`} aria-label={name}>
       {name}
     </Link>
   ));
@@ -27,7 +27,9 @@ function CategoryNav({ handleTransitionEnd, triggerAnimation }: Props) {
       triggerAnimation={triggerAnimation}
     >
       <S.Wrapper>
-        <Link to={ROUTES.PRODUCTS}>전체 상품</Link>
+        <Link to={ROUTES.PRODUCTS} aria-label="전체 상품">
+          전체 상품
+        </Link>
         {CategoryLinks}
       </S.Wrapper>
     </S.Container>
