@@ -8,8 +8,8 @@ import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.exception.badrequest.DuplicatedCategoryProfileProductException;
-import com.woowacourse.f12.exception.badrequest.InvalidCategoryProfileProductException;
+import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import java.util.List;
@@ -42,16 +42,16 @@ public class InventoryProductService {
     private void validateProfileProducts(final List<Long> selectedInventoryProductIds) {
         final List<InventoryProduct> inventoryProducts = inventoryProductRepository.findAllById(
                 selectedInventoryProductIds);
-        validateContainsSoftware(inventoryProducts);
+        validateNotContainsSoftware(inventoryProducts);
         validateCategoryNotDuplicated(inventoryProducts);
     }
 
-    private void validateContainsSoftware(final List<InventoryProduct> inventoryProducts) {
+    private void validateNotContainsSoftware(final List<InventoryProduct> inventoryProducts) {
         final boolean hasSoftware = inventoryProducts.stream()
                 .map(it -> it.getProduct().getCategory())
                 .anyMatch(it -> it.equals(SOFTWARE));
         if (hasSoftware) {
-            throw new InvalidCategoryProfileProductException();
+            throw new InvalidProfileProductCategoryException();
         }
     }
 
@@ -61,7 +61,7 @@ public class InventoryProductService {
                 .distinct()
                 .count();
         if (distinctCount != inventoryProducts.size()) {
-            throw new DuplicatedCategoryProfileProductException();
+            throw new DuplicatedProfileProductCategoryException();
         }
     }
 
