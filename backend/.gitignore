@@ -36,6 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-### auth ###
-application-auth.yml
-application-h2.yml
+### submodules ###
+submodules/
