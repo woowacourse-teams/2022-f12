@@ -5,7 +5,7 @@ import com.woowacourse.f12.exception.ErrorCode;
 
 public class UnauthorizedException extends CustomException {
 
-    public UnauthorizedException(final String message, final ErrorCode errorCode) {
+    public UnauthorizedException(final ErrorCode errorCode, final String message) {
         super(errorCode, message);
     }
 }
