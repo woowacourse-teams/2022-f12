@@ -65,8 +65,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 모든_제품_목록을_페이징하여_조회한다() {
         // given
-        Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        제품을_저장한다(MOUSE_1.생성());
+        제품을_저장한다(KEYBOARD_1.생성());
+        Product product = 제품을_저장한다(MOUSE_1.생성());
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?page=0&size=1");
@@ -84,19 +84,19 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 특정_카테고리_목록을_페이징하여_조회한다() {
         // given
-        제품을_저장한다(KEYBOARD_1.생성());
-        제품을_저장한다(KEYBOARD_2.생성());
-        Product product = 제품을_저장한다(MOUSE_1.생성());
+        Product keyboard1 = 제품을_저장한다(KEYBOARD_1.생성());
+        Product keyboard2 = 제품을_저장한다(KEYBOARD_2.생성());
+        제품을_저장한다(MOUSE_1.생성());
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?category=mouse&page=0&size=1");
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?category=keyboard&page=0&size=2");
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(ProductPageResponse.class).getItems())
                         .extracting("id")
-                        .containsExactly(product.getId()),
+                        .containsExactly(keyboard2.getId(), keyboard1.getId()),
                 () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isFalse()
         );
     }
@@ -106,22 +106,67 @@ class ProductAcceptanceTest extends AcceptanceTest {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
-        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
-        REVIEW_RATING_5.작성_요청을_보낸다(product1.getId(), token);
-        REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token);
-        REVIEW_RATING_3.작성_요청을_보낸다(product2.getId(), token);
+        String corinneToken = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
+        String minchoToken = 로그인을_한다(MINCHO_GITHUB.getCode()).getToken();
+        REVIEW_RATING_5.작성_요청을_보낸다(product1.getId(), corinneToken);
+        REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), minchoToken);
+        REVIEW_RATING_3.작성_요청을_보낸다(product2.getId(), minchoToken);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
-                "/api/v1/products?category=keyboard&page=0&size=1&sort=reviewCount,desc");
+                "/api/v1/products?category=keyboard&page=0&size=2&sort=reviewCount,desc");
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(ProductPageResponse.class).getItems())
                         .extracting("id")
-                        .containsExactly(product1.getId()),
-                () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isTrue()
+                        .containsExactly(product1.getId(), product2.getId()),
+                () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 리뷰_개수가_같은_상태에서_제품_목록을_리뷰가_많은_순서로_페이징하여_조회하면_id_역순으로_조회된다() {
+        // given
+        Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
+        Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
+        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
+        REVIEW_RATING_5.작성_요청을_보낸다(product1.getId(), token);
+        REVIEW_RATING_3.작성_요청을_보낸다(product2.getId(), token);
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/products?category=keyboard&page=0&size=2&sort=reviewCount,desc");
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(ProductPageResponse.class).getItems())
+                        .extracting("id")
+                        .containsExactly(product2.getId(), product1.getId()),
+                () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 정렬_조건으로_id_역순으로_페이징하여_조회하면_id_역순으로_조회된다() {
+        // given
+        Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
+        Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
+        Product product3 = 제품을_저장한다(MOUSE_1.생성());
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/products?page=0&size=3&sort=id,desc");
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(ProductPageResponse.class).getItems())
+                        .extracting("id")
+                        .containsExactly(product3.getId(), product2.getId(), product1.getId()),
+                () -> assertThat(response.as(ProductPageResponse.class).isHasNext()).isFalse()
         );
     }
 

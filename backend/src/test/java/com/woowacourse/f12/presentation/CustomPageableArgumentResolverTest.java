@@ -98,6 +98,6 @@ public class CustomPageableArgumentResolverTest {
 
         // then
         verify(productService)
-                .findPage(null, PageRequest.of(0, 20));
+                .findPage(null, PageRequest.of(0, 20, Sort.by("id").descending()));
     }
 }

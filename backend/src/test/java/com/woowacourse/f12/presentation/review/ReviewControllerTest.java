@@ -351,7 +351,7 @@ class ReviewControllerTest {
                 .andDo(print());
 
         // then
-        verify(reviewService).findPage(PageRequest.of(0, 150, Sort.by("rating").descending()));
+        verify(reviewService).findPage(PageRequest.of(0, 150, Sort.by("rating", "id").descending()));
     }
 
     @Test
@@ -367,7 +367,8 @@ class ReviewControllerTest {
                 .andDo(print());
 
         // then
-        verify(reviewService).findPageByProductId(PRODUCT_ID, PageRequest.of(0, 150, Sort.by("rating").descending()));
+        verify(reviewService).findPageByProductId(PRODUCT_ID,
+                PageRequest.of(0, 150, Sort.by("rating", "id").descending()));
     }
 
     @Test
@@ -382,7 +383,9 @@ class ReviewControllerTest {
                 .andDo(print());
 
         // then
-        verify(reviewService).findPageByProductId(0L, PageRequest.of(0, 150, Sort.by("rating").descending()));
+        PageRequest pageable = PageRequest.of(0, 150,
+                Sort.by("rating", "id").descending());
+        verify(reviewService).findPageByProductId(0L, pageable);
     }
 
     @Test
