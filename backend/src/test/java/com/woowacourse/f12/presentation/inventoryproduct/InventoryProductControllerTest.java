@@ -22,7 +22,7 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.exception.badrequest.DuplicatedCategoryProfileProductException;
+import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidCategoryProfileProductException;
 import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.support.MemberFixtures;
@@ -144,7 +144,7 @@ class InventoryProductControllerTest {
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(List.of(1L, 2L));
-        willThrow(new DuplicatedCategoryProfileProductException())
+        willThrow(new DuplicatedProfileProductCategoryException())
                 .given(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
 
         // when
