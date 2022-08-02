@@ -12,8 +12,11 @@ import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CO
 import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
 import static com.woowacourse.f12.support.GitHubProfileFixtures.MINCHO_GITHUB;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.InventoryProductFixtures.대표_장비_업데이트_한다;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -28,8 +31,10 @@ import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
+import com.woowacourse.f12.dto.response.product.ProductResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -192,9 +197,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 회원정보를_키워드와_옵션으로_검색하여_조회한다() {
+    void 회원정보를_키워드와_옵션으로_검색하여_대표_장비와_함께_조회한다() {
         // given
-        Product product = 제품을_저장한다(KEYBOARD_1.생성());
+        Product keyboard = 제품을_저장한다(KEYBOARD_1.생성());
+        Product mouse = 제품을_저장한다(MOUSE_1.생성());
 
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
         LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
@@ -205,7 +211,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         Long memberId = secondLoginResponse.getMember().getId();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
 
-        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
+        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+        REVIEW_RATING_4.작성_요청을_보낸다(mouse.getId(), token);
+        대표_장비_업데이트_한다(List.of(keyboard), token);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -213,18 +221,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
         Member member = CORINNE.대표장비를_추가해서_생성(memberId, inventoryProduct);
         MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
                 member);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
-                () -> assertThat(
-                        memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparatorIgnoringFields(
-                                "profileProducts")
+                () -> assertThat(memberPageResponse.getItems())
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("profileProducts")
                         .hasSize(1)
-                        .containsOnly(memberWithProfileProductResponse)
+                        .containsOnly(memberWithProfileProductResponse),
+                () -> assertThat(memberPageResponse.getItems().get(0).getProfileProducts())
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("reviewCount", "rating")
+                        .hasSize(1)
+                        .containsOnly(ProductResponse.from(keyboard))
         );
     }
 

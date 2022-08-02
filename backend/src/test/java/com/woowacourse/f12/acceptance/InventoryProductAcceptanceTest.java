@@ -113,42 +113,6 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 대표_장비가_있는_상태에서_모두_해제하고_요청된_대표_장비만_등록한다() {
-        // given
-        Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
-        Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
-        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String token = loginResponse.getToken();
-        Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
-
-        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, product1);
-        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product2);
-        인벤토리에_장비를_추가한다(selectedInventoryProduct);
-        InventoryProduct savedUnselectedInventoryProduct = 인벤토리에_장비를_추가한다(unselectedInventoryProduct);
-
-        // when
-        ExtractableResponse<Response> profileProductResponse = 로그인된_상태로_PATCH_요청을_보낸다(
-                "api/v1/members/inventoryProducts", token,
-                new ProfileProductRequest(List.of(savedUnselectedInventoryProduct.getId())));
-
-        List<InventoryProductResponse> inventoryProductResponses = 로그인된_상태로_GET_요청을_보낸다(
-                "/api/v1/members/inventoryProducts",
-                token)
-                .as(InventoryProductsResponse.class).getItems();
-
-        // then
-        assertAll(
-                () -> assertThat(profileProductResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(inventoryProductResponses.stream()
-                        .filter(InventoryProductResponse::isSelected)
-                        .findFirst()
-                        .get()).usingRecursiveComparison()
-                        .ignoringFields("selected")
-                        .isEqualTo(InventoryProductResponse.from(savedUnselectedInventoryProduct))
-        );
-    }
-
-    @Test
     void 등록된_장비_목록을_대표_장비를_포함해서_조회한다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());

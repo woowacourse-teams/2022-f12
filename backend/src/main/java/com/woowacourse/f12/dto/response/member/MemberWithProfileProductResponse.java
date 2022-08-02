@@ -36,9 +36,9 @@ public class MemberWithProfileProductResponse {
     }
 
     public static MemberWithProfileProductResponse from(final Member member) {
-        final List<ProductResponse> profileProducts = member.getInventoryProducts()
+        final List<ProductResponse> profileProducts = member.getProfileProducts()
                 .stream()
-                .map(inventoryProduct -> ProductResponse.from(inventoryProduct.getProduct()))
+                .map(ProductResponse::from)
                 .collect(Collectors.toList());
         return new MemberWithProfileProductResponse(member.getId(), member.getGitHubId(), member.getName(),
                 member.getImageUrl(), CareerLevelConstant.from(member.getCareerLevel()),
