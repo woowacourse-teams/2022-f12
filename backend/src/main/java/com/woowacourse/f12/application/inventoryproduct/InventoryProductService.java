@@ -6,7 +6,7 @@ import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
+import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -34,11 +34,11 @@ public class InventoryProductService {
 
     private void updateProfileProduct(final Member member, final ProfileProductRequest profileProductRequest) {
         final List<Long> selectedInventoryProductIds = profileProductRequest.getSelectedInventoryProductIds();
-        inventoryProductRepository.updateBulkProfileProductByMember(member);
-        final int updateCount = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
-                selectedInventoryProductIds);
-        if (updateCount != selectedInventoryProductIds.size()) {
-            throw new SqlUpdateException();
+        inventoryProductRepository.updateBulkProfileProductByMember(member, false);
+        final int updatedCount = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
+                selectedInventoryProductIds, true);
+        if (updatedCount != selectedInventoryProductIds.size()) {
+            throw new NotUpdatableException();
         }
     }
 

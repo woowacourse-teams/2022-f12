@@ -5,7 +5,7 @@ import com.woowacourse.f12.exception.ErrorCode;
 
 public class ForbiddenMemberException extends CustomException {
 
-    public ForbiddenMemberException(final String message, final ErrorCode errorCode) {
+    public ForbiddenMemberException(final ErrorCode errorCode, final String message) {
         super(errorCode, message);
     }
 }

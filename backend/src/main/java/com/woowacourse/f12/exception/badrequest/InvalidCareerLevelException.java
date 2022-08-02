@@ -5,6 +5,6 @@ import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
 public class InvalidCareerLevelException extends InvalidValueException {
 
     public InvalidCareerLevelException() {
-        super("올바르지 않은 연차 입력입니다.", INVALID_SEARCH_PARAM);
+        super(INVALID_SEARCH_PARAM, "올바르지 않은 연차 입력입니다.");
     }
 }
