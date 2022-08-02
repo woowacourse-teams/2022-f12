@@ -16,7 +16,7 @@ type Return = {
   setSelectedProduct: React.Dispatch<React.SetStateAction<InventoryProduct>>;
   otherProducts: InventoryProduct[];
   refetch: () => void;
-  updateProfileProduct: () => Promise<void>;
+  updateProfileProduct: () => Promise<boolean>;
 };
 
 function useInventory(): Return {
@@ -50,7 +50,7 @@ function useInventory(): Return {
       (initialSelectedProduct &&
         selectedProduct.id === initialSelectedProduct.id)
     ) {
-      return;
+      return false;
     }
 
     const patchBody = { selectedInventoryProductId: selectedProduct.id };
@@ -58,6 +58,7 @@ function useInventory(): Return {
       patchBody['unselectedInventoryProductId'] = initialSelectedProduct.id;
     }
     await patchProfileProduct(patchBody);
+    return true;
   };
 
   const otherProducts =
