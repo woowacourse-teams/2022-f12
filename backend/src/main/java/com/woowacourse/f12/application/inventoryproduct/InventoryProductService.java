@@ -42,11 +42,11 @@ public class InventoryProductService {
     private void validateProfileProducts(final List<Long> selectedInventoryProductIds) {
         final List<InventoryProduct> inventoryProducts = inventoryProductRepository.findAllById(
                 selectedInventoryProductIds);
-        validateContainsSoftware(inventoryProducts);
+        validateNotContainsSoftware(inventoryProducts);
         validateCategoryNotDuplicated(inventoryProducts);
     }
 
-    private void validateContainsSoftware(final List<InventoryProduct> inventoryProducts) {
+    private void validateNotContainsSoftware(final List<InventoryProduct> inventoryProducts) {
         final boolean hasSoftware = inventoryProducts.stream()
                 .map(it -> it.getProduct().getCategory())
                 .anyMatch(it -> it.equals(SOFTWARE));
