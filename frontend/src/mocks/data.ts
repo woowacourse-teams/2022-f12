@@ -273,10 +273,10 @@ const getReviewProductData: (
 });
 
 export const InventoryProducts = {
-  keyboards: [
+  items: [
     {
       id: 1,
-      selected: false,
+      selected: true,
       product: {
         id: 3,
         name: '레오폴드 FC900RBT PD 그레이 블루 한글 (저소음 적축)',

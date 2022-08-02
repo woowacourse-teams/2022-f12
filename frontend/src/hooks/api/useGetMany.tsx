@@ -30,7 +30,7 @@ type Return<T> = {
 };
 
 function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
-  const [data, setData] = useState<T[]>([]);
+  const [data, setData] = useState<T[]>(null);
 
   const [page, setPage] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(true);
@@ -64,7 +64,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
     setRefetchTrigger((prevTrigger) => prevTrigger + 1);
     setPage(0);
     setHasNextPage(true);
-    setData([]);
+    setData(null);
   };
 
   const getCurrentParamString = () =>
@@ -81,7 +81,8 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
 
     fetchData()
       .then(({ hasNext, items }) => {
-        !!items && setData((prevData) => [...prevData, ...items]);
+        !!items &&
+          setData((prevData) => (prevData ? [...prevData, ...items] : items));
         return hasNext;
       })
       .then((hasNext) => {
@@ -100,11 +101,11 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
   const searchParams = new URLSearchParams(params);
 
   useEffect(() => {
-    if (data.length === 0) return; // 최초 렌더링 시 refetch 방지 임시 조치
+    if (!data) return; // 최초 렌더링 시 refetch 방지 임시 조치
     refetch();
   }, [searchParams.toString()]);
 
-  const isReady = data.length !== 0;
+  const isReady = !!data;
 
   return { data, getNextPage, refetch, isLoading, isReady, isError };
 }
