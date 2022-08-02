@@ -18,7 +18,7 @@ function BarGraph({ statistics }: Prop) {
   return (
     <>
       {isJobType ? (
-        <S.Container>
+        <S.Container aria-label="통계 정보">
           <S.BarGraphTitleWrapper>
             <S.BarGraphTitle onClick={toggleGraph}>
               연차별 통계 보기
@@ -75,7 +75,7 @@ function BarGraph({ statistics }: Prop) {
           </S.JobTypeWrapper>
         </S.Container>
       ) : (
-        <S.Container>
+        <S.Container aria-label="통계 정보">
           <S.BarGraphTitleWrapper>
             <S.BarGraphTitle onClick={toggleGraph}>
               직군별 통계 보기

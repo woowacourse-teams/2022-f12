@@ -50,7 +50,7 @@ function ReviewListSection({
   return (
     <S.Container aria-label="최근 후기">
       <SectionHeader>
-        <S.Title>최근 후기</S.Title>
+        <S.Title aria-label="최근 후기">최근 후기</S.Title>
       </SectionHeader>
       <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
         <InfiniteScroll
