@@ -1,14 +1,25 @@
+// import { rest } from 'msw';
+// import { BASE_URL, ENDPOINTS } from '@/constants/api';
+// import {
+//   InventoryProducts,
+//   myData,
+//   products,
+//   reviewsWithOutProduct,
+//   reviewsWithProduct,
+// } from '@/mocks/data';
+
+// import sampleProfile from '@/mocks/sample_profile.jpg';
 import { rest } from 'msw';
-import { BASE_URL, ENDPOINTS } from '@/constants/api';
+import { BASE_URL, ENDPOINTS } from '../constants/api';
 import {
   InventoryProducts,
   myData,
   products,
   reviewsWithOutProduct,
   reviewsWithProduct,
-} from '@/mocks/data';
+} from './data';
 
-import sampleProfile from '@/mocks/sample_profile.jpg';
+import sampleProfile from './sample_profile.jpg';
 
 // 상품 목록 조회
 const getKeyboards = (req, res, ctx) => {
