@@ -10,7 +10,7 @@ import ModalContextProvider from '@/contexts/ModalContextProvider';
 
 /* eslint-disable */
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && !window.Cypress) {
   const { worker } = require('@/mocks/browser');
   worker.start({
     onUnhandledRequest(req) {

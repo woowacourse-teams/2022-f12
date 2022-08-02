@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled.article`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -37,7 +37,7 @@ export const Wrapper = styled.div`
   justify-content: space-between;
 `;
 
-export const Name = styled.p`
+export const Name = styled.h2`
   font-size: 1rem;
   line-height: 1.3;
 `;

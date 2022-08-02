@@ -1,7 +1,7 @@
 import { Player } from '@lottiefiles/react-lottie-player';
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Container = styled.section`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -10,7 +10,7 @@ const Container = styled.div`
 
 function Loading() {
   return (
-    <Container>
+    <Container aria-label={'loading-indicator'}>
       <Player
         autoplay
         loop

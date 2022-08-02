@@ -43,7 +43,10 @@ function HeaderNav() {
     <S.Nav>
       <S.Wrapper>
         <S.FlexLeftUl>
-          <S.TransparentButton onClick={handleCategoryToggle}>
+          <S.TransparentButton
+            onClick={handleCategoryToggle}
+            aria-label="카테고리"
+          >
             카테고리
           </S.TransparentButton>
           <Link to={ROUTES.PRODUCTS}>전체 상품 목록</Link>

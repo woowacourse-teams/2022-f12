@@ -8,8 +8,6 @@ import {
   reviewsWithProduct,
 } from '@/mocks/data';
 
-import sampleProfile from '@/mocks/sample_profile.jpg';
-
 // 상품 목록 조회
 const getKeyboards = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
@@ -125,7 +123,7 @@ const getToken = (req, res, ctx) => {
     member: {
       id: 1,
       gitHubId: '사용자2',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
       name: 'F12개발자',
     },
     registerCompleted: false,
