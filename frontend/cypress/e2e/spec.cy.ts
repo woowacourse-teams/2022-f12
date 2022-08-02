@@ -52,12 +52,7 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.findByRole('region', { name: '모든 상품 목록' })
         .findAllByRole('article')
         .should('be.visible');
-
-      cy.findByRole('region', {
-        name: '모든 상품 목록',
-      }).isCardImageLoadDone();
     });
-
     it('카테고리에서 키보드를 클릭하면 전체 키보드 상품 리스트를 조회할 수 있다.', () => {
       cy.findByRole('button', { name: '카테고리' }).click();
       cy.findByRole('link', { name: '키보드' }).click();
@@ -67,10 +62,6 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.findByRole('region', { name: '모든 키보드 목록' })
         .findAllByRole('article')
         .should('be.visible');
-
-      cy.findByRole('region', {
-        name: '모든 키보드 목록',
-      }).isCardImageLoadDone();
     });
 
     it('카테고리에서 마우스를 클릭하면 전체 마우스 상품 리스트를 조회할 수 있다.', () => {
@@ -82,10 +73,6 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.findByRole('region', { name: '모든 마우스 목록' })
         .findAllByRole('article')
         .should('be.visible');
-
-      cy.findByRole('region', {
-        name: '모든 마우스 목록',
-      }).isCardImageLoadDone();
     });
 
     it('카테고리에서 모니터를 클릭하면 전체 모니터 상품 리스트를 조회할 수 있다.', () => {
@@ -97,10 +84,6 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.findByRole('region', { name: '모든 모니터 목록' })
         .findAllByRole('article')
         .should('be.visible');
-
-      cy.findByRole('region', {
-        name: '모든 모니터 목록',
-      }).isCardImageLoadDone();
     });
 
     it('카테고리에서 거치대를 클릭하면 전체 거치대 상품 리스트를 조회할 수 있다.', () => {
@@ -112,10 +95,6 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.findByRole('region', { name: '모든 거치대 목록' })
         .findAllByRole('article')
         .should('be.visible');
-
-      cy.findByRole('region', {
-        name: '모든 거치대 목록',
-      }).isCardImageLoadDone();
     });
 
     it('카테고리에서 소프트웨어를 클릭하면 전체 소프트웨어 상품 리스트를 조회할 수 있다.', () => {
@@ -126,10 +105,6 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.findByRole('region', { name: '모든 소프트웨어 목록' })
         .findAllByRole('article')
         .should('be.visible');
-
-      cy.findByRole('region', {
-        name: '모든 소프트웨어 목록',
-      }).isCardImageLoadDone();
     });
 
     it('상품 상세 페이지에 진입하면, 상품 사진과 리뷰와 통계정보를 볼 수 있다.', () => {
