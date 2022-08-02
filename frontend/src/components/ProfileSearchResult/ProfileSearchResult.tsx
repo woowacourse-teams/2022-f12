@@ -1,8 +1,7 @@
 import * as S from '@/components/ProfileSearchResult/ProfileSearchResult.style';
-import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
-import Loading from '@/components/common/Loading/Loading';
 import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
 import ProfileCard from '@/components/ProfileCard/ProfileCard';
+import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlaceholder';
 
 type Props = {
   data: ProfileSearchResult[];
@@ -16,7 +15,6 @@ function ProfileSearchResult({
   data: profileSearchData,
   getNextPage,
   isLoading,
-  isReady,
   isError,
 }: Props) {
   const profileSearchDataList = profileSearchData.map(
@@ -36,15 +34,14 @@ function ProfileSearchResult({
   );
 
   return (
-    <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
-      <InfiniteScroll
-        handleContentLoad={getNextPage}
-        isLoading={isLoading}
-        isError={isError}
-      >
-        <S.Container>{profileSearchDataList}</S.Container>
-      </InfiniteScroll>
-    </AsyncWrapper>
+    <InfiniteScroll
+      handleContentLoad={getNextPage}
+      isLoading={isLoading}
+      isError={isError}
+    >
+      <S.Container>{profileSearchDataList}</S.Container>
+      {profileSearchData.length === 0 && <NoDataPlaceholder />}
+    </InfiniteScroll>
   );
 }
 

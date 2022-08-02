@@ -36,7 +36,6 @@ const chipMapper = {
 };
 
 function ProfileCard({
-  id,
   gitHubId,
   imageUrl,
   careerLevel,
@@ -64,8 +63,6 @@ function ProfileCard({
   const keyboard = profileProducts.find(
     (product) => product.category === 'keyboard'
   );
-
-  console.log(keyboard);
 
   return (
     <S.Container>

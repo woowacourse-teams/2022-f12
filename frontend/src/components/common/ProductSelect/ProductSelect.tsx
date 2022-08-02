@@ -1,5 +1,5 @@
 import ProductBar from '@/components/common/ProductBar/ProductBar';
-import { useReducer } from 'react';
+import { useState } from 'react';
 import DownArrow from '@/assets/down_arrow.svg';
 
 import * as S from '@/components/common/ProductSelect/ProductSelect.style';
@@ -10,7 +10,7 @@ type Props = {
   selectedProduct: InventoryProduct;
   setSelectedProduct: React.Dispatch<React.SetStateAction<InventoryProduct>>;
   otherProducts: InventoryProduct[];
-  updateProfileProduct: () => Promise<void>;
+  updateProfileProduct: () => Promise<boolean>;
 };
 
 function ProductSelect({
@@ -20,27 +20,21 @@ function ProductSelect({
   otherProducts,
   updateProfileProduct,
 }: Props) {
-  const [isEditMode, setEditMode] = useReducer(
-    (isEditMode: boolean) => !isEditMode,
-    false
-  );
-  const [isOptionsOpen, setOptionOpen] = useReducer(
-    (isOptionsOpen: boolean) => !isOptionsOpen,
-    false
-  );
+  const [isEditMode, setEditMode] = useState(false);
+  const [isOptionsOpen, setOptionOpen] = useState(false);
 
   const handleProductSelect = (value: InventoryProduct) => {
     setSelectedProduct(value);
-    setOptionOpen();
+    setOptionOpen(false);
   };
 
   const handleEditDone = () => {
     if (isEditMode) {
       updateProfileProduct()
-        .then(() => {
-          submitHandler();
-          setOptionOpen();
-          setEditMode();
+        .then((didPatch) => {
+          if (didPatch) submitHandler();
+          setOptionOpen(false);
+          setEditMode(false);
         })
         .catch((error) => {
           console.error(error);
@@ -48,7 +42,11 @@ function ProductSelect({
       return;
     }
 
-    setEditMode();
+    setEditMode(true);
+  };
+
+  const handleOptionOpen = () => {
+    setOptionOpen(true);
   };
 
   return (
@@ -59,7 +57,7 @@ function ProductSelect({
       {isEditMode ? (
         <>
           <S.Selected>
-            <S.PseudoButton onClick={setOptionOpen}>
+            <S.PseudoButton onClick={handleOptionOpen}>
               {selectedProduct !== undefined ? (
                 <ProductBar
                   name={selectedProduct.product.name}

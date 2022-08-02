@@ -57,7 +57,7 @@ task copySubmodule(type: Copy) {
     copy {
         from 'security'
         include "*.yml"
-        into 'src/main/resources'
+        into 'src/main/resources/submodules'
     }
 }
 

@@ -1,8 +1,8 @@
 spring:
-  profiles:
-    include:
-      - auth
-      - h2
+  config:
+    import:
+      - classpath:/submodules/application-auth.yml
+      - classpath:/submodules/application-h2.yml
   jpa:
     hibernate:
       ddl-auto: none

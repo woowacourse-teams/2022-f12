@@ -14,29 +14,29 @@ const messages = {
   3: '입력한 정보를 확인해주세요',
 };
 
-const careers = {
-  NONE: '경력 없음',
-  JUNIOR: '0-2년차',
-  MID_LEVEL: '3-5년차',
-  SENIOR: '6년차 이상',
+const careerLevel = {
+  none: '경력 없음',
+  junior: '0-2년차',
+  midlevel: '3-5년차',
+  senior: '6년차 이상',
 } as const;
 
-const jobTypes = {
-  FRONT_END: '프론트엔드',
-  BACK_END: '백엔드',
-  MOBILE: '모바일',
-  ETC: '기타',
+const jobType = {
+  frontend: '프론트엔드',
+  backend: '백엔드',
+  mobile: '모바일',
+  etc: '기타',
 } as const;
 
 type UserInfo = {
-  career: keyof typeof careers;
-  jobType: keyof typeof jobTypes;
+  careerLevel: keyof typeof careerLevel;
+  jobType: keyof typeof jobType;
 };
 
 function Register() {
   const [step, setStep] = useState(1);
   const [additionalInfo, setAdditionalInfo] = useState<UserInfo>({
-    career: null,
+    careerLevel: null,
     jobType: null,
   });
   const { showAlert, getConfirm } = useModal();
@@ -53,9 +53,9 @@ function Register() {
   const renderSelectButton = (step: number) => {
     switch (step) {
       case 1:
-        return careers;
+        return careerLevel;
       case 2:
-        return jobTypes;
+        return jobType;
     }
   };
 
@@ -63,24 +63,27 @@ function Register() {
     e
   ) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
-    if (!(e.target.value in careers) && !(e.target.value in jobTypes)) return;
+    if (!(e.target.value in careerLevel) && !(e.target.value in jobType))
+      return;
 
     if (step === 1) {
       setAdditionalInfo({
         ...additionalInfo,
-        career: e.target.value as keyof typeof careers,
+        careerLevel: e.target.value as keyof typeof careerLevel,
       });
     } else {
       setAdditionalInfo({
         ...additionalInfo,
-        jobType: e.target.value as keyof typeof jobTypes,
+        jobType: e.target.value as keyof typeof jobType,
       });
     }
   };
 
   const handleAdditionalInfoSubmit = async (input: UserInfo) => {
     const confirmation = await getConfirm(
-      `${careers[input.career]}, ${jobTypes[input.jobType]} 개발자이신가요?`
+      `${careerLevel[input.careerLevel]}, ${
+        jobType[input.jobType]
+      } 개발자이신가요?`
     );
     if (confirmation) {
       patchAdditionalInfo(input)
@@ -94,7 +97,7 @@ function Register() {
   };
 
   const handleConfirmButtonClick = async () => {
-    if (step === 1 && additionalInfo.career === null) {
+    if (step === 1 && additionalInfo.careerLevel === null) {
       showAlert('경력을 선택해주세요.');
       return;
     }
@@ -129,7 +132,7 @@ function Register() {
                   onClick={handleSelectButtonClick}
                   value={value}
                   selected={
-                    value === additionalInfo.career ||
+                    value === additionalInfo.careerLevel ||
                     value === additionalInfo.jobType
                   }
                 >
@@ -139,8 +142,10 @@ function Register() {
             )}
           {step === 3 && (
             <>
-              <S.ConfirmInfo>{careers[additionalInfo.career]}</S.ConfirmInfo>
-              <S.ConfirmInfo>{jobTypes[additionalInfo.jobType]}</S.ConfirmInfo>
+              <S.ConfirmInfo>
+                {careerLevel[additionalInfo.careerLevel]}
+              </S.ConfirmInfo>
+              <S.ConfirmInfo>{jobType[additionalInfo.jobType]}</S.ConfirmInfo>
             </>
           )}
         </S.FlexGapWrapper>
