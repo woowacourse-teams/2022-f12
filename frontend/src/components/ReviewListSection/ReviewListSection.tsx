@@ -48,7 +48,7 @@ function ReviewListSection({
     )
   );
   return (
-    <S.Container>
+    <S.Container aria-label="최근 후기">
       <SectionHeader>
         <S.Title>최근 후기</S.Title>
       </SectionHeader>
