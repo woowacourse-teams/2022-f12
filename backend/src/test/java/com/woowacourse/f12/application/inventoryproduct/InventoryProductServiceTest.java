@@ -45,9 +45,10 @@ class InventoryProductServiceTest {
         Member member = MemberFixtures.CORINNE.생성(1L);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
-        given(inventoryProductRepository.updateBulkProfileProductByMember(member))
+        given(inventoryProductRepository.updateBulkProfileProductByMember(member, false))
                 .willReturn(1);
-        given(inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member, selectedInventoryProductIds))
+        given(inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member, selectedInventoryProductIds,
+                true))
                 .willReturn(selectedInventoryProductIds.size());
 
         // when
@@ -56,23 +57,24 @@ class InventoryProductServiceTest {
         // then
         assertAll(
                 () -> verify(memberRepository).findById(1L),
-                () -> verify(inventoryProductRepository).updateBulkProfileProductByMember(member),
+                () -> verify(inventoryProductRepository).updateBulkProfileProductByMember(member, false),
                 () -> verify(inventoryProductRepository).updateBulkProfileProductByMemberAndIds(member,
-                        selectedInventoryProductIds)
+                        selectedInventoryProductIds, true)
         );
     }
 
     @Test
-    void 수정하려는_장비_갯수와_실제_등록된_대표_장비_갯수와_일치하지_않으면_예외를_반환한다() {
+    void 수정하려는_장비_개수와_실제_등록된_대표_장비_개수와_일치하지_않으면_예외를_반환한다() {
         // given
         List<Long> selectedInventoryProductIds = List.of(2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
         Member member = MemberFixtures.CORINNE.생성(1L);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
-        given(inventoryProductRepository.updateBulkProfileProductByMember(member))
+        given(inventoryProductRepository.updateBulkProfileProductByMember(member, false))
                 .willReturn(1);
-        given(inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member, selectedInventoryProductIds))
+        given(inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member, selectedInventoryProductIds,
+                true))
                 .willReturn(0);
 
         // when, then
@@ -80,9 +82,9 @@ class InventoryProductServiceTest {
                 () -> assertThatThrownBy(() -> inventoryProductService.updateProfileProducts(1L, profileProductRequest))
                         .isExactlyInstanceOf(SqlUpdateException.class),
                 () -> verify(memberRepository).findById(1L),
-                () -> verify(inventoryProductRepository).updateBulkProfileProductByMember(member),
+                () -> verify(inventoryProductRepository).updateBulkProfileProductByMember(member, false),
                 () -> verify(inventoryProductRepository).updateBulkProfileProductByMemberAndIds(member,
-                        selectedInventoryProductIds)
+                        selectedInventoryProductIds, true)
         );
     }
 

@@ -34,9 +34,9 @@ public class InventoryProductService {
 
     private void updateProfileProduct(final Member member, final ProfileProductRequest profileProductRequest) {
         final List<Long> selectedInventoryProductIds = profileProductRequest.getSelectedInventoryProductIds();
-        inventoryProductRepository.updateBulkProfileProductByMember(member);
+        inventoryProductRepository.updateBulkProfileProductByMember(member, false);
         final int updateCount = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
-                selectedInventoryProductIds);
+                selectedInventoryProductIds, true);
         if (updateCount != selectedInventoryProductIds.size()) {
             throw new SqlUpdateException();
         }

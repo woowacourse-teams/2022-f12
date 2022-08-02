@@ -74,7 +74,7 @@ class InventoryProductRepositoryTest {
         inventoryProductRepository.save(inventoryProduct);
 
         // when
-        int actual = inventoryProductRepository.updateBulkProfileProductByMember(member);
+        int actual = inventoryProductRepository.updateBulkProfileProductByMember(member, false);
 
         // then
         assertThat(actual).isOne();
@@ -90,7 +90,7 @@ class InventoryProductRepositoryTest {
 
         // when
         int actual = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
-                List.of(inventoryProduct.getId()));
+                List.of(inventoryProduct.getId()), true);
 
         // then
         assertThat(actual).isOne();
