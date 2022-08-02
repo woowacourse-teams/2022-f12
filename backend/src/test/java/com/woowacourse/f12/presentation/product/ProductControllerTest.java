@@ -64,7 +64,8 @@ class ProductControllerTest {
                 .andDo(print());
 
         // then
-        verify(productService).findPage(KEYBOARD_CONSTANT, PageRequest.of(0, 150, Sort.by("rating").descending()));
+        verify(productService).findPage(KEYBOARD_CONSTANT,
+                PageRequest.of(0, 150, Sort.by("rating", "id").descending()));
     }
 
     @Test
@@ -79,7 +80,7 @@ class ProductControllerTest {
                 .andDo(print());
 
         // then
-        verify(productService).findPage(null, PageRequest.of(0, 150, Sort.by("rating").descending()));
+        verify(productService).findPage(null, PageRequest.of(0, 150, Sort.by("rating", "id").descending()));
     }
 
     @Test
