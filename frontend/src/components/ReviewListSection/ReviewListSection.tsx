@@ -31,8 +31,41 @@ function ReviewListSection({
   const userData = useContext(UserDataContext);
   const loginUserGithubId = userData?.member.gitHubId;
 
-  const reviewCardList = reviewData.map(
-    ({ id, author, product, content, rating }) => (
+  return (
+    <S.Container>
+      <SectionHeader>
+        <S.Title>최근 후기</S.Title>
+      </SectionHeader>
+      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
+        <InfiniteScroll
+          handleContentLoad={getNextPage}
+          isLoading={isLoading}
+          isError={isError}
+        >
+          <S.Wrapper columns={columns}>
+            <ReviewCardList
+              data={reviewData}
+              handleDelete={handleDelete}
+              handleEdit={handleEdit}
+              loginUserGithubId={loginUserGithubId}
+            />
+          </S.Wrapper>
+        </InfiniteScroll>
+      </AsyncWrapper>
+    </S.Container>
+  );
+}
+
+const ReviewCardList = ({
+  data,
+  handleDelete,
+  handleEdit,
+  loginUserGithubId,
+}: Pick<Props, 'data' | 'handleDelete' | 'handleEdit'> & {
+  loginUserGithubId: string;
+}) => (
+  <>
+    {data.map(({ id, author, product, content, rating }) => (
       <ReviewCard
         key={id}
         reviewId={id}
@@ -45,24 +78,8 @@ function ReviewListSection({
         handleDelete={handleDelete}
         handleEdit={handleEdit}
       />
-    )
-  );
-  return (
-    <S.Container>
-      <SectionHeader>
-        <S.Title>최근 후기</S.Title>
-      </SectionHeader>
-      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
-        <InfiniteScroll
-          handleContentLoad={getNextPage}
-          isLoading={isLoading}
-          isError={isError}
-        >
-          <S.Wrapper columns={columns}>{reviewCardList}</S.Wrapper>
-        </InfiniteScroll>
-      </AsyncWrapper>
-    </S.Container>
-  );
-}
+    ))}
+  </>
+);
 
 export default ReviewListSection;

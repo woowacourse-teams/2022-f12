@@ -9,6 +9,7 @@ import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
 import Masonry from '@/components/common/Masonry/Masonry';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
+import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlaceholder';
 
 type Props = {
   title: string;
@@ -29,14 +30,6 @@ function ProductListSection({
   isError,
   getNextPage,
 }: Props) {
-  const ProductCardList = (data: Product[]) => {
-    return data.map(({ id, imageUrl, name, rating }) => (
-      <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
-        <ProductCard productImage={imageUrl} name={name} rating={rating} />
-      </Link>
-    ));
-  };
-
   return (
     <S.Container>
       <SectionHeader>
@@ -55,7 +48,7 @@ function ProductListSection({
               isLoading={isLoading}
               isError={isError}
             >
-              <Masonry columnCount={4}>{ProductCardList(data)}</Masonry>
+              <ProductCardList data={data} />
             </InfiniteScroll>
           </AsyncWrapper>
         ) : (
@@ -64,12 +57,25 @@ function ProductListSection({
             isReady={isReady}
             isError={isError}
           >
-            <Masonry columnCount={4}>{ProductCardList(data)}</Masonry>
+            <ProductCardList data={data} />
           </AsyncWrapper>
         )}
       </S.Wrapper>
     </S.Container>
   );
 }
+
+const ProductCardList = ({ data }: { data: Product[] }) => {
+  return (
+    <Masonry columnCount={4}>
+      {data.map(({ id, imageUrl, name, rating }) => (
+        <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
+          <ProductCard productImage={imageUrl} name={name} rating={rating} />
+        </Link>
+      ))}
+      {data.length === 0 && <NoDataPlaceholder />}
+    </Masonry>
+  );
+};
 
 export default ProductListSection;

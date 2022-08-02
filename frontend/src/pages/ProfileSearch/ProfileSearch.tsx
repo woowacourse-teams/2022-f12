@@ -6,6 +6,8 @@ import SearchFilter from '@/components/SearchFilter/SearchFilter';
 import * as S from '@/pages/ProfileSearch/ProfileSearch.style';
 import useProfileSearch from '@/hooks/useProfileSearch';
 import ProfileSearchResult from '@/components/ProfileSearchResult/ProfileSearchResult';
+import Loading from '@/components/common/Loading/Loading';
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 
 function ProfileSearch() {
   const [careerLevelFilter, setCareerLevelFilter] = useState('');
@@ -50,13 +52,19 @@ function ProfileSearch() {
           handleJobTypeFilterClick={handleJobTypeFilterClick}
         />
       </S.SearchWrapper>
-      <ProfileSearchResult
-        data={profiles}
-        getNextPage={getNextPage}
-        isLoading={isProfileSearchLoading}
+      <AsyncWrapper
+        fallback={<Loading />}
         isReady={isProfileSearchReady}
         isError={isProfileSearchError}
-      />
+      >
+        <ProfileSearchResult
+          data={profiles}
+          getNextPage={getNextPage}
+          isLoading={isProfileSearchLoading}
+          isReady={isProfileSearchReady}
+          isError={isProfileSearchError}
+        />
+      </AsyncWrapper>
     </S.Container>
   );
 }
