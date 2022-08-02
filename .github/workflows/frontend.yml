@@ -1,6 +1,18 @@
 name: frontend
 
-on: [pull_request]
+on:
+  push:
+      branches:
+        - main
+        - release
+      paths:
+        - 'frontend/**'
+    pull_request:
+      branches:
+        - main
+        - release
+      paths:
+        - 'frontend/**'
 
 defaults:
   run:
