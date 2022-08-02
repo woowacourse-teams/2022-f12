@@ -6,5 +6,5 @@
     "types": ["cypress", "node"],
     "baseUrl": ".."
   },
-  "include": ["./testing-library.d.ts"]
+  "include": ["**/*.ts", "./testing-library.d.ts"]
 }
