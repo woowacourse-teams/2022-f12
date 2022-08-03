@@ -1,23 +1,22 @@
 package com.woowacourse.f12.domain.member;
 
-import static com.woowacourse.f12.domain.member.QMember.member;
-
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.woowacourse.f12.domain.member.QMember.member;
 
 public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implements MemberRepositoryCustom {
 
@@ -45,7 +44,7 @@ public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implem
         return toSlice(pageable, jpaQuery.fetch());
     }
 
-    private OrderSpecifier [] makeOrderSpecifiers(final Pageable pageable) {
+    private OrderSpecifier[] makeOrderSpecifiers(final Pageable pageable) {
         return pageable.getSort()
                 .stream()
                 .map(this::toOrderSpecifier)
@@ -59,12 +58,11 @@ public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implem
     }
 
     private Order toOrder(final Sort.Order sortOrder) {
-        if(sortOrder.isAscending()) {
+        if (sortOrder.isAscending()) {
             return Order.ASC;
         }
         return Order.DESC;
     }
-
 
     private BooleanExpression containsKeyword(final String keyword) {
         if (Objects.isNull(keyword) || keyword.isBlank()) {
@@ -92,7 +90,6 @@ public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implem
             members.remove(members.size() - 1);
             return new SliceImpl<>(members, pageable, true);
         }
-
         return new SliceImpl<>(members, pageable, false);
     }
 }
