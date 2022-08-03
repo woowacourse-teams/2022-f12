@@ -60,7 +60,7 @@ export const UserName = styled.span``;
 export const InventoryWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 5.2rem;
+  height: 7rem;
 `;
 
 export const LeftButton = styled.button`
@@ -115,5 +115,5 @@ export const ProductTitle = styled.p`
 
 export const ProductImageWrapper = styled.div`
   width: 80px;
-  height: 60px;
+  height: 80px;
 `;
