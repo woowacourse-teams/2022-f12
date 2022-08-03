@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: submodules/security-common.yml
   profiles:
     group:
       main:
