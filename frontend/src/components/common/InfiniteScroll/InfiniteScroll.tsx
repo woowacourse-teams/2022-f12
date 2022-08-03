@@ -38,7 +38,7 @@ function InfiniteScroll({
     <>
       {children}
       {isLoading && <Loading />}
-      <div ref={endRef} />
+      <section ref={endRef} aria-label="무한스크롤 목록 끝 지표" />
     </>
   );
 }

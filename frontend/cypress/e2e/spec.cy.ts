@@ -36,7 +36,9 @@ describe('비회원 사용자 기본 플로우', () => {
         cy.findByRole('region', { name: /후기/ }).isCardImageLoadDone();
       });
 
-      cy.scrollTo('bottom');
+      cy.findByRole('region', {
+        name: '무한스크롤 목록 끝 지표',
+      }).scrollIntoView();
 
       cy.wait('@reviewsRequest').then((res) => {
         const page = new URL(res.request.url).searchParams.get('page');
@@ -115,15 +117,16 @@ describe('비회원 사용자 기본 플로우', () => {
         .findByRole('img')
         .click();
 
-      cy.findByRole('region', { name: '최근 후기' })
-        .findAllByRole('article')
-        .should('be.visible');
+      // 후기는 없는 상품이 있을 수도 있기 때문에 삭제하거나 빈 데이터 이미지 표시 필요
+      // cy.findByRole('region', { name: '최근 후기' })
+      //   .findAllByRole('article')
+      //   .should('be.visible');
 
       cy.findByRole('img', { name: '상품 이미지' }).should('be.visible');
 
-      cy.scrollTo('bottom');
-
-      cy.findByRole('article', { name: '통계 정보' }).should('be.visible');
+      cy.findByRole('region', { name: '통계 정보' })
+        .scrollIntoView()
+        .should('be.visible');
     });
   });
 });
