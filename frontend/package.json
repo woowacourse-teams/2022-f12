@@ -1,7 +1,7 @@
 {
   "name": "f12",
   "version": "0.3.0",
-  "description": "",
+  "description": "개발자의 모든 도구 - F12",
   "main": "index.js",
   "scripts": {
     "build-main": "npx webpack build --config webpack.prod.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/f12-frontend/react-setup.git"
+    "url": "git+https://github.com/woowacourse-teams/2022-f12.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/f12-frontend/react-setup/issues"
+    "url": "https://github.com/woowacourse-teams/2022-f12/issues"
   },
-  "homepage": "https://github.com/f12-frontend/react-setup#readme",
+  "homepage": "https://github.com/woowacourse-teams/2022-f12#readme",
   "devDependencies": {
     "@storybook/addon-actions": "^6.5.9",
     "@storybook/addon-essentials": "^6.5.9",
