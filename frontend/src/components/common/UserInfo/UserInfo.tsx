@@ -14,18 +14,33 @@ type Props = {
   userData: Member;
 };
 
+const chipMapper = {
+  frontend: '프론트엔드',
+  backend: '백엔드',
+  mobile: '모바일',
+  etc: '기타',
+  none: '경력 없음',
+  junior: '0-2년차',
+  midlevel: '3-5년차',
+  senior: '6년차 이상',
+};
+
 function UserInfo({ userData }: Props) {
-  const { imageUrl, gitHubId } = userData;
+  const { imageUrl, gitHubId, jobType, careerLevel } = userData;
   return (
     <S.Container>
       <S.ImageWrapper>
         <S.ProfileImage src={imageUrl} alt="" />
       </S.ImageWrapper>
       <S.Username>{`@${gitHubId}`}</S.Username>
-      {/* <S.ChipWrapper>
-        <Chip>{jobType}</Chip>
-        <Chip>{career}</Chip>
-      </S.ChipWrapper> */}
+      <S.ChipWrapper>
+        <Chip paddingTopBottom={0.5} paddingLeftRight={0.5}>
+          {chipMapper[jobType]}
+        </Chip>
+        <Chip paddingTopBottom={0.5} paddingLeftRight={0.8}>
+          {chipMapper[careerLevel]}
+        </Chip>
+      </S.ChipWrapper>
     </S.Container>
   );
 }

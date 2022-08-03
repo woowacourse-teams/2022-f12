@@ -26,9 +26,6 @@ function Profile() {
     items,
     isReady: isInventoryProductsReady,
     refetch: refetchInventoryProducts,
-    selectedProduct,
-    setSelectedProduct,
-    otherProducts,
     updateProfileProduct,
   } = useInventory();
   const {
@@ -40,6 +37,25 @@ function Profile() {
     headers: { Authorization: `Bearer ${userData?.token}` },
   });
 
+  const keyboardItems = items?.filter(
+    (item) => item.product.category === 'keyboard'
+  );
+  const monitorItems = items?.filter(
+    (item) => item.product.category === 'monitor'
+  );
+  const standItems = items?.filter((item) => item.product.category === 'stand');
+  const mouseItems = items?.filter((item) => item.product.category === 'mouse');
+  const softwareItems = items?.filter(
+    (item) => item.product.category === 'software'
+  );
+
+  const inventoryList = {
+    keyboardItems,
+    monitorItems,
+    standItems,
+    mouseItems,
+  };
+
   return (
     <S.Container>
       <S.ProfileSection>
@@ -50,13 +66,17 @@ function Profile() {
         >
           <UserInfo userData={myData} />
         </AsyncWrapper>
-        <ProductSelect
-          submitHandler={refetchInventoryProducts}
-          selectedProduct={selectedProduct}
-          setSelectedProduct={setSelectedProduct}
-          otherProducts={otherProducts}
-          updateProfileProduct={updateProfileProduct}
-        />
+        <AsyncWrapper
+          fallback={<Loading />}
+          isReady={isInventoryProductsReady}
+          isError={isMyDataError}
+        >
+          <ProductSelect
+            submitHandler={refetchInventoryProducts}
+            updateProfileProduct={updateProfileProduct}
+            inventoryList={inventoryList}
+          />
+        </AsyncWrapper>
       </S.ProfileSection>
       <S.InventorySection>
         <SectionHeader>
@@ -67,7 +87,16 @@ function Profile() {
           isReady={isInventoryProductsReady}
           isError={isMyDataError}
         >
-          <InventoryProductList products={items} />
+          <div>키보드</div>
+          <InventoryProductList products={keyboardItems} />
+          <div>마우스</div>
+          <InventoryProductList products={mouseItems} />
+          <div>모니터</div>
+          <InventoryProductList products={monitorItems} />
+          <div>스탠드</div>
+          <InventoryProductList products={standItems} />
+          <div>소프트웨어</div>
+          <InventoryProductList products={softwareItems} />
         </AsyncWrapper>
       </S.InventorySection>
     </S.Container>
