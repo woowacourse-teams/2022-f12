@@ -1,7 +1,5 @@
 spring:
   config:
-    import:
-      - classpath:/submodules/application-auth.yml
-      - classpath:/submodules/application-h2.yml
+    import: submodules/security-local.yml
 logging:
   config: classpath:log4j2/log4j2-local.xml
