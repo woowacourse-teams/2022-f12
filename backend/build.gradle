@@ -29,6 +29,7 @@ dependencies {
     implementation 'com.lmax:disruptor:3.4.2'
 
     runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
