@@ -26,6 +26,8 @@ declare type Product = {
   name: string;
   imageUrl: string;
   rating: number;
+  reviewCount: number;
+  category: string;
 };
 
 declare type InventoryProduct = {
