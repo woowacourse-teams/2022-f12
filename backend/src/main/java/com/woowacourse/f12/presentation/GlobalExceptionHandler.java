@@ -28,45 +28,53 @@ public class GlobalExceptionHandler {
 
     private static final String REQUEST_DATA_FORMAT_ERROR_MESSAGE = "요청으로 넘어온 값이 형식에 맞지 않습니다.";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "서버 오류가 발생했습니다";
+    private static final String LOG_FORMAT = "Class : {}, Code : {}, Message : {}";
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleNotFoundException(final NotFoundException e) {
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionResponse.from(e));
     }
 
     @ExceptionHandler(InvalidValueException.class)
     public ResponseEntity<ExceptionResponse> handleInvalidValueException(final InvalidValueException e) {
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
         return ResponseEntity.badRequest().body(ExceptionResponse.from(e));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException() {
+    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), INVALID_REQUEST_BODY.getValue(), e.getMessage());
         return ResponseEntity.badRequest()
                 .body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE, INVALID_REQUEST_BODY));
     }
 
     @ExceptionHandler({BindException.class, MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<ExceptionResponse> handleInvalidQueryParameterException() {
+    public ResponseEntity<ExceptionResponse> handleInvalidQueryParameterException(Exception e) {
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), INVALID_SEARCH_PARAM.getValue(), e.getMessage());
         return ResponseEntity.badRequest()
                 .body(ExceptionResponse.from(REQUEST_DATA_FORMAT_ERROR_MESSAGE, INVALID_SEARCH_PARAM));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleValidationException(
-            final MethodArgumentNotValidException exception) {
+            final MethodArgumentNotValidException e) {
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), INVALID_REQUEST_BODY.getValue(), e.getMessage());
         final StringBuilder stringBuilder = new StringBuilder();
-        exception.getBindingResult().getAllErrors().forEach((error) -> stringBuilder.append(error.getDefaultMessage())
+        e.getBindingResult().getAllErrors().forEach((error) -> stringBuilder.append(error.getDefaultMessage())
                 .append(System.lineSeparator()));
         return ResponseEntity.badRequest().body(ExceptionResponse.from(stringBuilder.toString(), INVALID_REQUEST_BODY));
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ExceptionResponse> handleUnauthorizedException(final UnauthorizedException e) {
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ExceptionResponse.from(e));
     }
 
     @ExceptionHandler(ForbiddenMemberException.class)
     public ResponseEntity<ExceptionResponse> handleForbiddenMemberException(final ForbiddenMemberException e) {
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ExceptionResponse.from(e));
     }
 
@@ -77,7 +85,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleUnhandledException(final Exception e) {
-        log.error("[ERROR]", e);
+        log.warn(LOG_FORMAT, e.getClass().getSimpleName(), INTERNAL_SERVER_ERROR.getValue(), e.getMessage());
         return ResponseEntity.internalServerError()
                 .body(ExceptionResponse.from(INTERNAL_SERVER_ERROR_MESSAGE, INTERNAL_SERVER_ERROR));
     }

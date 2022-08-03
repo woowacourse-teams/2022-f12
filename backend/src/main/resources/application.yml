@@ -1,8 +1,10 @@
 spring:
-  config:
-    import:
-      - classpath:/submodules/application-auth.yml
-      - classpath:/submodules/application-h2.yml
+  profiles:
+    group:
+      main:
+      release:
+      local:
+    default: local
   jpa:
     hibernate:
       ddl-auto: none
