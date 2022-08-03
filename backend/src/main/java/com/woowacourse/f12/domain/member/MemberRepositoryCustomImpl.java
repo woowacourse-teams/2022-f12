@@ -2,14 +2,21 @@ package com.woowacourse.f12.domain.member;
 
 import static com.woowacourse.f12.domain.member.QMember.member;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implements MemberRepositoryCustom {
@@ -24,17 +31,40 @@ public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implem
     public Slice<Member> findBySearchConditions(final String keyword, final CareerLevel careerLevel,
                                                 final JobType jobType,
                                                 final Pageable pageable) {
-        final JPAQuery<Member> jpaQuery = jpaQueryFactory.selectFrom(member)
+        final JPAQuery<Member> jpaQuery = jpaQueryFactory.select(member)
+                .from(member)
                 .where(
                         containsKeyword(keyword),
                         eqCareerLevel(careerLevel),
                         eqJobType(jobType)
                 )
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1);
-        final List<Member> members = jpaQuery.fetch();
-        return toSlice(pageable, members);
+                .limit(pageable.getPageSize() + 1)
+                .orderBy(makeOrderSpecifiers(pageable));
+
+        return toSlice(pageable, jpaQuery.fetch());
     }
+
+    private OrderSpecifier [] makeOrderSpecifiers(final Pageable pageable) {
+        return pageable.getSort()
+                .stream()
+                .map(this::toOrderSpecifier)
+                .collect(Collectors.toList()).toArray(OrderSpecifier[]::new);
+    }
+
+    private OrderSpecifier toOrderSpecifier(final Sort.Order sortOrder) {
+        final Order orderMethod = toOrder(sortOrder);
+        final PathBuilder<Member> pathBuilder = new PathBuilder<>(member.getType(), member.getMetadata());
+        return new OrderSpecifier(orderMethod, pathBuilder.get(sortOrder.getProperty()));
+    }
+
+    private Order toOrder(final Sort.Order sortOrder) {
+        if(sortOrder.isAscending()) {
+            return Order.ASC;
+        }
+        return Order.DESC;
+    }
+
 
     private BooleanExpression containsKeyword(final String keyword) {
         if (Objects.isNull(keyword) || keyword.isBlank()) {
