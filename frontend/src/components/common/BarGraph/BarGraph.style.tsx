@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Container = styled.article`
+export const Container = styled.section`
   display: flex;
   position: relative;
   flex-direction: column;
