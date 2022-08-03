@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Player } from '@lottiefiles/react-lottie-player';
 
 import * as S from '@/components/ProfileCard/ProfileCard.style';
 import GithubIcon from '@/assets/github.svg';
@@ -36,6 +37,7 @@ const chipMapper = {
 };
 
 function ProfileCard({
+  id,
   gitHubId,
   imageUrl,
   careerLevel,
@@ -63,6 +65,11 @@ function ProfileCard({
   const keyboard = profileProducts.find(
     (product) => product.category === 'keyboard'
   );
+  const monitor = profileProducts.find(
+    (product) => product.category === 'monitor'
+  );
+  const stand = profileProducts.find((product) => product.category === 'stand');
+  const mouse = profileProducts.find((product) => product.category === 'mouse');
 
   return (
     <S.Container>
@@ -96,25 +103,43 @@ function ProfileCard({
           <S.LeftButton onClick={handleLeftButtonClick}>{`<`}</S.LeftButton>
           <S.InventoryListWrapper>
             <S.InventoryList positionX={positionX}>
-              {[keyboard.name, '마우스', '모니터', '거치대'].map(
-                (productCategory, index) => {
-                  return (
-                    <S.InventoryItem key={index}>
-                      <S.ProductImageWrapper>
-                        <S.ProductImage
-                          src={keyboard.imageUrl}
-                        ></S.ProductImage>
-                        <S.ProductTitle>{productCategory}</S.ProductTitle>
-                      </S.ProductImageWrapper>
-                    </S.InventoryItem>
-                  );
-                }
-              )}
+              {[keyboard, mouse, monitor, stand].map((item, index) => {
+                return (
+                  <S.InventoryItem key={id}>
+                    <S.ProductImageWrapper>
+                      {item ? (
+                        <S.ProductImage src={item?.imageUrl} />
+                      ) : (
+                        <Player
+                          autoplay
+                          loop
+                          src="https://assets1.lottiefiles.com/private_files/lf30_oqpbtola.json"
+                          style={{ height: '80px', width: '80px' }}
+                        />
+                      )}
+                      <S.ProductTitle>
+                        {item?.name ||
+                          `대표 장비로 등록된 ${
+                            index === 0
+                              ? '키보드'
+                              : index === 1
+                              ? '마우스'
+                              : index === 2
+                              ? '모니터'
+                              : '스탠드'
+                          }가 없습니다.`}
+                      </S.ProductTitle>
+                    </S.ProductImageWrapper>
+                  </S.InventoryItem>
+                );
+              })}
             </S.InventoryList>
           </S.InventoryListWrapper>
           <S.RightButton onClick={handleRightButtonClick}>{`>`}</S.RightButton>
         </S.InventoryWrapper>
-        <S.ProfileViewButton>프로필 보기</S.ProfileViewButton>
+        <a href={`/members/${id}`}>
+          <S.ProfileViewButton>프로필 보기</S.ProfileViewButton>
+        </a>
       </S.RightSection>
     </S.Container>
   );
