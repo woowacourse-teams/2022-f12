@@ -1,9 +1,9 @@
 import * as S from '@/components/common/Chip/Chip.style';
 
 type Props = {
-  paddingTopBottom: number;
-  paddingLeftRight: number;
-  fontSize: number;
+  paddingTopBottom?: number;
+  paddingLeftRight?: number;
+  fontSize?: number;
   children: React.ReactNode;
 };
 

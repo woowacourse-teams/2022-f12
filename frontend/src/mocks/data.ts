@@ -3,8 +3,8 @@ export const myData = {
   gitHubId: 'hamcheeseburger',
   name: '유현지',
   imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
-  careerLevel: 'SENIOR',
-  jobType: 'BACK_END',
+  careerLevel: 'senior',
+  jobType: 'backend',
 };
 export const products = [
   {
