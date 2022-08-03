@@ -73,14 +73,14 @@ public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implem
         return member.gitHubId.contains(keyword);
     }
 
-    public BooleanExpression eqCareerLevel(final CareerLevel careerLevel) {
+    private BooleanExpression eqCareerLevel(final CareerLevel careerLevel) {
         if (Objects.isNull(careerLevel)) {
             return null;
         }
         return member.careerLevel.eq(careerLevel);
     }
 
-    public BooleanExpression eqJobType(final JobType jobType) {
+    private BooleanExpression eqJobType(final JobType jobType) {
         if (Objects.isNull(jobType)) {
             return null;
         }
