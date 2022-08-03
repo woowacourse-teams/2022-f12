@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Player } from '@lottiefiles/react-lottie-player';
+import ROUTES from '@/constants/routes';
 
 import * as S from '@/components/ProfileCard/ProfileCard.style';
 import GithubIcon from '@/assets/github.svg';
@@ -137,7 +138,7 @@ function ProfileCard({
           </S.InventoryListWrapper>
           <S.RightButton onClick={handleRightButtonClick}>{`>`}</S.RightButton>
         </S.InventoryWrapper>
-        <a href={`/members/${id}`}>
+        <a href={`${ROUTES.PROFILE}/${id}`}>
           <S.ProfileViewButton>프로필 보기</S.ProfileViewButton>
         </a>
       </S.RightSection>

@@ -2,14 +2,13 @@ import UserInfo from '@/components/common/UserInfo/UserInfo';
 import * as S from '@/pages/Profile/Profile.style';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import ProductSelect from '@/components/common/ProductSelect/ProductSelect';
-import useInventory from '@/hooks/useInventory';
+import useOtherInventory from '@/hooks/useOtherInventory';
 import { ENDPOINTS } from '@/constants/api';
-import { useContext } from 'react';
-import { UserDataContext } from '@/contexts/LoginContextProvider';
 import useGetOne from '@/hooks/api/useGetOne';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import InventoryProductList from '@/components/InventoryProductList/InventoryProductList';
 import Loading from '@/components/common/Loading/Loading';
+import { useParams } from 'react-router-dom';
 
 type Member = {
   id: string;
@@ -20,21 +19,19 @@ type Member = {
   jobType: string;
 };
 
-function Profile() {
-  const userData = useContext(UserDataContext);
-  const {
-    items,
-    isReady: isInventoryProductsReady,
-    refetch: refetchInventoryProducts,
-    updateProfileProduct,
-  } = useInventory();
+function OtherProfile() {
+  const { memberId } = useParams();
+
+  const { items, isReady: isInventoryProductsReady } = useOtherInventory({
+    memberId,
+  });
+
   const {
     data: myData,
     isReady: isMyDataReady,
     isError: isMyDataError,
   } = useGetOne<Member>({
-    url: ENDPOINTS.ME,
-    headers: { Authorization: `Bearer ${userData?.token}` },
+    url: `${ENDPOINTS.MEMBERS}/${memberId}`,
   });
 
   const keyboardItems = items?.filter(
@@ -71,18 +68,14 @@ function Profile() {
           isReady={isInventoryProductsReady}
           isError={isMyDataError}
         >
-          <ProductSelect
-            submitHandler={refetchInventoryProducts}
-            updateProfileProduct={updateProfileProduct}
-            inventoryList={inventoryList}
-            editable={true}
-          />
+          <ProductSelect inventoryList={inventoryList} editable={false} />
         </AsyncWrapper>
       </S.ProfileSection>
       <S.InventorySection>
         <SectionHeader>
           <S.Title>보유한 장비 목록</S.Title>
         </SectionHeader>
+        <p>현재까지 리뷰를 작성한 상품들</p>
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isInventoryProductsReady}
@@ -104,4 +97,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default OtherProfile;
