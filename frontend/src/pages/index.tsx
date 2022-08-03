@@ -6,6 +6,7 @@ import Login from '@/components/Login/Login';
 import Register from '@/pages/Register/Register';
 import ROUTES from '@/constants/routes';
 import Profile from '@/pages/Profile/Profile';
+import OtherProfile from '@/pages/OtherProfile/OtherProfile';
 import ProfileSearch from '@/pages/ProfileSearch/ProfileSearch';
 import UserRoutes from '@/pages/common/UserRoutes/UserRoutes';
 import NonUserRoutes from '@/pages/common/NonUserRoutes/NonUserRoutes';
@@ -41,6 +42,10 @@ export const PAGES = [
       { path: `${ROUTES.PROFILE_SEARCH}`, element: <ProfileSearch /> },
       ...NON_USER_ROUTES,
       ...USER_ROUTES,
+      {
+        path: `${ROUTES.PROFILE}/:memberId`,
+        element: <OtherProfile />,
+      },
       { path: ROUTES.NOT_FOUND, element: <NotFound /> },
     ],
   },

@@ -15,6 +15,7 @@ export const ENDPOINTS = {
   REVIEWS_BY_REVIEW_ID: (reviewId: number | ':id') => `/reviews/${reviewId}`,
   LOGIN: '/login',
   INVENTORY_PRODUCTS: '/members/inventoryProducts',
+  OTHER_INVENTORY_PRODUCTS: (id: string) => `/members/${id}/inventoryProducts`,
   MEMBERS: '/members',
   ME: '/members/me',
 } as const;

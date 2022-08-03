@@ -4,15 +4,17 @@ import { useState } from 'react';
 import * as S from '@/components/common/ProductSelect/ProductSelect.style';
 
 type Props = {
-  submitHandler: () => void;
-  updateProfileProduct: (array: number[]) => Promise<boolean>;
+  submitHandler?: () => void;
+  updateProfileProduct?: (array: number[]) => Promise<boolean>;
   inventoryList: Record<string, InventoryProduct[]>;
+  editable: boolean;
 };
 
 function ProductSelect({
   submitHandler,
   updateProfileProduct,
   inventoryList,
+  editable,
 }: Props) {
   const initSelected = Object.entries(inventoryList).reduce(
     (obj, [key, products]) => {
@@ -32,6 +34,7 @@ function ProductSelect({
     .filter(({ selected }) => selected);
 
   const handleEditDone = () => {
+    if (!editable) return;
     if (isEditMode) {
       updateProfileProduct(Object.values(selectedState))
         .then((didPatch) => {
@@ -55,9 +58,11 @@ function ProductSelect({
 
   return (
     <S.Container>
-      <S.EditButton onClick={handleEditDone}>
-        {isEditMode ? '수정 완료' : '수정하기'}
-      </S.EditButton>
+      {editable && (
+        <S.EditButton onClick={handleEditDone}>
+          {isEditMode ? '수정 완료' : '수정하기'}
+        </S.EditButton>
+      )}
       {isEditMode ? (
         <S.OptionsContainer>
           <S.OptionsList>
@@ -103,7 +108,8 @@ function ProductSelect({
         ))
       ) : (
         <S.NoContentMessage>
-          등록된 장비가 없어요! 수정하기로 대표 장비를 등록해주세요!
+          등록된 장비가 없어요!{' '}
+          {editable && '수정하기로 대표 장비를 등록해주세요!'}
         </S.NoContentMessage>
       )}
     </S.Container>
