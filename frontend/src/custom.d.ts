@@ -74,6 +74,7 @@ declare type ProfileSearchResult = {
       category: string;
     }
   ];
+};
 
 declare type Statistics = {
   careerLevel: {

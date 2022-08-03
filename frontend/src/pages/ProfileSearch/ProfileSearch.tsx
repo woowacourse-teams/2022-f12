@@ -31,6 +31,10 @@ function ProfileSearch() {
     HTMLButtonElement
   > = (e) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
+    if (e.target.value === careerLevelFilter) {
+      setCareerLevelFilter('');
+      return;
+    }
     setCareerLevelFilter(e.target.value);
   };
 
@@ -38,6 +42,10 @@ function ProfileSearch() {
     e
   ) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
+    if (e.target.value === jobTypeFilter) {
+      setJobTypeFilter('');
+      return;
+    }
     setJobTypeFilter(e.target.value);
   };
 
