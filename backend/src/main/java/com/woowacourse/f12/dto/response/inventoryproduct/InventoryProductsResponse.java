@@ -8,13 +8,13 @@ import lombok.Getter;
 @Getter
 public class InventoryProductsResponse {
 
-    private List<InventoryProductResponse> keyboards;
+    private List<InventoryProductResponse> items;
 
     private InventoryProductsResponse() {
     }
 
-    private InventoryProductsResponse(final List<InventoryProductResponse> keyboards) {
-        this.keyboards = keyboards;
+    private InventoryProductsResponse(final List<InventoryProductResponse> items) {
+        this.items = items;
     }
 
     public static InventoryProductsResponse from(final List<InventoryProduct> inventoryProducts) {

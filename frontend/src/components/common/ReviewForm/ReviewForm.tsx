@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import RatingInput from '../RatingInput/RatingInput';
-import * as S from './ReviewForm.style';
+import RatingInput from '@/components/common/RatingInput/RatingInput';
+import * as S from '@/components/common/ReviewForm/ReviewForm.style';
 
 type Props = {
   handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
@@ -39,6 +39,8 @@ function ReviewForm({
 
   const handleContentChange: React.ChangeEventHandler<HTMLTextAreaElement> =
     useCallback(({ target: { value } }) => {
+      if (value.length > 1000) return;
+
       setContent(value);
     }, []);
 
@@ -78,7 +80,12 @@ function ReviewForm({
             <p>총평을 입력해주세요</p>
             <p>{content.length} / 1000</p>
           </S.LabelTop>
-          <S.Textarea value={content} onChange={handleContentChange} required />
+          <S.Textarea
+            value={content}
+            onChange={handleContentChange}
+            required
+            maxLength={1000}
+          />
         </S.Label>
         <S.Footer>
           <S.SubmitButton>{isEdit ? '리뷰 수정' : '리뷰 추가'}</S.SubmitButton>

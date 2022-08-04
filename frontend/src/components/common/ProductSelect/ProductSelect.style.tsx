@@ -7,6 +7,12 @@ export const Container = styled.div`
   gap: 1rem;
 `;
 
+export const OptionsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+`;
+
 export const Selected = styled.div`
   width: max-content;
 `;
@@ -15,6 +21,7 @@ export const OptionsList = styled.ul`
   width: max-content;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 `;
 
 export const Option = styled.li`
@@ -47,4 +54,8 @@ export const EditButton = styled.button`
 
 export const NoContentMessage = styled.p`
   text-align: center;
+`;
+
+export const Title = styled.h1`
+  font-size: 1.5rem;
 `;

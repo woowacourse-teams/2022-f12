@@ -1,71 +1,50 @@
 import { ENDPOINTS } from '@/constants/api';
-import {
-  InventoryProductsContext,
-  RefetchInventoryProductsContext,
-} from '@/contexts/InventoryContextProvider';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
+import useGetOne from '@/hooks/api/useGetOne';
 import usePatch from '@/hooks/api/usePatch';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext } from 'react';
+
+type InventoryResponse = {
+  items: InventoryProduct[];
+};
 
 type Return = {
-  keyboards: InventoryProduct[];
-  selectedProduct: InventoryProduct | null;
-  setSelectedProduct: React.Dispatch<React.SetStateAction<InventoryProduct>>;
-  otherProducts: InventoryProduct[];
-  refetchInventoryProducts: () => void;
-  updateProfileProduct: () => Promise<void>;
+  items: InventoryProduct[];
+  isReady: boolean;
+  isError: boolean;
+  refetch: () => void;
+  updateProfileProduct: (ids: number[]) => Promise<boolean>;
 };
 
 function useInventory(): Return {
   const userData = useContext(UserDataContext);
-  const keyboards = useContext(InventoryProductsContext);
-  const refetchInventoryProducts = useContext(RefetchInventoryProductsContext);
+  const {
+    data: inventoryProducts,
+    refetch,
+    isReady,
+    isError,
+  } = useGetOne<InventoryResponse>({
+    url: ENDPOINTS.INVENTORY_PRODUCTS,
+    headers: { Authorization: `Bearer ${userData?.token}` },
+  });
 
-  const [selectedProduct, setSelectedProduct] =
-    useState<InventoryProduct | null>(null);
   const patchProfileProduct = usePatch({
     url: ENDPOINTS.INVENTORY_PRODUCTS,
     headers: { Authorization: `Bearer ${userData?.token}` },
   });
-  const initialSelectedProduct = useMemo<InventoryProduct>(
-    () => keyboards && keyboards.find(({ selected }) => selected),
-    [keyboards]
-  );
 
-  const updateProfileProduct = async () => {
-    if (
-      !selectedProduct ||
-      (initialSelectedProduct &&
-        selectedProduct.id === initialSelectedProduct.id)
-    ) {
-      return;
-    }
+  const updateProfileProduct = async (selectedProductArray: number[]) => {
+    const patchBody = { selectedInventoryProductIds: selectedProductArray };
 
-    const patchBody = { selectedInventoryProductId: selectedProduct.id };
-    if (initialSelectedProduct) {
-      patchBody['unselectedInventoryProductId'] = initialSelectedProduct.id;
-    }
     await patchProfileProduct(patchBody);
+    return true;
   };
 
-  const otherProducts = selectedProduct
-    ? keyboards.filter(({ id }) => id !== selectedProduct.id)
-    : keyboards;
-
-  useEffect(() => {
-    if (!keyboards) return;
-
-    const newSelectedProduct = keyboards.find(({ selected }) => selected);
-
-    setSelectedProduct(newSelectedProduct);
-  }, [keyboards]);
-
   return {
-    keyboards,
-    selectedProduct,
-    setSelectedProduct,
-    otherProducts,
-    refetchInventoryProducts,
+    items: inventoryProducts?.items,
+    isReady,
+    isError,
+    refetch,
     updateProfileProduct,
   };
 }

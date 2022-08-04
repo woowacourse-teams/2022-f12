@@ -1,7 +1,7 @@
-import ReviewCard from './ReviewCard';
+import ReviewCard from '@/components/common/ReviewCard/ReviewCard';
 import { ComponentStory } from '@storybook/react';
 
-import { reviewsWithProduct } from '../../../mocks/data';
+import { reviewsWithProduct } from '@/mocks/data';
 
 export default {
   component: ReviewCard,

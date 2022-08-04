@@ -1,72 +1,116 @@
 import Stepper from '@/components/common/Stepper/Stepper';
 import * as S from '@/pages/Register/Register.style';
-import { useState } from 'react';
-
-type Careers = ['경력 없음', '0-2년차', '3-5년차', '5년차 이상'];
-type JobGroups = ['프론트엔드', '백엔드', '모바일', '기타'];
-type UserInfo = {
-  career: string;
-  jobGroup: string;
-};
+import { useContext, useState } from 'react';
+import usePatch from '@/hooks/api/usePatch';
+import { UserDataContext } from '@/contexts/LoginContextProvider';
+import { ENDPOINTS } from '@/constants/api';
+import { useNavigate } from 'react-router-dom';
+import ROUTES from '@/constants/routes';
+import useModal from '@/hooks/useModal';
 
 const messages = {
   1: '경력을 선택해주세요',
   2: '직군을 선택해주세요',
   3: '입력한 정보를 확인해주세요',
 };
-const careers: Careers = ['경력 없음', '0-2년차', '3-5년차', '5년차 이상'];
-const jobGroups: JobGroups = ['프론트엔드', '백엔드', '모바일', '기타'];
+
+const careerLevel = {
+  none: '경력 없음',
+  junior: '0-2년차',
+  midlevel: '3-5년차',
+  senior: '6년차 이상',
+} as const;
+
+const jobType = {
+  frontend: '프론트엔드',
+  backend: '백엔드',
+  mobile: '모바일',
+  etc: '기타',
+} as const;
+
+type UserInfo = {
+  careerLevel: keyof typeof careerLevel;
+  jobType: keyof typeof jobType;
+};
 
 function Register() {
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState(1);
   const [additionalInfo, setAdditionalInfo] = useState<UserInfo>({
-    career: null,
-    jobGroup: null,
+    careerLevel: null,
+    jobType: null,
   });
+  const { showAlert, getConfirm } = useModal();
+
+  const userData = useContext(UserDataContext);
+
+  const patchAdditionalInfo = usePatch({
+    url: ENDPOINTS.ME,
+    headers: { Authorization: `Bearer ${userData?.token}` },
+  });
+
+  const navigate = useNavigate();
 
   const renderSelectButton = (step: number) => {
     switch (step) {
       case 1:
-        return careers;
+        return careerLevel;
       case 2:
-        return jobGroups;
+        return jobType;
     }
   };
 
   const handleSelectButtonClick: React.MouseEventHandler<HTMLButtonElement> = (
     e
   ) => {
-    if (!(e.target instanceof HTMLElement)) return;
+    if (!(e.target instanceof HTMLButtonElement)) return;
+    if (!(e.target.value in careerLevel) && !(e.target.value in jobType))
+      return;
 
     if (step === 1) {
       setAdditionalInfo({
         ...additionalInfo,
-        career: e.target.textContent,
+        careerLevel: e.target.value as keyof typeof careerLevel,
       });
     } else {
       setAdditionalInfo({
         ...additionalInfo,
-        jobGroup: e.target.textContent,
+        jobType: e.target.value as keyof typeof jobType,
       });
     }
   };
 
-  const handleConfirmButtonClick = () => {
-    if (step === 1 && additionalInfo.career === null) {
-      alert('경력을 선택해주세요.');
+  const handleAdditionalInfoSubmit = async (input: UserInfo) => {
+    const confirmation = await getConfirm(
+      `${careerLevel[input.careerLevel]}, ${
+        jobType[input.jobType]
+      } 개발자이신가요?`
+    );
+    if (confirmation) {
+      patchAdditionalInfo(input)
+        .then(() => {
+          navigate(ROUTES.HOME);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  const handleConfirmButtonClick = async () => {
+    if (step === 1 && additionalInfo.careerLevel === null) {
+      showAlert('경력을 선택해주세요.');
       return;
     }
-    if (step === 2 && additionalInfo.jobGroup === null) {
-      alert('직군을 선택해주세요.');
+    if (step === 2 && additionalInfo.jobType === null) {
+      showAlert('직군을 선택해주세요.');
       return;
     }
     if (step === 1 || step === 2) {
       setStep(step + 1);
       return;
     }
-    confirm(
-      `${additionalInfo.career}, ${additionalInfo.jobGroup} 개발자이신가요?`
-    );
+
+    await handleAdditionalInfoSubmit(additionalInfo);
   };
 
   const handleEditButtonClick = () => {
@@ -81,15 +125,27 @@ function Register() {
         <S.Title>{messages[step]}</S.Title>
         <S.FlexGapWrapper>
           {(step === 1 || step === 2) &&
-            renderSelectButton(step).map((content, index: number) => (
-              <S.SelectButton key={index} onClick={handleSelectButtonClick}>
-                {content}
-              </S.SelectButton>
-            ))}
+            Object.entries(renderSelectButton(step)).map(
+              ([value, content], index: number) => (
+                <S.SelectButton
+                  key={index}
+                  onClick={handleSelectButtonClick}
+                  value={value}
+                  selected={
+                    value === additionalInfo.careerLevel ||
+                    value === additionalInfo.jobType
+                  }
+                >
+                  {content}
+                </S.SelectButton>
+              )
+            )}
           {step === 3 && (
             <>
-              <S.ConfirmInfo>{additionalInfo.career}</S.ConfirmInfo>
-              <S.ConfirmInfo>{additionalInfo.jobGroup}</S.ConfirmInfo>
+              <S.ConfirmInfo>
+                {careerLevel[additionalInfo.careerLevel]}
+              </S.ConfirmInfo>
+              <S.ConfirmInfo>{jobType[additionalInfo.jobType]}</S.ConfirmInfo>
             </>
           )}
         </S.FlexGapWrapper>

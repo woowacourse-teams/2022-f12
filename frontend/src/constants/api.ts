@@ -1,15 +1,18 @@
 export const BASE_URL = __API_URL__;
 
-export const GITHUB_AUTH_URL =
-  'https://github.com/login/oauth/authorize?client_id=f1e73a9ac502f1b6712a';
+const githubClientId = __GITHUB_CLIENT_ID__;
+
+export const GITHUB_AUTH_URL = `https://github.com/login/oauth/authorize?client_id=${githubClientId}`;
 
 export const ENDPOINTS = {
-  PRODUCTS: '/keyboards',
-  PRODUCT: (id: number | ':id') => `/keyboards/${id}`,
+  PRODUCTS: '/products',
+  PRODUCT: (id: number | ':id') => `/products/${id}`,
   REVIEWS: '/reviews',
-  REVIEWS_BY_PRODUCT_ID: (id: number | ':id') => `/keyboards/${id}/reviews`,
+  REVIEWS_BY_PRODUCT_ID: (id: number | ':id') => `/products/${id}/reviews`,
   REVIEWS_BY_REVIEW_ID: (reviewId: number | ':id') => `/reviews/${reviewId}`,
   LOGIN: '/login',
   INVENTORY_PRODUCTS: '/members/inventoryProducts',
+  OTHER_INVENTORY_PRODUCTS: (id: string) => `/members/${id}/inventoryProducts`,
+  MEMBERS: '/members',
   ME: '/members/me',
 } as const;

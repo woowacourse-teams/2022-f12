@@ -1,4 +1,4 @@
-import RatingInput from './RatingInput';
+import RatingInput from '@/components/common/RatingInput/RatingInput';
 import { useState } from 'react';
 
 export default {

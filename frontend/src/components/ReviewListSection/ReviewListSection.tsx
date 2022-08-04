@@ -1,13 +1,18 @@
-import InfiniteScroll from '../common/InfiniteScroll/InfiniteScroll';
-import ReviewCard from '../common/ReviewCard/ReviewCard';
+import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
+import ReviewCard from '@/components/common/ReviewCard/ReviewCard';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
-import * as S from './ReviewListSection.style';
+import * as S from '@/components/ReviewListSection/ReviewListSection.style';
 import { useContext } from 'react';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
 
 type Props = {
   columns: number;
   data: Review[];
+  isLoading: boolean;
+  isReady: boolean;
+  isError: boolean;
   getNextPage: () => void;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => void;
@@ -19,12 +24,48 @@ function ReviewListSection({
   getNextPage,
   handleDelete,
   handleEdit,
+  isLoading,
+  isReady,
+  isError,
 }: Props) {
   const userData = useContext(UserDataContext);
   const loginUserGithubId = userData?.member.gitHubId;
 
-  const reviewCardList = reviewData.map(
-    ({ id, author, product, content, rating }) => (
+  return (
+    <S.Container aria-label="최근 후기">
+      <SectionHeader>
+        <S.Title aria-label="최근 후기">최근 후기</S.Title>
+      </SectionHeader>
+      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
+        <InfiniteScroll
+          handleContentLoad={getNextPage}
+          isLoading={isLoading}
+          isError={isError}
+        >
+          <S.Wrapper columns={columns}>
+            <ReviewCardList
+              data={reviewData}
+              handleDelete={handleDelete}
+              handleEdit={handleEdit}
+              loginUserGithubId={loginUserGithubId}
+            />
+          </S.Wrapper>
+        </InfiniteScroll>
+      </AsyncWrapper>
+    </S.Container>
+  );
+}
+
+const ReviewCardList = ({
+  data,
+  handleDelete,
+  handleEdit,
+  loginUserGithubId,
+}: Pick<Props, 'data' | 'handleDelete' | 'handleEdit'> & {
+  loginUserGithubId: string;
+}) => (
+  <>
+    {data.map(({ id, author, product, content, rating }) => (
       <ReviewCard
         key={id}
         reviewId={id}
@@ -37,20 +78,8 @@ function ReviewListSection({
         handleDelete={handleDelete}
         handleEdit={handleEdit}
       />
-    )
-  );
-  return (
-    <S.Container>
-      <SectionHeader>
-        <S.Title>최근 후기</S.Title>
-      </SectionHeader>
-      <S.Wrapper columns={columns}>
-        <InfiniteScroll handleContentLoad={getNextPage}>
-          {reviewCardList}
-        </InfiniteScroll>
-      </S.Wrapper>
-    </S.Container>
-  );
-}
+    ))}
+  </>
+);
 
 export default ReviewListSection;

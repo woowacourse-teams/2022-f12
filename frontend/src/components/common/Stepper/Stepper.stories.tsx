@@ -1,4 +1,4 @@
-import Stepper from './Stepper';
+import Stepper from '@/components/common/Stepper/Stepper';
 
 export default {
   component: Stepper,

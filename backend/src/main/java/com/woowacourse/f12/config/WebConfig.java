@@ -1,7 +1,10 @@
 package com.woowacourse.f12.config;
 
+import com.woowacourse.f12.presentation.ViewConstant;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,10 +19,13 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final List<HandlerInterceptor> interceptors;
     private final List<HandlerMethodArgumentResolver> resolvers;
+    private final List<Converter<String, ViewConstant>> converters;
 
-    public WebConfig(List<HandlerInterceptor> interceptors, List<HandlerMethodArgumentResolver> resolvers) {
+    public WebConfig(final List<HandlerInterceptor> interceptors, final List<HandlerMethodArgumentResolver> resolvers,
+                     final List<Converter<String, ViewConstant>> converters) {
         this.interceptors = interceptors;
         this.resolvers = resolvers;
+        this.converters = converters;
     }
 
     @Override
@@ -37,5 +43,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.addAll(this.resolvers);
+    }
+
+    @Override
+    public void addFormatters(final FormatterRegistry registry) {
+        converters.forEach(registry::addConverter);
     }
 }

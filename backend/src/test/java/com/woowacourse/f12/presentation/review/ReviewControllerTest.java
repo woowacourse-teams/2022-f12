@@ -1,7 +1,7 @@
 package com.woowacourse.f12.presentation.review;
 
-import static com.woowacourse.f12.support.KeyboardFixtures.KEYBOARD_1;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,8 +30,8 @@ import com.woowacourse.f12.exception.badrequest.BlankContentException;
 import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
 import com.woowacourse.f12.exception.badrequest.InvalidRatingValueException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
-import com.woowacourse.f12.exception.notfound.KeyboardNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import java.util.HashMap;
@@ -84,7 +84,7 @@ class ReviewControllerTest {
                 .willReturn(1L);
         // when
         mockMvc.perform(
-                        post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                        post("/api/v1/products/" + PRODUCT_ID + "/reviews")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
@@ -114,7 +114,7 @@ class ReviewControllerTest {
 
         // when
         mockMvc.perform(
-                        post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                        post("/api/v1/products/" + PRODUCT_ID + "/reviews")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
@@ -145,7 +145,7 @@ class ReviewControllerTest {
 
         // when
         mockMvc.perform(
-                        post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                        post("/api/v1/products/" + PRODUCT_ID + "/reviews")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
@@ -174,7 +174,7 @@ class ReviewControllerTest {
 
         // when
         mockMvc.perform(
-                        post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                        post("/api/v1/products/" + PRODUCT_ID + "/reviews")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
@@ -205,7 +205,7 @@ class ReviewControllerTest {
 
         // when
         mockMvc.perform(
-                        post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                        post("/api/v1/products/" + PRODUCT_ID + "/reviews")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
@@ -235,7 +235,7 @@ class ReviewControllerTest {
 
         // when
         mockMvc.perform(
-                        post("/api/v1/keyboards/" + PRODUCT_ID + "/reviews")
+                        post("/api/v1/products/" + PRODUCT_ID + "/reviews")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
@@ -261,11 +261,11 @@ class ReviewControllerTest {
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
-                .willThrow(new KeyboardNotFoundException());
+                .willThrow(new ProductNotFoundException());
 
         // when
         mockMvc.perform(
-                        post("/api/v1/keyboards/" + 0L + "/reviews")
+                        post("/api/v1/products/" + 0L + "/reviews")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
@@ -294,7 +294,7 @@ class ReviewControllerTest {
 
         // when
         mockMvc.perform(
-                        post("/api/v1/keyboards/" + 1L + "/reviews")
+                        post("/api/v1/products/" + 1L + "/reviews")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
@@ -323,7 +323,7 @@ class ReviewControllerTest {
 
         // when
         mockMvc.perform(
-                        post("/api/v1/keyboards/" + 1L + "/reviews")
+                        post("/api/v1/products/" + 1L + "/reviews")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
@@ -351,7 +351,7 @@ class ReviewControllerTest {
                 .andDo(print());
 
         // then
-        verify(reviewService).findPage(PageRequest.of(0, 150, Sort.by("rating").descending()));
+        verify(reviewService).findPage(PageRequest.of(0, 150, Sort.by("rating", "id").descending()));
     }
 
     @Test
@@ -362,27 +362,30 @@ class ReviewControllerTest {
                         new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(1L))))));
 
         // when
-        mockMvc.perform(get("/api/v1/keyboards/" + PRODUCT_ID + "/reviews?size=150&page=0&sort=rating,desc"))
+        mockMvc.perform(get("/api/v1/products/" + PRODUCT_ID + "/reviews?size=150&page=0&sort=rating,desc"))
                 .andExpect(status().isOk())
                 .andDo(print());
 
         // then
-        verify(reviewService).findPageByProductId(PRODUCT_ID, PageRequest.of(0, 150, Sort.by("rating").descending()));
+        verify(reviewService).findPageByProductId(PRODUCT_ID,
+                PageRequest.of(0, 150, Sort.by("rating", "id").descending()));
     }
 
     @Test
     void 특정_상품의_리뷰_페이지_조회_실패_상품_존재_하지않음() throws Exception {
         // given
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
-                .willThrow(new KeyboardNotFoundException());
+                .willThrow(new ProductNotFoundException());
 
         // when
-        mockMvc.perform(get("/api/v1/keyboards/" + 0L + "/reviews?size=150&page=0&sort=rating,desc"))
+        mockMvc.perform(get("/api/v1/products/" + 0L + "/reviews?size=150&page=0&sort=rating,desc"))
                 .andExpect(status().isNotFound())
                 .andDo(print());
 
         // then
-        verify(reviewService).findPageByProductId(0L, PageRequest.of(0, 150, Sort.by("rating").descending()));
+        PageRequest pageable = PageRequest.of(0, 150,
+                Sort.by("rating", "id").descending());
+        verify(reviewService).findPageByProductId(0L, pageable);
     }
 
     @Test

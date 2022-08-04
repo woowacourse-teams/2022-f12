@@ -1,4 +1,4 @@
-import Select from './Select';
+import Select from '@/components/common/Select/Select';
 import { useState } from 'react';
 
 export default {

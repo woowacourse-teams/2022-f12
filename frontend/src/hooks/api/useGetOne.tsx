@@ -1,15 +1,26 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
-import axiosInstance from '@/hooks/api/axiosInstance';
+import useAxios from '@/hooks/api/useAxios';
+import logError from '@/utils/logError';
+import useModal from '@/hooks/useModal';
 
 type Props = {
   url: string;
   headers?: null | AxiosRequestHeaders;
 };
 
-function useGetOne<T>({ url, headers }: Props): [T, () => void] {
+type Return<T> = {
+  data: T;
+  refetch: () => void;
+  isReady: boolean;
+  isError: boolean;
+};
+
+function useGetOne<T>({ url, headers }: Props): Return<T> {
   const [data, setData] = useState<null | T>(null);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
+  const { axiosInstance, isLoading, isError } = useAxios();
+  const { showAlert } = useModal();
 
   const fetchData = async () => {
     const { data }: AxiosResponse<T> = await axiosInstance.get(url, {
@@ -22,16 +33,23 @@ function useGetOne<T>({ url, headers }: Props): [T, () => void] {
     setRefetchTrigger((prevValue) => prevValue + 1);
   };
 
+  const getErrorStateMessage = () => {
+    return `@useGetMany\n상태:\n    url: ${url}\n    refetch#: ${refetchTrigger}`;
+  };
+
   useEffect(() => {
     fetchData()
       .then((data) => {
         !!data && setData(data);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((error: Error) => {
+        logError(error, getErrorStateMessage());
+        showAlert('사용자에게 표시할 오류 메시지');
       });
   }, [refetchTrigger]);
 
-  return [data, refetch];
+  const isReady = !isLoading && !!data;
+
+  return { data, refetch, isReady, isError };
 }
 export default useGetOne;

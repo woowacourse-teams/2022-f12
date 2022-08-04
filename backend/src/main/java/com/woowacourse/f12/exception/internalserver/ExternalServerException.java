@@ -1,8 +1,11 @@
 package com.woowacourse.f12.exception.internalserver;
 
-public class ExternalServerException extends RuntimeException {
+import com.woowacourse.f12.exception.CustomException;
+import com.woowacourse.f12.exception.ErrorCode;
 
-    public ExternalServerException(final String message) {
-        super(message);
+public class ExternalServerException extends CustomException {
+
+    public ExternalServerException(final ErrorCode errorCode, final String message) {
+        super(errorCode, message);
     }
 }

@@ -1,13 +1,10 @@
-import sampleProfile from '@/mocks/sample_profile.jpg';
-import sampleKeyboard from '@/mocks/sample_keyboard.jpg';
-
 export const myData = {
   id: 1,
   gitHubId: 'hamcheeseburger',
   name: '유현지',
   imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
-  careerLevel: 'SENIOR',
-  jobType: 'BACK_END',
+  careerLevel: 'senior',
+  jobType: 'backend',
 };
 export const products = [
   {
@@ -273,60 +270,135 @@ const getReviewProductData: (
 });
 
 export const InventoryProducts = {
-  keyboards: [
+  items: [
     {
       id: 1,
-      selected: false,
+      selected: true,
       product: {
-        id: 3,
-        name: '레오폴드 FC900RBT PD 그레이 블루 한글 (저소음 적축)',
+        id: 1,
+        name: '키보드1',
         imageUrl:
           'http://img.danawa.com/prod_img/500000/833/414/img/15414833_1.jpg?shrink=330:330&_v=20211013110445',
+        reviewCount: 0,
         rating: 0.0,
+        category: 'keyboard',
       },
     },
     {
       id: 2,
       selected: false,
       product: {
-        id: 4,
-        name: '레오폴드 FC900RBT PD 라이트 핑크 한글 (저소음 적축)',
+        id: 2,
+        name: '키보드2',
         imageUrl:
           'http://img.danawa.com/prod_img/500000/701/350/img/16350701_1.jpg?shrink=330:330&_v=20220209091825',
+        reviewCount: 0,
         rating: 0.0,
+        category: 'keyboard',
       },
     },
     {
       id: 3,
-      selected: false,
+      selected: true,
       product: {
-        id: 5,
-        name: '레오폴드 FC900RBT PD 그라파이트 화이트 한글 (저소음 적축)',
+        id: 3,
+        name: '마우스1',
         imageUrl:
           'http://img.danawa.com/prod_img/500000/637/448/img/15448637_1.jpg?shrink=330:330&_v=20211015164726',
+        reviewCount: 0,
         rating: 0.0,
+        category: 'mouse',
       },
     },
     {
       id: 4,
       selected: false,
       product: {
-        id: 6,
-        name: '레오폴드 FC900RBT PD 화이트민트 한글 (저소음적축)',
+        id: 4,
+        name: '마우스2',
         imageUrl:
           'http://img.danawa.com/prod_img/500000/701/079/img/17079701_1.jpg?shrink=330:330&_v=20220519094414',
+        reviewCount: 0,
         rating: 0.0,
+        category: 'mouse',
       },
     },
     {
       id: 5,
       selected: false,
       product: {
-        id: 7,
-        name: '레오폴드 FC660MBT PD 라이트 핑크 영문 (저소음 적축)',
+        id: 5,
+        name: '모니터1',
         imageUrl:
           'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
+        reviewCount: 0,
         rating: 0.0,
+        category: 'monitor',
+      },
+    },
+    {
+      id: 6,
+      selected: true,
+      product: {
+        id: 6,
+        name: '모니터2',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/833/414/img/15414833_1.jpg?shrink=330:330&_v=20211013110445',
+        reviewCount: 0,
+        rating: 0.0,
+        category: 'monitor',
+      },
+    },
+    {
+      id: 7,
+      selected: false,
+      product: {
+        id: 7,
+        name: '거치대1',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/701/350/img/16350701_1.jpg?shrink=330:330&_v=20220209091825',
+        reviewCount: 0,
+        rating: 0.0,
+        category: 'stand',
+      },
+    },
+    {
+      id: 8,
+      selected: true,
+      product: {
+        id: 8,
+        name: '거치대2',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/637/448/img/15448637_1.jpg?shrink=330:330&_v=20211015164726',
+        reviewCount: 0,
+        rating: 0.0,
+        category: 'stand',
+      },
+    },
+    {
+      id: 9,
+      selected: false,
+      product: {
+        id: 9,
+        name: '소프트웨어1',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/701/079/img/17079701_1.jpg?shrink=330:330&_v=20220519094414',
+        reviewCount: 0,
+        rating: 0.0,
+        category: 'software',
+      },
+    },
+    {
+      id: 10,
+      selected: false,
+      product: {
+        id: 10,
+        name: '소프트웨어2',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
+        reviewCount: 0,
+        rating: 0.0,
+        category: 'software',
       },
     },
   ],
@@ -337,13 +409,14 @@ export const reviewsWithProduct: Review[] = [
     id: 1,
     author: {
       id: 1,
-      githubId: '사용자1',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자1',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 1,
       name: '키보드1',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -354,13 +427,14 @@ export const reviewsWithProduct: Review[] = [
     id: 2,
     author: {
       id: 2,
-      githubId: '사용자2',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자2',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 2,
       name: '키보드2',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -371,13 +445,14 @@ export const reviewsWithProduct: Review[] = [
     id: 3,
     author: {
       id: 3,
-      githubId: '사용자3',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자3',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 3,
       name: '키보드3',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -388,13 +463,14 @@ export const reviewsWithProduct: Review[] = [
     id: 4,
     author: {
       id: 4,
-      githubId: '사용자4',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자4',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 4,
       name: '키보드4',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -405,13 +481,14 @@ export const reviewsWithProduct: Review[] = [
     id: 5,
     author: {
       id: 5,
-      githubId: '사용자5',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자5',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 5,
       name: '키보드5',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -422,13 +499,14 @@ export const reviewsWithProduct: Review[] = [
     id: 6,
     author: {
       id: 6,
-      githubId: '사용자6',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자6',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 6,
       name: '키보드6',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -439,13 +517,14 @@ export const reviewsWithProduct: Review[] = [
     id: 7,
     author: {
       id: 7,
-      githubId: '사용자7',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자7',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 7,
       name: '키보드7',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -456,13 +535,14 @@ export const reviewsWithProduct: Review[] = [
     id: 8,
     author: {
       id: 8,
-      githubId: '사용자8',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자8',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 8,
       name: '키보드8',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -473,13 +553,14 @@ export const reviewsWithProduct: Review[] = [
     id: 9,
     author: {
       id: 9,
-      githubId: '사용자9',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자9',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 9,
       name: '키보드9',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -490,13 +571,14 @@ export const reviewsWithProduct: Review[] = [
     id: 10,
     author: {
       id: 10,
-      githubId: '사용자10',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자10',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 10,
       name: '키보드10',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -507,13 +589,14 @@ export const reviewsWithProduct: Review[] = [
     id: 11,
     author: {
       id: 11,
-      githubId: '사용자11',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자11',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 11,
       name: '키보드11',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -524,13 +607,14 @@ export const reviewsWithProduct: Review[] = [
     id: 12,
     author: {
       id: 12,
-      githubId: '사용자12',
-      imageUrl: sampleProfile,
+      gitHubId: '사용자12',
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     product: {
       id: 12,
       name: '키보드12',
-      imageUrl: sampleKeyboard,
+      imageUrl:
+        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
@@ -545,7 +629,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 1,
       gitHubId: '사용자1',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 1,
     content:
@@ -558,7 +642,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 2,
       gitHubId: '사용자2',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 2,
     content:
@@ -571,7 +655,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 3,
       gitHubId: '사용자3',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 3,
     content:
@@ -584,7 +668,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 4,
       gitHubId: '사용자4',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 4,
     content:
@@ -597,7 +681,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 5,
       gitHubId: '사용자5',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 5,
     content:
@@ -610,7 +694,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 6,
       gitHubId: '사용자6',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 6,
     content:
@@ -623,7 +707,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 7,
       gitHubId: '사용자7',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 7,
     content:
@@ -636,7 +720,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 8,
       gitHubId: '사용자8',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 8,
     content:
@@ -649,7 +733,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 9,
       gitHubId: '사용자9',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 9,
     content:
@@ -662,7 +746,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 10,
       gitHubId: '사용자10',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 10,
     content:
@@ -675,7 +759,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 11,
       gitHubId: '사용자11',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 11,
     content:
@@ -688,7 +772,7 @@ export const reviewsWithOutProduct: Review[] = [
     author: {
       id: 12,
       gitHubId: '사용자12',
-      imageUrl: sampleProfile,
+      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
     },
     productId: 12,
     content:

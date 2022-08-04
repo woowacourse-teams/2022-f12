@@ -10,17 +10,13 @@ export default {
 const sampleProducts = products.slice(0, 6);
 
 const Template = () => {
-  const [value, setValue] = useState(sampleProducts[0].id);
-
-  const handleSelectChange = (id: Product['id']) => {
-    setValue(id);
-  };
-
   return (
     <ProductSelect
-      options={sampleProducts}
-      value={value}
-      setValue={handleSelectChange}
+      submitHandler={() => {
+        console.log('hi');
+      }}
+      updateProfileProduct={() => {}}
+      inventoryList={{}}
     />
   );
 };

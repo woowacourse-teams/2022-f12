@@ -1,11 +1,18 @@
-import { useEffect, useMemo, useRef } from 'react';
+import Loading from '@/components/common/Loading/Loading';
+import { PropsWithChildren, useEffect, useMemo, useRef } from 'react';
 
 type Props = {
   handleContentLoad: () => void;
-  children: React.ReactNode;
+  isLoading: boolean;
+  isError: boolean;
 };
 
-function InfiniteScroll({ handleContentLoad, children }: Props) {
+function InfiniteScroll({
+  handleContentLoad,
+  isLoading,
+  isError,
+  children,
+}: PropsWithChildren<Props>) {
   const endRef = useRef<HTMLDivElement>(null);
 
   const endOfContentObserver = useMemo(
@@ -20,13 +27,18 @@ function InfiniteScroll({ handleContentLoad, children }: Props) {
 
   useEffect(() => {
     if (!endRef.current) return;
+    if (isError) {
+      endOfContentObserver.unobserve(endRef.current);
+      return;
+    }
     endOfContentObserver.observe(endRef.current);
-  }, []);
+  }, [isError]);
 
   return (
     <>
       {children}
-      <div ref={endRef} />
+      {isLoading && <Loading />}
+      <section ref={endRef} aria-label="무한스크롤 목록 끝 지표" />
     </>
   );
 }

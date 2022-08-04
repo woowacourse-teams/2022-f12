@@ -12,3 +12,7 @@ operation::members-get-by-memberId[snippets='http-request,http-response']
 === 로그인된 상태로 나의 회원 정보 수정
 
 operation::members-update[snippets='http-request,http-response']
+
+=== 회원 검색
+
+operation::members-search[snippets='http-request,http-response']

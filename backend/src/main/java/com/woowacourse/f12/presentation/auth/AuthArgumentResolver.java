@@ -1,7 +1,7 @@
 package com.woowacourse.f12.presentation.auth;
 
 import com.woowacourse.f12.application.auth.JwtProvider;
-import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
+import com.woowacourse.f12.exception.unauthorized.TokenInvalidException;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
         try {
             return Long.parseLong(payload);
         } catch (NumberFormatException e) {
-            throw new UnauthorizedException();
+            throw new TokenInvalidException();
         }
     }
 }

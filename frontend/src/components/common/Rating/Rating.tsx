@@ -1,6 +1,6 @@
 import theme from '@/style/theme';
 import Heart from '@/assets/heart.svg';
-import * as S from './Rating.style';
+import * as S from '@/components/common/Rating/Rating.style';
 
 export type Props = {
   rating: number;

@@ -5,12 +5,16 @@ type Props = {
   productId: number;
 };
 
-function useProduct({ productId }: Props): Product {
-  const [product] = useGetOne<Product>({
+function useProduct({ productId }: Props): [Product, boolean, boolean] {
+  const {
+    data: product,
+    isReady,
+    isError,
+  } = useGetOne<Product>({
     url: `${ENDPOINTS.PRODUCT(productId)}`,
   });
 
-  return product;
+  return [product, isReady, isError];
 }
 
 export default useProduct;

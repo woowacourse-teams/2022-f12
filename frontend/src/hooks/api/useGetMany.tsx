@@ -1,11 +1,16 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
-import axiosInstance from '@/hooks/api/axiosInstance';
+import useAxios from '@/hooks/api/useAxios';
+import logError from '@/utils/logError';
+import useModal from '@/hooks/useModal';
+
+type SearchParams = Record<string, string>;
+
+type GetManyParams = SearchParams & { size: string };
 
 type Props = {
   url: string;
-  size: number;
-  sort?: string;
+  params?: GetManyParams;
   body?: null | object;
   headers?: null | AxiosRequestHeaders;
 };
@@ -15,14 +20,17 @@ type Data<T> = {
   items: T[];
 };
 
-function useGetMany<T>({
-  url,
-  size,
-  sort,
-  body,
-  headers,
-}: Props): [T[], () => void, () => void] {
-  const [data, setData] = useState<T[]>([]);
+type Return<T> = {
+  data: T[];
+  isLoading: boolean;
+  isReady: boolean;
+  isError: boolean;
+  getNextPage: () => void;
+  refetch: () => void;
+};
+
+function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
+  const [data, setData] = useState<T[]>(null);
 
   const [page, setPage] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(true);
@@ -30,7 +38,8 @@ function useGetMany<T>({
   const [nextPageTrigger, setNextPageTrigger] = useState(0);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
 
-  const [isLoading, setLoading] = useState(false);
+  const { axiosInstance, isLoading, isError } = useAxios();
+  const { showAlert } = useModal();
 
   const fetchData = async () => {
     const {
@@ -39,9 +48,8 @@ function useGetMany<T>({
       data: body,
       headers,
       params: {
-        size,
         page,
-        sort,
+        ...params,
       },
     });
 
@@ -56,17 +64,25 @@ function useGetMany<T>({
     setRefetchTrigger((prevTrigger) => prevTrigger + 1);
     setPage(0);
     setHasNextPage(true);
-    setData([]);
+    setData(null);
+  };
+
+  const getCurrentParamString = () =>
+    Object.entries(params)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('\n    ');
+
+  const getErrorStateMessage = () => {
+    return `@useGetMany\n상태:\n    url: ${url}\n    ${getCurrentParamString()}\n    page: ${page}`;
   };
 
   useEffect(() => {
     if (!hasNextPage || isLoading) return;
 
-    setLoading(true);
-
     fetchData()
       .then(({ hasNext, items }) => {
-        !!items && setData((prevData) => [...prevData, ...items]);
+        !!items &&
+          setData((prevData) => (prevData ? [...prevData, ...items] : items));
         return hasNext;
       })
       .then((hasNext) => {
@@ -76,18 +92,21 @@ function useGetMany<T>({
           setHasNextPage(false);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
+      .catch((error: Error) => {
+        logError(error, getErrorStateMessage());
+        showAlert('사용자에게 표시할 오류 메시지');
       });
   }, [nextPageTrigger, refetchTrigger]);
 
-  useEffect(() => {
-    refetch();
-  }, [sort]);
+  const searchParams = new URLSearchParams(params);
 
-  return [data, getNextPage, refetch];
+  useEffect(() => {
+    if (!data) return; // 최초 렌더링 시 refetch 방지 임시 조치
+    refetch();
+  }, [searchParams.toString()]);
+
+  const isReady = !!data;
+
+  return { data, getNextPage, refetch, isLoading, isReady, isError };
 }
 export default useGetMany;

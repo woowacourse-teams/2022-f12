@@ -18,6 +18,7 @@ declare type Member = {
 declare type UserData = {
   member: Member;
   token: string;
+  registerCompleted: boolean;
 };
 
 declare type Product = {
@@ -25,6 +26,8 @@ declare type Product = {
   name: string;
   imageUrl: string;
   rating: number;
+  reviewCount: number;
+  category: string;
 };
 
 declare type InventoryProduct = {
@@ -35,7 +38,11 @@ declare type InventoryProduct = {
 
 declare type Review = {
   id: number;
-  author: Exclude<Member, 'name'>;
+  author: {
+    id: number;
+    gitHubId: string;
+    imageUrl: string;
+  };
   product?: {
     id: number;
     name: string;
@@ -52,4 +59,39 @@ declare type ReviewInput = {
   rating: number;
 };
 
+declare type ProfileSearchResult = {
+  id: number;
+  gitHubId: string;
+  name: string;
+  imageUrl: string;
+  careerLevel: string;
+  jobType: string;
+  profileProducts: [
+    {
+      id: number;
+      name: string;
+      imageUrl: string;
+      reviewCount: number;
+      rating: number;
+      category: string;
+    }
+  ];
+};
+
+declare type Statistics = {
+  careerLevel: {
+    midlevel: number;
+    senior: number;
+    none: number;
+    junior: number;
+  };
+  jobType: {
+    frontend: number;
+    backend: number;
+    mobile: number;
+    etc: number;
+  };
+};
+
 declare const __API_URL__: string;
+declare const __GITHUB_CLIENT_ID__: string;

@@ -5,6 +5,7 @@ import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
 import com.woowacourse.f12.presentation.auth.LoginRequired;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,8 +26,9 @@ public class InventoryProductController {
 
     @PatchMapping("/inventoryProducts")
     @LoginRequired
-    public ResponseEntity<Void> updateProfileProducts(@RequestBody final ProfileProductRequest profileProductRequest,
-                                                      @VerifiedMember final Long memberId) {
+    public ResponseEntity<Void> updateProfileProducts(
+            @RequestBody @Valid final ProfileProductRequest profileProductRequest,
+            @VerifiedMember final Long memberId) {
         inventoryProductService.updateProfileProducts(memberId, profileProductRequest);
         return ResponseEntity.ok().build();
     }

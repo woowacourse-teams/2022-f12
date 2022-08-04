@@ -1,8 +1,11 @@
 package com.woowacourse.f12.exception.notfound;
 
-public class NotFoundException extends RuntimeException {
+import com.woowacourse.f12.exception.CustomException;
+import com.woowacourse.f12.exception.ErrorCode;
 
-    public NotFoundException(final String message) {
-        super(message);
+public class NotFoundException extends CustomException {
+
+    public NotFoundException(final ErrorCode errorCode, final String message) {
+        super(errorCode, message);
     }
 }

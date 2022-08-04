@@ -1,5 +1,4 @@
-import UserNameTag from './UserNameTag';
-import profileImage from '../../../mocks/sample_profile.jpg';
+import UserNameTag from '@/components/common/UserNameTag/UserNameTag';
 import { ComponentStory } from '@storybook/react';
 
 export default {
@@ -12,7 +11,7 @@ const Template: ComponentStory<typeof UserNameTag> = (args) => (
 );
 
 const defaultArgs = {
-  profileImage,
+  profileImage: 'https://avatars.githubusercontent.com/u/61769743?v=4',
   username: '인도 아저씨',
 };
 

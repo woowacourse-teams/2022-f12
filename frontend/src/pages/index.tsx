@@ -3,10 +3,34 @@ import Home from '@/pages/Home/Home';
 import Product from '@/pages/Product/Product';
 import Products from '@/pages/Products/Products';
 import Login from '@/components/Login/Login';
-import Register from './Register/Register';
+import Register from '@/pages/Register/Register';
 import ROUTES from '@/constants/routes';
-import InventoryContextProvider from '@/contexts/InventoryContextProvider';
 import Profile from '@/pages/Profile/Profile';
+import OtherProfile from '@/pages/OtherProfile/OtherProfile';
+import ProfileSearch from '@/pages/ProfileSearch/ProfileSearch';
+import UserRoutes from '@/pages/common/UserRoutes/UserRoutes';
+import NonUserRoutes from '@/pages/common/NonUserRoutes/NonUserRoutes';
+import NotFound from '@/pages/NotFound/NotFound';
+
+const USER_ROUTES = [
+  {
+    element: <UserRoutes />,
+    children: [
+      { path: ROUTES.REGISTER, element: <Register /> },
+      {
+        path: ROUTES.PROFILE,
+        element: <Profile />,
+      },
+    ],
+  },
+];
+
+const NON_USER_ROUTES = [
+  {
+    element: <NonUserRoutes />,
+    children: [{ path: ROUTES.LOGIN, element: <Login /> }],
+  },
+];
 
 export const PAGES = [
   {
@@ -15,16 +39,14 @@ export const PAGES = [
       { path: ROUTES.HOME, element: <Home /> },
       { path: ROUTES.PRODUCTS, element: <Products /> },
       { path: `${ROUTES.PRODUCT}/:productId`, element: <Product /> },
-      { path: ROUTES.LOGIN, element: <Login /> },
-      { path: ROUTES.REGISTER, element: <Register /> },
+      { path: `${ROUTES.PROFILE_SEARCH}`, element: <ProfileSearch /> },
+      ...NON_USER_ROUTES,
+      ...USER_ROUTES,
       {
-        path: ROUTES.PROFILE,
-        element: (
-          <InventoryContextProvider>
-            <Profile />
-          </InventoryContextProvider>
-        ),
+        path: `${ROUTES.PROFILE}/:memberId`,
+        element: <OtherProfile />,
       },
+      { path: ROUTES.NOT_FOUND, element: <NotFound /> },
     ],
   },
 ];

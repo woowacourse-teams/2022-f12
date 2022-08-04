@@ -12,29 +12,43 @@ import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
 import Plus from '@/assets/plus.svg';
 import theme from '@/style/theme';
 import useAuth from '@/hooks/useAuth';
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
+import useModal from '@/hooks/useModal';
+import BarGraph from '@/components/common/BarGraph/BarGraph';
+import useStatistics from '@/hooks/useStatistics';
 
 function Product() {
   const { isLoggedIn } = useAuth();
   const { productId: id } = useParams();
   const productId = Number(id);
 
-  const product = useProduct({ productId: Number(productId) });
-  const [
+  const [product, isProductReady, isProductError] = useProduct({
+    productId: Number(productId),
+  });
+  const {
     reviews,
+    isLoading: isReviewLoading,
+    isReady: isReviewReady,
+    isError: isReviewError,
     getNextPage,
-    refetchReview,
+    refetch: refetchReview,
     postReview,
     deleteReview,
-    editReview,
-  ] = useReviews({
-    size: 6,
+    putReview: editReview,
+  } = useReviews({
+    size: '6',
     productId,
+  });
+  const [statistics, isStatisticsReady, isStatisticsError] = useStatistics({
+    productId: Number(productId),
   });
 
   const [isSheetOpen, toggleSheetOpen] = useReducer(
     (isSheetOpen: boolean) => !isSheetOpen,
     false
   );
+  const { showAlert, getConfirm } = useModal();
 
   const reviewListRef = useRef<HTMLDivElement | null>();
 
@@ -51,7 +65,7 @@ function Product() {
   const handleReviewEdit = (reviewInput: ReviewInput, id: number) => {
     editReview(reviewInput, id)
       .then(() => {
-        alert('리뷰가 수정되었습니다.');
+        showAlert('리뷰가 수정되었습니다.');
         refetchReview();
       })
       .catch((error) => {
@@ -59,8 +73,9 @@ function Product() {
       });
   };
 
-  const handleReviewDeletion = (id: number) => {
-    if (!confirm('리뷰를 삭제하시겠습니까?')) return;
+  const handleReviewDeletion = async (id: number) => {
+    const confirmation = await getConfirm('리뷰를 삭제하시겠습니까?');
+    if (!confirmation) return;
 
     deleteReview(id)
       .then(() => {
@@ -72,40 +87,52 @@ function Product() {
   };
 
   return (
-    !!product && (
-      <>
-        <S.Container>
-          <StickyWrapper>
-            <ProductDetail
-              imageUrl={product.imageUrl}
-              name={product.name}
-              rating={product.rating}
-            />
-          </StickyWrapper>
-          <S.Wrapper ref={reviewListRef}>
-            {!isSheetOpen && isLoggedIn && (
-              <FloatingButton clickHandler={toggleSheetOpen}>
-                <Plus stroke={theme.colors.white} />
-              </FloatingButton>
-            )}
-            <ReviewListSection
-              columns={1}
-              data={reviews}
-              getNextPage={getNextPage}
-              handleDelete={handleReviewDeletion}
-              handleEdit={handleReviewEdit}
-            />
-            {isSheetOpen && isLoggedIn && (
-              <ReviewBottomSheet
-                handleClose={toggleSheetOpen}
-                handleSubmit={handleReviewSubmit}
-                isEdit={false}
-              />
-            )}
-          </S.Wrapper>
-        </S.Container>
-      </>
-    )
+    <S.Container>
+      <StickyWrapper>
+        <S.ProductDetailWrapper>
+          <AsyncWrapper
+            fallback={<Loading />}
+            isReady={isProductReady}
+            isError={isProductError}
+          >
+            <ProductDetail product={product} />
+          </AsyncWrapper>
+          <S.BarGraphWrapper>
+            <AsyncWrapper
+              fallback={<Loading />}
+              isReady={isStatisticsReady}
+              isError={isStatisticsError}
+            >
+              <BarGraph statistics={statistics} />
+            </AsyncWrapper>
+          </S.BarGraphWrapper>
+        </S.ProductDetailWrapper>
+      </StickyWrapper>
+      <S.Wrapper ref={reviewListRef}>
+        {!isSheetOpen && isLoggedIn && (
+          <FloatingButton clickHandler={toggleSheetOpen}>
+            <Plus stroke={theme.colors.white} />
+          </FloatingButton>
+        )}
+        <ReviewListSection
+          columns={1}
+          data={reviews}
+          getNextPage={getNextPage}
+          handleDelete={handleReviewDeletion}
+          handleEdit={handleReviewEdit}
+          isLoading={isReviewLoading}
+          isReady={isReviewReady}
+          isError={isReviewError}
+        />
+        {isSheetOpen && isLoggedIn && (
+          <ReviewBottomSheet
+            handleClose={toggleSheetOpen}
+            handleSubmit={handleReviewSubmit}
+            isEdit={false}
+          />
+        )}
+      </S.Wrapper>
+    </S.Container>
   );
 }
 

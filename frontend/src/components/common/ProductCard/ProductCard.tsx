@@ -1,17 +1,17 @@
-import Rating from '../Rating/Rating';
-import * as S from './ProductCard.style';
+import Rating from '@/components/common/Rating/Rating';
+import * as S from '@/components/common/ProductCard/ProductCard.style';
 
 type Props = {
-  productImage?: string;
+  imageUrl?: string;
   name: string;
   rating: number;
 };
 
-function ProductCard({ productImage, name, rating }: Props) {
+function ProductCard({ imageUrl, name, rating }: Props) {
   return (
-    <S.Container>
+    <S.Container aria-label={name}>
       <S.ImageWrapper>
-        <S.Image src={productImage} />
+        <S.Image src={imageUrl} />
       </S.ImageWrapper>
       <S.Name>{name}</S.Name>
       <Rating rating={rating} />

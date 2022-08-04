@@ -1,0 +1,3 @@
+[submodule "backend/security"]
+	path = backend/security
+	url = https://github.com/woowacourse-f12/security.git

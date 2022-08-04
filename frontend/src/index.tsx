@@ -6,10 +6,11 @@ import { ThemeProvider } from 'styled-components';
 import theme from '@/style/theme';
 import GlobalStyles from '@/style/GlobalStyles';
 import LoginContextProvider from '@/contexts/LoginContextProvider';
+import ModalContextProvider from '@/contexts/ModalContextProvider';
 
 /* eslint-disable */
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && !window.Cypress) {
   const { worker } = require('@/mocks/browser');
   worker.start({
     onUnhandledRequest(req) {
@@ -35,7 +36,9 @@ root.render(
       <GlobalStyles />
       <BrowserRouter>
         <LoginContextProvider>
-          <App />
+          <ModalContextProvider>
+            <App />
+          </ModalContextProvider>
         </LoginContextProvider>
       </BrowserRouter>
     </ThemeProvider>

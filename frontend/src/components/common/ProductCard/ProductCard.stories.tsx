@@ -1,6 +1,6 @@
-import ProductCard from './ProductCard';
+import ProductCard from '@/components/common/ProductCard/ProductCard';
+import { products } from '@/mocks/data';
 import { ComponentStory } from '@storybook/react';
-import sampleKeyboard from '../../../mocks/sample_keyboard.jpg';
 
 export default {
   component: ProductCard,
@@ -12,9 +12,7 @@ const Template: ComponentStory<typeof ProductCard> = (args) => (
 );
 
 const defaultArgs = {
-  productImage: sampleKeyboard,
-  name: '예쁜 키보드',
-  rating: 5,
+  ...products[0],
 };
 
 export const Default = () => <Template {...defaultArgs} />;
