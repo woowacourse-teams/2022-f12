@@ -11,12 +11,12 @@ import ProfileSearch from '@/pages/ProfileSearch/ProfileSearch';
 import UserRoutes from '@/pages/common/UserRoutes/UserRoutes';
 import NonUserRoutes from '@/pages/common/NonUserRoutes/NonUserRoutes';
 import NotFound from '@/pages/NotFound/NotFound';
+import RegisterCompleteRoute from '@/pages/common/RegisterIncompleteRoute/RegisterCompleteRoute';
 
 const USER_ROUTES = [
   {
     element: <UserRoutes />,
     children: [
-      { path: ROUTES.REGISTER, element: <Register /> },
       {
         path: ROUTES.PROFILE,
         element: <Profile />,
@@ -36,15 +36,24 @@ export const PAGES = [
   {
     element: <PageLayout />,
     children: [
-      { path: ROUTES.HOME, element: <Home /> },
-      { path: ROUTES.PRODUCTS, element: <Products /> },
-      { path: `${ROUTES.PRODUCT}/:productId`, element: <Product /> },
-      { path: `${ROUTES.PROFILE_SEARCH}`, element: <ProfileSearch /> },
-      ...NON_USER_ROUTES,
-      ...USER_ROUTES,
       {
-        path: `${ROUTES.PROFILE}/:memberId`,
-        element: <OtherProfile />,
+        element: <RegisterCompleteRoute />,
+        children: [
+          { path: ROUTES.HOME, element: <Home /> },
+          { path: ROUTES.PRODUCTS, element: <Products /> },
+          { path: `${ROUTES.PRODUCT}/:productId`, element: <Product /> },
+          { path: `${ROUTES.PROFILE_SEARCH}`, element: <ProfileSearch /> },
+          ...NON_USER_ROUTES,
+          ...USER_ROUTES,
+          {
+            path: `${ROUTES.PROFILE}/:memberId`,
+            element: <OtherProfile />,
+          },
+        ],
+      },
+      {
+        element: <UserRoutes />,
+        children: [{ path: ROUTES.REGISTER, element: <Register /> }],
       },
       { path: ROUTES.NOT_FOUND, element: <NotFound /> },
     ],
