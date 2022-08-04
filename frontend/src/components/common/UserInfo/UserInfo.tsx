@@ -33,14 +33,16 @@ function UserInfo({ userData }: Props) {
         <S.ProfileImage src={imageUrl} alt="" />
       </S.ImageWrapper>
       <S.Username>{`@${gitHubId}`}</S.Username>
-      <S.ChipWrapper>
-        <Chip paddingTopBottom={0.5} paddingLeftRight={0.5}>
-          {chipMapper[jobType]}
-        </Chip>
-        <Chip paddingTopBottom={0.5} paddingLeftRight={0.8}>
-          {chipMapper[careerLevel]}
-        </Chip>
-      </S.ChipWrapper>
+      {jobType && careerLevel && (
+        <S.ChipWrapper>
+          <Chip paddingTopBottom={0.5} paddingLeftRight={0.5}>
+            {chipMapper[jobType]}
+          </Chip>
+          <Chip paddingTopBottom={0.5} paddingLeftRight={0.8}>
+            {chipMapper[careerLevel]}
+          </Chip>
+        </S.ChipWrapper>
+      )}
     </S.Container>
   );
 }

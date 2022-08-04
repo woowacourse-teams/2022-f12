@@ -22,7 +22,11 @@ type Member = {
 function OtherProfile() {
   const { memberId } = useParams();
 
-  const { items, isReady: isInventoryProductsReady } = useOtherInventory({
+  const {
+    items,
+    isReady: isInventoryProductsReady,
+    isError: isInventoryProductsError,
+  } = useOtherInventory({
     memberId,
   });
 
@@ -66,7 +70,7 @@ function OtherProfile() {
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isInventoryProductsReady}
-          isError={isMyDataError}
+          isError={isInventoryProductsError}
         >
           <ProductSelect inventoryList={inventoryList} editable={false} />
         </AsyncWrapper>
@@ -79,7 +83,7 @@ function OtherProfile() {
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isInventoryProductsReady}
-          isError={isMyDataError}
+          isError={isInventoryProductsError}
         >
           <div>키보드</div>
           <InventoryProductList products={keyboardItems} />
