@@ -1,9 +1,6 @@
 export const BASE_URL = __API_URL__;
 
-const githubClientId =
-  process.env.NODE_ENV === 'development'
-    ? '404072c5857d705db2d9'
-    : 'f1e73a9ac502f1b6712a';
+const githubClientId = __GITHUB_CLIENT_ID__;
 
 export const GITHUB_AUTH_URL = `https://github.com/login/oauth/authorize?client_id=${githubClientId}`;
 
