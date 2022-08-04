@@ -6,6 +6,7 @@ import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.domain.member.JobType.MOBILE;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
+import static com.woowacourse.f12.support.MemberFixtures.NOT_ADDITIONAL_INFO;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
@@ -185,6 +186,29 @@ class ReviewRepositoryTest {
     }
 
     @Test
+    void 제품에_대한_사용자_연차의_총_개수를_반환할때_추가정보가_없는_회원은_포함되지_않는다() {
+        // given
+        Product product = 제품_저장(KEYBOARD_1.생성());
+
+        Member corinne = CORINNE.생성();
+        corinne = memberRepository.save(corinne);
+        Member notAdditionalInfo = NOT_ADDITIONAL_INFO.생성();
+        notAdditionalInfo = memberRepository.save(notAdditionalInfo);
+
+        리뷰_저장(REVIEW_RATING_2.작성(product, corinne));
+        리뷰_저장(REVIEW_RATING_1.작성(product, notAdditionalInfo));
+
+        // when
+        List<CareerLevelCount> careerLevelCounts = reviewRepository.findCareerLevelCountByProductId(
+                product.getId());
+
+        // then
+        assertThat(careerLevelCounts).usingRecursiveFieldByFieldElementComparator()
+                .hasSize(1)
+                .containsOnly(new CareerLevelCount(SENIOR, 1));
+    }
+
+    @Test
     void 제품에_대한_사용자_직군의_총_개수를_반환한다() {
         // given
         Product product = 제품_저장(KEYBOARD_1.생성());
@@ -212,6 +236,28 @@ class ReviewRepositoryTest {
                         new JobTypeCount(MOBILE, 1),
                         new JobTypeCount(BACKEND, 1)
                 );
+    }
+
+    @Test
+    void 제품에_대한_사용자_직군의_총_개수를_반환할때_추가정보가_없는_회원은_포함되지_않는다() {
+        // given
+        Product product = 제품_저장(KEYBOARD_1.생성());
+
+        Member corinne = CORINNE.생성();
+        corinne = memberRepository.save(corinne);
+        Member notAdditionalInfo = NOT_ADDITIONAL_INFO.생성();
+        notAdditionalInfo = memberRepository.save(notAdditionalInfo);
+
+        리뷰_저장(REVIEW_RATING_2.작성(product, corinne));
+        리뷰_저장(REVIEW_RATING_1.작성(product, notAdditionalInfo));
+
+        // when
+        List<JobTypeCount> jobTypeCounts = reviewRepository.findJobTypeCountByProductId(product.getId());
+
+        // then
+        assertThat(jobTypeCounts).usingRecursiveFieldByFieldElementComparator()
+                .hasSize(1)
+                .containsOnly(new JobTypeCount(BACKEND, 1));
     }
 
     private Product 제품_저장(Product product) {
