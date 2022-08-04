@@ -24,40 +24,40 @@ function BarGraph({ statistics }: Prop) {
               <S.Bar
                 key={0}
                 color={theme.colors.primary}
-                height={jobType.frontend * 100}
+                height={Math.round(jobType.frontend * 100)}
               />
               <S.PercentWrapper>
-                <S.Percent>{jobType.frontend * 100}%</S.Percent>
+                <S.Percent>{Math.round(jobType.frontend * 100)}%</S.Percent>
               </S.PercentWrapper>
             </S.BarWrapper>
             <S.BarWrapper>
               <S.Bar
                 key={1}
                 color={theme.colors.primaryDark}
-                height={jobType.backend * 100}
+                height={Math.round(jobType.backend * 100)}
               />
               <S.PercentWrapper>
-                <S.Percent>{jobType.backend * 100}%</S.Percent>
+                <S.Percent>{Math.round(jobType.backend * 100)}%</S.Percent>
               </S.PercentWrapper>
             </S.BarWrapper>
             <S.BarWrapper>
               <S.Bar
                 key={2}
                 color={theme.colors.secondary}
-                height={jobType.mobile * 100}
+                height={Math.round(jobType.mobile * 100)}
               />
               <S.PercentWrapper>
-                <S.Percent>{jobType.mobile * 100}%</S.Percent>
+                <S.Percent>{Math.round(jobType.mobile * 100)}%</S.Percent>
               </S.PercentWrapper>
             </S.BarWrapper>
             <S.BarWrapper>
               <S.Bar
                 key={3}
                 color={theme.colors.black}
-                height={jobType.etc * 100}
+                height={Math.round(jobType.etc * 100)}
               />
               <S.PercentWrapper>
-                <S.Percent>{jobType.etc * 100}%</S.Percent>
+                <S.Percent>{Math.round(jobType.etc * 100)}%</S.Percent>
               </S.PercentWrapper>
             </S.BarWrapper>
           </S.DataWrapper>
@@ -82,40 +82,40 @@ function BarGraph({ statistics }: Prop) {
               <S.Bar
                 key={4}
                 color={theme.colors.primary}
-                height={careerLevel.none * 100}
+                height={Math.round(careerLevel.none * 100)}
               />
               <S.PercentWrapper>
-                <S.Percent>{careerLevel.none * 100}%</S.Percent>
+                <S.Percent>{Math.round(careerLevel.none * 100)}%</S.Percent>
               </S.PercentWrapper>
             </S.BarWrapper>
             <S.BarWrapper>
               <S.Bar
                 key={5}
                 color={theme.colors.primaryDark}
-                height={careerLevel.junior * 100}
+                height={Math.round(careerLevel.junior * 100)}
               />
               <S.PercentWrapper>
-                <S.Percent>{careerLevel.junior * 100}%</S.Percent>
+                <S.Percent>{Math.round(careerLevel.junior * 100)}%</S.Percent>
               </S.PercentWrapper>
             </S.BarWrapper>
             <S.BarWrapper>
               <S.Bar
                 key={6}
                 color={theme.colors.secondary}
-                height={careerLevel.midlevel * 100}
+                height={Math.round(careerLevel.midlevel * 100)}
               />
               <S.PercentWrapper>
-                <S.Percent>{careerLevel.midlevel * 100}%</S.Percent>
+                <S.Percent>{Math.round(careerLevel.midlevel * 100)}%</S.Percent>
               </S.PercentWrapper>
             </S.BarWrapper>
             <S.BarWrapper>
               <S.Bar
                 key={7}
                 color={theme.colors.black}
-                height={careerLevel.senior * 100}
+                height={Math.round(careerLevel.senior * 100)}
               />
               <S.PercentWrapper>
-                <S.Percent>{careerLevel.senior * 100}%</S.Percent>
+                <S.Percent>{Math.round(careerLevel.senior * 100)}%</S.Percent>
               </S.PercentWrapper>
             </S.BarWrapper>
           </S.DataWrapper>
