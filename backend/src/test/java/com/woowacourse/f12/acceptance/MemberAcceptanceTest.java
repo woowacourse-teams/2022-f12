@@ -93,6 +93,25 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    void 로그인_된_상태에서_추가정보가_입력되지_않았을떄_내_회원정보를_조회한다() {
+        // given
+        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        String token = loginResponse.getToken();
+
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", token);
+
+        // then
+        Member expectedMember = 응답을_회원으로_변환한다(loginResponse.getMember());
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
+                        .isEqualTo(MemberResponse.from(expectedMember))
+        );
+    }
+
+    @Test
     void 비로그인_상태에서_회원정보를_조회한다() {
         // given
         LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());

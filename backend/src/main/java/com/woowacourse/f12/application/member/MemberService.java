@@ -9,7 +9,6 @@ import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
@@ -31,9 +30,6 @@ public class MemberService {
 
     public MemberResponse findById(final Long memberId) {
         final Member member = findMember(memberId);
-        if (!member.isRegisterCompleted()) {
-            throw new InvalidProfileArgumentException();
-        }
         return MemberResponse.from(member);
     }
 
