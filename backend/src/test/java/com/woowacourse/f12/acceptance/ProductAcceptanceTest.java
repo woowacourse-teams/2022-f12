@@ -106,8 +106,13 @@ class ProductAcceptanceTest extends AcceptanceTest {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+
         String corinneToken = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", corinneToken, memberRequest);
         String minchoToken = 로그인을_한다(MINCHO_GITHUB.getCode()).getToken();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", minchoToken, memberRequest);
+
         REVIEW_RATING_5.작성_요청을_보낸다(product1.getId(), corinneToken);
         REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), minchoToken);
         REVIEW_RATING_3.작성_요청을_보낸다(product2.getId(), minchoToken);

@@ -4,6 +4,7 @@ import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
+import static com.woowacourse.f12.support.MemberFixtures.NOT_ADDITIONAL_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -109,6 +110,21 @@ class MemberRepositoryTest {
                 () -> assertThat(slice.hasNext()).isFalse(),
                 () -> assertThat(slice.getContent()).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                         .containsOnly(CORINNE.생성())
+        );
+    }
+
+    @Test
+    void 추가정보가_입력되지않은_회원은_회원을_조회할때_포함되지_않는다() {
+        // given
+        memberRepository.save(NOT_ADDITIONAL_INFO.생성());
+
+        // when
+        Slice<Member> slice = memberRepository.findBySearchConditions(null, null, null, PageRequest.of(0, 2));
+
+        // then
+        assertAll(
+                () -> assertThat(slice.hasNext()).isFalse(),
+                () -> assertThat(slice.getContent()).isEmpty()
         );
     }
 }

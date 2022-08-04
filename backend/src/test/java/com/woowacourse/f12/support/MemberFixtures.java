@@ -16,7 +16,8 @@ public enum MemberFixtures {
 
     CORINNE("hamcheeseburger", "유현지", "corinne_url", SENIOR, BACKEND),
     MINCHO("jswith", "홍영민", "mincho_url", JUNIOR, FRONTEND),
-    CORINNE_UPDATED("hamcheeseburger", "괴물개발자", "corinne_url", SENIOR, BACKEND);
+    CORINNE_UPDATED("hamcheeseburger", "괴물개발자", "corinne_url", SENIOR, BACKEND),
+    NOT_ADDITIONAL_INFO("invalid", "invalid", "invalid", null, null);
 
     private final String gitHubId;
     private final String name;

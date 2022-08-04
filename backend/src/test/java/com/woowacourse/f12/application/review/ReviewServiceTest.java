@@ -2,6 +2,7 @@ package com.woowacourse.f12.application.review;
 
 import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.MemberFixtures.NOT_ADDITIONAL_INFO;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
@@ -29,6 +30,7 @@ import com.woowacourse.f12.dto.response.review.ReviewResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
@@ -114,6 +116,26 @@ class ReviewServiceTest {
                 () -> assertThatThrownBy(
                         () -> reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(reviewRepository, times(0)).save(any(Review.class))
+        );
+    }
+
+    @Test
+    void 추가정보가_없는_회원으로_로그인하여_리뷰를_작성하면_예외를_반환한다() {
+        // given
+        Long memberId = 1L;
+        Long productId = 1L;
+        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
+
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.of(NOT_ADDITIONAL_INFO.생성(1L)));
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(
+                        () -> reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest))
+                        .isExactlyInstanceOf(InvalidProfileArgumentException.class),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
         );

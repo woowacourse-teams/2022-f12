@@ -23,8 +23,8 @@ import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -77,21 +77,18 @@ class MemberServiceTest {
     }
 
     @Test
-    void 추가_정보가_입력되지_않은_멤버_아이디로_회원정보를_조회하면_예외가_발생한다() {
+    void 추가_정보가_입력되지_않은_멤버_아이디로_회원정보를_조회한다() {
         // given
-        Member member = Member.builder()
-                .id(1L)
-                .gitHubId("gitHubId")
-                .name("name")
-                .imageUrl("url")
-                .build();
+        Member member = MemberFixtures.NOT_ADDITIONAL_INFO.생성();
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
 
-        // when, then
+        // when
+        MemberResponse memberResponse = memberService.findById(1L);
+        // then
         assertAll(
-                () -> assertThatThrownBy(() -> memberService.findById(1L))
-                        .isExactlyInstanceOf(InvalidProfileArgumentException.class),
+                () -> assertThat(memberResponse).usingRecursiveComparison()
+                        .isEqualTo(MemberResponse.from(member)),
                 () -> verify(memberRepository).findById(1L)
         );
     }

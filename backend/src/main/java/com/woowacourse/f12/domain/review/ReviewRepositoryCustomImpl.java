@@ -3,6 +3,7 @@ package com.woowacourse.f12.domain.review;
 import static com.woowacourse.f12.domain.member.QMember.member;
 import static com.woowacourse.f12.domain.review.QReview.review;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.woowacourse.f12.domain.product.Product;
 import java.util.List;
@@ -22,7 +23,10 @@ public class ReviewRepositoryCustomImpl extends QuerydslRepositorySupport implem
         return jpaQueryFactory.select(new QCareerLevelCount(member.careerLevel, member.id.count()))
                 .from(review)
                 .innerJoin(review.member, member)
-                .where(review.product.id.eq(productId))
+                .where(
+                        review.product.id.eq(productId),
+                        notNullMemberInfo()
+                )
                 .groupBy(member.careerLevel)
                 .fetch();
     }
@@ -32,8 +36,15 @@ public class ReviewRepositoryCustomImpl extends QuerydslRepositorySupport implem
         return jpaQueryFactory.select(new QJobTypeCount(member.jobType, member.id.count()))
                 .from(review)
                 .innerJoin(review.member, member)
-                .where(review.product.id.eq(productId))
+                .where(
+                        review.product.id.eq(productId),
+                        notNullMemberInfo()
+                )
                 .groupBy(member.jobType)
                 .fetch();
+    }
+
+    private BooleanExpression notNullMemberInfo() {
+        return member.careerLevel.isNotNull().and(member.jobType.isNotNull());
     }
 }
