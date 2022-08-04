@@ -55,3 +55,7 @@ export const EditButton = styled.button`
 export const NoContentMessage = styled.p`
   text-align: center;
 `;
+
+export const Title = styled.h1`
+  font-size: 1.5rem;
+`;

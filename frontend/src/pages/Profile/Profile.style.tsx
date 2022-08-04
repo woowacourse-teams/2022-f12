@@ -32,3 +32,5 @@ export const InventoryProductList = styled.div`
   align-items: center;
   gap: 1rem;
 `;
+
+export const Description = styled.p``;
