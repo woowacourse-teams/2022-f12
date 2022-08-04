@@ -2,6 +2,7 @@ import ProductBar from '@/components/common/ProductBar/ProductBar';
 import { useState } from 'react';
 
 import * as S from '@/components/common/ProductSelect/ProductSelect.style';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
 type Props = {
   submitHandler?: () => void;
@@ -63,6 +64,9 @@ function ProductSelect({
           {isEditMode ? '수정 완료' : '수정하기'}
         </S.EditButton>
       )}
+      <SectionHeader>
+        <S.Title>대표 장비</S.Title>
+      </SectionHeader>
       {isEditMode ? (
         <S.OptionsContainer>
           <S.OptionsList>
