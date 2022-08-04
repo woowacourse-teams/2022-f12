@@ -1,6 +1,6 @@
 import Stepper from '@/components/common/Stepper/Stepper';
 import * as S from '@/pages/Register/Register.style';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import usePatch from '@/hooks/api/usePatch';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 import { ENDPOINTS } from '@/constants/api';
@@ -86,13 +86,9 @@ function Register() {
       } 개발자이신가요?`
     );
     if (confirmation) {
-      patchAdditionalInfo(input)
-        .then(() => {
-          navigate(ROUTES.HOME);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      patchAdditionalInfo(input).catch((error) => {
+        console.log(error);
+      });
     }
   };
 
@@ -116,6 +112,12 @@ function Register() {
   const handleEditButtonClick = () => {
     setStep(1);
   };
+
+  useEffect(() => {
+    if (!userData?.registerCompleted) return;
+
+    navigate(ROUTES.HOME);
+  }, [userData]);
 
   return (
     <S.Container>
