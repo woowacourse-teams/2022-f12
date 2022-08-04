@@ -28,6 +28,7 @@ import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.badrequest.BlankContentException;
 import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.badrequest.InvalidRatingValueException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
@@ -299,6 +300,35 @@ class ReviewControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
                 ).andExpect(status().isNotFound())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(reviewService).saveReviewAndInventoryProduct(eq(1L), eq(1L), any(ReviewRequest.class))
+        );
+    }
+
+    @Test
+    void 리뷰_생성_실패_회원의_추가정보가_없음() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
+                .willThrow(new InvalidProfileArgumentException());
+
+        // when
+        mockMvc.perform(
+                        post("/api/v1/products/" + 1L + "/reviews")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(reviewRequest))
+                ).andExpect(status().isBadRequest())
                 .andDo(print());
 
         // then

@@ -12,6 +12,7 @@ import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
@@ -44,11 +45,18 @@ public class ReviewService {
                                               final ReviewRequest reviewRequest) {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
+        validateRegisterCompleted(member);
         final Product product = productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
         final Long reviewId = saveReview(reviewRequest, member, product);
         saveInventoryProduct(member, product);
         return reviewId;
+    }
+
+    private void validateRegisterCompleted(final Member member) {
+        if (!member.isRegisterCompleted()) {
+            throw new InvalidProfileArgumentException();
+        }
     }
 
     private Long saveReview(final ReviewRequest reviewRequest, final Member member, final Product product) {

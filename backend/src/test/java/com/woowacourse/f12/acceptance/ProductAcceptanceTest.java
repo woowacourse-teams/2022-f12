@@ -106,8 +106,13 @@ class ProductAcceptanceTest extends AcceptanceTest {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+
         String corinneToken = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", corinneToken, memberRequest);
         String minchoToken = 로그인을_한다(MINCHO_GITHUB.getCode()).getToken();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", minchoToken, memberRequest);
+
         REVIEW_RATING_5.작성_요청을_보낸다(product1.getId(), corinneToken);
         REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), minchoToken);
         REVIEW_RATING_3.작성_요청을_보낸다(product2.getId(), minchoToken);
@@ -222,37 +227,6 @@ class ProductAcceptanceTest extends AcceptanceTest {
                                 SENIOR_CONSTANT, 0.5)),
                 () -> assertThat(productStatisticsResponse.getJobType()).usingRecursiveComparison()
                         .isEqualTo(Map.of(FRONTEND_CONSTANT, 0.5, BACKEND_CONSTANT, 0.5, MOBILE_CONSTANT, 0.0,
-                                ETC_CONSTANT, 0.0))
-        );
-    }
-
-    @Test
-    void 제품의_사용자_통계를_조회할때_추가정보가_없는_회원은_포함되지_않는다() {
-        // given
-        Product product = 제품을_저장한다(KEYBOARD_1.생성());
-
-        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        String firstToken = firstLoginResponse.getToken();
-        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), firstToken);
-
-        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String secondToken = secondLoginResponse.getToken();
-        MemberRequest secondMemberRequest = new MemberRequest(JUNIOR_CONSTANT, FRONTEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", secondToken, secondMemberRequest);
-        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), secondToken);
-
-        // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products/" + product.getId() + "/statistics");
-        ProductStatisticsResponse productStatisticsResponse = response.as(ProductStatisticsResponse.class);
-
-        // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(productStatisticsResponse.getCareerLevel()).usingRecursiveComparison()
-                        .isEqualTo(Map.of(NONE_CONSTANT, 0.0, JUNIOR_CONSTANT, 1.0, MID_LEVEL_CONSTANT, 0.0,
-                                SENIOR_CONSTANT, 0.0)),
-                () -> assertThat(productStatisticsResponse.getJobType()).usingRecursiveComparison()
-                        .isEqualTo(Map.of(FRONTEND_CONSTANT, 1.0, BACKEND_CONSTANT, 0.0, MOBILE_CONSTANT, 0.0,
                                 ETC_CONSTANT, 0.0))
         );
     }
