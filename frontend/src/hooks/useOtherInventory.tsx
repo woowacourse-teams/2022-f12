@@ -23,6 +23,7 @@ function useOtherInventory({ memberId }: Prop): Return {
   } = useGetOne<InventoryResponse>({
     url: ENDPOINTS.OTHER_INVENTORY_PRODUCTS(memberId),
   });
+  console.log(isError);
 
   return {
     items: inventoryProducts?.items,

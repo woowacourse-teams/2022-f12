@@ -173,6 +173,10 @@ const submitAdditionalInfo = (req, res, ctx) => {
   return res(ctx.status(200));
 };
 
+const getOtherMemberInfo = (req, res, ctx) => {
+  return res(ctx.json({ ...myData, jobType: null, careerLevel: null }));
+};
+
 export const handlers = [
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
@@ -202,4 +206,5 @@ export const handlers = [
   ),
   rest.get(`${BASE_URL}${ENDPOINTS.ME}`, getMyInfo),
   rest.patch(`${BASE_URL}${ENDPOINTS.ME}`, submitAdditionalInfo),
+  rest.get(`${BASE_URL}${ENDPOINTS.MEMBERS}/:memberId`, getOtherMemberInfo),
 ];
