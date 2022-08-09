@@ -59,7 +59,7 @@ public class InventoryProduct {
             return false;
         }
         final InventoryProduct that = (InventoryProduct) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(id, that.getId());
     }
 
     @Override
