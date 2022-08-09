@@ -65,13 +65,14 @@ const ReviewCardList = ({
   loginUserGithubId: string;
 }) => (
   <>
-    {data.map(({ id, author, product, content, rating }) => (
+    {data.map(({ id, author, product, content, rating, createdAt }) => (
       <ReviewCard
         key={id}
         reviewId={id}
         product={product}
         author={author}
         rating={rating}
+        createdAt={createdAt}
         content={content}
         loginUserGithubId={loginUserGithubId}
         handleDelete={handleDelete}

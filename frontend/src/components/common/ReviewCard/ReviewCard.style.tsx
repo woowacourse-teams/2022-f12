@@ -78,6 +78,12 @@ export const ProfileLink = styled(Link)`
   }
 `;
 
+export const CreatedAt = styled.p`
+  font-size: 0.8rem;
+  color: ${({ theme }) => theme.colors.gray};
+  align-self: flex-end;
+`;
+
 export const EditButton = styled.button`
   border: none;
   width: 2.5rem;
