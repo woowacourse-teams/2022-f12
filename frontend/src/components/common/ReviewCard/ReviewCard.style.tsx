@@ -70,6 +70,14 @@ export const UserWrapper = styled.div`
   gap: 0.3rem;
 `;
 
+export const ProfileLink = styled(Link)`
+  &:hover {
+    p {
+      text-decoration: underline;
+    }
+  }
+`;
+
 export const EditButton = styled.button`
   border: none;
   width: 2.5rem;

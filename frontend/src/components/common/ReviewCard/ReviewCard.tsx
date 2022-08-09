@@ -8,13 +8,12 @@ import useAuth from '@/hooks/useAuth';
 import ROUTES from '@/constants/routes';
 
 type Props = {
-  profileImage: string;
   product?: {
     id: number;
     name: string;
     imageUrl: string;
   };
-  username: string;
+  author: Review['author'];
   rating: number;
   content: string;
   loginUserGithubId: string;
@@ -24,12 +23,11 @@ type Props = {
 };
 
 function ReviewCard({
-  profileImage,
   reviewId,
   product,
-  username,
   rating,
   content,
+  author,
   loginUserGithubId,
   handleDelete,
   handleEdit,
@@ -54,8 +52,13 @@ function ReviewCard({
       <S.ReviewArea isFull={!product}>
         <S.Wrapper>
           <S.UserWrapper>
-            <UserNameTag profileImage={profileImage} username={username} />
-            {!product && loginUserGithubId === username && (
+            <S.ProfileLink to={`${ROUTES.PROFILE}/${author.id}`}>
+              <UserNameTag
+                imageUrl={author.imageUrl}
+                username={author.gitHubId}
+              />
+            </S.ProfileLink>
+            {!product && loginUserGithubId === author.gitHubId && (
               <>
                 <S.EditButton
                   onClick={() => {
