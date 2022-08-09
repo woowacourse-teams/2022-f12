@@ -14,7 +14,7 @@ export const Container = styled.article`
       transform: scale(1.03);
       transition: 0.2s;
     }
-    p {
+    h2 {
       text-decoration: underline;
     }
   }
@@ -25,6 +25,8 @@ export const ImageWrapper = styled.div`
   overflow: hidden;
   border: 1px solid ${({ theme }) => theme.colors.secondary};
   background-color: #fff;
+  display: flex;
+  align-items: center;
 `;
 
 export const Image = styled.img`
@@ -40,4 +42,20 @@ export const Wrapper = styled.div`
 export const Name = styled.h2`
   font-size: 1rem;
   line-height: 1.3;
+`;
+
+export const Details = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const ReviewCount = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const ReviewIconWrapper = styled.div`
+  width: 20px;
+  height: 20px;
 `;
