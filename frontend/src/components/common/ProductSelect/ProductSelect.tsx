@@ -52,6 +52,13 @@ function ProductSelect({
   };
 
   const handleSelect = (key: string, id: number) => {
+    if (Object.values(selectedState).includes(id)) {
+      const newState = { ...selectedState };
+      delete newState[key];
+      setSelectedState(newState);
+      return;
+    }
+
     setSelectedState((prev) => {
       return { ...prev, [key]: id };
     });
