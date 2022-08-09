@@ -49,11 +49,8 @@ function HeaderNav() {
           >
             카테고리
           </S.TransparentButton>
-          <Link to={ROUTES.PRODUCTS}>전체 상품 목록</Link>
-          <Link to={{ pathname: ROUTES.PRODUCTS, hash: '#popular' }}>
-            인기 상품 목록
-          </Link>
-          <Link to={ROUTES.PROFILE_SEARCH}>다른 회원의 프로필</Link>
+          <Link to={ROUTES.PRODUCTS}>제품 검색</Link>
+          <Link to={ROUTES.PROFILE_SEARCH}>프로필 검색</Link>
         </S.FlexLeftUl>
         <S.FlexRightUl>
           {isLoggedIn ? (
