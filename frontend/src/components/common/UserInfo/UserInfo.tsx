@@ -1,5 +1,6 @@
 import Chip from '@/components/common/Chip/Chip';
 import * as S from '@/components/common/UserInfo/UserInfo.styled';
+import GithubIcon from '@/assets/github.svg';
 
 type Member = {
   id: string;
@@ -41,6 +42,13 @@ function UserInfo({ userData }: Props) {
           <Chip paddingTopBottom={0.5} paddingLeftRight={0.8}>
             {chipMapper[careerLevel]}
           </Chip>
+          <S.GithubLink
+            href={`https://github.com/${gitHubId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <GithubIcon />
+          </S.GithubLink>
         </S.ChipWrapper>
       )}
     </S.Container>
