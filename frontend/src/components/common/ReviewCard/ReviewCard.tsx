@@ -5,6 +5,7 @@ import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet'
 
 import * as S from '@/components/common/ReviewCard/ReviewCard.style';
 import useAuth from '@/hooks/useAuth';
+import ROUTES from '@/constants/routes';
 
 type Props = {
   profileImage: string;
@@ -43,7 +44,7 @@ function ReviewCard({
   return (
     <S.Container>
       {product && (
-        <S.ProductArea>
+        <S.ProductArea to={`${ROUTES.PRODUCT}/${product.id}`}>
           <S.ImageWrapper>
             <S.Image src={product.imageUrl} />
           </S.ImageWrapper>
