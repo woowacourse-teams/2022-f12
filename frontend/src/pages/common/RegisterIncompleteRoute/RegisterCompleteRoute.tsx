@@ -2,7 +2,7 @@ import ROUTES from '@/constants/routes';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 import useAuth from '@/hooks/useAuth';
 import useModal from '@/hooks/useModal';
-import ProtectedRoute from '@/pages/common/ProtectedRoute/ProtectedRoutes';
+import ClosedRoute from '@/pages/common/ClosedRoutes/ClosedRoutes';
 import { useContext } from 'react';
 
 function RegisterCompleteRoute() {
@@ -15,7 +15,7 @@ function RegisterCompleteRoute() {
 
   if (!isRegistered) showAlert('추가 정보 입력 후 이용해주세요.');
 
-  return <ProtectedRoute when={isRegistered} redirectPath={ROUTES.REGISTER} />;
+  return <ClosedRoute when={!isRegistered} redirectPath={ROUTES.REGISTER} />;
 }
 
 export default RegisterCompleteRoute;
