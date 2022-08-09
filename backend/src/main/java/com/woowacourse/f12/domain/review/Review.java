@@ -99,11 +99,11 @@ public class Review {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Review)) {
             return false;
         }
         final Review review = (Review) o;
-        return Objects.equals(id, review.id);
+        return Objects.equals(id, review.getId());
     }
 
     @Override
