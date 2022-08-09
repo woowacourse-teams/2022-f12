@@ -1,14 +1,14 @@
 import * as S from '@/components/common/UserNameTag/UserNameTag.style';
 
 type Props = {
-  profileImage: string;
+  imageUrl: string;
   username: string;
 };
 
-function UserNameTag({ profileImage, username = '' }: Props) {
+function UserNameTag({ imageUrl, username = '' }: Props) {
   return (
     <S.Container>
-      <S.Avatar src={profileImage} alt={``} />
+      <S.Avatar src={imageUrl} alt={``} />
       <S.Username>{username}</S.Username>
     </S.Container>
   );

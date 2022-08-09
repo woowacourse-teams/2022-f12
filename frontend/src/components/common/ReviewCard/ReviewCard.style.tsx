@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Container = styled.article`
@@ -9,11 +10,21 @@ export const Container = styled.article`
   height: max-content;
 `;
 
-export const ProductArea = styled.div`
+export const ProductArea = styled(Link)`
   width: 35%;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
+  &:hover {
+    img {
+      transform: scale(1.03);
+      transition: 0.2s;
+    }
+    p {
+      text-decoration: underline;
+    }
+  }
 `;
 
 export const ImageWrapper = styled.div`
@@ -25,12 +36,15 @@ export const ImageWrapper = styled.div`
   align-items: center;
 
   background-color: #fff;
+
+  overflow: hidden;
 `;
+
 export const Image = styled.img`
   width: 100%;
 `;
 
-export const Title = styled.div`
+export const Title = styled.p`
   line-height: 1.3;
 `;
 
@@ -54,6 +68,14 @@ export const Wrapper = styled.div`
 export const UserWrapper = styled.div`
   display: flex;
   gap: 0.3rem;
+`;
+
+export const ProfileLink = styled(Link)`
+  &:hover {
+    p {
+      text-decoration: underline;
+    }
+  }
 `;
 
 export const EditButton = styled.button`
