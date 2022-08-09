@@ -5,6 +5,8 @@ import ROUTES from '@/constants/routes';
 import * as S from '@/components/ProfileCard/ProfileCard.style';
 import GithubIcon from '@/assets/github.svg';
 import Chip from '@/components/common/Chip/Chip';
+import PrevSign from '@/assets/prevSign.svg';
+import NextSign from '@/assets/nextSign.svg';
 
 const DISTANCE_DIFFERENCE = 116;
 
@@ -101,7 +103,9 @@ function ProfileCard({
           </S.UserCareer>
         </S.UserInfoWrapper>
         <S.InventoryWrapper>
-          <S.LeftButton onClick={handleLeftButtonClick}>{`<`}</S.LeftButton>
+          <S.LeftButton onClick={handleLeftButtonClick}>
+            <PrevSign />
+          </S.LeftButton>
           <S.InventoryListWrapper>
             <S.InventoryList positionX={positionX}>
               {[keyboard, mouse, monitor, stand].map((item, index) => {
@@ -136,7 +140,9 @@ function ProfileCard({
               })}
             </S.InventoryList>
           </S.InventoryListWrapper>
-          <S.RightButton onClick={handleRightButtonClick}>{`>`}</S.RightButton>
+          <S.RightButton onClick={handleRightButtonClick}>
+            <NextSign />
+          </S.RightButton>
         </S.InventoryWrapper>
         <a href={`${ROUTES.PROFILE}/${id}`}>
           <S.ProfileViewButton>프로필 보기</S.ProfileViewButton>
