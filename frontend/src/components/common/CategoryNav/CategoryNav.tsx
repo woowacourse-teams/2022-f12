@@ -26,12 +26,7 @@ function CategoryNav({ handleTransitionEnd, triggerAnimation }: Props) {
       onTransitionEnd={handleTransitionEnd}
       triggerAnimation={triggerAnimation}
     >
-      <S.Wrapper>
-        <Link to={ROUTES.PRODUCTS} aria-label="전체 상품">
-          전체 상품
-        </Link>
-        {CategoryLinks}
-      </S.Wrapper>
+      <S.Wrapper>{CategoryLinks}</S.Wrapper>
     </S.Container>
   );
 }
