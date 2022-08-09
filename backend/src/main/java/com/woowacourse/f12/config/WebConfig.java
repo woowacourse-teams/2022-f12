@@ -16,6 +16,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     private static final String CORS_ALLOWED_METHODS = "GET,POST,HEAD,PUT,PATCH,DELETE,TRACE,OPTIONS";
+    private static final String MAIN_SERVER_DOMAIN = "https://f12.app";
+    private static final String MAIN_SERVER_WWW_DOMAIN = "https://www.f12.app";
+    private static final String TEST_SERVER_DOMAIN = "https://test.f12.app";
+    private static final String FRONTEND_LOCALHOST = "http://localhost:3000";
 
     private final List<HandlerInterceptor> interceptors;
     private final List<HandlerMethodArgumentResolver> resolvers;
@@ -37,6 +41,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/api/**")
                 .allowedMethods(CORS_ALLOWED_METHODS.split(","))
+                .allowedOrigins(MAIN_SERVER_DOMAIN, MAIN_SERVER_WWW_DOMAIN, TEST_SERVER_DOMAIN, FRONTEND_LOCALHOST)
                 .exposedHeaders(HttpHeaders.LOCATION);
     }
 
