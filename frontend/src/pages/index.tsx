@@ -13,26 +13,27 @@ import NonUserRoutes from '@/pages/common/NonUserRoutes/NonUserRoutes';
 import NotFound from '@/pages/NotFound/NotFound';
 import RegisterCompleteRoute from '@/pages/common/RegisterIncompleteRoute/RegisterCompleteRoute';
 
-const USER_ROUTES = [
+type Route = {
+  element: JSX.Element;
+  path?: string;
+  children?: Route[];
+};
+
+const USER_ROUTES = (routes: Route[]): Route[] => [
   {
     element: <UserRoutes />,
-    children: [
-      {
-        path: ROUTES.PROFILE,
-        element: <Profile />,
-      },
-    ],
+    children: [...routes],
   },
 ];
 
-const NON_USER_ROUTES = [
+const NON_USER_ROUTES = (routes: Route[]): Route[] => [
   {
     element: <NonUserRoutes />,
-    children: [{ path: ROUTES.LOGIN, element: <Login /> }],
+    children: [...routes],
   },
 ];
 
-export const PAGES = [
+export const PAGES: Route[] = [
   {
     element: <PageLayout />,
     children: [
@@ -43,18 +44,30 @@ export const PAGES = [
           { path: ROUTES.PRODUCTS, element: <Products /> },
           { path: `${ROUTES.PRODUCT}/:productId`, element: <Product /> },
           { path: `${ROUTES.PROFILE_SEARCH}`, element: <ProfileSearch /> },
-          ...NON_USER_ROUTES,
-          ...USER_ROUTES,
           {
             path: `${ROUTES.PROFILE}/:memberId`,
             element: <OtherProfile />,
           },
+
+          ...USER_ROUTES([
+            {
+              path: ROUTES.PROFILE,
+              element: <Profile />,
+            },
+          ]),
+
+          ...NON_USER_ROUTES([
+            {
+              element: <NonUserRoutes />,
+              children: [{ path: ROUTES.LOGIN, element: <Login /> }],
+            },
+          ]),
         ],
       },
-      {
-        element: <UserRoutes />,
-        children: [{ path: ROUTES.REGISTER, element: <Register /> }],
-      },
+
+      // 추가 정보 미 입력시 갈 수 있는 유일한 경로
+      ...USER_ROUTES([{ path: ROUTES.REGISTER, element: <Register /> }]),
+
       { path: ROUTES.NOT_FOUND, element: <NotFound /> },
     ],
   },
