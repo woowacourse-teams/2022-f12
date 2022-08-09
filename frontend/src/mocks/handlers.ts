@@ -2,7 +2,9 @@ import { rest } from 'msw';
 import { BASE_URL, ENDPOINTS } from '@/constants/api';
 import {
   InventoryProducts,
+  members,
   myData,
+  otherData,
   products,
   reviewsWithOutProduct,
   reviewsWithProduct,
@@ -174,22 +176,65 @@ const submitAdditionalInfo = (req, res, ctx) => {
 };
 
 const getOtherMemberInfo = (req, res, ctx) => {
-  return res(ctx.json({ ...myData, jobType: null, careerLevel: null }));
+  return res(ctx.json(otherData));
+};
+
+const searchMember = (req, res, ctx) => {
+  const page = Number(req.url.searchParams.get('page'));
+  const size = Number(req.url.searchParams.get('size'));
+
+  const startIndex = page * size;
+  const endIndex = (page + 1) * size;
+
+  const response = {
+    hasNext: page < 2,
+    items: members.slice(startIndex, endIndex),
+  };
+
+  return res(ctx.json(response));
+};
+
+const getOtherMemberInventory = (req, res, ctx) => {
+  const token = req.headers.get('Authorization');
+  if (token === undefined) {
+    return res(ctx.status(401));
+  }
+
+  return res(ctx.status(200), ctx.json(InventoryProducts), ctx.delay());
 };
 
 export const handlers = [
-  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
-  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
-  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}/statistics`, getStatistics),
-  rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS}`, getReviews),
-  rest.get(
-    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
-    getReviewsByProductId
+  rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
+
+  rest.get(`${BASE_URL}${ENDPOINTS.ME}`, getMyInfo),
+  rest.patch(`${BASE_URL}${ENDPOINTS.ME}`, submitAdditionalInfo),
+  // 아래 핸들러 순서 유의미 => getOtherMemberInfo보다 아래에 위치하면 요청 matching에서 오류 발생
+  rest.get(`${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`, getInventoryProducts),
+  rest.patch(
+    `${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`,
+    patchInventoryProducts
   ),
+
+  rest.get(`${BASE_URL}${ENDPOINTS.MEMBERS}`, searchMember),
+  rest.get(`${BASE_URL}${ENDPOINTS.MEMBERS}/:memberId`, getOtherMemberInfo),
+  rest.get(
+    `${BASE_URL}${ENDPOINTS.MEMBERS}/:memberId/inventoryProducts`,
+    getOtherMemberInventory
+  ),
+
+  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
+  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
+  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}/statistics`, getStatistics),
+
   rest.post(
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
     postReviewByProductId
   ),
+  rest.get(
+    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
+    getReviewsByProductId
+  ),
+  rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS}`, getReviews),
   rest.put(
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
     updateReviewByReviewId
@@ -198,13 +243,4 @@ export const handlers = [
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
     deleteReviewByReviewId
   ),
-  rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
-  rest.get(`${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`, getInventoryProducts),
-  rest.patch(
-    `${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`,
-    patchInventoryProducts
-  ),
-  rest.get(`${BASE_URL}${ENDPOINTS.ME}`, getMyInfo),
-  rest.patch(`${BASE_URL}${ENDPOINTS.ME}`, submitAdditionalInfo),
-  rest.get(`${BASE_URL}${ENDPOINTS.MEMBERS}/:memberId`, getOtherMemberInfo),
 ];
