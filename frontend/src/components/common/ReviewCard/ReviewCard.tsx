@@ -18,6 +18,7 @@ type Props = {
   content: string;
   loginUserGithubId: string;
   reviewId: number;
+  createdAt: string;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => void;
 };
@@ -29,6 +30,7 @@ function ReviewCard({
   content,
   author,
   loginUserGithubId,
+  createdAt,
   handleDelete,
   handleEdit,
 }: Props) {
@@ -38,6 +40,11 @@ function ReviewCard({
   );
 
   const { isLoggedIn } = useAuth();
+
+  const createAtDate = new Date(createdAt);
+  const formattedDate = `${createAtDate.getFullYear()}년 ${
+    createAtDate.getMonth() + 1
+  }월 ${createAtDate.getDate()}일`;
 
   return (
     <S.Container>
@@ -79,6 +86,7 @@ function ReviewCard({
           </S.UserWrapper>
           <Rating type="정수" rating={rating} />
         </S.Wrapper>
+        <S.CreatedAt>{formattedDate}</S.CreatedAt>
         <S.Content>{content}</S.Content>
       </S.ReviewArea>
       {isEditSheetOpen && isLoggedIn && (
