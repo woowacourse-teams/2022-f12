@@ -48,14 +48,3 @@ export const Details = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-
-export const ReviewCount = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-export const ReviewIconWrapper = styled.div`
-  width: 20px;
-  height: 20px;
-`;

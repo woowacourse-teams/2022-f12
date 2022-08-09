@@ -1,6 +1,6 @@
 import Rating from '@/components/common/Rating/Rating';
 import * as S from '@/components/common/ProductCard/ProductCard.style';
-import ReviewIcon from '@/assets/review.svg';
+import ReviewCount from '@/components/common/ReviewCount/ReviewCount';
 
 type Props = {
   imageUrl?: string;
@@ -18,12 +18,7 @@ function ProductCard({ imageUrl, name, rating, reviewCount }: Props) {
       <S.Name>{name}</S.Name>
       <S.Details>
         <Rating rating={rating} />
-        <S.ReviewCount>
-          <S.ReviewIconWrapper>
-            <ReviewIcon />
-          </S.ReviewIconWrapper>
-          {reviewCount}
-        </S.ReviewCount>
+        <ReviewCount reviewCount={reviewCount} />
       </S.Details>
     </S.Container>
   );
