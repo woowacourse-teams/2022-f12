@@ -6,6 +6,7 @@ export const GetConfirmContext =
   createContext<(message: string) => Promise<boolean>>(null);
 
 let resolveConfirm: (value: boolean | PromiseLike<boolean>) => void;
+
 function ModalContextProvider({ children }: PropsWithChildren) {
   const [message, setMessage] = useState('');
   const [alertOpen, setAlertOpen] = useState(false);
@@ -15,13 +16,18 @@ function ModalContextProvider({ children }: PropsWithChildren) {
     setMessage(message);
     setAlertOpen(true);
   };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
   const showConfirm = (message: string) => {
     setMessage(message);
     setConfirmOpen(true);
   };
 
-  const handleClose = () => {
-    setAlertOpen(false);
+  const handleConfirmClose = () => {
+    resolveConfirm(false);
     setConfirmOpen(false);
   };
 
@@ -43,12 +49,12 @@ function ModalContextProvider({ children }: PropsWithChildren) {
       <GetConfirmContext.Provider value={getConfirm}>
         {children}
         {alertOpen && (
-          <Modal handleClose={handleClose}>
+          <Modal handleClose={handleAlertClose}>
             <Modal.Body>{message}</Modal.Body>
           </Modal>
         )}
         {confirmOpen && (
-          <Modal handleClose={handleClose} handleConfirm={handleConfirm}>
+          <Modal handleClose={handleConfirmClose} handleConfirm={handleConfirm}>
             <Modal.Body>{message}</Modal.Body>
           </Modal>
         )}
