@@ -4,10 +4,11 @@ import SearchBar from '@/components/common/SearchBar/SearchBar';
 import SearchFilter from '@/components/SearchFilter/SearchFilter';
 
 import * as S from '@/pages/ProfileSearch/ProfileSearch.style';
-import useProfileSearch from '@/hooks/useProfileSearch';
 import ProfileSearchResult from '@/components/ProfileSearchResult/ProfileSearchResult';
 import Loading from '@/components/common/Loading/Loading';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import useSearch from '@/hooks/useSearch';
+import { ENDPOINTS } from '@/constants/api';
 
 function ProfileSearch() {
   const [careerLevelFilter, setCareerLevelFilter] = useState('');
@@ -15,15 +16,18 @@ function ProfileSearch() {
   const [searchInput, setSearchInput] = useState('');
 
   const {
-    profiles,
+    result: profiles,
     getNextPage,
     isError: isProfileSearchError,
     isLoading: isProfileSearchLoading,
     isReady: isProfileSearchReady,
-  } = useProfileSearch({
+  } = useSearch<ProfileSearchResult>({
+    url: ENDPOINTS.MEMBERS,
     query: searchInput,
-    careerLevel: careerLevelFilter,
-    jobType: jobTypeFilter,
+    filter: {
+      career: careerLevelFilter,
+      jobType: jobTypeFilter,
+    },
     size: '4',
   });
 
