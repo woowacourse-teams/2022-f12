@@ -80,13 +80,14 @@ export const ProfileViewButton = styled.button`
   border: none;
   width: 100%;
   height: 1.8rem;
-  margin-top: 2rem;
+  margin-top: 0.2rem;
   border-radius: 0.25rem;
   background-color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const InventoryListWrapper = styled.div`
   overflow: hidden;
+  height: 102px;
 `;
 
 export const InventoryList = styled.div<{ positionX: number }>`
@@ -94,7 +95,6 @@ export const InventoryList = styled.div<{ positionX: number }>`
   align-items: flex-start;
   gap: 2rem;
   width: 200px;
-  height: 100px;
   transform: ${({ positionX }) => `translateX(${positionX}px)`};
   transition: linear 0.2s;
 `;
