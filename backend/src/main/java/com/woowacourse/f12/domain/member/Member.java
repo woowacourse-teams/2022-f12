@@ -24,6 +24,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "member")
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 @Getter
 public class Member {
 
@@ -48,6 +49,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private JobType jobType;
 
+    @Builder.Default
     @BatchSize(size = 150)
     @OneToMany(mappedBy = "member")
     private List<InventoryProduct> inventoryProducts = new ArrayList<>();
@@ -55,7 +57,6 @@ public class Member {
     protected Member() {
     }
 
-    @Builder
     private Member(final Long id, final String gitHubId, final String name, final String imageUrl,
                    final CareerLevel careerLevel, final JobType jobType,
                    final List<InventoryProduct> inventoryProducts) {
