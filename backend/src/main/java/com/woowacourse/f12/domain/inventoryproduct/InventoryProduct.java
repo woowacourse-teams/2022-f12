@@ -17,6 +17,7 @@ import lombok.Getter;
 
 @Entity
 @Table(name = "inventory_product")
+@Builder
 @Getter
 public class InventoryProduct {
 
@@ -27,18 +28,17 @@ public class InventoryProduct {
     @Column(name = "selected")
     private boolean selected;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
-    private Product product;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     protected InventoryProduct() {
     }
 
-    @Builder
     private InventoryProduct(final Long id, final boolean selected, final Member member, final Product product) {
         this.id = id;
         this.selected = selected;

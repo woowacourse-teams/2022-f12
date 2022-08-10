@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.domain.product.Product;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -46,5 +47,13 @@ class MemberTest {
         // then
         assertThat(profileProducts)
                 .containsOnly(selectedInventoryProduct.getProduct());
+    }
+
+    @Test
+    void Builder_테스트() {
+        Member member = Member.builder()
+                .build();
+
+        assertThat(member.getInventoryProducts()).isInstanceOf(ArrayList.class);
     }
 }
