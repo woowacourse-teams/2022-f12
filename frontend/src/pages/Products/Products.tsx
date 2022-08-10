@@ -1,10 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
+import * as S from '@/pages/Products/Products.style';
 import ProductListSection from '@/components/ProductListSection/ProductListSection';
 import Select from '@/components/common/Select/Select';
-import useProducts from '@/hooks/useProducts';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { CATEGORY } from '@/components/common/CategoryNav/CategoryNav';
+import useSearch from '@/hooks/useSearch';
+import { ENDPOINTS } from '@/constants/api';
+import SearchBar from '@/components/common/SearchBar/SearchBar';
+import SearchFilter from '@/components/SearchFilter/SearchFilter';
+import ROUTES from '@/constants/routes';
 
 type Option = { value: string; text: string };
 
@@ -25,29 +30,84 @@ const DefaultSort = options[1];
 
 type CATEGORY = typeof CATEGORY;
 
+const categories = {
+  keyboard: '키보드',
+  mouse: '마우스',
+  monitor: '모니터',
+  stand: '거치대',
+  software: '소프트웨어',
+} as const;
+
 function Products() {
-  const [sort, setSort] = useState<Sort>(DefaultSort.value);
   const [searchParams] = useSearchParams();
-  const category = searchParams.get('category');
-  const { products, getNextPage, isLoading, isReady, isError } = useProducts({
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [sort, setSort] = useState<Sort>(DefaultSort.value);
+  const [keyword, setKeyword] = useState<string>('');
+  const [category, setCategory] = useState<string>(
+    searchParams.get('category') || null
+  );
+
+  const {
+    result: products,
+    getNextPage,
+    isLoading,
+    isReady,
+    isError,
+  } = useSearch<Product>({
+    url: ENDPOINTS.PRODUCTS,
+    query: keyword !== '' ? keyword : null,
     size: '12',
-    sort,
-    category,
+    filter: {
+      category,
+      sort,
+    },
   });
 
-  const title =
-    category in CATEGORY ? CATEGORY[category as keyof CATEGORY] : '모든 상품';
+  const title = useMemo(
+    () =>
+      category in CATEGORY ? CATEGORY[category as keyof CATEGORY] : '모든 상품',
+    [category]
+  );
+
+  const handleCategoryFilterClick: React.MouseEventHandler<
+    HTMLButtonElement
+  > = (e) => {
+    if (!(e.target instanceof HTMLButtonElement)) return;
+    if (e.target.value === category) {
+      navigate(ROUTES.PRODUCTS);
+      return;
+    }
+
+    navigate(`${ROUTES.PRODUCTS}?category=${e.target.value}`);
+  };
+
+  useEffect(() => {
+    setCategory(searchParams.get('category'));
+  }, [location.key]);
 
   return (
-    <ProductListSection
-      title={title}
-      data={!!products && products}
-      getNextPage={getNextPage}
-      addOn={<Select value={sort} setValue={setSort} options={options} />}
-      isLoading={isLoading}
-      isReady={isReady}
-      isError={isError}
-    />
+    <>
+      <S.SearchBarWrapper>
+        <SearchBar searchInput={keyword} setSearchInput={setKeyword} />
+        <SearchFilter
+          title={'카테고리'}
+          value={category}
+          handleValueClick={handleCategoryFilterClick}
+          options={categories}
+        />
+      </S.SearchBarWrapper>
+      <ProductListSection
+        title={title}
+        data={!!products && products}
+        getNextPage={getNextPage}
+        addOn={<Select value={sort} setValue={setSort} options={options} />}
+        isLoading={isLoading}
+        isReady={isReady}
+        isError={isError}
+      />
+    </>
   );
 }
 
