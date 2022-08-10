@@ -6,6 +6,148 @@ export const myData = {
   careerLevel: 'senior',
   jobType: 'backend',
 };
+
+export const otherData = {
+  id: 1,
+  gitHubId: 'yangdongjue5510',
+  name: 'Dongjue Yang',
+  imageUrl: 'https://avatars.githubusercontent.com/u/87690744?v=4',
+  careerLevel: 'junior',
+  jobType: 'backend',
+};
+
+export const members = [
+  {
+    id: 20,
+    gitHubId: 'deuk960214',
+    name: null,
+    imageUrl: 'https://avatars.githubusercontent.com/u/110340823?v=4',
+    careerLevel: 'none',
+    jobType: 'frontend',
+    profileProducts: [],
+  },
+  {
+    id: 18,
+    gitHubId: 'uk960214',
+    name: 'Yo Wook Kim',
+    imageUrl: 'https://avatars.githubusercontent.com/u/43166681?v=4',
+    careerLevel: 'none',
+    jobType: 'frontend',
+    profileProducts: [],
+  },
+  {
+    id: 1,
+    gitHubId: 'yangdongjue5510',
+    name: 'Dongjue Yang',
+    imageUrl: 'https://avatars.githubusercontent.com/u/87690744?v=4',
+    careerLevel: 'junior',
+    jobType: 'backend',
+    profileProducts: [
+      {
+        id: 12,
+        name: 'K380 멀티 블루투스 키보드',
+        imageUrl:
+          'https://img.danawa.com/prod_img/500000/959/427/img/3427959_1.jpg?shrink=500:500&_v=20220620102123',
+        reviewCount: 5,
+        rating: 4.2,
+        category: 'keyboard',
+      },
+      {
+        id: 74,
+        name: '마이크로소프트 무선 블루투스 모바일 마우스 3600',
+        imageUrl:
+          'https://image.auction.co.kr/itemimage/22/98/15/229815dc00.jpg',
+        reviewCount: 1,
+        rating: 4.0,
+        category: 'mouse',
+      },
+      {
+        id: 142,
+        name: '굿밸류 2단 노트북 거치대',
+        imageUrl:
+          'https://img.danawa.com/prod_img/500000/353/767/img/16767353_1.jpg?shrink=330:330&_v=20220406145257',
+        reviewCount: 3,
+        rating: 5.0,
+        category: 'stand',
+      },
+    ],
+  },
+  {
+    id: 5,
+    gitHubId: 'Ohzzi',
+    name: 'Jihoon Oh',
+    imageUrl: 'https://avatars.githubusercontent.com/u/66253212?v=4',
+    careerLevel: 'none',
+    jobType: 'backend',
+    profileProducts: [
+      {
+        id: 179,
+        name: '요이치 랩킷B 노트북 거치대',
+        imageUrl:
+          'https://img.danawa.com/prod_img/500000/753/633/img/14633753_1.jpg?shrink=330:330&_v=20210701125159',
+        reviewCount: 1,
+        rating: 5.0,
+        category: 'stand',
+      },
+    ],
+  },
+  {
+    id: 4,
+    gitHubId: 'yh20studio',
+    name: 'tiki',
+    imageUrl: 'https://avatars.githubusercontent.com/u/78459713?v=4',
+    careerLevel: 'none',
+    jobType: 'backend',
+    profileProducts: [],
+  },
+  {
+    id: 2,
+    gitHubId: 'jswith',
+    name: 'Youngmin Hong',
+    imageUrl: 'https://avatars.githubusercontent.com/u/64275588?v=4',
+    careerLevel: 'junior',
+    jobType: 'frontend',
+    profileProducts: [
+      {
+        id: 142,
+        name: '굿밸류 2단 노트북 거치대',
+        imageUrl:
+          'https://img.danawa.com/prod_img/500000/353/767/img/16767353_1.jpg?shrink=330:330&_v=20220406145257',
+        reviewCount: 3,
+        rating: 5.0,
+        category: 'stand',
+      },
+      {
+        id: 10,
+        name: 'MX KEYS MINI FOR MAC',
+        imageUrl:
+          'https://img.danawa.com/prod_img/500000/353/332/img/16332353_1.jpg?shrink=500:500&_v=20220207142651',
+        reviewCount: 2,
+        rating: 5.0,
+        category: 'keyboard',
+      },
+      {
+        id: 80,
+        name: 'LG전자 27UP850',
+        imageUrl:
+          'https://img.danawa.com/prod_img/500000/805/732/img/13732805_1.jpg?shrink=500:500',
+        reviewCount: 1,
+        rating: 5.0,
+        category: 'monitor',
+      },
+      {
+        id: 53,
+        name: 'APPLE Magic Trackpad 2',
+        imageUrl:
+          'https://img.danawa.com/prod_img/500000/983/782/img/16782983_1.jpg?shrink=330:330&_v=20220704092644',
+        reviewCount: 1,
+        rating: 5.0,
+        category: 'mouse',
+      },
+    ],
+  },
+];
+
 export const products = [
   {
     id: 3,
@@ -13,6 +155,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/833/414/img/15414833_1.jpg?shrink=330:330&_v=20211013110445',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 4,
@@ -20,6 +163,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/701/350/img/16350701_1.jpg?shrink=330:330&_v=20220209091825',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 5,
@@ -27,6 +171,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/637/448/img/15448637_1.jpg?shrink=330:330&_v=20211015164726',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 6,
@@ -34,6 +179,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/701/079/img/17079701_1.jpg?shrink=330:330&_v=20220519094414',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 7,
@@ -41,6 +187,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 8,
@@ -48,6 +195,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/631/093/img/16093631_1.jpg?shrink=500:500&_v=20220323142356',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 9,
@@ -55,6 +203,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/700/573/img/16573700_3.jpg?shrink=500:500&_v=20220311152649',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 10,
@@ -62,6 +211,7 @@ export const products = [
     imageUrl:
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-mechanical/gallery/mx-mechanical-keyboard-top-view-graphite-kor.png?v=1',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 11,
@@ -69,6 +219,7 @@ export const products = [
     imageUrl:
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/signature-k855/gallery/signature-k855-graphite-kor-gallery-1.png?v=1',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 12,
@@ -76,6 +227,7 @@ export const products = [
     imageUrl:
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-keys-mini-for-mac/gallery/kor/mx-keys-mini-top-mac-kor.png?v=1',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 13,
@@ -83,6 +235,7 @@ export const products = [
     imageUrl:
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-mechanical/gallery/mx-mechanical-keyboard-top-view-graphite-kor.png?v=1',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 14,
@@ -90,6 +243,7 @@ export const products = [
     imageUrl:
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-mechanical/gallery/mx-mechanical-keyboard-top-view-graphite-kor.png?v=1',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 15,
@@ -97,6 +251,7 @@ export const products = [
     imageUrl:
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-mechanical/gallery/mx-mechanical-keyboard-top-view-graphite-kor.png?v=1',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 16,
@@ -104,6 +259,7 @@ export const products = [
     imageUrl:
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-mechanical/gallery/mx-mechanical-keyboard-top-view-graphite-kor.png?v=1',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 17,
@@ -111,6 +267,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/479/221/img/5221479_1.jpg?shrink=500:500&_v=20220216130109',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 18,
@@ -118,6 +275,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/947/128/img/5128947_1.jpg?shrink=500:500&_v=20210930103632',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 19,
@@ -125,6 +283,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/466/771/img/6771466_1.jpg?shrink=500:500&_v=20190805150045',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 20,
@@ -132,6 +291,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/799/229/img/15229799_1.jpg?shrink=500:500&_v=20210913112802',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 21,
@@ -139,6 +299,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/321/248/img/3248321_1.jpg?shrink=500:500&_v=20190806133811',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 22,
@@ -146,6 +307,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/574/376/img/12376574_1.jpg?shrink=500:500&_v=20210930110302',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 23,
@@ -153,6 +315,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/871/242/img/9242871_1.jpg?shrink=500:500&_v=20200107105606',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 24,
@@ -160,6 +323,7 @@ export const products = [
     imageUrl:
       'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcQiEvjOVYbzG3CDnczx9tKYwV47j9HGwFaz1pReYIypkyUnxUoJKdOvuotL0JvkJkc1UMcbHhrABw&usqp=CAc',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 25,
@@ -167,6 +331,7 @@ export const products = [
     imageUrl:
       'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcQwUgGiKjSCM19UGv0oAuT2R8AtaTTmVfEV-MsxVj_8I-EuPn4JiXYhAadKjzBJHLjGWU6TKZjFfg&usqp=CAc',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 26,
@@ -174,6 +339,7 @@ export const products = [
     imageUrl:
       'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTXb4d46RawSgTA9pWb6jvPR9s77elV8XKgwvsVb6n1MLWp57yR_MNrvWkTt9HUlnCWyHxbg9QQ0A&usqp=CAc',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 27,
@@ -181,6 +347,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/979/938/img/7938979_1.jpg?shrink=130:130&_v=20190916165446',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 28,
@@ -188,6 +355,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/445/440/img/14440445_1.jpg?shrink=130:130&_v=20210610172313',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 29,
@@ -195,6 +363,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/237/828/img/14828237_1.jpg?shrink=130:130&_v=20220414111601',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 30,
@@ -202,6 +371,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/557/640/img/11640557_1.jpg?shrink=130:130&_v=20200625090716',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 31,
@@ -209,6 +379,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/064/357/img/16357064_1.jpg?shrink=330:330&_v=20220602181027',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 32,
@@ -216,6 +387,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 33,
@@ -223,6 +395,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/640/413/img/14413640_1.jpg?shrink=330:330&_v=20220502170755',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 34,
@@ -230,6 +403,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/676/071/img/17071676_1.jpg?shrink=330:330&_v=20220518123903',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 35,
@@ -237,6 +411,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/106/908/img/14908106_1.jpg?shrink=330:330&_v=20210803164239',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 36,
@@ -244,6 +419,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/224/291/img/5291224_1.jpg?shrink=330:330&_v=20210520103656',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 37,
@@ -251,6 +427,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/018/011/img/5011018_1.jpg?shrink=330:330&_v=20211020171107',
     rating: 0.0,
+    reviewCount: 3,
   },
   {
     id: 38,
@@ -258,6 +435,7 @@ export const products = [
     imageUrl:
       'http://img.danawa.com/prod_img/500000/440/246/img/12246440_1.jpg?shrink=330:330&_v=20210813173050',
     rating: 0.0,
+    reviewCount: 3,
   },
 ];
 

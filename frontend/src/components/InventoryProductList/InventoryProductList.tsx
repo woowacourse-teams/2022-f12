@@ -1,5 +1,7 @@
 import ProductBar from '@/components/common/ProductBar/ProductBar';
 import * as S from '@/components/InventoryProductList/InventoryProductList.style';
+import ROUTES from '@/constants/routes';
+import { Link } from 'react-router-dom';
 
 type Props = {
   products: InventoryProduct[];
@@ -9,11 +11,13 @@ function InventoryProductList({ products }: Props) {
   return (
     <S.Container>
       {products.map(({ id: inventoryId, selected, product: { name } }) => (
-        <ProductBar
-          key={inventoryId}
-          name={name}
-          barType={selected ? 'selected' : 'default'}
-        />
+        <Link key={inventoryId} to={`${ROUTES.PRODUCT}/${inventoryId}`}>
+          <ProductBar
+            key={inventoryId}
+            name={name}
+            barType={selected ? 'selected' : 'default'}
+          />
+        </Link>
       ))}
     </S.Container>
   );

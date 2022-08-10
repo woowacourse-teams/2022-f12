@@ -5,31 +5,32 @@ import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet'
 
 import * as S from '@/components/common/ReviewCard/ReviewCard.style';
 import useAuth from '@/hooks/useAuth';
+import ROUTES from '@/constants/routes';
 
 type Props = {
-  profileImage: string;
   product?: {
     id: number;
     name: string;
     imageUrl: string;
   };
-  username: string;
+  author: Review['author'];
   rating: number;
   content: string;
   loginUserGithubId: string;
   reviewId: number;
+  createdAt: string;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => void;
 };
 
 function ReviewCard({
-  profileImage,
   reviewId,
   product,
-  username,
   rating,
   content,
+  author,
   loginUserGithubId,
+  createdAt,
   handleDelete,
   handleEdit,
 }: Props) {
@@ -40,10 +41,15 @@ function ReviewCard({
 
   const { isLoggedIn } = useAuth();
 
+  const createAtDate = new Date(createdAt);
+  const formattedDate = `${createAtDate.getFullYear()}년 ${
+    createAtDate.getMonth() + 1
+  }월 ${createAtDate.getDate()}일`;
+
   return (
     <S.Container>
       {product && (
-        <S.ProductArea>
+        <S.ProductArea to={`${ROUTES.PRODUCT}/${product.id}`}>
           <S.ImageWrapper>
             <S.Image src={product.imageUrl} />
           </S.ImageWrapper>
@@ -53,8 +59,13 @@ function ReviewCard({
       <S.ReviewArea isFull={!product}>
         <S.Wrapper>
           <S.UserWrapper>
-            <UserNameTag profileImage={profileImage} username={username} />
-            {!product && loginUserGithubId === username && (
+            <S.ProfileLink to={`${ROUTES.PROFILE}/${author.id}`}>
+              <UserNameTag
+                imageUrl={author.imageUrl}
+                username={author.gitHubId}
+              />
+            </S.ProfileLink>
+            {!product && loginUserGithubId === author.gitHubId && (
               <>
                 <S.EditButton
                   onClick={() => {
@@ -75,6 +86,7 @@ function ReviewCard({
           </S.UserWrapper>
           <Rating type="정수" rating={rating} />
         </S.Wrapper>
+        <S.CreatedAt>{formattedDate}</S.CreatedAt>
         <S.Content>{content}</S.Content>
       </S.ReviewArea>
       {isEditSheetOpen && isLoggedIn && (

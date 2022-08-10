@@ -68,9 +68,14 @@ function ProductListSection({
 const ProductCardList = ({ data }: { data: Product[] }) => {
   return (
     <Masonry columnCount={4}>
-      {data.map(({ id, imageUrl, name, rating }) => (
+      {data.map(({ id, imageUrl, name, rating, reviewCount }) => (
         <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
-          <ProductCard imageUrl={imageUrl} name={name} rating={rating} />
+          <ProductCard
+            imageUrl={imageUrl}
+            name={name}
+            rating={rating}
+            reviewCount={reviewCount}
+          />
         </Link>
       ))}
       {data.length === 0 && <NoDataPlaceholder />}

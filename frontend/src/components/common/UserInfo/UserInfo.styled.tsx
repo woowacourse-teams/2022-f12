@@ -25,5 +25,8 @@ export const Username = styled.p`
 
 export const ChipWrapper = styled.div`
   display: flex;
+  align-items: center;
   gap: 1rem;
 `;
+
+export const GithubLink = styled.a``;

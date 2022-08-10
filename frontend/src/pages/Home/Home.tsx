@@ -1,7 +1,5 @@
-import CustomLink from '@/components/common/CustomLink/CustomLink';
 import ProductListSection from '@/components/ProductListSection/ProductListSection';
 import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
-import ROUTES from '@/constants/routes';
 import useProducts from '@/hooks/useProducts';
 import useReviews from '@/hooks/useReviews';
 
@@ -23,10 +21,6 @@ function Home() {
     isError: isReviewError,
   } = useReviews({ size: '6' });
 
-  const moreProductsLink = (
-    <CustomLink to={ROUTES.PRODUCTS}>+더보기</CustomLink>
-  );
-
   return (
     <>
       <ProductListSection
@@ -35,7 +29,6 @@ function Home() {
         isLoading={isProductLoading}
         isReady={isProductReady}
         isError={isProductError}
-        addOn={moreProductsLink}
       />
       <ReviewListSection
         columns={2}

@@ -14,6 +14,7 @@ export const Image = styled.img`
 
 export const Wrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: flex-end;
 `;
@@ -21,4 +22,10 @@ export const Wrapper = styled.div`
 export const Name = styled.p`
   font-size: 1.5rem;
   line-height: 1.3;
+`;
+
+export const Details = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
