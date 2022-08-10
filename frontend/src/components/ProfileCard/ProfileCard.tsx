@@ -84,8 +84,6 @@ function ProfileCard({
     }
   );
 
-  console.log(representativeEquipments);
-
   return (
     <S.Container>
       <S.LeftSection>
@@ -127,15 +125,14 @@ function ProfileCard({
           <S.InventoryListWrapper>
             <S.InventoryList positionX={positionX}>
               {representativeEquipments.map((equipment, index) => {
-                console.log(equipment);
                 return (
                   <S.InventoryItem key={gitHubId + String(index)}>
                     <S.ProductImageWrapper>
-                      {equipment?.id ? (
+                      {equipment.id ? (
                         <Link
-                          to={`${ROUTES.PRODUCT}/${equipment?.id as string}`}
+                          to={`${ROUTES.PRODUCT}/${equipment.id as string}`}
                         >
-                          <S.ProductImage src={equipment?.imageUrl as string} />
+                          <S.ProductImage src={equipment.imageUrl as string} />
                         </Link>
                       ) : (
                         <Player
@@ -146,9 +143,15 @@ function ProfileCard({
                         />
                       )}
                       <S.ProductTitle>
-                        {equipment.id
-                          ? equipment.name
-                          : `대표 장비로 등록된 ${equipment.name}가 없습니다.`}
+                        {equipment.id ? (
+                          <Link
+                            to={`${ROUTES.PRODUCT}/${equipment.id as string}`}
+                          >
+                            {equipment.name}
+                          </Link>
+                        ) : (
+                          `대표 장비로 등록된 ${equipment.name}가 없습니다.`
+                        )}
                       </S.ProductTitle>
                     </S.ProductImageWrapper>
                   </S.InventoryItem>
