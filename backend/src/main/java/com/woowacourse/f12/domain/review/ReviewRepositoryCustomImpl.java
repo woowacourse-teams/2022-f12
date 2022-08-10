@@ -25,7 +25,8 @@ public class ReviewRepositoryCustomImpl extends QuerydslRepositorySupport implem
                 .innerJoin(review.member, member)
                 .where(
                         review.product.id.eq(productId),
-                        notNullMemberInfo()
+                        member.careerLevel.isNotNull(),
+                        member.jobType.isNotNull()
                 )
                 .groupBy(member.careerLevel)
                 .fetch();
@@ -38,13 +39,10 @@ public class ReviewRepositoryCustomImpl extends QuerydslRepositorySupport implem
                 .innerJoin(review.member, member)
                 .where(
                         review.product.id.eq(productId),
-                        notNullMemberInfo()
+                        member.careerLevel.isNotNull(),
+                        member.jobType.isNotNull()
                 )
                 .groupBy(member.jobType)
                 .fetch();
-    }
-
-    private BooleanExpression notNullMemberInfo() {
-        return member.careerLevel.isNotNull().and(member.jobType.isNotNull());
     }
 }
