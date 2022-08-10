@@ -20,7 +20,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     public Slice<Product> findBySearchConditions(final String keyword, final Category category, final Pageable pageable) {
         final JPAQuery<Product> jpaQuery = jpaQueryFactory.selectFrom(product)
                 .where(
-                        containsKeyword(product.name, keyword),
+                        toContainsExpression(product.name, keyword),
                         toEqExpression(product.category, category)
                 )
                 .offset(pageable.getOffset())

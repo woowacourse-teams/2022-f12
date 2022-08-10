@@ -1,6 +1,5 @@
 package com.woowacourse.f12.domain.member;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +24,7 @@ public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implem
         final JPAQuery<Member> jpaQuery = jpaQueryFactory.select(member)
                 .from(member)
                 .where(
-                        containsKeyword(member.gitHubId, keyword),
+                        toContainsExpression(member.gitHubId, keyword),
                         toEqExpression(member.careerLevel, careerLevel),
                         toEqExpression(member.jobType, jobType),
                         member.careerLevel.isNotNull(),

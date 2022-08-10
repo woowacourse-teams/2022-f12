@@ -17,6 +17,20 @@ public class RepositorySupport {
     private RepositorySupport() {
     }
 
+    public static BooleanExpression toContainsExpression(final StringPath stringPath, final String keyword) {
+        if (Objects.isNull(keyword) || keyword.isBlank()) {
+            return null;
+        }
+        return stringPath.contains(keyword);
+    }
+
+    public static <T> BooleanExpression toEqExpression(final SimpleExpression<T> simpleExpression, final T compared) {
+        if (Objects.isNull(compared)) {
+            return null;
+        }
+        return simpleExpression.eq(compared);
+    }
+
     public static <T> OrderSpecifier[] makeOrderSpecifiers(final EntityPathBase<T> qClass, final Pageable pageable) {
         return pageable.getSort()
                 .stream()
@@ -35,20 +49,6 @@ public class RepositorySupport {
             return Order.ASC;
         }
         return Order.DESC;
-    }
-
-    public static BooleanExpression containsKeyword(final StringPath stringPath, final String keyword) {
-        if (Objects.isNull(keyword) || keyword.isBlank()) {
-            return null;
-        }
-        return stringPath.contains(keyword);
-    }
-
-    public static <T> BooleanExpression toEqExpression(final SimpleExpression<T> simpleExpression, final T compared) {
-        if (Objects.isNull(compared)) {
-            return null;
-        }
-        return simpleExpression.eq(compared);
     }
 
     public static <T> Slice<T> toSlice(final Pageable pageable, final List<T> items) {
