@@ -1,28 +1,5 @@
 package com.woowacourse.f12.acceptance;
 
-import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.MID_LEVEL_CONSTANT;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.FRONTEND_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.MOBILE_CONSTANT;
-import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
-import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
-import static com.woowacourse.f12.support.GitHubProfileFixtures.MINCHO_GITHUB;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
-import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
-import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_3;
-import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
-import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
@@ -33,10 +10,24 @@ import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.presentation.product.CategoryConstant;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+
+import java.util.Map;
+
+import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.*;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.*;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.MINCHO_GITHUB;
+import static com.woowacourse.f12.support.ProductFixture.*;
+import static com.woowacourse.f12.support.ReviewFixtures.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ProductAcceptanceTest extends AcceptanceTest {
 
@@ -228,6 +219,46 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(productStatisticsResponse.getJobType()).usingRecursiveComparison()
                         .isEqualTo(Map.of(FRONTEND_CONSTANT, 0.5, BACKEND_CONSTANT, 0.5, MOBILE_CONSTANT, 0.0,
                                 ETC_CONSTANT, 0.0))
+        );
+    }
+
+    @Test
+    void 제품명으로_제품_목록을_검색한다() {
+        // given
+        Product keyboard1 = 제품을_저장한다(KEYBOARD_1.생성());
+        제품을_저장한다(KEYBOARD_2.생성());
+        Product mouse1 = 제품을_저장한다(MOUSE_1.생성());
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?query=1");
+        ProductPageResponse productPageResponse = response.as(ProductPageResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(productPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(productPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsExactly(ProductResponse.from(mouse1), ProductResponse.from(keyboard1))
+        );
+    }
+
+    @Test
+    void 제품명과_카테고리로_제품_목록을_검색한다() {
+        // given
+        Product keyboard1 = 제품을_저장한다(KEYBOARD_1.생성());
+        제품을_저장한다(KEYBOARD_2.생성());
+        제품을_저장한다(MOUSE_1.생성());
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products?query=1&category=keyboard");
+        ProductPageResponse productPageResponse = response.as(ProductPageResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(productPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(productPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsExactly(ProductResponse.from(keyboard1))
         );
     }
 
