@@ -2,8 +2,7 @@ package com.woowacourse.f12.domain.product;
 
 import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.ProductFixture.*;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
@@ -126,6 +125,42 @@ class ProductRepositoryTest {
         assertAll(
                 () -> assertThat(slice.hasNext()).isTrue(),
                 () -> assertThat(slice.getContent()).containsExactly(product2)
+        );
+    }
+
+    @Test
+    void 제품명으로_제품_목록을_조회한다() {
+        // given
+        Product keyboard1 = 제품_저장(KEYBOARD_1.생성());
+        제품_저장(KEYBOARD_2.생성());
+        Product mouse1 = 제품_저장(MOUSE_1.생성());
+        Pageable pageable = PageRequest.of(0, 2);
+
+        // when
+        Slice<Product> page = productRepository.findBySearchConditions("1", null, pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(page.hasNext()).isFalse(),
+                () -> assertThat(page.getContent()).contains(mouse1, keyboard1)
+        );
+    }
+
+    @Test
+    void 제품명과_카테고리로_제품_목록을_조회한다() {
+        // given
+        Product keyboard1 = 제품_저장(KEYBOARD_1.생성());
+        제품_저장(KEYBOARD_2.생성());
+        제품_저장(MOUSE_1.생성());
+        Pageable pageable = PageRequest.of(0, 2);
+
+        // when
+        Slice<Product> page = productRepository.findBySearchConditions("1", KEYBOARD, pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(page.hasNext()).isFalse(),
+                () -> assertThat(page.getContent()).contains(keyboard1)
         );
     }
 
