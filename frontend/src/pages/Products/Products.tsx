@@ -3,13 +3,12 @@ import { useEffect, useMemo, useState } from 'react';
 import * as S from '@/pages/Products/Products.style';
 import ProductListSection from '@/components/ProductListSection/ProductListSection';
 import Select from '@/components/common/Select/Select';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { CATEGORY } from '@/components/common/CategoryNav/CategoryNav';
 import useSearch from '@/hooks/useSearch';
 import { ENDPOINTS } from '@/constants/api';
 import SearchBar from '@/components/common/SearchBar/SearchBar';
 import SearchFilter from '@/components/SearchFilter/SearchFilter';
-import ROUTES from '@/constants/routes';
 
 type Option = { value: string; text: string };
 
@@ -39,13 +38,19 @@ const categories = {
 } as const;
 
 function Products() {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 
-  const [sort, setSort] = useState<Sort>(DefaultSort.value);
-  const [keyword, setKeyword] = useState<string>('');
-  const [category, setCategory] = useState<string>(
+  const [sort, setSort] = useState<string | null>(
+    // ,(쉼표)의 경우 param에 포함되면 encode, 상태로 사용하려면 decode 필요
+    searchParams.get('sort')
+      ? decodeURIComponent(searchParams.get('sort'))
+      : DefaultSort.value
+  );
+  const [keyword, setKeyword] = useState<string | null>(
+    searchParams.get('keyword') || null
+  );
+  const [category, setCategory] = useState<string | null>(
     searchParams.get('category') || null
   );
 
@@ -57,8 +62,8 @@ function Products() {
     isError,
   } = useSearch<Product>({
     url: ENDPOINTS.PRODUCTS,
-    query: keyword !== '' ? keyword : null,
     size: '12',
+    query: keyword,
     filter: {
       category,
       sort,
@@ -71,21 +76,45 @@ function Products() {
     [category]
   );
 
-  const handleCategoryFilterClick: React.MouseEventHandler<
-    HTMLButtonElement
-  > = (e) => {
-    if (!(e.target instanceof HTMLButtonElement)) return;
-    if (e.target.value === category) {
-      navigate(ROUTES.PRODUCTS);
-      return;
+  // setSearchParam, setState가 아니라 뒤로가기, url 직접 이동 등 상황에서 UI 동기화
+  // 컴포넌트가 navigate 되지 않아 처리해주지 않으면 초기값 지정이 자동으로 되지 않음
+  useEffect(() => {
+    setCategory(searchParams.get('category'));
+    setSort(searchParams.get('sort') || DefaultSort.value);
+    setKeyword(searchParams.get('keyword'));
+  }, [location.key]);
+
+  const updateSearchParam = (
+    key: string,
+    value: string,
+    defaultValue?: string
+  ) => {
+    // 초기 값이 null 아닌 경우 param에 포함되지 않을 수 있음
+    // 이 때 다시 이 값을 param에 추가하고 재로딩 되는 것을 방지
+    if (!searchParams.get(key) && value === defaultValue) return;
+
+    if (searchParams.get(key) === value) return;
+
+    if (value === null) {
+      searchParams.delete(key);
+    } else {
+      searchParams.set(key, value);
     }
 
-    navigate(`${ROUTES.PRODUCTS}?category=${e.target.value}`);
+    setSearchParams(searchParams);
   };
 
   useEffect(() => {
-    setCategory(searchParams.get('category'));
-  }, [location.key]);
+    updateSearchParam('category', category);
+  }, [category]);
+
+  useEffect(() => {
+    updateSearchParam('sort', sort, DefaultSort.value);
+  }, [sort]);
+
+  useEffect(() => {
+    updateSearchParam('keyword', keyword);
+  }, [keyword]);
 
   return (
     <>
@@ -94,7 +123,7 @@ function Products() {
         <SearchFilter
           title={'카테고리'}
           value={category}
-          handleValueClick={handleCategoryFilterClick}
+          setValue={setCategory}
           options={categories}
         />
       </S.SearchBarWrapper>

@@ -4,11 +4,22 @@ import * as S from '@/components/SearchFilter/SearchFilter.style';
 type Props = {
   title: string;
   value: string;
-  handleValueClick: (e) => void;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
   options: Record<string, string>;
 };
 
-function SearchFilter({ title, value, handleValueClick, options }: Props) {
+function SearchFilter({ title, value, setValue, options }: Props) {
+  const handleFilterClick: React.MouseEventHandler<HTMLButtonElement> = ({
+    target,
+  }) => {
+    if (!(target instanceof HTMLButtonElement)) return;
+    if (target.value === value) {
+      setValue(null);
+      return;
+    }
+    setValue(target.value);
+  };
+
   return (
     <S.Container>
       <S.Wrapper>
@@ -20,7 +31,7 @@ function SearchFilter({ title, value, handleValueClick, options }: Props) {
               fontSize={14}
               value={key}
               filter={value}
-              handleClick={handleValueClick}
+              handleClick={handleFilterClick}
             >
               {content}
             </ChipFilter>
