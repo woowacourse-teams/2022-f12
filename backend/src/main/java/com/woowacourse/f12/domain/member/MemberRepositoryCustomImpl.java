@@ -4,17 +4,15 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import static com.woowacourse.f12.domain.member.QMember.member;
 import static com.woowacourse.f12.support.RepositorySupport.*;
 
-public class MemberRepositoryCustomImpl extends QuerydslRepositorySupport implements MemberRepositoryCustom {
+public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     public MemberRepositoryCustomImpl(final JPAQueryFactory jpaQueryFactory) {
-        super(Member.class);
         this.jpaQueryFactory = jpaQueryFactory;
     }
 

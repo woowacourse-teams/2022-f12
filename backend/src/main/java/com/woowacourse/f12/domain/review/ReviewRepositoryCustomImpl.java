@@ -1,20 +1,17 @@
 package com.woowacourse.f12.domain.review;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import java.util.List;
+
 import static com.woowacourse.f12.domain.member.QMember.member;
 import static com.woowacourse.f12.domain.review.QReview.review;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.woowacourse.f12.domain.product.Product;
-import java.util.List;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-
-public class ReviewRepositoryCustomImpl extends QuerydslRepositorySupport implements ReviewRepositoryCustom {
+public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     public ReviewRepositoryCustomImpl(final JPAQueryFactory jpaQueryFactory) {
-        super(Product.class);
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
