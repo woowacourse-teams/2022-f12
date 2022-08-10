@@ -49,6 +49,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private JobType jobType;
 
+    @Builder.Default
     @BatchSize(size = 150)
     @OneToMany(mappedBy = "member")
     private List<InventoryProduct> inventoryProducts = new ArrayList<>();
