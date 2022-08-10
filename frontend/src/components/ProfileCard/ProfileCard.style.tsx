@@ -74,6 +74,8 @@ export const RightButton = styled.button`
   font-size: 1.5rem;
 `;
 
+export const LinkWrapper = styled.a``;
+
 export const ProfileViewButton = styled.button`
   border: none;
   width: 100%;
