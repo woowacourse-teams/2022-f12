@@ -15,6 +15,20 @@ function ProfileSearch() {
   const [jobTypeFilter, setJobTypeFilter] = useState('');
   const [searchInput, setSearchInput] = useState('');
 
+  const careerLevels = {
+    none: '경력 없음',
+    junior: '0-2년차',
+    midlevel: '3-5년차',
+    senior: '6년차 이상',
+  } as const;
+
+  const jobTypes = {
+    frontend: '프론트엔드',
+    backend: '백엔드',
+    mobile: '모바일',
+    etc: '기타',
+  } as const;
+
   const {
     result: profiles,
     getNextPage,
@@ -57,12 +71,20 @@ function ProfileSearch() {
     <S.Container>
       <S.SearchWrapper>
         <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
-        <SearchFilter
-          careerLevelFilter={careerLevelFilter}
-          jobTypeFilter={jobTypeFilter}
-          handleCareerLevelFilterClick={handleCareerLevelFilterClick}
-          handleJobTypeFilterClick={handleJobTypeFilterClick}
-        />
+        <S.SearchFilterWrapper>
+          <SearchFilter
+            title={'경력'}
+            value={careerLevelFilter}
+            handleValueClick={handleCareerLevelFilterClick}
+            options={careerLevels}
+          />
+          <SearchFilter
+            title={'직군'}
+            value={jobTypeFilter}
+            handleValueClick={handleJobTypeFilterClick}
+            options={jobTypes}
+          />
+        </S.SearchFilterWrapper>
       </S.SearchWrapper>
       <AsyncWrapper
         fallback={<Loading />}
