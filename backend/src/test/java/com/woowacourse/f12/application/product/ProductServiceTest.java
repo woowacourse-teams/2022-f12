@@ -88,49 +88,6 @@ class ProductServiceTest {
     }
 
     @Test
-    void 전체_키보드_목록을_조회한다() {
-        // given
-        Product product = KEYBOARD_1.생성(1L);
-        Pageable pageable = PageRequest.of(0, 1);
-        given(productRepository.findPageByCategory(eq(KEYBOARD), any(Pageable.class)))
-                .willReturn(new SliceImpl<>(List.of(product), pageable, false));
-
-        // when
-        ProductPageResponse productPageResponse = productService.findPage(KEYBOARD_CONSTANT, pageable);
-
-        // then
-        assertAll(
-                () -> verify(productRepository).findPageByCategory(eq(KEYBOARD), any(Pageable.class)),
-                () -> assertThat(productPageResponse.isHasNext()).isFalse(),
-                () -> assertThat(productPageResponse.getItems()).hasSize(1)
-                        .usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(ProductResponse.from(product))
-        );
-    }
-
-    @Test
-    void 전체_제품_목록을_조회한다() {
-        // given
-        Product product = KEYBOARD_1.생성(1L);
-        MOUSE_1.생성(2L);
-        Pageable pageable = PageRequest.of(0, 1);
-        given(productRepository.findPageBy(any(Pageable.class)))
-                .willReturn(new SliceImpl<>(List.of(product), pageable, true));
-
-        // when
-        ProductPageResponse productPageResponse = productService.findPage(null, pageable);
-
-        // then
-        assertAll(
-                () -> verify(productRepository).findPageBy(any(Pageable.class)),
-                () -> assertThat(productPageResponse.isHasNext()).isTrue(),
-                () -> assertThat(productPageResponse.getItems()).hasSize(1)
-                        .usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(ProductResponse.from(product))
-        );
-    }
-
-    @Test
     void 특정_제품의_사용자의_연차와_직군의_비율을_반환한다() {
         // given
         Long productId = 1L;

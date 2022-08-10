@@ -11,8 +11,10 @@ import static com.woowacourse.f12.domain.member.JobType.MOBILE;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -23,6 +25,7 @@ import com.woowacourse.f12.documentation.Documentation;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -34,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
@@ -69,27 +73,21 @@ class ProductDocumentation extends Documentation {
     }
 
     @Test
-    void 제품_목록_조회_API_문서화() throws Exception {
+    void 제품명과_카테고리로_제품_목록을_조회_API_문서화() throws Exception {
         // given
-        Product product1 = KEYBOARD_1.생성(1L);
-        Product product2 = KEYBOARD_2.생성(2L);
-        PageRequest pageable = PageRequest.of(0, 5, Sort.by("rating").descending());
-        SliceImpl<Product> keyboards = new SliceImpl<>(List.of(product1, product2), pageable, false);
-
-        given(productService.findPage(KEYBOARD_CONSTANT, pageable))
-                .willReturn(ProductPageResponse.from(keyboards));
+        Pageable pageable = PageRequest.of(0, 1);
+        given(productService.findBySearchConditions(any(ProductSearchRequest.class), any(PageRequest.class)))
+                .willReturn(ProductPageResponse.from(
+                        new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)), pageable, false))
+                );
 
         // when
-        ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/products?category=keyboard&page=0&size=5&sort=rating,desc")
-        );
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/products?query=1&category=keyboard&page=0&size=1"));
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(print())
-                .andDo(
-                        document("products-page-get")
-                );
+                .andDo(document("products-page-get"))
+                .andDo(print());
     }
 
     @Test

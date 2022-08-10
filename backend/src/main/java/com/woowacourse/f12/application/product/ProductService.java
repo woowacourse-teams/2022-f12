@@ -42,13 +42,18 @@ public class ProductService {
         return ProductResponse.from(product);
     }
 
-    public ProductPageResponse findPage(final CategoryConstant categoryConstant, final Pageable pageable) {
-        if (Objects.isNull(categoryConstant)) {
-            return ProductPageResponse.from(productRepository.findPageBy(pageable));
-        }
+    public ProductPageResponse findBySearchConditions(final ProductSearchRequest productSearchRequest, final Pageable pageable) {
+        final Category category = parseCategory(productSearchRequest);
+        final Slice<Product> slice = productRepository.findBySearchConditions(productSearchRequest.getQuery(), category, pageable);
+        return ProductPageResponse.from(slice);
+    }
 
-        final Category category = categoryConstant.toCategory();
-        return ProductPageResponse.from(productRepository.findPageByCategory(category, pageable));
+    private Category parseCategory(final ProductSearchRequest productSearchRequest) {
+        final CategoryConstant categoryConstant = productSearchRequest.getCategory();
+        if (Objects.isNull(categoryConstant)) {
+            return null;
+        }
+        return categoryConstant.toCategory();
     }
 
     public ProductStatisticsResponse calculateMemberStatisticsById(final Long productId) {
@@ -71,19 +76,5 @@ public class ProductService {
         final List<JobTypeCount> jobTypeCounts = reviewRepository.findJobTypeCountByProductId(productId);
         final MemberInfoStatistics<JobTypeCount, JobType> jobTypeStatistics = new MemberInfoStatistics<>(jobTypeCounts);
         return jobTypeStatistics.calculateStatistics(JobType.values());
-    }
-
-    public ProductPageResponse findBySearchConditions(final ProductSearchRequest productSearchRequest, final Pageable pageable) {
-        final Category category = parseCategory(productSearchRequest);
-        final Slice<Product> slice = productRepository.findBySearchConditions(productSearchRequest.getQuery(), category, pageable);
-        return ProductPageResponse.from(slice);
-    }
-
-    private Category parseCategory(final ProductSearchRequest productSearchRequest) {
-        final CategoryConstant categoryConstant = productSearchRequest.getCategory();
-        if (Objects.isNull(categoryConstant)) {
-            return null;
-        }
-        return categoryConstant.toCategory();
     }
 }

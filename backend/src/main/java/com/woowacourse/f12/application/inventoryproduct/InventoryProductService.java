@@ -1,22 +1,21 @@
 package com.woowacourse.f12.application.inventoryproduct;
 
-import static com.woowacourse.f12.domain.product.Category.SOFTWARE;
-
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
-import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
 import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static com.woowacourse.f12.domain.product.Category.SOFTWARE;
 
 @Service
 @Transactional(readOnly = true)

@@ -72,7 +72,7 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1);
 
         // when
-        Slice<Product> slice = productRepository.findPageByCategory(KEYBOARD, pageable);
+        Slice<Product> slice = productRepository.findBySearchConditions(null, KEYBOARD, pageable);
 
         // then
         assertAll(
@@ -95,7 +95,7 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("reviewCount")));
 
         // when
-        Slice<Product> slice = productRepository.findPageByCategory(KEYBOARD, pageable);
+        Slice<Product> slice = productRepository.findBySearchConditions(null, KEYBOARD, pageable);
 
         // then
         assertAll(
@@ -119,7 +119,7 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating")));
 
         // when
-        Slice<Product> slice = productRepository.findPageByCategory(KEYBOARD, pageable);
+        Slice<Product> slice = productRepository.findBySearchConditions(null, KEYBOARD, pageable);
 
         // then
         assertAll(
