@@ -8,3 +8,10 @@ export const Main = styled.main`
   margin: 50px auto;
   gap: 3rem;
 `;
+
+export const SearchBarWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+`;

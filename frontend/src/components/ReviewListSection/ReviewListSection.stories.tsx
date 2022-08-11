@@ -11,6 +11,9 @@ const Template = () => (
     columns={1}
     data={reviewsWithProduct}
     getNextPage={() => undefined}
+    isLoading={false}
+    isError={false}
+    isReady={true}
   />
 );
 
