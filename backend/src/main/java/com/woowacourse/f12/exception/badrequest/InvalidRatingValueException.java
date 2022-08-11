@@ -1,10 +1,10 @@
 package com.woowacourse.f12.exception.badrequest;
 
-import static com.woowacourse.f12.exception.ErrorCode.INVALID_REQUEST_BODY;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_REVIEW_RATING;
 
 public class InvalidRatingValueException extends InvalidValueException {
 
     public InvalidRatingValueException() {
-        super(INVALID_REQUEST_BODY, "평점은 1에서 5 사이여야 합니다.");
+        super(INVALID_REVIEW_RATING, "평점은 1에서 5 사이여야 합니다.");
     }
 }

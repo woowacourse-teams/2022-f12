@@ -28,8 +28,8 @@ import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.badrequest.BlankContentException;
 import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.badrequest.InvalidRatingValueException;
+import com.woowacourse.f12.exception.badrequest.RegisterNotCompletedException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
@@ -320,7 +320,7 @@ class ReviewControllerTest {
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
-                .willThrow(new InvalidProfileArgumentException());
+                .willThrow(new RegisterNotCompletedException());
 
         // when
         mockMvc.perform(

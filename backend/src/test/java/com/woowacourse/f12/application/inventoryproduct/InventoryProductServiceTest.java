@@ -18,10 +18,9 @@ import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
-import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileProductUpdateException;
 import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
 import java.util.Optional;
@@ -86,7 +85,7 @@ class InventoryProductServiceTest {
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> inventoryProductService.updateProfileProducts(1L, profileProductRequest))
-                        .isExactlyInstanceOf(NotUpdatableException.class),
+                        .isExactlyInstanceOf(InvalidProfileProductUpdateException.class),
                 () -> verify(memberRepository).findById(1L),
                 () -> verify(inventoryProductRepository).updateBulkProfileProductByMember(member, false),
                 () -> verify(inventoryProductRepository).updateBulkProfileProductByMemberAndIds(member,

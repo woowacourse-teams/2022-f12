@@ -1,11 +1,18 @@
 [[Product]]
 == Product API
 
-=== 제품 단일 상품 조회
+=== 제품 단일 제품 조회
+==== 발생 가능 에러
+
+- 40420
 
 operation::products-get[snippets='http-request,http-response']
 
 === 제품 목록 페이지 조회
+
+==== 발생 가능 에러
+
+- 40000, 40001
 
 ==== 검색 조건
 
@@ -13,7 +20,6 @@ operation::products-get[snippets='http-request,http-response']
 - 없을 경우 모든 제품 조회
 
 ==== category 조건
-
 - `keyboard` (키보드)
 - `mouse` (마우스)
 - `monitor` (모니터)
@@ -22,7 +28,6 @@ operation::products-get[snippets='http-request,http-response']
 - 없을 경우 모든 제품 조회
 
 ==== sort 조건
-
 - `rating,desc`(평점순)
 - `reviewCount,desc`(리뷰 많은순)
 - 없을 경우 등록 순서
@@ -30,5 +35,9 @@ operation::products-get[snippets='http-request,http-response']
 operation::products-page-get[snippets='http-request,http-response']
 
 === 특정 제품의 사용자 통계를 조회
+
+==== 발생 가능 에러
+
+- 40420
 
 operation::products-member-statistics-get[snippets='http-request,http-response']
