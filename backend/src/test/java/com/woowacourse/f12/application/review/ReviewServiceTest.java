@@ -30,7 +30,7 @@ import com.woowacourse.f12.dto.response.review.ReviewResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
+import com.woowacourse.f12.exception.badrequest.RegisterNotCompletedException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
@@ -135,7 +135,7 @@ class ReviewServiceTest {
         assertAll(
                 () -> assertThatThrownBy(
                         () -> reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest))
-                        .isExactlyInstanceOf(InvalidProfileArgumentException.class),
+                        .isExactlyInstanceOf(RegisterNotCompletedException.class),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository, times(0)).save(any(Review.class))
         );

@@ -2,9 +2,8 @@
 == Auth API
 
 === 로그인
-==== 발생 가능 예외
+==== 발생 가능 에러
 
-- 40001: 올바르지 않은 GitHub code로 요청했을 경우
-- 50001: GitHub API 서버에 문제가 생겼을 경우
+- 40002, 50001
 
 operation::auth-login[snippets='http-request,http-response']

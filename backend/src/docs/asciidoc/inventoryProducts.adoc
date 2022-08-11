@@ -2,29 +2,24 @@
 == InventoryProduct API
 
 === 나의 로그인 정보로 인벤토리를 조회
+==== 발생 가능 에러
 
-==== 발생 가능 예외
-
-- 40100: 로그인이 되어 있지 않은 경우
-- 40101: 로그인이 만료된 경우
-- 40102: 정상적으로 로그인을 하지 않은 경우
+- 40100, 40101, 40102
 
 operation::inventoryProducts-get-own[snippets='http-request,http-response']
 
 === 멤버 아이디로 인벤토리를 조회
 
-==== 발생 가능 예외
+==== 발생 가능 에러
 
-- 40400: 인벤토리를 조회하려는 회원이 없는 회원일 경우
+- 40440
 
 operation::inventoryProducts-get-by-memberId[snippets='http-request,http-response']
 
 === 나의 대표 장비 수정
 
-==== 발생 가능 예외
+==== 발생 가능 에러
 
-- 40001: 대표 장비 등록 요청에 소프트웨어가 포함된 경우
-- 40001: 대표 장비 등록 요청의 카테고리가 중복된 경우
-- 40001: 아무 장비도 선택하지 않고 대표 장비 등록 요청을 보낼 경우
+- 40040, 40041, 40042, 40043
 
 operation::inventoryProducts-update[snippets='http-request,http-response']
