@@ -23,7 +23,7 @@ type Props = {
   reviewId: number;
   createdAt: string;
   handleDelete?: (id: number) => void;
-  handleEdit?: (reviewInput: ReviewInput, id: number) => void;
+  handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
 };
 
 function ReviewCard({
@@ -37,17 +37,26 @@ function ReviewCard({
   handleDelete,
   handleEdit,
 }: Props) {
-  const [isEditSheetOpen, toggleEditSheetOpen] = useReducer(
-    (isSheetOpen: boolean) => !isSheetOpen,
-    false
-  );
-
   const { isLoggedIn } = useAuth();
+
+  const [isEditSheetOpen, toggleEditSheetOpen] = useReducer((isSheetOpen: boolean) => {
+    if (!isLoggedIn) return false;
+
+    return !isSheetOpen;
+  }, false);
 
   const createAtDate = new Date(createdAt);
   const formattedDate = `${createAtDate.getFullYear()}년 ${
     createAtDate.getMonth() + 1
   }월 ${createAtDate.getDate()}일`;
+
+  const handleEditClick = () => {
+    toggleEditSheetOpen();
+  };
+
+  const handleDeleteClick = () => {
+    handleDelete(reviewId);
+  };
 
   return (
     <S.Container>
@@ -67,20 +76,8 @@ function ReviewCard({
             </S.ProfileLink>
             {!product && loginUserGithubId === author.gitHubId && (
               <>
-                <S.EditButton
-                  onClick={() => {
-                    toggleEditSheetOpen();
-                  }}
-                >
-                  수정
-                </S.EditButton>
-                <S.DeleteButton
-                  onClick={() => {
-                    handleDelete(reviewId);
-                  }}
-                >
-                  삭제
-                </S.DeleteButton>
+                <S.EditButton onClick={handleEditClick}>수정</S.EditButton>
+                <S.DeleteButton onClick={handleDeleteClick}>삭제</S.DeleteButton>
               </>
             )}
           </S.UserWrapper>
@@ -89,7 +86,7 @@ function ReviewCard({
         <S.CreatedAt>{formattedDate}</S.CreatedAt>
         <S.Content>{content}</S.Content>
       </S.ReviewArea>
-      {isEditSheetOpen && isLoggedIn && (
+      {isEditSheetOpen && (
         <ReviewBottomSheet
           handleClose={toggleEditSheetOpen}
           handleEdit={handleEdit}
