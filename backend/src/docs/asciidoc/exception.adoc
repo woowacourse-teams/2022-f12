@@ -17,3 +17,7 @@
 |50000|INTERNAL_SERVER_ERROR|예상하지 못한 내부 서버 문제가 발생함.
 |50001|EXTERNAL_SERVER_ERROR|외부 API 서버 문제가 발생함.
 |===
+
+== 예외 HTTP Response
+
+operation::reviews-create-already-written-exception[snippets='http-response']
