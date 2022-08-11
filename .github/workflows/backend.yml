@@ -30,10 +30,10 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-  
+
       - name: grant execute permission for gradlew
         run: chmod +x gradlew
-      
+
       - name: gradle build
         run: ./gradlew build
 
@@ -79,6 +79,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `${ SONARQUBE_PROJECT_KEY }-${ PR_NUMBER } 분석 결과 확인하기 
-                      [링크](${SONARQUBE_URL})`
+              body: `## 🚧 Analysis Results
+                    ${ SONARQUBE_PROJECT_KEY }-${ PR_NUMBER }
+                    [분석 결과 확인하기](${SONARQUBE_URL})`
             })
