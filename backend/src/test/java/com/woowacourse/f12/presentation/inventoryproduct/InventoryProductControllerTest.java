@@ -10,6 +10,7 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -25,6 +26,7 @@ import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsRespon
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
+import com.woowacourse.f12.presentation.ControllerTest;
 import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -34,9 +36,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(InventoryProductController.class)
-class InventoryProductControllerTest {
+class InventoryProductControllerTest extends ControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -61,16 +64,20 @@ class InventoryProductControllerTest {
         willDoNothing().given(inventoryProductService).updateProfileProducts(1L, profileProductRequest);
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(profileProductRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(profileProductRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("inventoryProducts-update")
+                );
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -210,15 +217,16 @@ class InventoryProductControllerTest {
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-
-                )
-                .andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("inventoryProducts-get-own"));
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -236,13 +244,15 @@ class InventoryProductControllerTest {
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/members/" + memberId + "/inventoryProducts")
-                )
-                .andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/" + memberId + "/inventoryProducts")
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("inventoryProducts-get-by-memberId"));
+
         assertAll(
                 () -> verify(inventoryProductService).findByMemberId(memberId)
         );

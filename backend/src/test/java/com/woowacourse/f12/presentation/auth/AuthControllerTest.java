@@ -3,26 +3,25 @@ package com.woowacourse.f12.presentation.auth;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woowacourse.f12.application.auth.AuthService;
-import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
 import com.woowacourse.f12.exception.internalserver.GitHubServerException;
-import com.woowacourse.f12.support.AuthTokenExtractor;
+import com.woowacourse.f12.presentation.ControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(AuthController.class)
-@Import({AuthTokenExtractor.class, JwtProvider.class})
-class AuthControllerTest {
+class AuthControllerTest extends ControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,12 +39,17 @@ class AuthControllerTest {
                 .willReturn(loginResponse);
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/login?code=" + code)
-                ).andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/login?code=" + code)
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("auth-login")
+                );
+
         verify(authService).login(code);
     }
 
