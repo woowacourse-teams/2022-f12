@@ -17,5 +17,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
 
     boolean existsByMemberAndProduct(Member member, Product product);
 
-    Optional<Review> findByMemberAndProduct(Member corinne, Product product);
+    Optional<Review> findByMemberAndProduct(Member member, Product product);
 }
