@@ -1,14 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 import * as S from '@/pages/Products/Products.style';
-import ProductListSection from '@/components/ProductListSection/ProductListSection';
-import Select from '@/components/common/Select/Select';
-import { useLocation, useSearchParams } from 'react-router-dom';
+
 import { CATEGORY } from '@/components/common/CategoryNav/CategoryNav';
-import useSearch from '@/hooks/useSearch';
-import { ENDPOINTS } from '@/constants/api';
 import SearchBar from '@/components/common/SearchBar/SearchBar';
+import Select from '@/components/common/Select/Select';
+
+import ProductListSection from '@/components/ProductListSection/ProductListSection';
 import SearchFilter from '@/components/SearchFilter/SearchFilter';
+
+import useSearch from '@/hooks/useSearch';
+
+import { ENDPOINTS } from '@/constants/api';
 
 type Option = { value: string; text: string };
 

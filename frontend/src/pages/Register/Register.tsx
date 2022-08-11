@@ -1,12 +1,17 @@
-import Stepper from '@/components/common/Stepper/Stepper';
-import * as S from '@/pages/Register/Register.style';
 import { useContext, useEffect, useState } from 'react';
-import usePatch from '@/hooks/api/usePatch';
-import { UserDataContext } from '@/contexts/LoginContextProvider';
-import { ENDPOINTS } from '@/constants/api';
 import { useNavigate } from 'react-router-dom';
-import ROUTES from '@/constants/routes';
+
+import * as S from '@/pages/Register/Register.style';
+
+import Stepper from '@/components/common/Stepper/Stepper';
+
+import { UserDataContext } from '@/contexts/LoginContextProvider';
+
+import usePatch from '@/hooks/api/usePatch';
 import useModal from '@/hooks/useModal';
+
+import { ENDPOINTS } from '@/constants/api';
+import ROUTES from '@/constants/routes';
 
 const messages = {
   1: '경력을 선택해주세요',

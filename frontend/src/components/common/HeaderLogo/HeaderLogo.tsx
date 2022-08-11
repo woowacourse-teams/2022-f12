@@ -1,6 +1,8 @@
 import * as S from '@/components/common/HeaderLogo/HeaderLogo.style';
-import HeaderLogoImage from '@/assets/HeaderLogo.svg';
+
 import ROUTES from '@/constants/routes';
+
+import HeaderLogoImage from '@/assets/HeaderLogo.svg';
 
 function HeaderLogo() {
   return (

@@ -1,5 +1,6 @@
-import useAuth from '@/hooks/useAuth';
 import ProtectedRoute from '@/pages/common/ProtectedRoute/ProtectedRoutes';
+
+import useAuth from '@/hooks/useAuth';
 
 function NonUserRoutes() {
   const { isLoggedIn } = useAuth();

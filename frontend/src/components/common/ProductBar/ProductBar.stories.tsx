@@ -1,6 +1,7 @@
-import ProductBar from '@/components/common/ProductBar/ProductBar';
 import { ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
+
+import ProductBar from '@/components/common/ProductBar/ProductBar';
 
 export default {
   component: ProductBar,

@@ -1,5 +1,6 @@
 import Chip from '@/components/common/Chip/Chip';
 import * as S from '@/components/common/UserInfo/UserInfo.style';
+
 import GithubIcon from '@/assets/github.svg';
 
 type Member = {

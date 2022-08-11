@@ -1,5 +1,6 @@
-import Rating from '@/components/common/Rating/Rating';
 import { ComponentStory } from '@storybook/react';
+
+import Rating from '@/components/common/Rating/Rating';
 
 export default {
   component: Rating,

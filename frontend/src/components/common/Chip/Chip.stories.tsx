@@ -1,5 +1,6 @@
-import Chip from '@/components/common/Chip/Chip';
 import { ComponentStory } from '@storybook/react';
+
+import Chip from '@/components/common/Chip/Chip';
 
 export default {
   component: Chip,

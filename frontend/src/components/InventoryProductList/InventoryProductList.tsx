@@ -1,7 +1,10 @@
-import ProductBar from '@/components/common/ProductBar/ProductBar';
-import * as S from '@/components/InventoryProductList/InventoryProductList.style';
-import ROUTES from '@/constants/routes';
 import { Link } from 'react-router-dom';
+
+import ProductBar from '@/components/common/ProductBar/ProductBar';
+
+import * as S from '@/components/InventoryProductList/InventoryProductList.style';
+
+import ROUTES from '@/constants/routes';
 
 type Props = {
   products: InventoryProduct[];

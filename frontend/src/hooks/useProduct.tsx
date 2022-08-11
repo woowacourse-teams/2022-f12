@@ -1,4 +1,5 @@
 import useGetOne from '@/hooks/api/useGetOne';
+
 import { ENDPOINTS } from '@/constants/api';
 
 type Props = {

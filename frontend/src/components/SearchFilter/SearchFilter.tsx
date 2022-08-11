@@ -1,4 +1,5 @@
 import ChipFilter from '@/components/common/ChipFilter/ChipFilter';
+
 import * as S from '@/components/SearchFilter/SearchFilter.style';
 
 type Props = {

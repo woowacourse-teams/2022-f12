@@ -1,6 +1,7 @@
-import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
 import { useReducer, useRef } from 'react';
 import styled from 'styled-components';
+
+import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
 
 export default {
   component: ReviewBottomSheet,

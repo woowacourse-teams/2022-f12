@@ -1,9 +1,11 @@
 import { AxiosRequestHeaders } from 'axios';
 import { useContext } from 'react';
+
 import { UserDataContext } from '@/contexts/LoginContextProvider';
+
 import useAxios from '@/hooks/api/useAxios';
-import useModal from '@/hooks/useModal';
 import useError from '@/hooks/useError';
+import useModal from '@/hooks/useModal';
 
 type Props = {
   url: string;

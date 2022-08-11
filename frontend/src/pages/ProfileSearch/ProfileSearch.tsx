@@ -1,13 +1,16 @@
 import { useState } from 'react';
 
+import * as S from '@/pages/ProfileSearch/ProfileSearch.style';
+
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
 import SearchBar from '@/components/common/SearchBar/SearchBar';
+
+import ProfileSearchResult from '@/components/ProfileSearchResult/ProfileSearchResult';
 import SearchFilter from '@/components/SearchFilter/SearchFilter';
 
-import * as S from '@/pages/ProfileSearch/ProfileSearch.style';
-import ProfileSearchResult from '@/components/ProfileSearchResult/ProfileSearchResult';
-import Loading from '@/components/common/Loading/Loading';
-import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import useSearch from '@/hooks/useSearch';
+
 import { ENDPOINTS } from '@/constants/api';
 
 const careerLevels = {

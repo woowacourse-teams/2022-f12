@@ -1,5 +1,6 @@
-import ReviewCard from '@/components/common/ReviewCard/ReviewCard';
 import { ComponentStory } from '@storybook/react';
+
+import ReviewCard from '@/components/common/ReviewCard/ReviewCard';
 
 import { reviewsWithProduct } from '@/mocks/data';
 

@@ -1,6 +1,7 @@
-import BottomSheet from '@/components/common/BottomSheet/BottomSheet';
 import { useReducer, useRef } from 'react';
 import styled from 'styled-components';
+
+import BottomSheet from '@/components/common/BottomSheet/BottomSheet';
 
 export default {
   component: BottomSheet,

@@ -1,5 +1,6 @@
-import WishButton from '@/components/common/WishButton/WishButton';
 import { ComponentStory } from '@storybook/react';
+
+import WishButton from '@/components/common/WishButton/WishButton';
 
 export default {
   component: WishButton,

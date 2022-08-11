@@ -1,6 +1,8 @@
-import ProductCard from '@/components/common/ProductCard/ProductCard';
-import { products } from '@/mocks/data';
 import { ComponentStory } from '@storybook/react';
+
+import ProductCard from '@/components/common/ProductCard/ProductCard';
+
+import { products } from '@/mocks/data';
 
 export default {
   component: ProductCard,

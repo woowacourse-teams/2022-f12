@@ -1,5 +1,7 @@
-import ReviewIcon from '@/assets/review.svg';
 import * as S from '@/components/common/ReviewCount/ReviewCount.style';
+
+import ReviewIcon from '@/assets/review.svg';
+
 type Props = {
   reviewCount: number;
   size?: 'small' | 'large';

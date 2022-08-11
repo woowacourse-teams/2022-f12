@@ -1,5 +1,6 @@
-import useSessionStorage from '@/hooks/useSessionStorage';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
+
+import useSessionStorage from '@/hooks/useSessionStorage';
 
 const initialState: UserData = {
   member: {

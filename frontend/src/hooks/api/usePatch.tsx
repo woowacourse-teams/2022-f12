@@ -1,11 +1,13 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
-import useAxios from '@/hooks/api/useAxios';
-import useError from '@/hooks/useError';
 import { useContext } from 'react';
+
 import {
   SetUserDataContext,
   UserDataContext,
 } from '@/contexts/LoginContextProvider';
+
+import useAxios from '@/hooks/api/useAxios';
+import useError from '@/hooks/useError';
 
 type Props = {
   url: string;

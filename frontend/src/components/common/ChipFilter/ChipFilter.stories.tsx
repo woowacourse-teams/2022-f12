@@ -1,5 +1,6 @@
-import ChipFilter from '@/components/common/ChipFilter/ChipFilter';
 import { ComponentStory } from '@storybook/react';
+
+import ChipFilter from '@/components/common/ChipFilter/ChipFilter';
 
 export default {
   component: ChipFilter,

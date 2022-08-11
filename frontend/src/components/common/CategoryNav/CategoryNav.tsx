@@ -1,6 +1,8 @@
-import * as S from '@/components/common/CategoryNav/CategoryNav.style';
-import ROUTES from '@/constants/routes';
 import { Link } from 'react-router-dom';
+
+import * as S from '@/components/common/CategoryNav/CategoryNav.style';
+
+import ROUTES from '@/constants/routes';
 
 type Props = {
   handleTransitionEnd: () => void;

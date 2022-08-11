@@ -1,7 +1,10 @@
-import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
 import { ComponentStory } from '@storybook/react';
-import Plus from '@/assets/plus.svg';
+
+import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
+
 import theme from '@/style/theme';
+
+import Plus from '@/assets/plus.svg';
 
 export default {
   component: FloatingButton,

@@ -1,5 +1,6 @@
-import SearchFilter from '@/components/SearchFilter/SearchFilter';
 import { useState } from 'react';
+
+import SearchFilter from '@/components/SearchFilter/SearchFilter';
 
 export default {
   component: SearchFilter,

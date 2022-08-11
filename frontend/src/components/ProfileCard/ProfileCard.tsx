@@ -1,13 +1,16 @@
-import { useState } from 'react';
 import { Player } from '@lottiefiles/react-lottie-player';
-import ROUTES from '@/constants/routes';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import * as S from '@/components/ProfileCard/ProfileCard.style';
-import GithubIcon from '@/assets/github.svg';
 import Chip from '@/components/common/Chip/Chip';
-import PrevSign from '@/assets/prevSign.svg';
+
+import * as S from '@/components/ProfileCard/ProfileCard.style';
+
+import ROUTES from '@/constants/routes';
+
+import GithubIcon from '@/assets/github.svg';
 import NextSign from '@/assets/nextSign.svg';
+import PrevSign from '@/assets/prevSign.svg';
 
 const DISTANCE_DIFFERENCE = 116;
 

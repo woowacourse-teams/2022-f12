@@ -1,5 +1,6 @@
-import ROUTES from '@/constants/routes';
 import { Navigate, Outlet } from 'react-router-dom';
+
+import ROUTES from '@/constants/routes';
 
 type Routes = keyof typeof ROUTES;
 type Props = {

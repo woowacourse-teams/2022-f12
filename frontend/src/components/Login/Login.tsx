@@ -1,10 +1,14 @@
-import Loading from '@/components/common/Loading/Loading';
-import ROUTES from '@/constants/routes';
-import { UserDataContext } from '@/contexts/LoginContextProvider';
-import useAuth from '@/hooks/useAuth';
-import useModal from '@/hooks/useModal';
 import { useContext, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+
+import Loading from '@/components/common/Loading/Loading';
+
+import { UserDataContext } from '@/contexts/LoginContextProvider';
+
+import useAuth from '@/hooks/useAuth';
+import useModal from '@/hooks/useModal';
+
+import ROUTES from '@/constants/routes';
 
 function Login() {
   const { login } = useAuth();

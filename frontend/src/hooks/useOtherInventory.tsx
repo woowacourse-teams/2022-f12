@@ -1,5 +1,6 @@
-import { ENDPOINTS } from '@/constants/api';
 import useGetOne from '@/hooks/api/useGetOne';
+
+import { ENDPOINTS } from '@/constants/api';
 
 type Prop = {
   memberId: string;

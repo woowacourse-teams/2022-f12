@@ -1,11 +1,14 @@
-import { ENDPOINTS } from '@/constants/api';
+import { useContext } from 'react';
+
 import {
   IsLoggedInContext,
   LogoutContext,
   SetUserDataContext,
 } from '@/contexts/LoginContextProvider';
+
 import useGet from '@/hooks/api/useGet';
-import { useContext } from 'react';
+
+import { ENDPOINTS } from '@/constants/api';
 
 type Return = {
   login: (githubCode: string) => Promise<void>;

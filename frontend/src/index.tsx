@@ -1,12 +1,15 @@
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import ResetCss from '@/style/ResetCss';
-import App from '@/App';
 import { ThemeProvider } from 'styled-components';
-import theme from '@/style/theme';
-import GlobalStyles from '@/style/GlobalStyles';
+
+import App from '@/App';
+
 import LoginContextProvider from '@/contexts/LoginContextProvider';
 import ModalContextProvider from '@/contexts/ModalContextProvider';
+
+import GlobalStyles from '@/style/GlobalStyles';
+import ResetCss from '@/style/ResetCss';
+import theme from '@/style/theme';
 
 /* eslint-disable */
 

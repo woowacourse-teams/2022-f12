@@ -1,15 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
+import Loading from '@/components/common/Loading/Loading';
+import Masonry from '@/components/common/Masonry/Masonry';
+import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlaceholder';
 import ProductCard from '@/components/common/ProductCard/ProductCard';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
 import * as S from '@/components/ProductListSection/ProductListSection.style';
+
 import ROUTES from '@/constants/routes';
-import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
-import Masonry from '@/components/common/Masonry/Masonry';
-import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
-import Loading from '@/components/common/Loading/Loading';
-import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlaceholder';
 
 type Props = {
   title: string;

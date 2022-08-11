@@ -1,6 +1,8 @@
 import * as S from '@/components/common/ProductBar/ProductBar.style';
-import Plus from '@/assets/plus.svg';
+
 import theme from '@/style/theme';
+
+import Plus from '@/assets/plus.svg';
 
 type BarType = 'default' | 'selected' | 'add';
 

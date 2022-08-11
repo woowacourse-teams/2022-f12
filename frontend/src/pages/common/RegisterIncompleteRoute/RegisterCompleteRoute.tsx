@@ -1,9 +1,13 @@
-import ROUTES from '@/constants/routes';
+import { useContext } from 'react';
+
+import ProtectedRoute from '@/pages/common/ProtectedRoute/ProtectedRoutes';
+
 import { UserDataContext } from '@/contexts/LoginContextProvider';
+
 import useAuth from '@/hooks/useAuth';
 import useModal from '@/hooks/useModal';
-import ProtectedRoute from '@/pages/common/ProtectedRoute/ProtectedRoutes';
-import { useContext } from 'react';
+
+import ROUTES from '@/constants/routes';
 
 function RegisterCompleteRoute() {
   const { isLoggedIn } = useAuth();

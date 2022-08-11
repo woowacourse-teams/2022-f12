@@ -1,5 +1,6 @@
-import HeaderLogo from '@/components/common/HeaderLogo/HeaderLogo';
 import { ComponentStory } from '@storybook/react';
+
+import HeaderLogo from '@/components/common/HeaderLogo/HeaderLogo';
 
 export default {
   component: HeaderLogo,

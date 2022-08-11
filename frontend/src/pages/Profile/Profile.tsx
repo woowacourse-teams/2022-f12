@@ -1,15 +1,21 @@
-import UserInfo from '@/components/common/UserInfo/UserInfo';
-import * as S from '@/pages/Profile/Profile.style';
-import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
-import ProductSelect from '@/components/common/ProductSelect/ProductSelect';
-import useInventory from '@/hooks/useInventory';
-import { ENDPOINTS } from '@/constants/api';
 import { useContext } from 'react';
-import { UserDataContext } from '@/contexts/LoginContextProvider';
-import useGetOne from '@/hooks/api/useGetOne';
+
+import * as S from '@/pages/Profile/Profile.style';
+
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
-import InventoryProductList from '@/components/InventoryProductList/InventoryProductList';
 import Loading from '@/components/common/Loading/Loading';
+import ProductSelect from '@/components/common/ProductSelect/ProductSelect';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
+import UserInfo from '@/components/common/UserInfo/UserInfo';
+
+import InventoryProductList from '@/components/InventoryProductList/InventoryProductList';
+
+import { UserDataContext } from '@/contexts/LoginContextProvider';
+
+import useGetOne from '@/hooks/api/useGetOne';
+import useInventory from '@/hooks/useInventory';
+
+import { ENDPOINTS } from '@/constants/api';
 
 type Member = {
   id: string;

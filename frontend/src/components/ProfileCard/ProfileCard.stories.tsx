@@ -1,5 +1,6 @@
-import ProfileCard from '@/components/ProfileCard/ProfileCard';
 import { ComponentStory } from '@storybook/react';
+
+import ProfileCard from '@/components/ProfileCard/ProfileCard';
 
 export default {
   component: ProfileCard,

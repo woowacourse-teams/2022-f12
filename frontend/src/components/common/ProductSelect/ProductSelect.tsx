@@ -1,6 +1,6 @@
-import ProductBar from '@/components/common/ProductBar/ProductBar';
 import { useState } from 'react';
 
+import ProductBar from '@/components/common/ProductBar/ProductBar';
 import * as S from '@/components/common/ProductSelect/ProductSelect.style';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 

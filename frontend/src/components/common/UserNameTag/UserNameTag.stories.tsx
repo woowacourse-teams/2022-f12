@@ -1,5 +1,6 @@
-import UserNameTag from '@/components/common/UserNameTag/UserNameTag';
 import { ComponentStory } from '@storybook/react';
+
+import UserNameTag from '@/components/common/UserNameTag/UserNameTag';
 
 export default {
   component: UserNameTag,

@@ -1,5 +1,6 @@
-import BarGraph from '@/components/common/BarGraph/BarGraph';
 import { ComponentStory } from '@storybook/react';
+
+import BarGraph from '@/components/common/BarGraph/BarGraph';
 
 export default {
   component: BarGraph,

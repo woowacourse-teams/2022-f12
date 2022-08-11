@@ -1,5 +1,6 @@
-import Loading from '@/components/common/Loading/Loading';
 import { PropsWithChildren, useEffect, useMemo, useRef } from 'react';
+
+import Loading from '@/components/common/Loading/Loading';
 
 type Props = {
   handleContentLoad: () => void;

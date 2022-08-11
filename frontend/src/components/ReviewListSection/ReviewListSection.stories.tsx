@@ -1,4 +1,5 @@
 import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
+
 import { reviewsWithProduct } from '@/mocks/data';
 
 export default {

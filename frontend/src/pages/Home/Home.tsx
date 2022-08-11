@@ -1,5 +1,6 @@
 import ProductListSection from '@/components/ProductListSection/ProductListSection';
 import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
+
 import useProducts from '@/hooks/useProducts';
 import useReviews from '@/hooks/useReviews';
 

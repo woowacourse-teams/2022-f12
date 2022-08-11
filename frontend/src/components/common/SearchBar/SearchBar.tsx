@@ -1,4 +1,5 @@
 import * as S from '@/components/common/SearchBar/SearchBar.style';
+
 import SearchImage from '@/assets/search.svg';
 
 type Props = {

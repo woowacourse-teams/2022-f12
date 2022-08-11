@@ -1,5 +1,6 @@
-import Modal from '@/components/common/Modal/Modal';
 import { PropsWithChildren, useState } from 'react';
+
+import Modal from '@/components/common/Modal/Modal';
 
 export default {
   component: Modal,

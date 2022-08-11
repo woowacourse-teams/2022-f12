@@ -1,17 +1,19 @@
-import PageLayout from '@/pages/common/PageLayout/PageLayout';
 import Home from '@/pages/Home/Home';
+import NotFound from '@/pages/NotFound/NotFound';
+import OtherProfile from '@/pages/OtherProfile/OtherProfile';
 import Product from '@/pages/Product/Product';
 import Products from '@/pages/Products/Products';
-import Login from '@/components/Login/Login';
-import Register from '@/pages/Register/Register';
-import ROUTES from '@/constants/routes';
 import Profile from '@/pages/Profile/Profile';
-import OtherProfile from '@/pages/OtherProfile/OtherProfile';
 import ProfileSearch from '@/pages/ProfileSearch/ProfileSearch';
-import UserRoutes from '@/pages/common/UserRoutes/UserRoutes';
+import Register from '@/pages/Register/Register';
 import NonUserRoutes from '@/pages/common/NonUserRoutes/NonUserRoutes';
-import NotFound from '@/pages/NotFound/NotFound';
+import PageLayout from '@/pages/common/PageLayout/PageLayout';
 import RegisterCompleteRoute from '@/pages/common/RegisterIncompleteRoute/RegisterCompleteRoute';
+import UserRoutes from '@/pages/common/UserRoutes/UserRoutes';
+
+import Login from '@/components/Login/Login';
+
+import ROUTES from '@/constants/routes';
 
 type Route = {
   element: JSX.Element;

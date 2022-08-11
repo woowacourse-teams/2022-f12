@@ -1,22 +1,27 @@
-import ProductDetail from '@/components/common/ProductDetail/ProductDetail';
+import { useReducer, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+
 import * as S from '@/pages/Product/Product.style';
 
-import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
-import useReviews from '@/hooks/useReviews';
-import useProduct from '@/hooks/useProduct';
-import { useParams } from 'react-router-dom';
-import StickyWrapper from '@/components/common/StickyWrapper/StickyWrapper';
-import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
-import { useReducer, useRef } from 'react';
-import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
-import Plus from '@/assets/plus.svg';
-import theme from '@/style/theme';
-import useAuth from '@/hooks/useAuth';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
-import Loading from '@/components/common/Loading/Loading';
-import useModal from '@/hooks/useModal';
 import BarGraph from '@/components/common/BarGraph/BarGraph';
+import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
+import Loading from '@/components/common/Loading/Loading';
+import ProductDetail from '@/components/common/ProductDetail/ProductDetail';
+import StickyWrapper from '@/components/common/StickyWrapper/StickyWrapper';
+
+import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
+import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
+
+import useAuth from '@/hooks/useAuth';
+import useModal from '@/hooks/useModal';
+import useProduct from '@/hooks/useProduct';
+import useReviews from '@/hooks/useReviews';
 import useStatistics from '@/hooks/useStatistics';
+
+import theme from '@/style/theme';
+
+import Plus from '@/assets/plus.svg';
 
 function Product() {
   const { isLoggedIn } = useAuth();

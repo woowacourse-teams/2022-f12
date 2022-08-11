@@ -1,5 +1,5 @@
-import Rating from '@/components/common/Rating/Rating';
 import * as S from '@/components/common/ProductCard/ProductCard.style';
+import Rating from '@/components/common/Rating/Rating';
 import ReviewCount from '@/components/common/ReviewCount/ReviewCount';
 
 type Props = {

@@ -1,5 +1,6 @@
-import useModal from '@/hooks/useModal';
 import logError from '@/utils/logError';
+
+import useModal from '@/hooks/useModal';
 
 function useError() {
   const { showAlert } = useModal();

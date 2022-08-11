@@ -1,5 +1,6 @@
-import Modal from '@/components/common/Modal/Modal';
 import { createContext, PropsWithChildren, useState } from 'react';
+
+import Modal from '@/components/common/Modal/Modal';
 
 export const ShowAlertContext = createContext<(message: string) => void>(null);
 export const GetConfirmContext =

@@ -1,6 +1,6 @@
+import useDelete from '@/hooks/api/useDelete';
 import useGetMany from '@/hooks/api/useGetMany';
 import usePost from '@/hooks/api/usePost';
-import useDelete from '@/hooks/api/useDelete';
 import usePut from '@/hooks/api/usePut';
 import useSessionStorage from '@/hooks/useSessionStorage';
 

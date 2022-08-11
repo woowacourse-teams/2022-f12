@@ -1,7 +1,9 @@
-import ROUTES from '@/constants/routes';
 import { Player } from '@lottiefiles/react-lottie-player';
 import { useNavigate } from 'react-router-dom';
+
 import * as S from '@/pages/NotFound/NotFound.style';
+
+import ROUTES from '@/constants/routes';
 
 function NotFound() {
   const navigate = useNavigate();

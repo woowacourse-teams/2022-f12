@@ -1,4 +1,5 @@
 import useGetMany from '@/hooks/api/useGetMany';
+
 import { ENDPOINTS } from '@/constants/api';
 
 type Sort = 'rating,desc' | 'reviewCount,desc';

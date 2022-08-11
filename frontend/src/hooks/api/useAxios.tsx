@@ -1,11 +1,13 @@
+import axios, { AxiosError, AxiosInstance } from 'axios';
+import { useContext, useState } from 'react';
+
+import { LogoutContext } from '@/contexts/LoginContextProvider';
+
 import { BASE_URL } from '@/constants/api';
 import {
   API_ERROR_CODE_EXCEPTION_MESSAGES,
   API_ERROR_MESSAGES,
 } from '@/constants/messages';
-import { LogoutContext } from '@/contexts/LoginContextProvider';
-import axios, { AxiosError, AxiosInstance } from 'axios';
-import { useContext, useState } from 'react';
 
 type ErrorResponseBody = {
   errorCode: keyof typeof API_ERROR_MESSAGES;

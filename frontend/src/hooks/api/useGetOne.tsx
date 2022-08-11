@@ -1,7 +1,8 @@
+import logError from '@/utils/logError';
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
+
 import useAxios from '@/hooks/api/useAxios';
-import logError from '@/utils/logError';
 import useModal from '@/hooks/useModal';
 
 type Props = {

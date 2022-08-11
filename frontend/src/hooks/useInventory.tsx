@@ -1,8 +1,11 @@
-import { ENDPOINTS } from '@/constants/api';
+import { useContext } from 'react';
+
 import { UserDataContext } from '@/contexts/LoginContextProvider';
+
 import useGetOne from '@/hooks/api/useGetOne';
 import usePatch from '@/hooks/api/usePatch';
-import { useContext } from 'react';
+
+import { ENDPOINTS } from '@/constants/api';
 
 type InventoryResponse = {
   items: InventoryProduct[];

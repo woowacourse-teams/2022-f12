@@ -1,6 +1,7 @@
-import { createPortal } from 'react-dom';
-import * as S from '@/components/common/Modal/Modal.style';
 import { PropsWithChildren, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+
+import * as S from '@/components/common/Modal/Modal.style';
 
 type Props = {
   handleClose: () => void;

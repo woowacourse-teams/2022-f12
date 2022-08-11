@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import * as S from '@/components/common/BarGraph/BarGraph.style';
+
 import theme from '@/style/theme';
 
 type Prop = {

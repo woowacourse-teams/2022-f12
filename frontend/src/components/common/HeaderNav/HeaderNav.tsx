@@ -1,13 +1,15 @@
-import { GITHUB_AUTH_URL } from '@/constants/api';
-import ROUTES from '@/constants/routes';
-import useAuth from '@/hooks/useAuth';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import * as S from '@/components/common/HeaderNav/HeaderNav.style';
-import { useEffect, useState } from 'react';
 import CategoryNav from '@/components/common/CategoryNav/CategoryNav';
+import * as S from '@/components/common/HeaderNav/HeaderNav.style';
+
 import useAnimation from '@/hooks/useAnimation';
+import useAuth from '@/hooks/useAuth';
 import useModal from '@/hooks/useModal';
+
+import { GITHUB_AUTH_URL } from '@/constants/api';
+import ROUTES from '@/constants/routes';
 
 function HeaderNav() {
   const { logout, isLoggedIn } = useAuth();

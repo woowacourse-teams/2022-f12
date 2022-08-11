@@ -1,6 +1,7 @@
-import UserInfo from '@/components/common/UserInfo/UserInfo';
 import { ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
+
+import UserInfo from '@/components/common/UserInfo/UserInfo';
 
 export default {
   component: UserInfo,

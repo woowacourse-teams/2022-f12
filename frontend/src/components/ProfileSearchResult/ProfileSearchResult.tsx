@@ -1,7 +1,8 @@
-import * as S from '@/components/ProfileSearchResult/ProfileSearchResult.style';
 import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
-import ProfileCard from '@/components/ProfileCard/ProfileCard';
 import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlaceholder';
+
+import ProfileCard from '@/components/ProfileCard/ProfileCard';
+import * as S from '@/components/ProfileSearchResult/ProfileSearchResult.style';
 
 type Props = {
   data: ProfileSearchResult[];

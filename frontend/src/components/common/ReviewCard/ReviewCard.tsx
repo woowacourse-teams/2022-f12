@@ -1,10 +1,13 @@
-import Rating from '@/components/common/Rating/Rating';
-import UserNameTag from '@/components/common/UserNameTag/UserNameTag';
 import { useReducer } from 'react';
+
+import Rating from '@/components/common/Rating/Rating';
+import * as S from '@/components/common/ReviewCard/ReviewCard.style';
+import UserNameTag from '@/components/common/UserNameTag/UserNameTag';
+
 import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
 
-import * as S from '@/components/common/ReviewCard/ReviewCard.style';
 import useAuth from '@/hooks/useAuth';
+
 import ROUTES from '@/constants/routes';
 
 type Props = {

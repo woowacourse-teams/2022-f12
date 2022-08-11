@@ -1,5 +1,6 @@
-import ErrorPlaceholder from '@/components/common/ErrorPlaceholder/ErrorPlaceholder';
 import React from 'react';
+
+import ErrorPlaceholder from '@/components/common/ErrorPlaceholder/ErrorPlaceholder';
 
 type Props = {
   fallback: JSX.Element;

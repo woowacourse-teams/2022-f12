@@ -1,14 +1,19 @@
-import UserInfo from '@/components/common/UserInfo/UserInfo';
-import * as S from '@/pages/Profile/Profile.style';
-import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
-import ProductSelect from '@/components/common/ProductSelect/ProductSelect';
-import useOtherInventory from '@/hooks/useOtherInventory';
-import { ENDPOINTS } from '@/constants/api';
-import useGetOne from '@/hooks/api/useGetOne';
-import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
-import InventoryProductList from '@/components/InventoryProductList/InventoryProductList';
-import Loading from '@/components/common/Loading/Loading';
 import { useParams } from 'react-router-dom';
+
+import * as S from '@/pages/Profile/Profile.style';
+
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
+import ProductSelect from '@/components/common/ProductSelect/ProductSelect';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
+import UserInfo from '@/components/common/UserInfo/UserInfo';
+
+import InventoryProductList from '@/components/InventoryProductList/InventoryProductList';
+
+import useGetOne from '@/hooks/api/useGetOne';
+import useOtherInventory from '@/hooks/useOtherInventory';
+
+import { ENDPOINTS } from '@/constants/api';
 
 type Member = {
   id: string;
