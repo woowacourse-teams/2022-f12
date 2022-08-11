@@ -41,17 +41,15 @@ function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 
-  const [sort, setSort] = useState<string | null>(
+  const [sort, setSort] = useState<string>(
     // ,(쉼표)의 경우 param에 포함되면 encode, 상태로 사용하려면 decode 필요
     searchParams.get('sort')
       ? decodeURIComponent(searchParams.get('sort'))
       : DefaultSort.value
   );
-  const [keyword, setKeyword] = useState<string | null>(
-    searchParams.get('keyword') || null
-  );
-  const [category, setCategory] = useState<string | null>(
-    searchParams.get('category') || null
+  const [keyword, setKeyword] = useState<string>(searchParams.get('keyword'));
+  const [category, setCategory] = useState<string>(
+    searchParams.get('category')
   );
 
   const {
@@ -76,7 +74,7 @@ function Products() {
     [category]
   );
 
-  // setSearchParam, setState가 아니라 뒤로가기, url 직접 이동 등 상황에서 UI 동기화
+  // setState가 아니라 뒤로가기 등 상황에서 UI 동기화
   // 컴포넌트가 navigate 되지 않아 처리해주지 않으면 초기값 지정이 자동으로 되지 않음
   useEffect(() => {
     setCategory(searchParams.get('category'));
