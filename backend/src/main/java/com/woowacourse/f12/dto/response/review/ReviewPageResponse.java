@@ -10,17 +10,17 @@ import org.springframework.data.domain.Slice;
 public class ReviewPageResponse {
 
     private final boolean hasNext;
-    private final List<ReviewResponse> items;
+    private final List<ReviewWithAuthorResponse> items;
 
-    private ReviewPageResponse(final boolean hasNext, final List<ReviewResponse> items) {
+    private ReviewPageResponse(final boolean hasNext, final List<ReviewWithAuthorResponse> items) {
         this.hasNext = hasNext;
         this.items = items;
     }
 
     public static ReviewPageResponse from(Slice<Review> slice) {
-        List<ReviewResponse> reviews = slice.getContent()
+        List<ReviewWithAuthorResponse> reviews = slice.getContent()
                 .stream()
-                .map(ReviewResponse::from)
+                .map(ReviewWithAuthorResponse::from)
                 .collect(Collectors.toList());
         return new ReviewPageResponse(slice.hasNext(), reviews);
     }

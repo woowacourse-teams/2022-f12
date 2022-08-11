@@ -26,7 +26,7 @@ import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
-import com.woowacourse.f12.dto.response.review.ReviewResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
@@ -213,7 +213,7 @@ class ReviewServiceTest {
         assertAll(
                 () -> assertThat(reviewPageResponse.getItems()).hasSize(1)
                         .usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(ReviewResponse.from(review)),
+                        .containsOnly(ReviewWithAuthorResponse.from(review)),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
                 () -> verify(productRepository).existsById(productId),
                 () -> verify(reviewRepository).findPageByProductId(productId, pageable)
