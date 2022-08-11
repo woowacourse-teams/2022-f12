@@ -1,11 +1,8 @@
 import { useContext } from 'react';
 
-import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
-import Loading from '@/components/common/Loading/Loading';
-import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
+import ReviewCard from '@/components/common/ReviewCard/ReviewCard';
 
-import ReviewList from '@/components/ReviewList/ReviewList';
 import * as S from '@/components/ReviewListSection/ReviewListSection.style';
 
 import { UserDataContext } from '@/contexts/LoginContextProvider';
@@ -14,7 +11,6 @@ type Props = {
   columns: number;
   data: Review[];
   isLoading: boolean;
-  isReady: boolean;
   isError: boolean;
   getNextPage: () => void;
   handleDelete?: (id: number) => void;
@@ -28,7 +24,6 @@ function ReviewListSection({
   handleDelete,
   handleEdit,
   isLoading,
-  isReady,
   isError,
 }: Props) {
   const userData = useContext(UserDataContext);
@@ -36,22 +31,24 @@ function ReviewListSection({
 
   return (
     <S.Container aria-label="최근 후기">
-      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
-        <InfiniteScroll
-          handleContentLoad={getNextPage}
-          isLoading={isLoading}
-          isError={isError}
-        >
-          <S.Wrapper columns={columns}>
-            <ReviewList
-              data={reviewData}
+      <InfiniteScroll
+        handleContentLoad={getNextPage}
+        isLoading={isLoading}
+        isError={isError}
+      >
+        <S.Wrapper columns={columns}>
+          {reviewData.map(({ id, ...reviewData }) => (
+            <ReviewCard
+              key={id}
+              reviewId={id}
+              reviewData={reviewData}
+              loginUserGithubId={loginUserGithubId}
               handleDelete={handleDelete}
               handleEdit={handleEdit}
-              loginUserGithubId={loginUserGithubId}
             />
-          </S.Wrapper>
-        </InfiniteScroll>
-      </AsyncWrapper>
+          ))}
+        </S.Wrapper>
+      </InfiniteScroll>
     </S.Container>
   );
 }

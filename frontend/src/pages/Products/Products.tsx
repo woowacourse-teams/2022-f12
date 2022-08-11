@@ -3,8 +3,11 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 
 import * as S from '@/pages/Products/Products.style';
 
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import { CATEGORY } from '@/components/common/CategoryNav/CategoryNav';
+import Loading from '@/components/common/Loading/Loading';
 import SearchBar from '@/components/common/SearchBar/SearchBar';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import Select from '@/components/common/Select/Select';
 
 import ProductListSection from '@/components/ProductListSection/ProductListSection';
@@ -118,15 +121,17 @@ function Products() {
           options={categories}
         />
       </S.SearchBarWrapper>
-      <ProductListSection
-        title={title}
-        data={!!products && products}
-        getNextPage={getNextPage}
-        addOn={<Select value={sort} setValue={setSort} options={options} />}
-        isLoading={isLoading}
-        isReady={isReady}
-        isError={isError}
-      />
+      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
+        <SectionHeader title={title}>
+          <Select value={sort} setValue={setSort} options={options} />
+        </SectionHeader>
+        <ProductListSection
+          data={products}
+          getNextPage={getNextPage}
+          isLoading={isLoading}
+          isError={isError}
+        />
+      </AsyncWrapper>
     </>
   );
 }

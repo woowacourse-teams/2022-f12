@@ -116,16 +116,21 @@ function Product() {
             <Plus stroke={theme.colors.white} />
           </FloatingButton>
         )}
-        <ReviewListSection
-          columns={1}
-          data={reviews}
-          getNextPage={getNextPage}
-          handleDelete={handleReviewDeletion}
-          handleEdit={handleReviewEdit}
-          isLoading={isReviewLoading}
+        <AsyncWrapper
+          fallback={<Loading />}
           isReady={isReviewReady}
           isError={isReviewError}
-        />
+        >
+          <ReviewListSection
+            columns={1}
+            data={reviews}
+            getNextPage={getNextPage}
+            handleDelete={handleReviewDeletion}
+            handleEdit={handleReviewEdit}
+            isLoading={isReviewLoading}
+            isError={isReviewError}
+          />
+        </AsyncWrapper>
         {isSheetOpen && isLoggedIn && (
           <ReviewBottomSheet
             handleClose={toggleSheetOpen}

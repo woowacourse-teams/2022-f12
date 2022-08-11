@@ -11,32 +11,31 @@ import useAuth from '@/hooks/useAuth';
 import ROUTES from '@/constants/routes';
 
 type Props = {
-  product?: {
-    id: number;
-    name: string;
-    imageUrl: string;
-  };
-  author: Review['author'];
-  rating: number;
-  content: string;
   loginUserGithubId: string;
   reviewId: number;
-  createdAt: string;
+  reviewData: {
+    product?: {
+      id: number;
+      name: string;
+      imageUrl: string;
+    };
+    rating: number;
+    content: string;
+    author: Review['author'];
+    createdAt: string;
+  };
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
 };
 
 function ReviewCard({
   reviewId,
-  product,
-  rating,
-  content,
-  author,
   loginUserGithubId,
-  createdAt,
   handleDelete,
   handleEdit,
+  reviewData,
 }: Props) {
+  const { product, rating, content, author, createdAt } = reviewData;
   const { isLoggedIn } = useAuth();
 
   const [isEditSheetOpen, toggleEditSheetOpen] = useReducer((isSheetOpen: boolean) => {
