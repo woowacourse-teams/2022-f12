@@ -16,10 +16,10 @@ function ProductCard({ imageUrl, name, rating, reviewCount }: Props) {
         <S.Image src={imageUrl} />
       </S.ImageWrapper>
       <S.Name>{name}</S.Name>
-      <S.Details>
+      <S.BottomWrapper>
         <Rating rating={rating} />
         <ReviewCount reviewCount={reviewCount} />
-      </S.Details>
+      </S.BottomWrapper>
     </S.Container>
   );
 }

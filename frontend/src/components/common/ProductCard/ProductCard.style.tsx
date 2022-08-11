@@ -34,7 +34,7 @@ export const Image = styled.img`
   object-fit: cover;
 `;
 
-export const Wrapper = styled.div`
+export const BottomWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `;
@@ -42,9 +42,4 @@ export const Wrapper = styled.div`
 export const Name = styled.h2`
   font-size: 1rem;
   line-height: 1.3;
-`;
-
-export const Details = styled.div`
-  display: flex;
-  justify-content: space-between;
 `;
