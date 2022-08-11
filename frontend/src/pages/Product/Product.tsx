@@ -59,23 +59,20 @@ function Product() {
 
   const handleReviewSubmit = async (reviewInput: ReviewInput) => {
     await postReview(reviewInput);
+    showAlert('리뷰가 작성되었습니다.');
     refetchReview();
+
     const topOfElement = reviewListRef.current;
     window.scrollTo({
-      top: reviewListRef.current && Number(topOfElement.offsetTop),
+      top: topOfElement && Number(topOfElement.offsetTop),
       behavior: 'smooth',
     });
   };
 
-  const handleReviewEdit = (reviewInput: ReviewInput, id: number) => {
-    editReview(reviewInput, id)
-      .then(() => {
-        showAlert('리뷰가 수정되었습니다.');
-        refetchReview();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const handleReviewEdit = async (reviewInput: ReviewInput, id: number) => {
+    await editReview(reviewInput, id);
+    showAlert('리뷰가 수정되었습니다.');
+    refetchReview();
   };
 
   const handleReviewDeletion = async (id: number) => {
