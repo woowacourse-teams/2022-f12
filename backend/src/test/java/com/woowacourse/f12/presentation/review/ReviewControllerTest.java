@@ -25,6 +25,7 @@ import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.badrequest.BlankContentException;
 import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
@@ -652,5 +653,23 @@ class ReviewControllerTest {
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(reviewService).delete(reviewId, memberId)
         );
+    }
+
+    @Test
+    void 회원_아이디로_리뷰_목록_조회_성공() throws Exception {
+        // given
+        Long memberId = 1L;
+        given(reviewService.findPageByMemberId(anyLong(), any(Pageable.class)))
+                .willReturn(ReviewWithProductPageResponse.from(
+                        new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(memberId))))));
+
+        // when
+        mockMvc.perform(get("/api/v1/members/" + memberId + "/reviews?size=2&page=0&sort=createdAt,desc"))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(reviewService).findPageByMemberId(memberId,
+                PageRequest.of(0, 2, Sort.by("createdAt", "id").descending()));
     }
 }

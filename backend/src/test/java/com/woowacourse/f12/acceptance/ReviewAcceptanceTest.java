@@ -21,9 +21,11 @@ import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.ExceptionResponse;
-import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -93,7 +95,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = GET_요청을_보낸다(url);
 
         // then
-        ReviewPageResponse reviewPageResponse = response.as(ReviewPageResponse.class);
+        ReviewWithAuthorPageResponse reviewPageResponse = response.as(ReviewWithAuthorPageResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(reviewPageResponse.getItems())
@@ -120,7 +122,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = GET_요청을_보낸다(url);
 
         // then
-        ReviewPageResponse reviewPageResponse = response.as(ReviewPageResponse.class);
+        ReviewWithAuthorPageResponse reviewPageResponse = response.as(ReviewWithAuthorPageResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(reviewPageResponse.getItems())
@@ -148,8 +150,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(ReviewWithProductPageResponse.class).isHasNext()).isFalse(),
-                () -> assertThat(response.as(ReviewWithProductPageResponse.class).getItems())
+                () -> assertThat(response.as(ReviewWithAuthorAndProductPageResponse.class).isHasNext()).isFalse(),
+                () -> assertThat(response.as(ReviewWithAuthorAndProductPageResponse.class).getItems())
                         .extracting("id")
                         .containsExactly(reviewId2, reviewId1)
         );
@@ -168,8 +170,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_PUT_요청을_보낸다("/api/v1/reviews/" + reviewId, token,
                 requestBody);
-        ReviewWithProductResponse review = GET_요청을_보낸다("/api/v1/reviews?page=0&size=2&sort=createdAt,desc")
-                .as(ReviewWithProductPageResponse.class)
+        ReviewWithAuthorAndProductResponse review = GET_요청을_보낸다("/api/v1/reviews?page=0&size=2&sort=createdAt,desc")
+                .as(ReviewWithAuthorAndProductPageResponse.class)
                 .getItems()
                 .get(0);
 
@@ -193,14 +195,41 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다(
                 "/api/v1/reviews/" + reviewId, token);
-        List<ReviewWithProductResponse> reviews = GET_요청을_보낸다("/api/v1/reviews?page=0&size=2&sort=createdAt,desc")
-                .as(ReviewWithProductPageResponse.class)
+        List<ReviewWithAuthorAndProductResponse> reviews = GET_요청을_보낸다(
+                "/api/v1/reviews?page=0&size=2&sort=createdAt,desc")
+                .as(ReviewWithAuthorAndProductPageResponse.class)
                 .getItems();
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
                 () -> assertThat(reviews).isEmpty()
+        );
+    }
+
+    @Test
+    void 다른_회원의_아이디로_리뷰_목록을_최신순으로_조회한다() {
+        // given
+        Product product1 = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product2 = 키보드를_저장한다(KEYBOARD_2.생성());
+        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        String token = loginResponse.getToken();
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token));
+        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product2.getId(), token));
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/members/" + loginResponse.getMember().getId() + "/reviews?page=0&size=2&sort=createdAt,desc");
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(ReviewWithProductPageResponse.class).isHasNext()).isFalse(),
+                () -> assertThat(response.as(ReviewWithProductPageResponse.class).getItems())
+                        .extracting("id")
+                        .containsExactly(reviewId2, reviewId1)
         );
     }
 
