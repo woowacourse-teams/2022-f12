@@ -18,4 +18,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
     boolean existsByMemberAndProduct(Member member, Product product);
 
     Optional<Review> findByMemberAndProduct(Member member, Product product);
+
+    Slice<Review> findPageByMember(Member member, Pageable pageable);
 }

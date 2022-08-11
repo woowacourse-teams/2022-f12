@@ -276,6 +276,27 @@ class ReviewRepositoryTest {
                 .isEqualTo(savedReview);
     }
 
+    @Test
+    void 회원으로_리뷰목록을_조회한다() {
+        // given
+        Product product1 = 제품_저장(KEYBOARD_1.생성());
+        Product product2 = 제품_저장(KEYBOARD_2.생성());
+        Member corinne = memberRepository.save(CORINNE.생성());
+        Review savedReview1 = 리뷰_저장(REVIEW_RATING_1.작성(product1, corinne));
+        Review savedReview2 = 리뷰_저장(REVIEW_RATING_1.작성(product2, corinne));
+        Pageable pageable = PageRequest.of(0, 2, Sort.by(desc("createdAt")));
+
+        // when
+        Slice<Review> page = reviewRepository.findPageByMember(corinne, pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(page.hasNext()).isFalse(),
+                () -> assertThat(page.getContent()).usingRecursiveFieldByFieldElementComparator()
+                        .containsExactly(savedReview2, savedReview1)
+        );
+    }
+
     private Product 제품_저장(Product product) {
         return productRepository.save(product);
     }
