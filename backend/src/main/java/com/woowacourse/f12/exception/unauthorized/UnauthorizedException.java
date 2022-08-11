@@ -1,11 +1,11 @@
 package com.woowacourse.f12.exception.unauthorized;
 
 import com.woowacourse.f12.exception.CustomException;
-import com.woowacourse.f12.exception.ExceptionCode;
+import com.woowacourse.f12.exception.ErrorCode;
 
 public class UnauthorizedException extends CustomException {
 
-    public UnauthorizedException(final ExceptionCode exceptionCode, final String message) {
-        super(exceptionCode, message);
+    public UnauthorizedException(final ErrorCode errorCode, final String message) {
+        super(errorCode, message);
     }
 }

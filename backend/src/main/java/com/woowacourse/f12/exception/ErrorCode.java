@@ -2,7 +2,7 @@ package com.woowacourse.f12.exception;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ExceptionCode {
+public enum ErrorCode {
 
     INVALID_SEARCH_PARAM("40000"),
     INVALID_REQUEST_BODY("40001"),
@@ -23,7 +23,7 @@ public enum ExceptionCode {
 
     private final String value;
 
-    ExceptionCode(final String value) {
+    ErrorCode(final String value) {
         this.value = value;
     }
 

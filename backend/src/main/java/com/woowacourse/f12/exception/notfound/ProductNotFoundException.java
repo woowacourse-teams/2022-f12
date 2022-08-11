@@ -1,6 +1,6 @@
 package com.woowacourse.f12.exception.notfound;
 
-import static com.woowacourse.f12.exception.ExceptionCode.DATA_NOT_FOUND;
+import static com.woowacourse.f12.exception.ErrorCode.DATA_NOT_FOUND;
 
 public class ProductNotFoundException extends NotFoundException {
 

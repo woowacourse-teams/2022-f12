@@ -1,6 +1,6 @@
 package com.woowacourse.f12.exception.forbidden;
 
-import static com.woowacourse.f12.exception.ExceptionCode.PERMISSION_DENIED;
+import static com.woowacourse.f12.exception.ErrorCode.PERMISSION_DENIED;
 
 public class NotAuthorException extends ForbiddenMemberException {
 

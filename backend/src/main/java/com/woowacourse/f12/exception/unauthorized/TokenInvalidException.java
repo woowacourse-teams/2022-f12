@@ -1,6 +1,6 @@
 package com.woowacourse.f12.exception.unauthorized;
 
-import static com.woowacourse.f12.exception.ExceptionCode.TOKEN_INVALID;
+import static com.woowacourse.f12.exception.ErrorCode.TOKEN_INVALID;
 
 public class TokenInvalidException extends UnauthorizedException {
 
