@@ -5,11 +5,14 @@ import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.NOT_ADDITIONAL_INFO;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -25,7 +28,9 @@ import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
@@ -207,7 +212,7 @@ class ReviewServiceTest {
                 .willReturn(slice);
 
         // when
-        ReviewPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, pageable);
+        ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, pageable);
 
         // then
         assertAll(
@@ -248,14 +253,16 @@ class ReviewServiceTest {
                 .willReturn(slice);
 
         // when
-        ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPage(pageable);
+        ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = reviewService.findPage(
+                pageable);
 
         // then
         assertAll(
-                () -> assertThat(reviewWithProductPageResponse.getItems()).hasSize(2)
+                () -> assertThat(reviewWithAuthorAndProductPageResponse.getItems()).hasSize(2)
                         .usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(ReviewWithProductResponse.from(review1), ReviewWithProductResponse.from(review2)),
-                () -> assertThat(reviewWithProductPageResponse.isHasNext()).isTrue(),
+                        .containsOnly(ReviewWithAuthorAndProductResponse.from(review1),
+                                ReviewWithAuthorAndProductResponse.from(review2)),
+                () -> assertThat(reviewWithAuthorAndProductPageResponse.isHasNext()).isTrue(),
                 () -> verify(reviewRepository).findPageBy(pageable)
         );
     }
@@ -438,6 +445,50 @@ class ReviewServiceTest {
                 () -> verify(memberRepository).findById(notAuthorId),
                 () -> verify(reviewRepository).findById(reviewId),
                 () -> verify(reviewRepository, times(0)).delete(review)
+        );
+    }
+
+    @Test
+    void 회원_아이디로_회원이_작성한_리뷰_목록을_조회한다() {
+        // given
+        Member corinne = CORINNE.생성(1L);
+        final Review review1 = REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), corinne);
+        final Review review2 = REVIEW_RATING_1.작성(1L, KEYBOARD_2.생성(1L), corinne);
+
+        Pageable pageable = PageRequest.of(0, 1, Sort.by("createdAt").descending());
+        given(reviewRepository.findPageByMember(any(Member.class), any(PageRequest.class)))
+                .willReturn(new SliceImpl<>(List.of(review2, review1), pageable, false));
+        given(memberRepository.findById(any(Long.class)))
+                .willReturn(Optional.of(corinne));
+
+        // when
+        ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPageByMemberId(1L, pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(reviewWithProductPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsExactly(ReviewWithProductResponse.from(review2),
+                                ReviewWithProductResponse.from(review1)),
+                () -> verify(memberRepository).findById(eq(1L)),
+                () -> verify(reviewRepository).findPageByMember(refEq(corinne), eq(pageable))
+        );
+    }
+
+    @Test
+    void 회원이_작성한_리뷰_목록을_조회할때_회원이_존재하지_않으면_예외를_반환한다() {
+        // given
+        Pageable pageable = PageRequest.of(0, 1, Sort.by("createdAt").descending());
+        given(memberRepository.findById(any(Long.class)))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(
+                        () -> reviewService.findPageByMemberId(1L, pageable)).isInstanceOf(
+                        MemberNotFoundException.class),
+                () -> verify(memberRepository).findById(any(Long.class)),
+                () -> verify(reviewRepository, times(0)).findPageByMember(any(Member.class),
+                        any(PageRequest.class))
         );
     }
 }

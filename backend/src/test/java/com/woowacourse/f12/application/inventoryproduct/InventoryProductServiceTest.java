@@ -26,7 +26,7 @@ import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.dto.response.review.ReviewResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
@@ -187,11 +187,12 @@ class InventoryProductServiceTest {
                 .willReturn(Optional.of(review));
 
         // when
-        ReviewResponse reviewResponse = inventoryProductService.findReviewById(1L);
+        ReviewWithProductResponse reviewResponse = inventoryProductService.findReviewById(1L);
 
         // then
         assertAll(
-                () -> assertThat(reviewResponse).usingRecursiveComparison().isEqualTo(ReviewResponse.from(review)),
+                () -> assertThat(reviewResponse).usingRecursiveComparison()
+                        .isEqualTo(ReviewWithProductResponse.from(review)),
                 () -> verify(inventoryProductRepository).findById(eq(1L)),
                 () -> verify(reviewRepository).findByMemberAndProduct(refEq(CORINNE.생성(1L)), refEq(KEYBOARD_1.생성(1L)))
         );

@@ -26,7 +26,7 @@ import com.woowacourse.f12.dto.response.auth.LoginMemberResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.dto.response.review.ReviewResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -194,7 +194,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
                 "/api/v1/inventoryProducts/" + inventoryProductId + "/reviews");
 
         // then
-        ReviewResponse reviewResponse = response.as(ReviewResponse.class);
+        ReviewWithProductResponse reviewResponse = response.as(ReviewWithProductResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(reviewResponse.getId()).isEqualTo(reviewId)

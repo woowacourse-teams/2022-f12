@@ -21,7 +21,7 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.dto.response.review.ReviewResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.presentation.inventoryproduct.InventoryProductController;
 import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
@@ -129,7 +129,7 @@ class InventoryProductDocumentation extends Documentation {
         // given
         Long inventoryId = 1L;
         given(inventoryProductService.findReviewById(inventoryId))
-                .willReturn(ReviewResponse.from(REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L))));
+                .willReturn(ReviewWithProductResponse.from(REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L))));
 
         // when
         ResultActions resultActions = mockMvc.perform(

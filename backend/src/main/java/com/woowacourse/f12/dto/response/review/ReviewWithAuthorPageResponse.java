@@ -7,21 +7,21 @@ import lombok.Getter;
 import org.springframework.data.domain.Slice;
 
 @Getter
-public class ReviewPageResponse {
+public class ReviewWithAuthorPageResponse {
 
     private final boolean hasNext;
     private final List<ReviewWithAuthorResponse> items;
 
-    private ReviewPageResponse(final boolean hasNext, final List<ReviewWithAuthorResponse> items) {
+    private ReviewWithAuthorPageResponse(final boolean hasNext, final List<ReviewWithAuthorResponse> items) {
         this.hasNext = hasNext;
         this.items = items;
     }
 
-    public static ReviewPageResponse from(Slice<Review> slice) {
+    public static ReviewWithAuthorPageResponse from(Slice<Review> slice) {
         List<ReviewWithAuthorResponse> reviews = slice.getContent()
                 .stream()
                 .map(ReviewWithAuthorResponse::from)
                 .collect(Collectors.toList());
-        return new ReviewPageResponse(slice.hasNext(), reviews);
+        return new ReviewWithAuthorPageResponse(slice.hasNext(), reviews);
     }
 }

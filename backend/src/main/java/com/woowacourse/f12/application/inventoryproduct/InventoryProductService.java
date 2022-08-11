@@ -10,7 +10,7 @@ import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.dto.response.review.ReviewResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
@@ -96,7 +96,7 @@ public class InventoryProductService {
         }
     }
 
-    public ReviewResponse findReviewById(final Long id) {
+    public ReviewWithProductResponse findReviewById(final Long id) {
         final InventoryProduct inventoryProduct = inventoryProductRepository.findById(id)
                 .orElseThrow(InventoryProductNotFoundException::new);
 
@@ -104,6 +104,6 @@ public class InventoryProductService {
                         inventoryProduct.getMember(), inventoryProduct.getProduct())
                 .orElseThrow(ReviewNotFoundException::new);
 
-        return ReviewResponse.from(review);
+        return ReviewWithProductResponse.from(review);
     }
 }

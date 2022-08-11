@@ -1,9 +1,9 @@
 package com.woowacourse.f12.documentation.review;
 
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,8 +25,8 @@ import com.woowacourse.f12.documentation.Documentation;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.presentation.review.ReviewController;
 import java.util.List;
@@ -120,7 +120,7 @@ public class ReviewDocumentation extends Documentation {
         Product product = KEYBOARD_1.생성(1L);
         Member corinne = CORINNE.생성(1L);
         Member mincho = MINCHO.생성(2L);
-        ReviewPageResponse reviewPageResponse = ReviewPageResponse.from(
+        ReviewWithAuthorPageResponse reviewPageResponse = ReviewWithAuthorPageResponse.from(
                 new SliceImpl<>(
                         List.of(REVIEW_RATING_5.작성(1L, product, corinne), REVIEW_RATING_4.작성(2L, product, mincho)),
                         pageable, false));
@@ -147,13 +147,13 @@ public class ReviewDocumentation extends Documentation {
         Product product1 = KEYBOARD_1.생성(1L);
         Product product2 = KEYBOARD_2.생성(2L);
         Member member = CORINNE.생성(1L);
-        ReviewWithProductPageResponse reviewWithProductPageResponse = ReviewWithProductPageResponse.from(
+        ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = ReviewWithAuthorAndProductPageResponse.from(
                 new SliceImpl<>(
                         List.of(REVIEW_RATING_5.작성(1L, product1, member), REVIEW_RATING_4.작성(2L, product2, member)),
                         pageable, false));
 
         given(reviewService.findPage(any(Pageable.class)))
-                .willReturn(reviewWithProductPageResponse);
+                .willReturn(reviewWithAuthorAndProductPageResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/api/v1/reviews?page=0&size=10&sort=createdAt,desc"));

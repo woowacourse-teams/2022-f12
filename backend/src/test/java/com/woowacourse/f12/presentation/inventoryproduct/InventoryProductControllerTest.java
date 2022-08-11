@@ -25,7 +25,7 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.dto.response.review.ReviewResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
@@ -256,7 +256,7 @@ class InventoryProductControllerTest {
         // given
         Long inventoryId = 1L;
         given(inventoryProductService.findReviewById(inventoryId))
-                .willReturn(ReviewResponse.from(REVIEW_RATING_1.작성(KEYBOARD_1.생성(), CORINNE.생성())));
+                .willReturn(ReviewWithProductResponse.from(REVIEW_RATING_1.작성(KEYBOARD_1.생성(), CORINNE.생성())));
 
         // when
         mockMvc.perform(
