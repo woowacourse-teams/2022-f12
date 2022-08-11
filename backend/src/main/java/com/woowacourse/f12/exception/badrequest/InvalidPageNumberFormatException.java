@@ -1,6 +1,6 @@
 package com.woowacourse.f12.exception.badrequest;
 
-import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
+import static com.woowacourse.f12.exception.ExceptionCode.INVALID_SEARCH_PARAM;
 
 public class InvalidPageNumberFormatException extends InvalidValueException {
 

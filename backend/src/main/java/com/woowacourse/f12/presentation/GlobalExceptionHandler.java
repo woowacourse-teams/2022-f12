@@ -1,8 +1,8 @@
 package com.woowacourse.f12.presentation;
 
-import static com.woowacourse.f12.exception.ErrorCode.INTERNAL_SERVER_ERROR;
-import static com.woowacourse.f12.exception.ErrorCode.INVALID_REQUEST_BODY;
-import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
+import static com.woowacourse.f12.exception.ExceptionCode.INTERNAL_SERVER_ERROR;
+import static com.woowacourse.f12.exception.ExceptionCode.INVALID_REQUEST_BODY;
+import static com.woowacourse.f12.exception.ExceptionCode.INVALID_SEARCH_PARAM;
 
 import com.woowacourse.f12.dto.response.ExceptionResponse;
 import com.woowacourse.f12.exception.CustomException;
@@ -32,13 +32,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleNotFoundException(final NotFoundException e) {
-        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getExceptionCode().getValue(), e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionResponse.from(e));
     }
 
     @ExceptionHandler(InvalidValueException.class)
     public ResponseEntity<ExceptionResponse> handleInvalidValueException(final InvalidValueException e) {
-        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getExceptionCode().getValue(), e.getMessage());
         return ResponseEntity.badRequest().body(ExceptionResponse.from(e));
     }
 
@@ -68,13 +68,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ExceptionResponse> handleUnauthorizedException(final UnauthorizedException e) {
-        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getExceptionCode().getValue(), e.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ExceptionResponse.from(e));
     }
 
     @ExceptionHandler(ForbiddenMemberException.class)
     public ResponseEntity<ExceptionResponse> handleForbiddenMemberException(final ForbiddenMemberException e) {
-        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getExceptionCode().getValue(), e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ExceptionResponse.from(e));
     }
 

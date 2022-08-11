@@ -1,6 +1,6 @@
 package com.woowacourse.f12.exception.badrequest;
 
-import static com.woowacourse.f12.exception.ErrorCode.BLANK_CONTENT;
+import static com.woowacourse.f12.exception.ExceptionCode.BLANK_CONTENT;
 
 public class BlankContentException extends InvalidValueException {
 

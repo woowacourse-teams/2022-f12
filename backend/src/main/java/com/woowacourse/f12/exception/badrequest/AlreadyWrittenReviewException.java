@@ -1,6 +1,6 @@
 package com.woowacourse.f12.exception.badrequest;
 
-import static com.woowacourse.f12.exception.ErrorCode.DUPLICATED_CONTENT;
+import static com.woowacourse.f12.exception.ExceptionCode.DUPLICATED_CONTENT;
 
 public class AlreadyWrittenReviewException extends InvalidValueException {
 

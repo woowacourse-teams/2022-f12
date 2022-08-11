@@ -1,7 +1,7 @@
 package com.woowacourse.f12.exception.badrequest;
 
 
-import static com.woowacourse.f12.exception.ErrorCode.NOT_ENOUGH_DATA;
+import static com.woowacourse.f12.exception.ExceptionCode.NOT_ENOUGH_DATA;
 
 public class InvalidProfileArgumentException extends InvalidValueException {
 
