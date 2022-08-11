@@ -3,6 +3,7 @@ package com.woowacourse.f12.acceptance;
 import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PUT_요청을_보낸다;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
@@ -222,6 +223,32 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
                 "/api/v1/members/" + loginResponse.getMember().getId() + "/reviews?page=0&size=2&sort=createdAt,desc");
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(ReviewWithProductPageResponse.class).isHasNext()).isFalse(),
+                () -> assertThat(response.as(ReviewWithProductPageResponse.class).getItems())
+                        .extracting("id")
+                        .containsExactly(reviewId2, reviewId1)
+        );
+    }
+
+    @Test
+    void 내_리뷰_목록을_최신순으로_조회한다() {
+        // given
+        Product product1 = 키보드를_저장한다(KEYBOARD_1.생성());
+        Product product2 = 키보드를_저장한다(KEYBOARD_2.생성());
+        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        String token = loginResponse.getToken();
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token));
+        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product2.getId(), token));
+
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다(
+                "/api/v1/members/me/reviews?page=0&size=2&sort=createdAt,desc", token);
 
         // then
         assertAll(

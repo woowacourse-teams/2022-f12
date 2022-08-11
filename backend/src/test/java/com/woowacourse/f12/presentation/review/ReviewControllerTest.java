@@ -672,4 +672,28 @@ class ReviewControllerTest {
         verify(reviewService).findPageByMemberId(memberId,
                 PageRequest.of(0, 2, Sort.by("createdAt", "id").descending()));
     }
+
+    @Test
+    void 내_리뷰_목록_조회_성공() throws Exception {
+        // given
+        Long memberId = 1L;
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.findPageByMemberId(anyLong(), any(Pageable.class)))
+                .willReturn(ReviewWithProductPageResponse.from(
+                        new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(memberId))))));
+
+        // when
+        mockMvc.perform(get("/api/v1/members/me/reviews?size=2&page=0&sort=createdAt,desc")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(reviewService).findPageByMemberId(memberId,
+                PageRequest.of(0, 2, Sort.by("createdAt", "id").descending()));
+    }
 }
