@@ -6,8 +6,10 @@ import HeaderLogoImage from '@/assets/HeaderLogo.svg';
 
 function HeaderLogo() {
   return (
-    <S.Container to={ROUTES.HOME}>
-      <HeaderLogoImage />
+    <S.Container>
+      <S.LinkWrapper to={ROUTES.HOME}>
+        <HeaderLogoImage />
+      </S.LinkWrapper>
     </S.Container>
   );
 }
