@@ -244,4 +244,35 @@ public class ReviewDocumentation extends Documentation {
                         document("reviews-page-get-by-memberId")
                 );
     }
+
+    @Test
+    void 내_리뷰_목록_조회_API_문서화() throws Exception {
+        // given
+        Long memberId = 1L;
+        PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.findPageByMemberId(anyLong(), any(Pageable.class)))
+                .willReturn(ReviewWithProductPageResponse.from(
+                        new SliceImpl<>(
+                                List.of(REVIEW_RATING_4.작성(2L, KEYBOARD_2.생성(2L), CORINNE.생성(memberId)),
+                                        REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(memberId))), pageable,
+                                false)
+                ));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/me/reviews?size=2&page=0&sort=createdAt,desc")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("reviews-page-get-own")
+                );
+    }
 }
