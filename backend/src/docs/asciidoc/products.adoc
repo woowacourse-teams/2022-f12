@@ -7,6 +7,11 @@ operation::products-get[snippets='http-request,http-response']
 
 === 제품 목록 페이지 조회
 
+==== 검색 조건
+
+- 제품 이름을 query로 하여 검색
+- 없을 경우 모든 제품 조회
+
 ==== category 조건
 
 - `keyboard` (키보드)
