@@ -16,8 +16,8 @@ import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryExc
 import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
 import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,12 +100,10 @@ public class InventoryProductService {
         final InventoryProduct inventoryProduct = inventoryProductRepository.findById(id)
                 .orElseThrow(InventoryProductNotFoundException::new);
 
-        final Optional<Review> review = reviewRepository.findByMemberAndProduct(
-                inventoryProduct.getMember(), inventoryProduct.getProduct());
+        final Review review = reviewRepository.findByMemberAndProduct(
+                        inventoryProduct.getMember(), inventoryProduct.getProduct())
+                .orElseThrow(ReviewNotFoundException::new);
 
-        if (review.isEmpty()) {
-            return null;
-        }
-        return ReviewResponse.from(review.get());
+        return ReviewResponse.from(review);
     }
 }

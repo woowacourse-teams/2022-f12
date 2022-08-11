@@ -31,6 +31,7 @@ import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategory
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
 import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
+import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import com.woowacourse.f12.support.ReviewFixtures;
 import java.util.List;
 import java.util.Optional;
@@ -180,10 +181,10 @@ class InventoryProductServiceTest {
     void 인벤토리_아이디로_리뷰를_조회한다() {
         // given
         Review review = ReviewFixtures.REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L));
-        given(reviewRepository.findByMemberAndProduct(any(Member.class), any(Product.class)))
-                .willReturn(Optional.of(review));
         given(inventoryProductRepository.findById(any(Long.class)))
                 .willReturn(Optional.of(SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L))));
+        given(reviewRepository.findByMemberAndProduct(any(Member.class), any(Product.class)))
+                .willReturn(Optional.of(review));
 
         // when
         ReviewResponse reviewResponse = inventoryProductService.findReviewById(1L);
@@ -208,6 +209,24 @@ class InventoryProductServiceTest {
                         .isInstanceOf(InventoryProductNotFoundException.class),
                 () -> verify(inventoryProductRepository).findById(eq(1L)),
                 () -> verify(reviewRepository, times(0)).findByMemberAndProduct(any(Member.class), any(Product.class))
+        );
+    }
+
+    @Test
+    void 인벤토리_아이디로_리뷰를_조회할때_리뷰가_존재하지_않는다면_예외가_발생한다() {
+        //given
+        Review review = ReviewFixtures.REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L));
+        given(inventoryProductRepository.findById(any(Long.class)))
+                .willReturn(Optional.of(SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L))));
+        given(reviewRepository.findByMemberAndProduct(any(Member.class), any(Product.class)))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> inventoryProductService.findReviewById(1L)).isInstanceOf(
+                        ReviewNotFoundException.class),
+                () -> verify(inventoryProductRepository).findById(eq(1L)),
+                () -> verify(reviewRepository).findByMemberAndProduct(refEq(CORINNE.생성(1L)), refEq(KEYBOARD_1.생성(1L)))
         );
     }
 }
