@@ -30,21 +30,56 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-  
+
       - name: grant execute permission for gradlew
         run: chmod +x gradlew
-      
+
       - name: gradle build
         run: ./gradlew build
-      
+
       - name: publish unit test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           files: backend/build/test-results/test/TEST-*.xml
-      
+
       - name: add comments to a pull request
         uses: mikepenz/action-junit-report@v3
         if: always()
         with:
           report_paths: backend/build/test-results/test/TEST-*.xml
+  analysis:
+    runs-on: ubuntu-latest
+    env:
+      SONARQUBE_PROJECT_KEY: F12
+      SONARQUBE_URL: ${{ secrets.SONARQUBE_URL }}
+      SONARQUBE_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_BRANCH: ${{ github.event.pull_request.branch }}
+    steps:
+      - name: checkout source code
+        uses: actions/checkout@v2
+
+      - name: grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: sonaqube Analysis
+        run: ./gradlew test sonarqube
+          -Dsonar.host.url=${{ env.SONARQUBE_URL }}
+          -Dsonar.projectKey=${{ env.SONARQUBE_PROJECT_KEY }}
+          -Dsonar.projectName=${{ env.SONARQUBE_PROJECT_KEY }}-${{ env.PR_NUMBER }}
+          -Dsonar.login=${{ env.SONARQUBE_TOKEN }}
+
+      - name: comment Sonarqube URL
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const { SONARQUBE_PROJECT_KEY, SONARQUBE_URL, PR_NUMBER } = process.env
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🚧 Analysis Results
+            ${ SONARQUBE_PROJECT_KEY }-${ PR_NUMBER }
+            [분석 결과 확인하기](${SONARQUBE_URL})`
+            })
