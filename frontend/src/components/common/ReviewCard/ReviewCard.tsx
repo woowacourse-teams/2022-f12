@@ -63,10 +63,7 @@ function ReviewCard({
         <S.Wrapper>
           <S.UserWrapper>
             <S.ProfileLink to={`${ROUTES.PROFILE}/${author.id}`}>
-              <UserNameTag
-                imageUrl={author.imageUrl}
-                username={author.gitHubId}
-              />
+              <UserNameTag imageUrl={author.imageUrl} username={author.gitHubId} />
             </S.ProfileLink>
             {!product && loginUserGithubId === author.gitHubId && (
               <>

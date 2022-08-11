@@ -8,11 +8,7 @@ type Props = {
   handleConfirm?: () => void;
 };
 
-function Modal({
-  handleClose,
-  handleConfirm,
-  children,
-}: PropsWithChildren<Props>) {
+function Modal({ handleClose, handleConfirm, children }: PropsWithChildren<Props>) {
   const [scrollOffset, setScrollOffset] = useState(0);
 
   useEffect(() => {
@@ -29,10 +25,7 @@ function Modal({
       <S.Backdrop onClick={handleClose} />
       <S.Content>
         {children}
-        <ActionButtons
-          handleClose={handleClose}
-          handleConfirm={handleConfirm}
-        />
+        <ActionButtons handleClose={handleClose} handleConfirm={handleConfirm} />
       </S.Content>
     </S.Container>,
     document.querySelector('#root')
@@ -56,9 +49,7 @@ function ActionButtons({ handleClose, handleConfirm }: ActionButtonProps) {
   return (
     <S.ButtonContainer>
       <S.CloseButton onClick={handleClose}>닫기</S.CloseButton>
-      {handleConfirm && (
-        <S.ConfirmButton onClick={handleConfirm}>확인</S.ConfirmButton>
-      )}
+      {handleConfirm && <S.ConfirmButton onClick={handleConfirm}>확인</S.ConfirmButton>}
     </S.ButtonContainer>
   );
 }

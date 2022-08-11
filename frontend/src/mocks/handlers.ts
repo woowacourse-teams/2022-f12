@@ -30,9 +30,7 @@ const getKeyboards = (req, res, ctx) => {
 const getKeyboard = (req, res, ctx) => {
   const { id } = req.params;
 
-  const response = products.find(
-    ({ id: productId }) => productId === Number(id)
-  );
+  const response = products.find(({ id: productId }) => productId === Number(id));
 
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
@@ -212,10 +210,7 @@ export const handlers = [
   rest.patch(`${BASE_URL}${ENDPOINTS.ME}`, submitAdditionalInfo),
   // 아래 핸들러 순서 유의미 => getOtherMemberInfo보다 아래에 위치하면 요청 matching에서 오류 발생
   rest.get(`${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`, getInventoryProducts),
-  rest.patch(
-    `${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`,
-    patchInventoryProducts
-  ),
+  rest.patch(`${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`, patchInventoryProducts),
 
   rest.get(`${BASE_URL}${ENDPOINTS.MEMBERS}`, searchMember),
   rest.get(`${BASE_URL}${ENDPOINTS.MEMBERS}/:memberId`, getOtherMemberInfo),
@@ -232,15 +227,9 @@ export const handlers = [
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
     postReviewByProductId
   ),
-  rest.get(
-    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
-    getReviewsByProductId
-  ),
+  rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`, getReviewsByProductId),
   rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS}`, getReviews),
-  rest.put(
-    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
-    updateReviewByReviewId
-  ),
+  rest.put(`${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`, updateReviewByReviewId),
   rest.delete(
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
     deleteReviewByReviewId

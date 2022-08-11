@@ -24,11 +24,7 @@ const Template = (args) => {
     <Container ref={containerRef}>
       <button onClick={toggleOpen}>열기</button>
       {isOpen && (
-        <BottomSheet
-          {...args}
-          handleClose={toggleOpen}
-          container={containerRef}
-        >
+        <BottomSheet {...args} handleClose={toggleOpen} container={containerRef}>
           te
         </BottomSheet>
       )}

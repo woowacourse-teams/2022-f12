@@ -7,9 +7,7 @@ export default {
   title: 'Components/BarGraph',
 };
 
-const Template: ComponentStory<typeof BarGraph> = (args) => (
-  <BarGraph {...args} />
-);
+const Template: ComponentStory<typeof BarGraph> = (args) => <BarGraph {...args} />;
 
 const statistics = {
   careerLevel: {

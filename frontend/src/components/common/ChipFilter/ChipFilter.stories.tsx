@@ -7,9 +7,7 @@ export default {
   title: 'Components/ChipFilter',
 };
 
-const Template: ComponentStory<typeof ChipFilter> = (args) => (
-  <ChipFilter {...args} />
-);
+const Template: ComponentStory<typeof ChipFilter> = (args) => <ChipFilter {...args} />;
 
 export const Clicked = () => (
   <Template fontSize={10} clicked={true}>

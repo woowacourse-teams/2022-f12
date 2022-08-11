@@ -24,9 +24,7 @@ function ReviewForm({
   const [content, setContent] = useState(
     savedContent ? savedContent : initialState.content
   );
-  const [rating, setRating] = useState(
-    savedRating ? savedRating : initialState.rating
-  );
+  const [rating, setRating] = useState(savedRating ? savedRating : initialState.rating);
   const [isFormInvalid, setInvalid] = useState(false);
 
   const validateReviewInput = (contentInput: string, ratingInput: number) => {
@@ -38,12 +36,14 @@ function ReviewForm({
     setRating(initialState.rating);
   };
 
-  const handleContentChange: React.ChangeEventHandler<HTMLTextAreaElement> =
-    useCallback(({ target: { value } }) => {
+  const handleContentChange: React.ChangeEventHandler<HTMLTextAreaElement> = useCallback(
+    ({ target: { value } }) => {
       if (value.length > 1000) return;
 
       setContent(value);
-    }, []);
+    },
+    []
+  );
 
   const handleFormChange: React.ChangeEventHandler<HTMLFormElement> = () => {
     setInvalid(false);
@@ -90,9 +90,7 @@ function ReviewForm({
         </S.Label>
         <S.Footer>
           <S.SubmitButton>{isEdit ? '리뷰 수정' : '리뷰 추가'}</S.SubmitButton>
-          {isFormInvalid && (
-            <S.ErrorMessage>모든 항목을 입력해주세요</S.ErrorMessage>
-          )}
+          {isFormInvalid && <S.ErrorMessage>모든 항목을 입력해주세요</S.ErrorMessage>}
         </S.Footer>
       </S.Form>
     </S.Container>

@@ -46,17 +46,9 @@ export const PAGES: Route[] = [
           { path: ROUTES.PRODUCTS, element: <Products /> },
           { path: `${ROUTES.PRODUCT}/:productId`, element: <Product /> },
           { path: `${ROUTES.PROFILE_SEARCH}`, element: <ProfileSearch /> },
-          {
-            path: `${ROUTES.PROFILE}/:memberId`,
-            element: <OtherProfile />,
-          },
+          { path: `${ROUTES.PROFILE}/:memberId`, element: <OtherProfile /> },
 
-          ...USER_ROUTES([
-            {
-              path: ROUTES.PROFILE,
-              element: <Profile />,
-            },
-          ]),
+          ...USER_ROUTES([{ path: ROUTES.PROFILE, element: <Profile /> }]),
 
           ...NON_USER_ROUTES([
             {

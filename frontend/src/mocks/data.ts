@@ -55,8 +55,7 @@ export const members = [
       {
         id: 74,
         name: '마이크로소프트 무선 블루투스 모바일 마우스 3600',
-        imageUrl:
-          'https://image.auction.co.kr/itemimage/22/98/15/229815dc00.jpg',
+        imageUrl: 'https://image.auction.co.kr/itemimage/22/98/15/229815dc00.jpg',
         reviewCount: 1,
         rating: 4.0,
         category: 'mouse',

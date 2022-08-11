@@ -14,8 +14,7 @@ function RegisterCompleteRoute() {
   const userData = useContext(UserDataContext);
   const { showAlert } = useModal();
 
-  const isRegistered =
-    !isLoggedIn || (isLoggedIn && userData?.registerCompleted);
+  const isRegistered = !isLoggedIn || (isLoggedIn && userData?.registerCompleted);
 
   if (!isRegistered) showAlert('추가 정보 입력 후 이용해주세요.');
 

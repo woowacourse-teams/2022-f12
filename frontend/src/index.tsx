@@ -20,11 +20,7 @@ if (process.env.NODE_ENV === 'development' && !window.Cypress) {
       const urlPath = req.url.pathname;
 
       if (!urlPath.startsWith('http://localhost:8080')) return;
-      console.warn(
-        'Found an unhandled %s request to %s',
-        req.method,
-        req.url.href
-      );
+      console.warn('Found an unhandled %s request to %s', req.method, req.url.href);
     },
   });
 }

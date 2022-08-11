@@ -7,9 +7,7 @@ export default {
   title: 'Components/ReviewForm',
 };
 
-const Template: ComponentStory<typeof ReviewForm> = (args) => (
-  <ReviewForm {...args} />
-);
+const Template: ComponentStory<typeof ReviewForm> = (args) => <ReviewForm {...args} />;
 
 const handleSubmit = async () => {
   await new Promise(() => {

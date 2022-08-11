@@ -52,9 +52,7 @@ function Products() {
       : DefaultSort.value
   );
   const [keyword, setKeyword] = useState<string>(searchParams.get('keyword'));
-  const [category, setCategory] = useState<string>(
-    searchParams.get('category')
-  );
+  const [category, setCategory] = useState<string>(searchParams.get('category'));
 
   const {
     result: products,
@@ -73,8 +71,7 @@ function Products() {
   });
 
   const title = useMemo(
-    () =>
-      category in CATEGORY ? CATEGORY[category as keyof CATEGORY] : '모든 상품',
+    () => (category in CATEGORY ? CATEGORY[category as keyof CATEGORY] : '모든 상품'),
     [category]
   );
 

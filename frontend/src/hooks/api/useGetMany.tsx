@@ -82,8 +82,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
 
     fetchData()
       .then(({ hasNext, items }) => {
-        !!items &&
-          setData((prevData) => (prevData ? [...prevData, ...items] : items));
+        !!items && setData((prevData) => (prevData ? [...prevData, ...items] : items));
         return hasNext;
       })
       .then((hasNext) => {

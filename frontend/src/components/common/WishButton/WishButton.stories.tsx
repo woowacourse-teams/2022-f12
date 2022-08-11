@@ -7,9 +7,7 @@ export default {
   title: 'Components/WishButton',
 };
 
-const Template: ComponentStory<typeof WishButton> = (args) => (
-  <WishButton {...args} />
-);
+const Template: ComponentStory<typeof WishButton> = (args) => <WishButton {...args} />;
 
 export const added = () => <Template added={true} />;
 export const unAdded = () => <Template added={false} />;

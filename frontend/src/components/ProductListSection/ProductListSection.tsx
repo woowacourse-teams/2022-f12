@@ -40,11 +40,7 @@ function ProductListSection({
       </SectionHeader>
       <S.Wrapper>
         {getNextPage !== undefined ? (
-          <AsyncWrapper
-            fallback={<Loading />}
-            isReady={isReady}
-            isError={isError}
-          >
+          <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
             <InfiniteScroll
               handleContentLoad={getNextPage}
               isLoading={isLoading}
@@ -54,11 +50,7 @@ function ProductListSection({
             </InfiniteScroll>
           </AsyncWrapper>
         ) : (
-          <AsyncWrapper
-            fallback={<Loading />}
-            isReady={isReady}
-            isError={isError}
-          >
+          <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
             <ProductCardList data={data} />
           </AsyncWrapper>
         )}

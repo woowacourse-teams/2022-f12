@@ -13,8 +13,7 @@ export const Container = styled.div<{ triggerAnimation: boolean }>`
   transition: 300ms ease;
 
   ${({ triggerAnimation }) =>
-    !triggerAnimation &&
-    'transform: translateY(-1rem); z-index: -1; opacity: 0'};
+    !triggerAnimation && 'transform: translateY(-1rem); z-index: -1; opacity: 0'};
 
   &::after {
     position: absolute;

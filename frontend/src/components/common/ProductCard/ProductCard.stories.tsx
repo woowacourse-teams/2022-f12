@@ -9,9 +9,7 @@ export default {
   title: 'Components/ProductCard',
 };
 
-const Template: ComponentStory<typeof ProductCard> = (args) => (
-  <ProductCard {...args} />
-);
+const Template: ComponentStory<typeof ProductCard> = (args) => <ProductCard {...args} />;
 
 const defaultArgs = {
   ...products[0],

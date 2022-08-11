@@ -9,9 +9,7 @@ function NoDataPlaceholder() {
         src="https://assets1.lottiefiles.com/private_files/lf30_oqpbtola.json"
         style={{ height: '200px', width: '200px' }}
       />
-      <div style={{ width: '100%', textAlign: 'center' }}>
-        아무것도 찾지 못했어요..
-      </div>
+      <div style={{ width: '100%', textAlign: 'center' }}>아무것도 찾지 못했어요..</div>
     </>
   );
 }

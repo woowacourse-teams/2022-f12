@@ -18,14 +18,8 @@ const Template: ComponentStory<typeof ProductBar> = (args) => (
   </Container>
 );
 
-export const Default = () => (
-  <Template name="아주 예쁜 키보드" barType="default" />
-);
+export const Default = () => <Template name="아주 예쁜 키보드" barType="default" />;
 
-export const Selected = () => (
-  <Template name="아주 예쁜 키보드" barType="selected" />
-);
+export const Selected = () => <Template name="아주 예쁜 키보드" barType="selected" />;
 
-export const Add = () => (
-  <ProductBar.AddButton handleClick={() => alert('클릭 됨')} />
-);
+export const Add = () => <ProductBar.AddButton handleClick={() => alert('클릭 됨')} />;

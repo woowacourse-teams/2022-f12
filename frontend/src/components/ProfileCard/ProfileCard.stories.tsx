@@ -8,9 +8,7 @@ export default {
 };
 
 const Template: ComponentStory<typeof ProfileCard> = (args) => (
-  <div
-    style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-  >
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
     <ProfileCard {...args} />
   </div>
 );

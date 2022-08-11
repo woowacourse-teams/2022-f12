@@ -9,9 +9,7 @@ function ErrorPlaceholder() {
         src="https://assets2.lottiefiles.com/datafiles/AP6eAJ4K8cbfOl9/data.json"
         style={{ height: '200px', width: '200px' }}
       />
-      <div style={{ width: '100%', textAlign: 'center' }}>
-        오류가 발생했어요..
-      </div>
+      <div style={{ width: '100%', textAlign: 'center' }}>오류가 발생했어요..</div>
     </>
   );
 }

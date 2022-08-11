@@ -45,10 +45,7 @@ function HeaderNav() {
     <S.Nav>
       <S.Wrapper>
         <S.FlexLeftUl>
-          <S.TransparentButton
-            onClick={handleCategoryToggle}
-            aria-label="카테고리"
-          >
+          <S.TransparentButton onClick={handleCategoryToggle} aria-label="카테고리">
             카테고리
           </S.TransparentButton>
           <Link to={ROUTES.PRODUCTS}>제품 검색</Link>
@@ -58,9 +55,7 @@ function HeaderNav() {
           {isLoggedIn ? (
             <>
               <S.ProfileLink to={ROUTES.PROFILE}>내 프로필</S.ProfileLink>
-              <S.TransparentButton onClick={handleLogout}>
-                로그아웃
-              </S.TransparentButton>
+              <S.TransparentButton onClick={handleLogout}>로그아웃</S.TransparentButton>
             </>
           ) : (
             <S.LoginButton href={GITHUB_AUTH_URL}>로그인</S.LoginButton>

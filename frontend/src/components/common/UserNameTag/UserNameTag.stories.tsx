@@ -7,9 +7,7 @@ export default {
   title: 'Components/UserNameTag',
 };
 
-const Template: ComponentStory<typeof UserNameTag> = (args) => (
-  <UserNameTag {...args} />
-);
+const Template: ComponentStory<typeof UserNameTag> = (args) => <UserNameTag {...args} />;
 
 const defaultArgs = {
   profileImage: 'https://avatars.githubusercontent.com/u/61769743?v=4',

@@ -7,12 +7,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-function Chip({
-  paddingTopBottom,
-  paddingLeftRight,
-  fontSize,
-  children,
-}: Props) {
+function Chip({ paddingTopBottom, paddingLeftRight, fontSize, children }: Props) {
   return (
     <S.Container
       paddingTopBottom={paddingTopBottom}

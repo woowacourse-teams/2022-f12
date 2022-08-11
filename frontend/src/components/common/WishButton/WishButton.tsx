@@ -8,9 +8,7 @@ type Prop = {
 };
 
 function WishButton({ added }: Prop) {
-  return (
-    <S.Button>{added ? <BookmarkImage /> : <BookmarkEmptyImage />}</S.Button>
-  );
+  return <S.Button>{added ? <BookmarkImage /> : <BookmarkEmptyImage />}</S.Button>;
 }
 
 export default WishButton;

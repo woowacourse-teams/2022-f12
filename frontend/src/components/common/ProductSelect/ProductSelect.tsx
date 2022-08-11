@@ -17,16 +17,13 @@ function ProductSelect({
   inventoryList,
   editable,
 }: Props) {
-  const initSelected = Object.entries(inventoryList).reduce(
-    (obj, [key, products]) => {
-      const selectedItem = products.find(({ selected }) => selected);
-      if (!selectedItem) {
-        return { ...obj };
-      }
-      return { ...obj, [key]: selectedItem.id };
-    },
-    {}
-  );
+  const initSelected = Object.entries(inventoryList).reduce((obj, [key, products]) => {
+    const selectedItem = products.find(({ selected }) => selected);
+    if (!selectedItem) {
+      return { ...obj };
+    }
+    return { ...obj, [key]: selectedItem.id };
+  }, {});
   const [isEditMode, setEditMode] = useState(false);
   const [selectedState, setSelectedState] = useState(initSelected);
 
@@ -119,8 +116,7 @@ function ProductSelect({
         ))
       ) : (
         <S.NoContentMessage>
-          등록된 장비가 없어요!{' '}
-          {editable && '수정하기로 대표 장비를 등록해주세요!'}
+          등록된 장비가 없어요! {editable && '수정하기로 대표 장비를 등록해주세요!'}
         </S.NoContentMessage>
       )}
     </S.Container>

@@ -1,9 +1,6 @@
 import styled, { DefaultTheme } from 'styled-components';
 
-const borderByType = (
-  theme: DefaultTheme,
-  type: 'default' | 'selected' | 'add'
-) => {
+const borderByType = (theme: DefaultTheme, type: 'default' | 'selected' | 'add') => {
   if (type === 'default') return `2px solid ${theme.colors.secondary}`;
   if (type === 'selected') return `3px solid ${theme.colors.primary}`;
   if (type === 'add') return `3px dashed ${theme.colors.primary}`;

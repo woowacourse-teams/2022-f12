@@ -64,12 +64,9 @@ function Register() {
     }
   };
 
-  const handleSelectButtonClick: React.MouseEventHandler<HTMLButtonElement> = (
-    e
-  ) => {
+  const handleSelectButtonClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
-    if (!(e.target.value in careerLevel) && !(e.target.value in jobType))
-      return;
+    if (!(e.target.value in careerLevel) && !(e.target.value in jobType)) return;
 
     if (step === 1) {
       setAdditionalInfo({
@@ -86,9 +83,7 @@ function Register() {
 
   const handleAdditionalInfoSubmit = async (input: UserInfo) => {
     const confirmation = await getConfirm(
-      `${careerLevel[input.careerLevel]}, ${
-        jobType[input.jobType]
-      } 개발자이신가요?`
+      `${careerLevel[input.careerLevel]}, ${jobType[input.jobType]} 개발자이신가요?`
     );
     if (confirmation) {
       patchAdditionalInfo(input).catch((error) => {
@@ -149,18 +144,14 @@ function Register() {
             )}
           {step === 3 && (
             <>
-              <S.ConfirmInfo>
-                {careerLevel[additionalInfo.careerLevel]}
-              </S.ConfirmInfo>
+              <S.ConfirmInfo>{careerLevel[additionalInfo.careerLevel]}</S.ConfirmInfo>
               <S.ConfirmInfo>{jobType[additionalInfo.jobType]}</S.ConfirmInfo>
             </>
           )}
         </S.FlexGapWrapper>
         <S.FlexRowWrapper>
           {step === 3 && (
-            <S.EditButton onClick={handleEditButtonClick}>
-              수정하기
-            </S.EditButton>
+            <S.EditButton onClick={handleEditButtonClick}>수정하기</S.EditButton>
           )}
           <S.ConfirmButton onClick={handleConfirmButtonClick}>
             {step === 1 || step === 2 ? '선택 완료' : '제출하기'}

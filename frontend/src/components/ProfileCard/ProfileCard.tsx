@@ -69,18 +69,26 @@ function ProfileCard({
     setPositionX(positionX + DISTANCE_DIFFERENCE * -1);
   };
 
-  const keyboard = profileProducts.find(
-    (product) => product.category === 'keyboard'
-  ) || { id: null, imageUrl: null, name: '키보드' };
-  const mouse = profileProducts.find(
-    (product) => product.category === 'mouse'
-  ) || { id: null, imageUrl: null, name: '마우스' };
-  const monitor = profileProducts.find(
-    (product) => product.category === 'monitor'
-  ) || { id: null, imageUrl: null, name: '모니터' };
-  const stand = profileProducts.find(
-    (product) => product.category === 'stand'
-  ) || { id: null, imageUrl: null, name: '거치대' };
+  const keyboard = profileProducts.find((product) => product.category === 'keyboard') || {
+    id: null,
+    imageUrl: null,
+    name: '키보드',
+  };
+  const mouse = profileProducts.find((product) => product.category === 'mouse') || {
+    id: null,
+    imageUrl: null,
+    name: '마우스',
+  };
+  const monitor = profileProducts.find((product) => product.category === 'monitor') || {
+    id: null,
+    imageUrl: null,
+    name: '모니터',
+  };
+  const stand = profileProducts.find((product) => product.category === 'stand') || {
+    id: null,
+    imageUrl: null,
+    name: '거치대',
+  };
   const representativeEquipments = [keyboard, mouse, monitor, stand].sort(
     (prevEquipment, nextEquipment) => {
       return nextEquipment?.name.length - prevEquipment?.name.length;
@@ -132,9 +140,7 @@ function ProfileCard({
                   <S.InventoryItem key={gitHubId + String(index)}>
                     <S.ProductImageWrapper>
                       {equipment.id ? (
-                        <Link
-                          to={`${ROUTES.PRODUCT}/${equipment.id as string}`}
-                        >
+                        <Link to={`${ROUTES.PRODUCT}/${equipment.id as string}`}>
                           <S.ProductImage src={equipment.imageUrl as string} />
                         </Link>
                       ) : (
@@ -147,9 +153,7 @@ function ProfileCard({
                       )}
                       <S.ProductTitle>
                         {equipment.id ? (
-                          <Link
-                            to={`${ROUTES.PRODUCT}/${equipment.id as string}`}
-                          >
+                          <Link to={`${ROUTES.PRODUCT}/${equipment.id as string}`}>
                             {equipment.name}
                           </Link>
                         ) : (

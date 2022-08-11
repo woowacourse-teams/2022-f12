@@ -22,10 +22,7 @@ function Rating({ rating, type = '일반', size = 'small' }: Props) {
     <S.Container>
       {Array.from({ length: rating }).map((_, index) => (
         <S.Unit key={index} size={size}>
-          <Heart
-            fill={theme.colors.primary}
-            stroke={theme.colors.primaryDark}
-          />
+          <Heart fill={theme.colors.primary} stroke={theme.colors.primaryDark} />
         </S.Unit>
       ))}
     </S.Container>

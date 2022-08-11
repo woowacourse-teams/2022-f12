@@ -43,17 +43,11 @@ function Profile() {
     headers: { Authorization: `Bearer ${userData?.token}` },
   });
 
-  const keyboardItems = items?.filter(
-    (item) => item.product.category === 'keyboard'
-  );
-  const monitorItems = items?.filter(
-    (item) => item.product.category === 'monitor'
-  );
+  const keyboardItems = items?.filter((item) => item.product.category === 'keyboard');
+  const monitorItems = items?.filter((item) => item.product.category === 'monitor');
   const standItems = items?.filter((item) => item.product.category === 'stand');
   const mouseItems = items?.filter((item) => item.product.category === 'mouse');
-  const softwareItems = items?.filter(
-    (item) => item.product.category === 'software'
-  );
+  const softwareItems = items?.filter((item) => item.product.category === 'software');
 
   const inventoryList = {
     keyboardItems,

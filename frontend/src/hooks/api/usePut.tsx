@@ -12,10 +12,7 @@ type Props = {
   headers: null | AxiosRequestHeaders;
 };
 
-function usePut<T>({
-  url,
-  headers,
-}: Props): (input: T, id: number) => Promise<void> {
+function usePut<T>({ url, headers }: Props): (input: T, id: number) => Promise<void> {
   const userData = useContext(UserDataContext);
 
   const { axiosInstance } = useAxios();

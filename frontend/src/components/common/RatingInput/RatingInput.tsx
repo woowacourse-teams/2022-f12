@@ -44,10 +44,7 @@ function RatingInput({ rating = null, setRating }: Props) {
             {ratingIndex > (hoverRating ?? rating) ? (
               <Heart stroke={theme.colors.primaryDark} />
             ) : (
-              <Heart
-                stroke={theme.colors.primaryDark}
-                fill={theme.colors.primary}
-              />
+              <Heart stroke={theme.colors.primaryDark} fill={theme.colors.primary} />
             )}
           </S.EmptyButton>
         );

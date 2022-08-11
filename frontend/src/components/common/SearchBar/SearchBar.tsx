@@ -8,9 +8,7 @@ type Props = {
 };
 
 function SearchBar({ searchInput, setSearchInput }: Props) {
-  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = ({
-    target,
-  }) => {
+  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = ({ target }) => {
     if (!(target instanceof HTMLInputElement)) return;
     const newValue = target.value === '' ? null : target.value;
     setSearchInput(newValue);
@@ -18,11 +16,7 @@ function SearchBar({ searchInput, setSearchInput }: Props) {
 
   return (
     <S.Container>
-      <S.Input
-        type="text"
-        value={searchInput || ''}
-        onChange={handleInputChange}
-      />
+      <S.Input type="text" value={searchInput || ''} onChange={handleInputChange} />
       <S.Button>
         <SearchImage />
       </S.Button>

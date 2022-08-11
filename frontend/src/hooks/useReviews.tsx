@@ -29,13 +29,8 @@ type ReturnTypeWithProductId = ReturnTypeWithoutProductId & {
 };
 type ReturnType = ReturnTypeWithoutProductId & ReturnTypeWithProductId;
 
-function useReviews({
-  size,
-}: PropsWithoutProductId): ReturnTypeWithoutProductId;
-function useReviews({
-  size,
-  productId,
-}: PropsWithProductId): ReturnTypeWithProductId;
+function useReviews({ size }: PropsWithoutProductId): ReturnTypeWithoutProductId;
+function useReviews({ size, productId }: PropsWithProductId): ReturnTypeWithProductId;
 function useReviews({ size, productId }: Props): ReturnType {
   const [data] = useSessionStorage<UserData>('userData');
   const {

@@ -10,9 +10,7 @@ type Props = {
 };
 
 function SearchFilter({ title, value, setValue, options }: Props) {
-  const handleFilterClick: React.MouseEventHandler<HTMLButtonElement> = ({
-    target,
-  }) => {
+  const handleFilterClick: React.MouseEventHandler<HTMLButtonElement> = ({ target }) => {
     if (!(target instanceof HTMLButtonElement)) return;
     if (target.value === value) {
       setValue(null);
