@@ -27,6 +27,7 @@ import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.presentation.review.ReviewController;
 import java.util.List;
@@ -216,6 +217,31 @@ public class ReviewDocumentation extends Documentation {
                 .andDo(print())
                 .andDo(
                         document("reviews-delete")
+                );
+    }
+
+    @Test
+    void 회원_아이디로_리뷰_목록_조회_API_문서화() throws Exception {
+        // given
+        Long memberId = 1L;
+        PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+        given(reviewService.findPageByMemberId(anyLong(), any(Pageable.class)))
+                .willReturn(ReviewWithProductPageResponse.from(
+                        new SliceImpl<>(
+                                List.of(REVIEW_RATING_4.작성(2L, KEYBOARD_2.생성(2L), CORINNE.생성(memberId)),
+                                        REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(memberId))), pageable,
+                                false)
+                ));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/" + memberId + "/reviews?size=2&page=0&sort=createdAt,desc"));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("reviews-page-get-by-memberId")
                 );
     }
 }
