@@ -156,6 +156,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/833/414/img/15414833_1.jpg?shrink=330:330&_v=20211013110445',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 4,
@@ -164,6 +165,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/701/350/img/16350701_1.jpg?shrink=330:330&_v=20220209091825',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 5,
@@ -172,6 +174,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/637/448/img/15448637_1.jpg?shrink=330:330&_v=20211015164726',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 6,
@@ -180,6 +183,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/701/079/img/17079701_1.jpg?shrink=330:330&_v=20220519094414',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 7,
@@ -188,6 +192,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 8,
@@ -196,6 +201,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/631/093/img/16093631_1.jpg?shrink=500:500&_v=20220323142356',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 9,
@@ -204,6 +210,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/700/573/img/16573700_3.jpg?shrink=500:500&_v=20220311152649',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 10,
@@ -212,6 +219,7 @@ export const products = [
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-mechanical/gallery/mx-mechanical-keyboard-top-view-graphite-kor.png?v=1',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 11,
@@ -220,6 +228,7 @@ export const products = [
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/signature-k855/gallery/signature-k855-graphite-kor-gallery-1.png?v=1',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 12,
@@ -228,6 +237,7 @@ export const products = [
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-keys-mini-for-mac/gallery/kor/mx-keys-mini-top-mac-kor.png?v=1',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 13,
@@ -236,6 +246,7 @@ export const products = [
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-mechanical/gallery/mx-mechanical-keyboard-top-view-graphite-kor.png?v=1',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 14,
@@ -244,6 +255,7 @@ export const products = [
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-mechanical/gallery/mx-mechanical-keyboard-top-view-graphite-kor.png?v=1',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 15,
@@ -252,6 +264,7 @@ export const products = [
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-mechanical/gallery/mx-mechanical-keyboard-top-view-graphite-kor.png?v=1',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 16,
@@ -260,6 +273,7 @@ export const products = [
       'https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/keyboards/mx-mechanical/gallery/mx-mechanical-keyboard-top-view-graphite-kor.png?v=1',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 17,
@@ -268,6 +282,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/479/221/img/5221479_1.jpg?shrink=500:500&_v=20220216130109',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 18,
@@ -276,6 +291,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/947/128/img/5128947_1.jpg?shrink=500:500&_v=20210930103632',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 19,
@@ -284,6 +300,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/466/771/img/6771466_1.jpg?shrink=500:500&_v=20190805150045',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 20,
@@ -292,6 +309,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/799/229/img/15229799_1.jpg?shrink=500:500&_v=20210913112802',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 21,
@@ -300,6 +318,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/321/248/img/3248321_1.jpg?shrink=500:500&_v=20190806133811',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 22,
@@ -308,6 +327,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/574/376/img/12376574_1.jpg?shrink=500:500&_v=20210930110302',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 23,
@@ -316,6 +336,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/871/242/img/9242871_1.jpg?shrink=500:500&_v=20200107105606',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 24,
@@ -324,6 +345,7 @@ export const products = [
       'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcQiEvjOVYbzG3CDnczx9tKYwV47j9HGwFaz1pReYIypkyUnxUoJKdOvuotL0JvkJkc1UMcbHhrABw&usqp=CAc',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 25,
@@ -332,6 +354,7 @@ export const products = [
       'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcQwUgGiKjSCM19UGv0oAuT2R8AtaTTmVfEV-MsxVj_8I-EuPn4JiXYhAadKjzBJHLjGWU6TKZjFfg&usqp=CAc',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 26,
@@ -340,6 +363,7 @@ export const products = [
       'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTXb4d46RawSgTA9pWb6jvPR9s77elV8XKgwvsVb6n1MLWp57yR_MNrvWkTt9HUlnCWyHxbg9QQ0A&usqp=CAc',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 27,
@@ -348,6 +372,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/979/938/img/7938979_1.jpg?shrink=130:130&_v=20190916165446',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 28,
@@ -356,6 +381,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/445/440/img/14440445_1.jpg?shrink=130:130&_v=20210610172313',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 29,
@@ -364,6 +390,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/237/828/img/14828237_1.jpg?shrink=130:130&_v=20220414111601',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 30,
@@ -372,6 +399,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/557/640/img/11640557_1.jpg?shrink=130:130&_v=20200625090716',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 31,
@@ -380,6 +408,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/064/357/img/16357064_1.jpg?shrink=330:330&_v=20220602181027',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 32,
@@ -388,6 +417,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 33,
@@ -396,6 +426,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/640/413/img/14413640_1.jpg?shrink=330:330&_v=20220502170755',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 34,
@@ -404,6 +435,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/676/071/img/17071676_1.jpg?shrink=330:330&_v=20220518123903',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 35,
@@ -412,6 +444,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/106/908/img/14908106_1.jpg?shrink=330:330&_v=20210803164239',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 36,
@@ -420,6 +453,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/224/291/img/5291224_1.jpg?shrink=330:330&_v=20210520103656',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 37,
@@ -428,6 +462,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/018/011/img/5011018_1.jpg?shrink=330:330&_v=20211020171107',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
   {
     id: 38,
@@ -436,6 +471,7 @@ export const products = [
       'http://img.danawa.com/prod_img/500000/440/246/img/12246440_1.jpg?shrink=330:330&_v=20210813173050',
     rating: 0.0,
     reviewCount: 3,
+    category: 'keyboard',
   },
 ];
 
