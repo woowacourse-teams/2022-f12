@@ -7,6 +7,7 @@ import {
 } from '@/contexts/LoginContextProvider';
 
 import useGet from '@/hooks/api/useGet';
+import useModal from '@/hooks/useModal';
 
 import { ENDPOINTS } from '@/constants/api';
 
@@ -18,8 +19,9 @@ type Return = {
 
 function useAuth(): Return {
   const setUserData = useContext(SetUserDataContext);
-  const removeUserData = useContext(LogoutContext);
+  const handleLogout = useContext(LogoutContext);
   const isLoggedIn = useContext(IsLoggedInContext);
+  const { showAlert, getConfirm } = useModal();
 
   const fetchUserData = useGet<UserData>({ url: ENDPOINTS.LOGIN });
 
@@ -28,8 +30,16 @@ function useAuth(): Return {
     setUserData(userData);
   };
 
-  const logout = () => {
-    removeUserData();
+  const logout = async () => {
+    const confirmation = await getConfirm('로그아웃 하시겠습니까?');
+    if (confirmation) {
+      try {
+        handleLogout();
+        showAlert('로그아웃이 완료되었습니다.');
+      } catch {
+        showAlert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+      }
+    }
   };
 
   return { login, logout, isLoggedIn };
