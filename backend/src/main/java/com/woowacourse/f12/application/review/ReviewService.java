@@ -9,7 +9,8 @@ import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
@@ -83,10 +84,10 @@ public class ReviewService {
         inventoryProductRepository.save(inventoryProduct);
     }
 
-    public ReviewPageResponse findPageByProductId(final Long productId, final Pageable pageable) {
+    public ReviewWithAuthorPageResponse findPageByProductId(final Long productId, final Pageable pageable) {
         validateKeyboardExists(productId);
         final Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
-        return ReviewPageResponse.from(page);
+        return ReviewWithAuthorPageResponse.from(page);
     }
 
     private void validateKeyboardExists(final Long productId) {
@@ -95,9 +96,9 @@ public class ReviewService {
         }
     }
 
-    public ReviewWithProductPageResponse findPage(final Pageable pageable) {
+    public ReviewWithAuthorAndProductPageResponse findPage(final Pageable pageable) {
         final Slice<Review> page = reviewRepository.findPageBy(pageable);
-        return ReviewWithProductPageResponse.from(page);
+        return ReviewWithAuthorAndProductPageResponse.from(page);
     }
 
     @Transactional
@@ -126,5 +127,13 @@ public class ReviewService {
         if (!target.isWrittenBy(member)) {
             throw new NotAuthorException();
         }
+    }
+
+    public ReviewWithProductPageResponse findPageByMemberId(final Long memberId, final Pageable pageable) {
+        final Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+        final Slice<Review> page = reviewRepository.findPageByMember(member, pageable);
+
+        return ReviewWithProductPageResponse.from(page);
     }
 }

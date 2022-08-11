@@ -1,8 +1,10 @@
 package com.woowacourse.f12.documentation.inventoryproduct;
 
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -19,6 +21,7 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.presentation.inventoryproduct.InventoryProductController;
 import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
@@ -119,5 +122,23 @@ class InventoryProductDocumentation extends Documentation {
         resultActions.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("inventoryProducts-get-by-memberId"));
+    }
+
+    @Test
+    void 인벤토리_아이디로_리뷰를_조회하는_API_문서화() throws Exception {
+        // given
+        Long inventoryId = 1L;
+        given(inventoryProductService.findReviewById(inventoryId))
+                .willReturn(ReviewWithProductResponse.from(REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L))));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/inventoryProducts/" + inventoryId + "/reviews")
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("reviews-get-by-inventoryProductId"));
     }
 }

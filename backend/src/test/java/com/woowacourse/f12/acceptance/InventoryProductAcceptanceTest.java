@@ -7,6 +7,7 @@ import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로�
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
 import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.GitHubProfileFixtures.MINCHO_GITHUB;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
@@ -25,6 +26,7 @@ import com.woowacourse.f12.dto.response.auth.LoginMemberResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -164,6 +166,38 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
                         .usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(InventoryProductResponse.from(savedSelectedInventoryProduct),
                                 InventoryProductResponse.from(savedUnselectedInventoryProduct))
+        );
+    }
+
+    @Test
+    void 인벤토리_아이디로_리뷰를_조회한다() {
+        // given
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+        Product keyboard = 제품을_저장한다(KEYBOARD_1.생성());
+
+        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
+        String token = firstLoginResponse.getToken();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+
+        ExtractableResponse<Response> reviewSaveResponse = REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
+        Long reviewId = Long.parseLong(reviewSaveResponse.header("Location").split("/")[4]);
+
+        ExtractableResponse<Response> inventoryProductResponse = 로그인된_상태로_GET_요청을_보낸다(
+                "/api/v1/members/inventoryProducts", token);
+        Long inventoryProductId = inventoryProductResponse.as(InventoryProductsResponse.class)
+                .getItems()
+                .get(0)
+                .getId();
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/inventoryProducts/" + inventoryProductId + "/reviews");
+
+        // then
+        ReviewWithProductResponse reviewResponse = response.as(ReviewWithProductResponse.class);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(reviewResponse.getId()).isEqualTo(reviewId)
         );
     }
 

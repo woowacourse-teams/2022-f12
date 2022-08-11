@@ -23,7 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.badrequest.BlankContentException;
@@ -372,7 +373,7 @@ class ReviewControllerTest {
     void 전체_리뷰_페이지_조회_성공() throws Exception {
         // given
         given(reviewService.findPage(any(Pageable.class)))
-                .willReturn(ReviewWithProductPageResponse.from(
+                .willReturn(ReviewWithAuthorAndProductPageResponse.from(
                         new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(1L))))));
 
         // when
@@ -388,7 +389,7 @@ class ReviewControllerTest {
     void 특정_상품의_리뷰_페이지_조회() throws Exception {
         // given
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
-                .willReturn(ReviewPageResponse.from(
+                .willReturn(ReviewWithAuthorPageResponse.from(
                         new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(1L))))));
 
         // when
@@ -652,5 +653,47 @@ class ReviewControllerTest {
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(reviewService).delete(reviewId, memberId)
         );
+    }
+
+    @Test
+    void 회원_아이디로_리뷰_목록_조회_성공() throws Exception {
+        // given
+        Long memberId = 1L;
+        given(reviewService.findPageByMemberId(anyLong(), any(Pageable.class)))
+                .willReturn(ReviewWithProductPageResponse.from(
+                        new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(memberId))))));
+
+        // when
+        mockMvc.perform(get("/api/v1/members/" + memberId + "/reviews?size=2&page=0&sort=createdAt,desc"))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(reviewService).findPageByMemberId(memberId,
+                PageRequest.of(0, 2, Sort.by("createdAt", "id").descending()));
+    }
+
+    @Test
+    void 내_리뷰_목록_조회_성공() throws Exception {
+        // given
+        Long memberId = 1L;
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.findPageByMemberId(anyLong(), any(Pageable.class)))
+                .willReturn(ReviewWithProductPageResponse.from(
+                        new SliceImpl<>(List.of(REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), CORINNE.생성(memberId))))));
+
+        // when
+        mockMvc.perform(get("/api/v1/members/me/reviews?size=2&page=0&sort=createdAt,desc")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(reviewService).findPageByMemberId(memberId,
+                PageRequest.of(0, 2, Sort.by("createdAt", "id").descending()));
     }
 }
