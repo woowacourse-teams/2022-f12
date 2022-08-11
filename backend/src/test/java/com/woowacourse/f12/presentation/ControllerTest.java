@@ -1,5 +1,6 @@
-package com.woowacourse.f12.documentation;
+package com.woowacourse.f12.presentation;
 
+import com.woowacourse.f12.RestDocsConfig;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +11,5 @@ import org.springframework.restdocs.RestDocumentationExtension;
 @AutoConfigureRestDocs
 @ExtendWith(RestDocumentationExtension.class)
 @Import({AuthTokenExtractor.class, JwtProvider.class, RestDocsConfig.class})
-public class Documentation {
-
+public class ControllerTest {
 }

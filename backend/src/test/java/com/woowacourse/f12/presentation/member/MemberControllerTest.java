@@ -15,6 +15,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -30,6 +31,7 @@ import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.presentation.ControllerTest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,9 +46,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(MemberController.class)
-class MemberControllerTest {
+class MemberControllerTest extends ControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -71,13 +74,16 @@ class MemberControllerTest {
                 .willReturn(MemberResponse.from(CORINNE.생성(1L)));
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/members/me")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                ).andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/me")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("members-get-own"))
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -93,12 +99,15 @@ class MemberControllerTest {
                 .willReturn(MemberResponse.from(CORINNE.생성(memberId)));
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/members/" + memberId)
-                ).andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/" + memberId)
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("members-get-by-memberId"))
+                .andDo(print());
+
         verify(memberService).findById(1L);
     }
 
@@ -131,16 +140,18 @@ class MemberControllerTest {
         willDoNothing().given(memberService).updateMember(1L, memberRequest);
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/me")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(memberRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/me")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(memberRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("members-update"))
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -256,12 +267,15 @@ class MemberControllerTest {
                 .willReturn(memberPageResponse);
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/members?query=cheese&careerLevel=none&jobType=backend&page=0&size=10")
-                ).andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members?query=cheese&careerLevel=none&jobType=backend&page=0&size=10")
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("members-search"))
+                .andDo(print());
+
         verify(memberService).findByContains(refEq(memberSearchRequest), refEq(pageable));
     }
 
