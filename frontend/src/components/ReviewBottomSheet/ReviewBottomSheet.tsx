@@ -6,7 +6,7 @@ import * as S from '@/components/ReviewBottomSheet/ReviewBottomSheet.style';
 type Props = {
   handleClose: () => void;
   handleSubmit?: (reviewInput: ReviewInput) => Promise<void>;
-  handleEdit?: (reviewInput: ReviewInput, id: number) => void;
+  handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
   isEdit: boolean;
   reviewId?: number;
   rating?: number;
@@ -25,7 +25,7 @@ function ReviewBottomSheet({
   const handleCloseWithSubmit = async (reviewInput: ReviewInput) => {
     try {
       if (isEdit) {
-        handleEdit(reviewInput, reviewId);
+        await handleEdit(reviewInput, reviewId);
       } else {
         await handleSubmit(reviewInput);
       }
