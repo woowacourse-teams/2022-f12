@@ -82,15 +82,7 @@ function Products() {
     setKeyword(searchParams.get('keyword'));
   }, [location.key]);
 
-  const updateSearchParam = (
-    key: string,
-    value: string,
-    defaultValue?: string
-  ) => {
-    // 초기 값이 null 아닌 경우 param에 포함되지 않을 수 있음
-    // 이 때 다시 이 값을 param에 추가하고 재로딩 되는 것을 방지
-    if (!searchParams.get(key) && value === defaultValue) return;
-
+  const updateSearchParam = (key: string, value: string) => {
     if (searchParams.get(key) === value) return;
 
     if (value === null) {
@@ -107,7 +99,7 @@ function Products() {
   }, [category]);
 
   useEffect(() => {
-    updateSearchParam('sort', sort, DefaultSort.value);
+    updateSearchParam('sort', sort);
   }, [sort]);
 
   useEffect(() => {
