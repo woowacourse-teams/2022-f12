@@ -6,21 +6,12 @@ export const Container = styled.div`
   width: 40rem;
 `;
 
-export const Item = styled.div<{ step: number }>`
+export const Item = styled.div<{ isComplete: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   flex: 1;
-
-  &::before {
-    position: absolute;
-    content: '';
-    width: 100%;
-    top: 25px;
-    left: -50%;
-    z-index: 2;
-  }
 
   &::after {
     position: absolute;
@@ -31,70 +22,21 @@ export const Item = styled.div<{ step: number }>`
     left: 50%;
     z-index: 2;
   }
-
-  &:first-child::before {
-    content: none;
-  }
-
-  &:first-child::after {
-    ${(props) => {
-      if (props.step === 2 || props.step === 3)
-        return `border: 2px solid #f6bebe;
-        transition: ease-in 0.2s;`;
-    }};
-  }
+  ${({ isComplete }) =>
+    isComplete &&
+    `
+      &::after {
+        border: 2px solid #f6bebe;
+        transition: ease-in 0.2s;
+      };
+      `}
 
   &:last-child::after {
     content: none;
   }
-
-  &:nth-child(2)::after {
-    ${(props) => {
-      if (props.step === 3)
-        return `border: 2px solid #f6bebe;
-      transition: ease-in 0.2s;`;
-    }};
-  }
-
-  &:first-child {
-    .step {
-      ${(props) => {
-        if (props.step === 1)
-          return `border: 5px solid #f6bebe;
-        transition: ease-in 0.2s;`;
-        if (props.step === 2 || props.step === 3)
-          return `border: 5px solid #f6bebe;
-          background-color: #f6bebe`;
-      }};
-    }
-  }
-
-  &:nth-child(2) {
-    .step {
-      ${(props) => {
-        if (props.step === 2)
-          return `border: 5px solid #f6bebe;
-        transition: ease-in 0.2s`;
-        if (props.step === 3)
-          return `border: 5px solid #f6bebe;
-        background-color: #f6bebe;
-        transition: ease-in 0.2s`;
-      }};
-    }
-  }
-
-  &:last-child {
-    .step {
-      ${(props) => {
-        if (props.step === 3)
-          return `border: 5px solid #f6bebe;
-        transition: ease-in 0.2s;`;
-      }};
-    }
-  }
 `;
 
-export const Step = styled.div`
+export const Step = styled.div<{ isComplete: boolean; isCurrentStage: boolean }>`
   position: relative;
   z-index: 3;
   display: flex;
@@ -103,10 +45,25 @@ export const Step = styled.div`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  border: 5px solid #cfcfcf;
-  background-color: #faf9f9;
   margin-bottom: 6px;
   font-size: 1.5rem;
+  transition: ease-in 0.2s;
+  border: 5px solid #cfcfcf;
+  background-color: #faf9f9;
+
+  ${({ isComplete, isCurrentStage }) =>
+    isCurrentStage
+      ? 'border: 5px solid #f6bebe;'
+      : isComplete &&
+        `
+      border: 5px solid #f6bebe;
+      background-color: #f6bebe;
+      
+      &::after {
+        border: 2px solid #f6bebe;
+        transition: ease-in 0.2s;
+      };
+      `}
 `;
 
 export const Title = styled.div`
