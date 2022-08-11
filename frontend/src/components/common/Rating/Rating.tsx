@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import * as S from '@/components/common/Rating/Rating.style';
 
 import theme from '@/style/theme';
@@ -11,20 +13,24 @@ export type Props = {
 };
 
 function Rating({ rating, type = '일반', size = 'small' }: Props) {
-  return type === '일반' ? (
+  const RatingUnit = (
+    <S.Unit size={size}>
+      <Heart fill={theme.colors.primary} stroke={theme.colors.primaryDark} />
+    </S.Unit>
+  );
+
+  return (
     <S.Container>
-      <S.Unit size={size}>
-        <Heart fill={theme.colors.primary} stroke={theme.colors.primaryDark} />
-      </S.Unit>
-      <S.Value size={size}>{rating.toFixed(2)}</S.Value>
-    </S.Container>
-  ) : (
-    <S.Container>
-      {Array.from({ length: rating }).map((_, index) => (
-        <S.Unit key={index} size={size}>
-          <Heart fill={theme.colors.primary} stroke={theme.colors.primaryDark} />
-        </S.Unit>
-      ))}
+      {type === '일반' ? (
+        <>
+          {RatingUnit}
+          <S.Value size={size}>{rating.toFixed(2)}</S.Value>
+        </>
+      ) : (
+        Array.from({ length: rating }).map((_, index) => (
+          <Fragment key={index}>{RatingUnit}</Fragment>
+        ))
+      )}
     </S.Container>
   );
 }
