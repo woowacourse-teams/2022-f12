@@ -80,6 +80,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `## 🚧 Analysis Results
-                    ${ SONARQUBE_PROJECT_KEY }-${ PR_NUMBER }
-                    [분석 결과 확인하기](${SONARQUBE_URL})`
+            ${ SONARQUBE_PROJECT_KEY }-${ PR_NUMBER }
+            [분석 결과 확인하기](${SONARQUBE_URL})`
             })
