@@ -1,12 +1,6 @@
 name: backend
 
 on:
-  push:
-    branches:
-      - main
-      - release
-    paths:
-      - 'backend/**'
   pull_request:
     branches:
       - main
@@ -60,6 +54,16 @@ jobs:
     steps:
       - name: checkout source code
         uses: actions/checkout@v2
+
+      - name: grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: sonaqube Analysis
+        run: ./gradlew test sonarqube
+          -Dsonar.host.url=${{ env.SONARQUBE_URL }}
+          -Dsonar.projectKey=${{ env.SONARQUBE_PROJECT_KEY }}
+          -Dsonar.projectName=${{ env.SONARQUBE_PROJECT_KEY }}-${{ env.PR_NUMBER }}
+          -Dsonar.login=${{ env.SONARQUBE_TOKEN }}
 
       - name: get analysis results
         id: analysis_results
