@@ -13,7 +13,7 @@ function Modal({ handleClose, handleConfirm, children }: PropsWithChildren<Props
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    setScrollOffset(window.pageYOffset);
+    setScrollOffset(window.scrollY);
 
     return () => {
       document.body.style.overflow = 'auto';
