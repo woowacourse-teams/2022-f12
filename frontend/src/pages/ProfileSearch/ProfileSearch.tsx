@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import * as S from '@/pages/ProfileSearch/ProfileSearch.style';
 
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
@@ -10,6 +8,7 @@ import ProfileSearchResult from '@/components/ProfileSearchResult/ProfileSearchR
 import SearchFilter from '@/components/SearchFilter/SearchFilter';
 
 import useSearch from '@/hooks/useSearch';
+import useUrlSyncState from '@/hooks/useUrlSyncState';
 
 import { ENDPOINTS } from '@/constants/api';
 
@@ -28,9 +27,9 @@ const jobTypes = {
 } as const;
 
 function ProfileSearch() {
-  const [careerLevel, setCareerLevel] = useState('');
-  const [jobType, setJobType] = useState('');
-  const [searchInput, setSearchInput] = useState('');
+  const [careerLevel, setCareerLevel] = useUrlSyncState('careerLevel');
+  const [jobType, setJobType] = useUrlSyncState('jobType');
+  const [searchInput, setSearchInput] = useUrlSyncState('keyword');
 
   const {
     result: profiles,

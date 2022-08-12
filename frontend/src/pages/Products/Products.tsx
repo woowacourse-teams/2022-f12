@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useMemo } from 'react';
 
 import * as S from '@/pages/Products/Products.style';
 
@@ -14,6 +13,7 @@ import ProductListSection from '@/components/ProductListSection/ProductListSecti
 import SearchFilter from '@/components/SearchFilter/SearchFilter';
 
 import useSearch from '@/hooks/useSearch';
+import useUrlSyncState from '@/hooks/useUrlSyncState';
 
 import { ENDPOINTS } from '@/constants/api';
 
@@ -45,17 +45,9 @@ const categories = {
 } as const;
 
 function Products() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
-
-  const [sort, setSort] = useState<string>(
-    // ,(쉼표)의 경우 param에 포함되면 encode, 상태로 사용하려면 decode 필요
-    searchParams.get('sort')
-      ? decodeURIComponent(searchParams.get('sort'))
-      : DefaultSort.value
-  );
-  const [keyword, setKeyword] = useState<string>(searchParams.get('keyword'));
-  const [category, setCategory] = useState<string>(searchParams.get('category'));
+  const [keyword, setKeyword] = useUrlSyncState('keyword');
+  const [category, setCategory] = useUrlSyncState('category');
+  const [sort, setSort] = useUrlSyncState('sort', DefaultSort.value);
 
   const {
     result: products,
@@ -77,38 +69,6 @@ function Products() {
     () => (category in CATEGORY ? CATEGORY[category as keyof CATEGORY] : '모든 상품'),
     [category]
   );
-
-  // setState가 아니라 뒤로가기 등 상황에서 UI 동기화
-  // 컴포넌트가 navigate 되지 않아 처리해주지 않으면 초기값 지정이 자동으로 되지 않음
-  useEffect(() => {
-    setCategory(searchParams.get('category'));
-    setSort(searchParams.get('sort') || DefaultSort.value);
-    setKeyword(searchParams.get('keyword'));
-  }, [location.key]);
-
-  const updateSearchParam = (key: string, value: string) => {
-    if (searchParams.get(key) === value) return;
-
-    if (value === null) {
-      searchParams.delete(key);
-    } else {
-      searchParams.set(key, value);
-    }
-
-    setSearchParams(searchParams);
-  };
-
-  useEffect(() => {
-    updateSearchParam('category', category);
-  }, [category]);
-
-  useEffect(() => {
-    updateSearchParam('sort', sort);
-  }, [sort]);
-
-  useEffect(() => {
-    updateSearchParam('keyword', keyword);
-  }, [keyword]);
 
   return (
     <>
