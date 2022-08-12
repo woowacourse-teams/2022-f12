@@ -1,4 +1,4 @@
-import { useReducer, useRef } from 'react';
+import { useReducer, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import * as S from '@/pages/Product/Product.style';
@@ -14,7 +14,6 @@ import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet'
 import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
 
 import useAuth from '@/hooks/useAuth';
-import useModal from '@/hooks/useModal';
 import useProduct from '@/hooks/useProduct';
 import useReviews from '@/hooks/useReviews';
 import useStatistics from '@/hooks/useStatistics';
@@ -37,10 +36,9 @@ function Product() {
     isReady: isReviewReady,
     isError: isReviewError,
     getNextPage,
-    refetch: refetchReview,
-    postReview,
-    deleteReview,
-    putReview: editReview,
+    handleSubmit: handleReviewSubmit,
+    handleEdit: handleReviewEdit,
+    handleDelete: handleReviewDelete,
   } = useReviews({
     size: '6',
     productId,
@@ -49,44 +47,15 @@ function Product() {
     productId: Number(productId),
   });
 
-  const [isSheetOpen, toggleSheetOpen] = useReducer(
-    (isSheetOpen: boolean) => !isSheetOpen,
-    false
-  );
-  const { showAlert, getConfirm } = useModal();
+  const [isSheetOpen, toggleSheetOpen] = useReducer((isSheetOpen: boolean) => {
+    if (!isLoggedIn) return false;
 
-  const reviewListRef = useRef<HTMLDivElement | null>();
+    return !isSheetOpen;
+  }, false);
 
-  const handleReviewSubmit = async (reviewInput: ReviewInput) => {
-    await postReview(reviewInput);
-    showAlert('리뷰가 작성되었습니다.');
-    refetchReview();
-
-    const topOfElement = reviewListRef.current;
-    window.scrollTo({
-      top: topOfElement && Number(topOfElement.offsetTop),
-      behavior: 'smooth',
-    });
-  };
-
-  const handleReviewEdit = async (reviewInput: ReviewInput, id: number) => {
-    await editReview(reviewInput, id);
-    showAlert('리뷰가 수정되었습니다.');
-    refetchReview();
-  };
-
-  const handleReviewDeletion = async (id: number) => {
-    const confirmation = await getConfirm('리뷰를 삭제하시겠습니까?');
-    if (!confirmation) return;
-
-    deleteReview(id)
-      .then(() => {
-        refetchReview();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  useEffect(() => {
+    if (!isLoggedIn) toggleSheetOpen();
+  }, [isLoggedIn]);
 
   return (
     <S.Container>
@@ -99,19 +68,17 @@ function Product() {
           >
             <ProductDetail product={product} />
           </AsyncWrapper>
-          <S.BarGraphWrapper>
-            <AsyncWrapper
-              fallback={<Loading />}
-              isReady={isStatisticsReady}
-              isError={isStatisticsError}
-            >
-              <BarGraph statistics={statistics} />
-            </AsyncWrapper>
-          </S.BarGraphWrapper>
+          <AsyncWrapper
+            fallback={<Loading />}
+            isReady={isStatisticsReady}
+            isError={isStatisticsError}
+          >
+            <BarGraph statistics={statistics} />
+          </AsyncWrapper>
         </S.ProductDetailWrapper>
       </StickyWrapper>
-      <S.Wrapper ref={reviewListRef}>
-        {!isSheetOpen && isLoggedIn && (
+      <S.Wrapper>
+        {isLoggedIn && (
           <FloatingButton clickHandler={toggleSheetOpen}>
             <Plus stroke={theme.colors.white} />
           </FloatingButton>
@@ -125,13 +92,13 @@ function Product() {
             columns={1}
             data={reviews}
             getNextPage={getNextPage}
-            handleDelete={handleReviewDeletion}
+            handleDelete={handleReviewDelete}
             handleEdit={handleReviewEdit}
             isLoading={isReviewLoading}
             isError={isReviewError}
           />
         </AsyncWrapper>
-        {isSheetOpen && isLoggedIn && (
+        {isSheetOpen && (
           <ReviewBottomSheet
             handleClose={toggleSheetOpen}
             handleSubmit={handleReviewSubmit}

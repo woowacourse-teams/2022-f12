@@ -18,7 +18,7 @@ function useDelete({ url, headers }: Props): (id: number) => Promise<void> {
         headers,
       });
     } catch (error) {
-      handleError(error as Error, `token: ${headers.Authorization.toString()}`);
+      await handleError(error as Error, `token: ${headers.Authorization.toString()}`);
     }
   };
 

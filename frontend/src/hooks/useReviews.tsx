@@ -1,3 +1,5 @@
+import useModal from './useModal';
+
 import useDelete from '@/hooks/api/useDelete';
 import useGetMany from '@/hooks/api/useGetMany';
 import usePost from '@/hooks/api/usePost';
@@ -20,12 +22,11 @@ type ReturnTypeWithoutProductId = {
   isLoading: boolean;
   isError: boolean;
   getNextPage: () => void;
-  refetch: () => void;
 };
 type ReturnTypeWithProductId = ReturnTypeWithoutProductId & {
-  postReview: (reviewInput: ReviewInput) => Promise<void>;
-  deleteReview: (id: number) => Promise<void>;
-  putReview: (reviewInput: ReviewInput, id: number) => Promise<void>;
+  handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
+  handleEdit: (reviewInput: ReviewInput, id: number) => Promise<void>;
+  handleDelete: (id: number) => Promise<void>;
 };
 type ReturnType = ReturnTypeWithoutProductId & ReturnTypeWithProductId;
 
@@ -33,6 +34,7 @@ function useReviews({ size }: PropsWithoutProductId): ReturnTypeWithoutProductId
 function useReviews({ size, productId }: PropsWithProductId): ReturnTypeWithProductId;
 function useReviews({ size, productId }: Props): ReturnType {
   const [data] = useSessionStorage<UserData>('userData');
+  const { showAlert, getConfirm } = useModal();
   const {
     data: reviews,
     getNextPage,
@@ -66,16 +68,62 @@ function useReviews({ size, productId }: Props): ReturnType {
     headers: { Authorization: `Bearer ${data?.token}` },
   });
 
+  const scrollReviewListToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  const handleRequestSuccess = async (message: string) => {
+    await showAlert(message);
+
+    refetch();
+    scrollReviewListToTop();
+  };
+
+  const handleSubmit = async (reviewInput: ReviewInput) => {
+    try {
+      await postReview(reviewInput);
+
+      await handleRequestSuccess('리뷰가 작성되었습니다.');
+    } catch {
+      return;
+    }
+  };
+
+  const handleEdit = async (reviewInput: ReviewInput, id: number) => {
+    try {
+      await putReview(reviewInput, id);
+
+      await handleRequestSuccess('리뷰가 수정되었습니다.');
+    } catch {
+      return;
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    const confirmation = await getConfirm('리뷰를 삭제하시겠습니까?');
+    if (!confirmation) return;
+
+    try {
+      await deleteReview(id);
+
+      await handleRequestSuccess('리뷰가 삭제되었습니다.');
+    } catch {
+      return;
+    }
+  };
+
   return {
     reviews,
     isReady,
     isLoading,
     isError,
     getNextPage,
-    refetch,
-    postReview,
-    deleteReview,
-    putReview,
+    handleSubmit,
+    handleEdit,
+    handleDelete,
   };
 }
 

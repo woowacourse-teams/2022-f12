@@ -80,8 +80,7 @@ function Profile() {
         </AsyncWrapper>
       </S.ProfileSection>
       <S.InventorySection>
-        <SectionHeader>
-          <S.Title>보유한 장비 목록</S.Title>
+        <SectionHeader title={'보유한 장비 목록'}>
           <S.Description>리뷰를 작성한 상품들이 표시됩니다.</S.Description>
         </SectionHeader>
         <AsyncWrapper

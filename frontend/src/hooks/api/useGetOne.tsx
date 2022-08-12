@@ -43,9 +43,9 @@ function useGetOne<T>({ url, headers }: Props): Return<T> {
       .then((data) => {
         !!data && setData(data);
       })
-      .catch((error: Error) => {
+      .catch(async (error: Error) => {
         logError(error, getErrorStateMessage());
-        showAlert('사용자에게 표시할 오류 메시지');
+        await showAlert('사용자에게 표시할 오류 메시지');
       });
   }, [refetchTrigger]);
 

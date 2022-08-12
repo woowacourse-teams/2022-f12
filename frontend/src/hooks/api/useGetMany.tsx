@@ -92,9 +92,9 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
           setHasNextPage(false);
         }
       })
-      .catch((error: Error) => {
+      .catch(async (error: Error) => {
         logError(error, getErrorStateMessage());
-        showAlert('사용자에게 표시할 오류 메시지');
+        await showAlert('사용자에게 표시할 오류 메시지');
       });
   }, [nextPageTrigger, refetchTrigger]);
 

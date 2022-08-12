@@ -18,9 +18,11 @@ function AdditionalInfoForm({ options, input, setInput, setStep }: Props) {
     setInput(e.target.value);
   };
 
-  const handleConfirmButtonClick: React.MouseEventHandler<HTMLButtonElement> = () => {
+  const handleConfirmButtonClick: React.MouseEventHandler<
+    HTMLButtonElement
+  > = async () => {
     if (!input) {
-      showAlert('선택 후 이동 가능합니다.');
+      await showAlert('선택 후 이동 가능합니다.');
       return;
     }
 

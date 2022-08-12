@@ -26,8 +26,17 @@ function useAuth(): Return {
   const fetchUserData = useGet<UserData>({ url: ENDPOINTS.LOGIN });
 
   const login = async (githubCode: string) => {
-    const userData = await fetchUserData({ code: githubCode });
-    setUserData(userData);
+    try {
+      const userData = await fetchUserData({ code: githubCode });
+      setUserData(userData);
+    } catch (error) {
+      if (error instanceof Error) {
+        await showAlert(error.message);
+        return;
+      }
+
+      await showAlert('알 수 없는 오류 발생');
+    }
   };
 
   const logout = async () => {
@@ -35,9 +44,9 @@ function useAuth(): Return {
     if (confirmation) {
       try {
         handleLogout();
-        showAlert('로그아웃이 완료되었습니다.');
+        await showAlert('로그아웃이 완료되었습니다.');
       } catch {
-        showAlert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+        await showAlert('로그아웃에 실패했습니다. 다시 시도해주세요.');
       }
     }
   };

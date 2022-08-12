@@ -23,7 +23,7 @@ function useGet<T>({
       });
       return data;
     } catch (error) {
-      handleError(error as Error);
+      await handleError(error as Error);
     }
   };
 

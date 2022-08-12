@@ -21,7 +21,7 @@ function usePut<T>({ url, headers }: Props): (input: T, id: number) => Promise<v
 
   const putData = async (body: T, id: number) => {
     if (!userData || !userData.token) {
-      showAlert('로그인이 필요합니다.');
+      await showAlert('로그인이 필요합니다.');
       return;
     }
 
@@ -34,7 +34,7 @@ function usePut<T>({ url, headers }: Props): (input: T, id: number) => Promise<v
         (string, [key, value]) => `${string}\n${key}: ${value as string}`,
         ''
       );
-      handleError(
+      await handleError(
         error as Error,
         `body: ${requestBodyString},\n    token: ${userData.token}`
       );
