@@ -20,7 +20,7 @@ export const Item = styled.div<{ isComplete: boolean }>`
     width: 100%;
     top: 25px;
     left: 50%;
-    z-index: 2;
+    z-index: 1;
   }
   ${({ isComplete }) =>
     isComplete &&
@@ -38,7 +38,7 @@ export const Item = styled.div<{ isComplete: boolean }>`
 
 export const Step = styled.div<{ isComplete: boolean; isCurrentStage: boolean }>`
   position: relative;
-  z-index: 3;
+  z-index: 2;
   display: flex;
   justify-content: center;
   align-items: center;
