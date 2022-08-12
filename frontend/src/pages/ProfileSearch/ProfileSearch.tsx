@@ -34,9 +34,9 @@ function ProfileSearch() {
   const {
     result: profiles,
     getNextPage,
-    isError: isProfileSearchError,
-    isLoading: isProfileSearchLoading,
-    isReady: isProfileSearchReady,
+    isError,
+    isLoading,
+    isReady,
   } = useSearch<ProfileSearchResult>({
     url: ENDPOINTS.MEMBERS,
     query: searchInput,
@@ -66,17 +66,12 @@ function ProfileSearch() {
           />
         </S.SearchFilterWrapper>
       </S.SearchWrapper>
-      <AsyncWrapper
-        fallback={<Loading />}
-        isReady={isProfileSearchReady}
-        isError={isProfileSearchError}
-      >
+      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
         <ProfileSearchResult
           data={profiles}
           getNextPage={getNextPage}
-          isLoading={isProfileSearchLoading}
-          isReady={isProfileSearchReady}
-          isError={isProfileSearchError}
+          isLoading={isLoading}
+          isError={isError}
         />
       </AsyncWrapper>
     </S.Container>

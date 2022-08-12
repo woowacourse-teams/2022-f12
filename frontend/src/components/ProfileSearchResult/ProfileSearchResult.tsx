@@ -8,7 +8,6 @@ type Props = {
   data: ProfileSearchResult[];
   getNextPage: () => void;
   isLoading: boolean;
-  isReady: boolean;
   isError: boolean;
 };
 
