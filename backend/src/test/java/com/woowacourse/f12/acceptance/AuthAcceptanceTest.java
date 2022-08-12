@@ -20,6 +20,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    void fail2() {
+        Assertions.fail();
+    }
+
+    @Test
     void 로그인_요청이_들어오고_OAUTH_인증에_성공하면_토큰과_회원정보를_반환한다() {
         // given, when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/login?code=" + CORINNE_GITHUB.getCode());
