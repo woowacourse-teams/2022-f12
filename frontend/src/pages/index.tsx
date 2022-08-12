@@ -21,19 +21,15 @@ type Route = {
   children?: Route[];
 };
 
-const USER_ROUTES = (routes: Route[]): Route[] => [
-  {
-    element: <UserRoutes />,
-    children: [...routes],
-  },
-];
+const USER_ROUTES = (routes: Route[]): Route => ({
+  element: <UserRoutes />,
+  children: [...routes],
+});
 
-const NON_USER_ROUTES = (routes: Route[]): Route[] => [
-  {
-    element: <NonUserRoutes />,
-    children: [...routes],
-  },
-];
+const NON_USER_ROUTES = (routes: Route[]): Route => ({
+  element: <NonUserRoutes />,
+  children: [...routes],
+});
 
 export const PAGES: Route[] = [
   {
@@ -48,9 +44,9 @@ export const PAGES: Route[] = [
           { path: ROUTES.PROFILE_SEARCH, element: <ProfileSearch /> },
           { path: `${ROUTES.PROFILE}/:memberId`, element: <OtherProfile /> },
 
-          ...USER_ROUTES([{ path: ROUTES.PROFILE, element: <Profile /> }]),
+          USER_ROUTES([{ path: ROUTES.PROFILE, element: <Profile /> }]),
 
-          ...NON_USER_ROUTES([
+          NON_USER_ROUTES([
             {
               element: <NonUserRoutes />,
               children: [{ path: ROUTES.LOGIN, element: <Login /> }],
@@ -60,7 +56,7 @@ export const PAGES: Route[] = [
       },
 
       // 추가 정보 미 입력시 갈 수 있는 유일한 경로
-      ...USER_ROUTES([{ path: ROUTES.REGISTER, element: <Register /> }]),
+      USER_ROUTES([{ path: ROUTES.REGISTER, element: <Register /> }]),
 
       { path: ROUTES.NOT_FOUND, element: <NotFound /> },
     ],
