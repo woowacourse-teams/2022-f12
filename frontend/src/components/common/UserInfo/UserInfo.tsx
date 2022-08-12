@@ -34,24 +34,22 @@ function UserInfo({ userData }: Props) {
       <S.ImageWrapper>
         <S.ProfileImage src={imageUrl} alt="" />
       </S.ImageWrapper>
-      <S.Username>{`@${gitHubId}`}</S.Username>
-      {jobType && careerLevel && (
+      <S.UserNameWrapper>
+        <S.Username>{`@${gitHubId}`}</S.Username>
+        <S.GithubLink
+          href={`https://github.com/${gitHubId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <GithubIcon />
+        </S.GithubLink>
+      </S.UserNameWrapper>
+      {
         <S.ChipWrapper>
-          <Chip paddingTopBottom={0.5} paddingLeftRight={0.5}>
-            {chipMapper[jobType]}
-          </Chip>
-          <Chip paddingTopBottom={0.5} paddingLeftRight={0.8}>
-            {chipMapper[careerLevel]}
-          </Chip>
-          <S.GithubLink
-            href={`https://github.com/${gitHubId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <GithubIcon />
-          </S.GithubLink>
+          <Chip size="l">{chipMapper[jobType]}</Chip>
+          <Chip size="l">{chipMapper[careerLevel]}</Chip>
         </S.ChipWrapper>
-      )}
+      }
     </S.Container>
   );
 }

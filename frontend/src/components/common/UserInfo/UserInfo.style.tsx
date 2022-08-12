@@ -14,6 +14,12 @@ export const ImageWrapper = styled.div`
   border: 2px solid ${({ theme }) => theme.colors.gray};
   overflow: hidden;
 `;
+
+export const UserNameWrapper = styled.div`
+  display: flex;
+  gap: 0.7rem;
+`;
+
 export const ProfileImage = styled.img`
   width: 100%;
   object-fit: cover;
