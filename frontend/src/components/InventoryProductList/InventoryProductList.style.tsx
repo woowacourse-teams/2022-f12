@@ -6,3 +6,7 @@ export const Container = styled.div`
   align-items: center;
   gap: 1rem;
 `;
+
+export const CategoryTitle = styled.h2`
+  font-size: 1.2rem;
+`;

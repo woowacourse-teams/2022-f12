@@ -11,37 +11,41 @@ type Props = {
   editable: boolean;
 };
 
+const categories = {
+  keyboard: '키보드',
+  mouse: '마우스',
+  monitor: '모니터',
+  stand: '거치대',
+  software: '소프트웨어',
+} as const;
+
 function ProductSelect({
   submitHandler,
   updateProfileProduct,
   inventoryList,
   editable,
 }: Props) {
-  const initSelected = Object.entries(inventoryList).reduce((obj, [key, products]) => {
-    const selectedItem = products.find(({ selected }) => selected);
-    if (!selectedItem) {
-      return { ...obj };
-    }
-    return { ...obj, [key]: selectedItem.id };
-  }, {});
-  const [isEditMode, setEditMode] = useState(false);
-  const [selectedState, setSelectedState] = useState(initSelected);
-
   const selectedItems = Object.values(inventoryList)
     .flat()
     .filter(({ selected }) => selected);
 
-  const handleEditDone = () => {
+  const selectedItemsIdsByCategory = Object.values(selectedItems).reduce(
+    (ids, { id, product: { category } }) => {
+      return { ...ids, [category]: id };
+    },
+    {}
+  );
+
+  const [isEditMode, setEditMode] = useState(false);
+  const [selectedState, setSelectedState] = useState(selectedItemsIdsByCategory);
+
+  const handleEditDone = async () => {
     if (!editable) return;
     if (isEditMode) {
-      updateProfileProduct(Object.values(selectedState))
-        .then((didPatch) => {
-          if (didPatch) submitHandler();
-          setEditMode(false);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      const didPatch = await updateProfileProduct(Object.values(selectedState));
+      if (didPatch) submitHandler();
+      setEditMode(false);
+
       return;
     }
 
@@ -68,47 +72,34 @@ function ProductSelect({
           {isEditMode ? '수정 완료' : '수정하기'}
         </S.EditButton>
       )}
-      <SectionHeader>
-        <S.Title>대표 장비</S.Title>
-      </SectionHeader>
+      <SectionHeader title="대표 장비" />
       {isEditMode ? (
         <S.OptionsContainer>
-          <S.OptionsList>
-            <p>키보드</p>
-            <OptionListItems
-              productType="keyboardItems"
-              options={inventoryList.keyboardItems}
-              handleSelect={handleSelect}
-              selectedState={selectedState}
-            />
-          </S.OptionsList>
-          <S.OptionsList>
-            <p>마우스</p>
-            <OptionListItems
-              productType="mouseItems"
-              options={inventoryList.mouseItems}
-              handleSelect={handleSelect}
-              selectedState={selectedState}
-            />
-          </S.OptionsList>
-          <S.OptionsList>
-            <p>모니터</p>
-            <OptionListItems
-              productType="monitorItems"
-              options={inventoryList.monitorItems}
-              handleSelect={handleSelect}
-              selectedState={selectedState}
-            />
-          </S.OptionsList>
-          <S.OptionsList>
-            <p>스탠드</p>
-            <OptionListItems
-              productType="standItems"
-              options={inventoryList.standItems}
-              handleSelect={handleSelect}
-              selectedState={selectedState}
-            />
-          </S.OptionsList>
+          {Object.entries(inventoryList)
+            .filter(([category]) => category !== 'software')
+            .map(([category, items]) => (
+              <S.OptionsList key={category}>
+                <p>{categories[category]}</p>
+                {items.map((inventoryProduct) => {
+                  return (
+                    <S.Option key={inventoryProduct.id}>
+                      <S.PseudoButton
+                        onClick={() => handleSelect(category, inventoryProduct.id)}
+                      >
+                        <ProductBar
+                          name={inventoryProduct.product.name}
+                          barType={
+                            selectedState[category] === inventoryProduct.id
+                              ? 'selected'
+                              : 'default'
+                          }
+                        />
+                      </S.PseudoButton>
+                    </S.Option>
+                  );
+                })}
+              </S.OptionsList>
+            ))}
         </S.OptionsContainer>
       ) : selectedItems.length !== 0 ? (
         selectedItems.map(({ id, product: { name } }) => (
@@ -120,43 +111,6 @@ function ProductSelect({
         </S.NoContentMessage>
       )}
     </S.Container>
-  );
-}
-
-type OptionProps = {
-  productType: string;
-  options: InventoryProduct[];
-  handleSelect: (key: string, id: number) => void;
-  selectedState: object;
-};
-
-function OptionListItems({
-  productType,
-  options,
-  handleSelect,
-  selectedState,
-}: OptionProps) {
-  return (
-    <>
-      {options.map((inventoryProduct) => {
-        return (
-          <S.Option key={inventoryProduct.id}>
-            <S.PseudoButton
-              onClick={() => handleSelect(productType, inventoryProduct.id)}
-            >
-              <ProductBar
-                name={inventoryProduct.product.name}
-                barType={
-                  selectedState[productType] === inventoryProduct.id
-                    ? 'selected'
-                    : 'default'
-                }
-              />
-            </S.PseudoButton>
-          </S.Option>
-        );
-      })}
-    </>
   );
 }
 
