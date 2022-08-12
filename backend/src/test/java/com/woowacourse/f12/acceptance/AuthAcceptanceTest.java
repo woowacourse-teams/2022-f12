@@ -8,21 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 class AuthAcceptanceTest extends AcceptanceTest {
-
-    @Test
-    void fail() {
-        Assertions.fail();
-    }
-
-    @Test
-    void fail2() {
-        Assertions.fail();
-    }
 
     @Test
     void 로그인_요청이_들어오고_OAUTH_인증에_성공하면_토큰과_회원정보를_반환한다() {
