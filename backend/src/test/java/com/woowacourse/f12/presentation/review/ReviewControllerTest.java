@@ -714,6 +714,6 @@ class ReviewControllerTest {
                 .andDo(print());
 
         // then
-        verify(reviewService).findByInventoryProductId(eq(inventoryId));
+        verify(reviewService).findByInventoryProductId(inventoryId);
     }
 }

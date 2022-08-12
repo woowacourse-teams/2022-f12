@@ -83,8 +83,8 @@ public class ReviewController {
 
     @GetMapping("/members/me/reviews")
     @LoginRequired
-    public ResponseEntity<ReviewWithProductPageResponse> showPageByMe(@VerifiedMember final Long memberId,
-                                                                      final Pageable pageable) {
+    public ResponseEntity<ReviewWithProductPageResponse> showMyReviewPage(@VerifiedMember final Long memberId,
+                                                                          final Pageable pageable) {
         final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPageByMemberId(memberId,
                 pageable);
         return ResponseEntity.ok(reviewWithProductPageResponse);

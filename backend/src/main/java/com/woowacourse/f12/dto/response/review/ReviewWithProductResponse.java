@@ -17,8 +17,7 @@ public class ReviewWithProductResponse {
     }
 
     private ReviewWithProductResponse(final Long id, final ProductResponse product, final String content,
-                                      final int rating,
-                                      final String createdAt) {
+                                      final int rating, final String createdAt) {
         this.id = id;
         this.product = product;
         this.content = content;
@@ -28,8 +27,6 @@ public class ReviewWithProductResponse {
 
     public static ReviewWithProductResponse from(final Review review) {
         return new ReviewWithProductResponse(review.getId(), ProductResponse.from(review.getProduct()),
-                review.getContent(),
-                review.getRating(),
-                review.getCreatedAt().toString());
+                review.getContent(), review.getRating(), review.getCreatedAt().toString());
     }
 }

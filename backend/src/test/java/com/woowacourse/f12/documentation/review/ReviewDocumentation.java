@@ -236,7 +236,7 @@ public class ReviewDocumentation extends Documentation {
                 ));
 
         // when
-        final ResultActions resultActions = mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 get("/api/v1/members/" + memberId + "/reviews?size=2&page=0&sort=createdAt,desc"));
 
         // then
@@ -266,7 +266,7 @@ public class ReviewDocumentation extends Documentation {
                 ));
 
         // when
-        final ResultActions resultActions = mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                 get("/api/v1/members/me/reviews?size=2&page=0&sort=createdAt,desc")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader));
 

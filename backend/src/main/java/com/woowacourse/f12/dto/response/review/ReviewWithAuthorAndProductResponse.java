@@ -32,7 +32,6 @@ public class ReviewWithAuthorAndProductResponse {
         final ProductForReviewResponse product = ProductForReviewResponse.from(review.getProduct());
         final ReviewAuthorResponse author = ReviewAuthorResponse.from(review.getMember());
         return new ReviewWithAuthorAndProductResponse(review.getId(), author, product, review.getContent(),
-                review.getRating(),
-                review.getCreatedAt().toString());
+                review.getRating(), review.getCreatedAt().toString());
     }
 }
