@@ -117,12 +117,7 @@ function ProfileCard({
           <S.UserCareer>
             {[careerLevel, jobType].map((userInfo, index) => {
               return (
-                <Chip
-                  key={index}
-                  paddingTopBottom={0.2}
-                  paddingLeftRight={0.4}
-                  fontSize={0.7}
-                >
+                <Chip key={index} size={'s'}>
                   {chipMapper[userInfo]}
                 </Chip>
               );
