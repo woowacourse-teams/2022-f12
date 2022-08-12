@@ -1,21 +1,21 @@
 package com.woowacourse.f12.application.inventoryproduct;
 
+import static com.woowacourse.f12.domain.product.Category.SOFTWARE;
+
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static com.woowacourse.f12.domain.product.Category.SOFTWARE;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,11 +23,13 @@ public class InventoryProductService {
 
     private final InventoryProductRepository inventoryProductRepository;
     private final MemberRepository memberRepository;
+    private final ReviewRepository reviewRepository;
 
     public InventoryProductService(final InventoryProductRepository inventoryProductRepository,
-                                   final MemberRepository memberRepository) {
+                                   final MemberRepository memberRepository, final ReviewRepository reviewRepository) {
         this.inventoryProductRepository = inventoryProductRepository;
         this.memberRepository = memberRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @Transactional

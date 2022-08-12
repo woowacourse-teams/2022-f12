@@ -9,11 +9,14 @@ import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
+import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
@@ -83,10 +86,10 @@ public class ReviewService {
         inventoryProductRepository.save(inventoryProduct);
     }
 
-    public ReviewPageResponse findPageByProductId(final Long productId, final Pageable pageable) {
+    public ReviewWithAuthorPageResponse findPageByProductId(final Long productId, final Pageable pageable) {
         validateKeyboardExists(productId);
         final Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
-        return ReviewPageResponse.from(page);
+        return ReviewWithAuthorPageResponse.from(page);
     }
 
     private void validateKeyboardExists(final Long productId) {
@@ -95,9 +98,9 @@ public class ReviewService {
         }
     }
 
-    public ReviewWithProductPageResponse findPage(final Pageable pageable) {
+    public ReviewWithAuthorAndProductPageResponse findPage(final Pageable pageable) {
         final Slice<Review> page = reviewRepository.findPageBy(pageable);
-        return ReviewWithProductPageResponse.from(page);
+        return ReviewWithAuthorAndProductPageResponse.from(page);
     }
 
     @Transactional
@@ -126,5 +129,29 @@ public class ReviewService {
         if (!target.isWrittenBy(member)) {
             throw new NotAuthorException();
         }
+    }
+
+    public ReviewWithProductPageResponse findPageByMemberId(final Long memberId, final Pageable pageable) {
+        validateMemberExist(memberId);
+        final Slice<Review> page = reviewRepository.findPageByMemberId(memberId, pageable);
+
+        return ReviewWithProductPageResponse.from(page);
+    }
+
+    private void validateMemberExist(final Long memberId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    public ReviewWithProductResponse findByInventoryProductId(final Long inventoryProductId) {
+        final InventoryProduct inventoryProduct = inventoryProductRepository.findById(inventoryProductId)
+                .orElseThrow(InventoryProductNotFoundException::new);
+
+        final Review review = reviewRepository.findByMemberAndProduct(
+                        inventoryProduct.getMember(), inventoryProduct.getProduct())
+                .orElseThrow(ReviewNotFoundException::new);
+
+        return ReviewWithProductResponse.from(review);
     }
 }

@@ -23,6 +23,7 @@ import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
@@ -258,6 +259,42 @@ class ReviewRepositoryTest {
         assertThat(jobTypeCounts).usingRecursiveFieldByFieldElementComparator()
                 .hasSize(1)
                 .containsOnly(new JobTypeCount(BACKEND, 1));
+    }
+
+    @Test
+    void 멤버와_제품으로_리뷰를_조회한다() {
+        // given
+        Product product = 제품_저장(KEYBOARD_1.생성());
+        Member corinne = memberRepository.save(CORINNE.생성());
+        Review savedReview = 리뷰_저장(REVIEW_RATING_1.작성(product, corinne));
+
+        // when
+        Optional<Review> review = reviewRepository.findByMemberAndProduct(corinne, product);
+
+        // then
+        assertThat(review.get()).usingRecursiveComparison()
+                .isEqualTo(savedReview);
+    }
+
+    @Test
+    void 회원으로_리뷰목록을_조회한다() {
+        // given
+        Product product1 = 제품_저장(KEYBOARD_1.생성());
+        Product product2 = 제품_저장(KEYBOARD_2.생성());
+        Member corinne = memberRepository.save(CORINNE.생성());
+        Review savedReview1 = 리뷰_저장(REVIEW_RATING_1.작성(product1, corinne));
+        Review savedReview2 = 리뷰_저장(REVIEW_RATING_1.작성(product2, corinne));
+        Pageable pageable = PageRequest.of(0, 2, Sort.by(desc("createdAt")));
+
+        // when
+        Slice<Review> page = reviewRepository.findPageByMemberId(corinne.getId(), pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(page.hasNext()).isFalse(),
+                () -> assertThat(page.getContent()).usingRecursiveFieldByFieldElementComparator()
+                        .containsExactly(savedReview2, savedReview1)
+        );
     }
 
     private Product 제품_저장(Product product) {
