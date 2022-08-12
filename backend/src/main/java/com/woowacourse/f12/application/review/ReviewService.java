@@ -14,7 +14,7 @@ import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
+import com.woowacourse.f12.exception.badrequest.RegisterNotCompletedException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
 import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
@@ -58,7 +58,7 @@ public class ReviewService {
 
     private void validateRegisterCompleted(final Member member) {
         if (!member.isRegisterCompleted()) {
-            throw new InvalidProfileArgumentException();
+            throw new RegisterNotCompletedException();
         }
     }
 

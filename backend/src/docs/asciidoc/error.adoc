@@ -1,0 +1,36 @@
+[[Exception]]
+== 에러 코드
+
+[width="100%"]
+|===
+|코드|타입|설명
+|40000|INVALID_SEARCH_PARAM|URL의 검색 조건이 유효하지 않음.
+|40001|INVALID_PAGING_PARAM|URL의 페이징 조건이 유효하지 않음.
+|40002|INVALID_LOGIN_CODE|올바르지 않은 GitHub code로 로그인.
+|40003|INVALID_REQUEST_BODY_TYPE|HTTP Request body의 값의 타입이 올바르지 않음.
+|40010|INVALID_MEMBER_INFO_VALUE|회원 정보로 유효하지 않은 값이 입력됨.
+|40011|EMPTY_MEMBER_INFO_VALUE|회원 정보 값을 입력하지 않고 요청을 보냄.
+|40030|INVALID_REVIEW_RATING|리뷰의 별점이 1~5 사이의 정수가 아님.
+|40031|BLANK_REVIEW_CONTENT|리뷰의 내용이 비어있음.
+|40032|INVALID_REVIEW_CONTENT_LENGTH|리뷰의 내용이 최대 길이(1000자)를 초과함.
+|40033|ALREADY_WRITTEN_REVIEW|리뷰를 작성하려는 제품에 대해 같은 회원이 이미 리뷰를 작성함.
+|40040|INVALID_CATEGORY_PROFILE_PRODUCT|대표 장비 등록 요청에 들어가서는 안되는 카테고리가 존재함.
+|40041|CATEGORY_DUPLICATED_PROFILE_PRODUCT|대표 장비 등록 요청에 중복된 카테고리가 존재함.
+|40042|EMPTY_PROFILE_PRODUCT|대표 장비 등록 요청 시 선택한 장비가 없음.
+|40043|INVALID_PROFILE_PRODUCT_UPDATE|본인의 인벤토리에 포함되지 않은 인벤토리 제품을 대표 장비로 등록하려 함.
+|40100|NOT_EXIST_TOKEN|토큰이 존재하지 않음.
+|40101|EXPIRED_TOKEN|토큰이 만료됨.
+|40102|INVALID_TOKEN|토큰이 유효한 형식이 아님.
+|40103|REGISTER_NOT_COMPLETED|회원가입이 완료되지 않은 회원이 인증 인가가 필요한 요청을 보냄
+|40300|PERMISSION_DENIED|권한이 없는 요청임.
+|40410|MEMBER_NOT_FOUND|회원 정보가 존재하지 않음.
+|40420|PRODUCT_NOT_FOUND|제품 정보가 존재하지 않음.
+|40430|REVIEW_NOT_FOUND|리뷰 정보가 존재하지 않음.
+|40440|INVENTORY_PRODUCT_NOT_FOUND|인벤토리 아이템 정보가 존재하지 않음.
+|50000|INTERNAL_SERVER_ERROR|예상하지 못한 내부 서버 에러 발생.
+|50001|EXTERNAL_SERVER_ERROR|외부 API에 문제 발생.
+|===
+
+== 에러 HTTP Response
+
+operation::reviews-create-already-written-exception[snippets='http-response']

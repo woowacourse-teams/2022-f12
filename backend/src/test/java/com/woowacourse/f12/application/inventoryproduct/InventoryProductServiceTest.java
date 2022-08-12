@@ -16,13 +16,12 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
-import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileProductUpdateException;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -39,9 +38,6 @@ class InventoryProductServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
-
-    @Mock
-    private ReviewRepository reviewRepository;
 
     @InjectMocks
     private InventoryProductService inventoryProductService;
@@ -89,7 +85,7 @@ class InventoryProductServiceTest {
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> inventoryProductService.updateProfileProducts(1L, profileProductRequest))
-                        .isExactlyInstanceOf(NotUpdatableException.class),
+                        .isExactlyInstanceOf(InvalidProfileProductUpdateException.class),
                 () -> verify(memberRepository).findById(1L),
                 () -> verify(inventoryProductRepository).updateBulkProfileProductByMember(member, false),
                 () -> verify(inventoryProductRepository).updateBulkProfileProductByMemberAndIds(member,

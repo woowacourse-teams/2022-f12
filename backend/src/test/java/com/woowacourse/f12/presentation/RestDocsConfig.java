@@ -1,4 +1,4 @@
-package com.woowacourse.f12.documentation;
+package com.woowacourse.f12.presentation;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
