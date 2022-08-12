@@ -11,6 +11,10 @@ type InventoryResponse = {
   items: InventoryProduct[];
 };
 
+type Props = {
+  memberId?: string;
+};
+
 type Return = {
   items: InventoryProduct[];
   isReady: boolean;
@@ -19,7 +23,7 @@ type Return = {
   updateProfileProduct: (ids: number[]) => Promise<boolean>;
 };
 
-function useInventory(): Return {
+function useInventory({ memberId }: Props): Return {
   const userData = useContext(UserDataContext);
   const {
     data: inventoryProducts,
@@ -27,7 +31,9 @@ function useInventory(): Return {
     isReady,
     isError,
   } = useGetOne<InventoryResponse>({
-    url: ENDPOINTS.INVENTORY_PRODUCTS,
+    url: memberId
+      ? ENDPOINTS.OTHER_INVENTORY_PRODUCTS(memberId)
+      : ENDPOINTS.INVENTORY_PRODUCTS,
     headers: { Authorization: `Bearer ${userData?.token}` },
   });
 

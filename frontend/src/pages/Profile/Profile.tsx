@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { useParams } from 'react-router-dom';
 
 import * as S from '@/pages/Profile/Profile.style';
 
@@ -28,18 +29,22 @@ type Member = {
 
 function Profile() {
   const userData = useContext(UserDataContext);
+  const { memberId } = useParams();
+
+  const isOwnProfile = !memberId;
+
   const {
     items,
     isReady: isInventoryProductsReady,
     refetch: refetchInventoryProducts,
     updateProfileProduct,
-  } = useInventory();
+  } = useInventory({ memberId });
   const {
-    data: myData,
-    isReady: isMyDataReady,
-    isError: isMyDataError,
+    data: userInfo,
+    isReady: isUserInfoReady,
+    isError: isUserInfoError,
   } = useGetOne<Member>({
-    url: ENDPOINTS.ME,
+    url: isOwnProfile ? ENDPOINTS.ME : `${ENDPOINTS.MEMBERS}/${memberId}`,
     headers: { Authorization: `Bearer ${userData?.token}` },
   });
 
@@ -58,21 +63,21 @@ function Profile() {
       <S.ProfileSection>
         <AsyncWrapper
           fallback={<Loading />}
-          isReady={isMyDataReady}
-          isError={isMyDataError}
+          isReady={isUserInfoReady}
+          isError={isUserInfoError}
         >
-          <UserInfo userData={myData} />
+          <UserInfo userData={userInfo} />
         </AsyncWrapper>
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isInventoryProductsReady}
-          isError={isMyDataError}
+          isError={isUserInfoError}
         >
           <ProductSelect
             submitHandler={refetchInventoryProducts}
             updateProfileProduct={updateProfileProduct}
             inventoryList={inventoryList}
-            editable={true}
+            editable={isOwnProfile}
           />
         </AsyncWrapper>
       </S.ProfileSection>
@@ -83,7 +88,7 @@ function Profile() {
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isInventoryProductsReady}
-          isError={isMyDataError}
+          isError={isUserInfoError}
         >
           <InventoryProductList inventoryList={inventoryList} />
         </AsyncWrapper>
