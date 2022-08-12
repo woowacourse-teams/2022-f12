@@ -119,12 +119,14 @@ class MemberControllerTest extends ControllerTest {
                 .willThrow(new MemberNotFoundException());
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/members/" + memberId)
-                ).andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/" + memberId)
+        );
 
         // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         verify(memberService).findById(1L);
     }
 
@@ -174,16 +176,17 @@ class MemberControllerTest extends ControllerTest {
         willDoNothing().given(memberService).updateMember(eq(1L), any(MemberRequest.class));
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/me")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(memberRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/me")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(memberRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -206,16 +209,17 @@ class MemberControllerTest extends ControllerTest {
         willDoNothing().given(memberService).updateMember(eq(1L), any(MemberRequest.class));
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/me")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(memberRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/me")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(memberRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -235,16 +239,17 @@ class MemberControllerTest extends ControllerTest {
         willDoNothing().given(memberService).updateMember(1L, memberRequest);
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/me")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(memberRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/me")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(memberRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -282,12 +287,14 @@ class MemberControllerTest extends ControllerTest {
     @Test
     void 회원_조회_실패_옵션값이_올바르지_않을때() throws Exception {
         // when
-        mockMvc.perform(
-                        get("/api/v1/members?query=cheese&careerLevel=invalid&jobType=invalid&page=0&size=10")
-                ).andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members?query=cheese&careerLevel=invalid&jobType=invalid&page=0&size=10")
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         verify(memberService, times(0)).findByContains(any(MemberSearchRequest.class), any(PageRequest.class));
     }
 
@@ -306,12 +313,14 @@ class MemberControllerTest extends ControllerTest {
                 .willReturn(memberPageResponse);
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/members?page=0&size=10")
-                ).andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members?page=0&size=10")
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print());
+
         verify(memberService).findByContains(refEq(memberSearchRequest), refEq(pageable));
     }
 }

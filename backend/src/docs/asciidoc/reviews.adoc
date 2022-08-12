@@ -2,6 +2,7 @@
 == Review API
 
 === 리뷰 작성
+
 ==== 발생 가능 에러
 
 - 40030, 40031, 40032, 40033, 40100, 40101, 40102, 40103
@@ -33,6 +34,26 @@ operation::reviews-by-product-page-get[snippets='http-request,http-response']
 - `rating,desc`(평점순)
 
 operation::reviews-page-get[snippets='http-request,http-response']
+
+결
+
+=== 내가 작성한 리뷰 목록 페이지 조회
+
+==== sort 조건
+
+- `createdAt,desc`(최신순)
+- `rating,desc`(평점순)
+
+operation::reviews-page-get-own[snippets='http-request,http-response']
+
+=== 회원의 아이디로 리뷰 목록 페이지 조회
+
+==== sort 조건
+
+- `createdAt,desc`(최신순)
+- `rating,desc`(평점순)
+
+operation::reviews-page-get-by-memberId[snippets='http-request,http-response']
 
 === 인벤토리 아이디로 리뷰 조회
 

@@ -98,16 +98,17 @@ class InventoryProductControllerTest extends ControllerTest {
                 .updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(profileProductRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(profileProductRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -124,16 +125,17 @@ class InventoryProductControllerTest extends ControllerTest {
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(null);
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(profileProductRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(profileProductRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider, times(0)).getPayload(authorizationHeader),
@@ -155,16 +157,17 @@ class InventoryProductControllerTest extends ControllerTest {
                 .given(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(profileProductRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(profileProductRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -185,16 +188,17 @@ class InventoryProductControllerTest extends ControllerTest {
                 .given(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(profileProductRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(profileProductRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),

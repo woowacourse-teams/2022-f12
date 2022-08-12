@@ -62,11 +62,13 @@ class ProductControllerTest extends ControllerTest {
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
 
         // when
-        mockMvc.perform(get("/api/v1/products?category=keyboard&page=0&size=150&sort=rating,desc"))
-                .andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/products?category=keyboard&page=0&size=150&sort=rating,desc"));
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print());
+
         verify(productService).findBySearchConditions(refEq(productSearchRequest), eq(pageable));
     }
 
@@ -79,11 +81,12 @@ class ProductControllerTest extends ControllerTest {
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
 
         // when
-        mockMvc.perform(get("/api/v1/products?page=0&size=150&sort=rating,desc"))
-                .andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/products?page=0&size=150&sort=rating,desc"));
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print());
+
         verify(productService).findBySearchConditions(refEq(productSearchRequest), eq(pageable));
     }
 
@@ -96,11 +99,13 @@ class ProductControllerTest extends ControllerTest {
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
 
         // when
-        mockMvc.perform(get("/api/v1/products?category=INVALID&page=0&size=150&sort=rating,desc"))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/products?category=INVALID&page=0&size=150&sort=rating,desc"));
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         verify(productService, times(0)).findBySearchConditions(refEq(productSearchRequest), eq(pageable));
     }
 
@@ -153,11 +158,12 @@ class ProductControllerTest extends ControllerTest {
                 .willThrow(new ProductNotFoundException());
 
         // when
-        mockMvc.perform(get("/api/v1/products/0"))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/products/0"));
 
         // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         verify(productService).findById(0L);
     }
 
@@ -191,11 +197,12 @@ class ProductControllerTest extends ControllerTest {
                 .willThrow(new ProductNotFoundException());
 
         // when
-        mockMvc.perform(get("/api/v1/products/1/statistics"))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/products/1/statistics"));
 
         // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         verify(productService).calculateMemberStatisticsById(1L);
     }
 }

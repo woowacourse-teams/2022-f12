@@ -14,7 +14,7 @@
 |40031|BLANK_REVIEW_CONTENT|리뷰의 내용이 비어있음.
 |40032|INVALID_REVIEW_CONTENT_LENGTH|리뷰의 내용이 최대 길이(1000자)를 초과함.
 |40033|ALREADY_WRITTEN_REVIEW|리뷰를 작성하려는 제품에 대해 같은 회원이 이미 리뷰를 작성함.
-|40040|PROFILE_CONTAINS_SOFTWARE|대표 장비 등록 요청이 소프트웨어를 포함함.
+|40040|INVALID_CATEGORY_PROFILE_PRODUCT|대표 장비 등록 요청에 들어가서는 안되는 카테고리가 존재함.
 |40041|CATEGORY_DUPLICATED_PROFILE_PRODUCT|대표 장비 등록 요청에 중복된 카테고리가 존재함.
 |40042|EMPTY_PROFILE_PRODUCT|대표 장비 등록 요청 시 선택한 장비가 없음.
 |40043|INVALID_PROFILE_PRODUCT_UPDATE|본인의 인벤토리에 포함되지 않은 인벤토리 제품을 대표 장비로 등록하려 함.

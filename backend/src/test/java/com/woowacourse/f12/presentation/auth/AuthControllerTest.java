@@ -61,12 +61,14 @@ class AuthControllerTest extends ControllerTest {
                 .willThrow(new InvalidGitHubLoginException());
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/login?code=" + code)
-                ).andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/login?code=" + code)
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         verify(authService).login(code);
     }
 
@@ -78,12 +80,14 @@ class AuthControllerTest extends ControllerTest {
                 .willThrow(new GitHubServerException());
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/login?code=" + code)
-                ).andExpect(status().isInternalServerError())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/login?code=" + code)
+        );
 
         // then
+        resultActions.andExpect(status().isInternalServerError())
+                .andDo(print());
+
         verify(authService).login(code);
     }
 }

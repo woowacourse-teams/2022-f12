@@ -128,15 +128,17 @@ class ReviewControllerTest extends ControllerTest {
                 .willThrow(new BlankContentException());
 
         // when
-        mockMvc.perform(
-                        post("/api/v1/products/" + PRODUCT_ID + "/reviews")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(reviewRequest))
-                ).andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/products/" + PRODUCT_ID + "/reviews")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(reviewService, times(0)).saveReviewAndInventoryProduct(eq(PRODUCT_ID), eq(1L),
@@ -159,15 +161,17 @@ class ReviewControllerTest extends ControllerTest {
                 .willThrow(new BlankContentException());
 
         // when
-        mockMvc.perform(
-                        post("/api/v1/products/" + PRODUCT_ID + "/reviews")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(reviewRequest))
-                ).andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/products/" + PRODUCT_ID + "/reviews")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(reviewService, times(0)).saveReviewAndInventoryProduct(eq(PRODUCT_ID), eq(1L),
@@ -188,15 +192,17 @@ class ReviewControllerTest extends ControllerTest {
                 .willThrow(new BlankContentException());
 
         // when
-        mockMvc.perform(
-                        post("/api/v1/products/" + PRODUCT_ID + "/reviews")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(reviewRequest))
-                ).andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/products/" + PRODUCT_ID + "/reviews")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -219,15 +225,17 @@ class ReviewControllerTest extends ControllerTest {
                 .willThrow(new InvalidContentLengthException(1000));
 
         // when
-        mockMvc.perform(
-                        post("/api/v1/products/" + PRODUCT_ID + "/reviews")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(reviewRequest))
-                ).andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/products/" + PRODUCT_ID + "/reviews")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -249,15 +257,17 @@ class ReviewControllerTest extends ControllerTest {
                 .willThrow(new InvalidRatingValueException());
 
         // when
-        mockMvc.perform(
-                        post("/api/v1/products/" + PRODUCT_ID + "/reviews")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(reviewRequest))
-                ).andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/products/" + PRODUCT_ID + "/reviews")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -279,15 +289,17 @@ class ReviewControllerTest extends ControllerTest {
                 .willThrow(new ProductNotFoundException());
 
         // when
-        mockMvc.perform(
-                        post("/api/v1/products/" + 0L + "/reviews")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(reviewRequest))
-                ).andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/products/" + 0L + "/reviews")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -308,15 +320,17 @@ class ReviewControllerTest extends ControllerTest {
                 .willThrow(new MemberNotFoundException());
 
         // when
-        mockMvc.perform(
-                        post("/api/v1/products/" + 1L + "/reviews")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(reviewRequest))
-                ).andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/products/" + 1L + "/reviews")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -337,15 +351,17 @@ class ReviewControllerTest extends ControllerTest {
                 .willThrow(new RegisterNotCompletedException());
 
         // when
-        mockMvc.perform(
-                        post("/api/v1/products/" + 1L + "/reviews")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(reviewRequest))
-                ).andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/products/" + 1L + "/reviews")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -449,17 +465,20 @@ class ReviewControllerTest extends ControllerTest {
     @Test
     void 특정_상품의_리뷰_페이지_조회_실패_상품_존재_하지않음() throws Exception {
         // given
+        PageRequest pageable = PageRequest.of(0, 150,
+                Sort.by("rating", "id").descending());
+
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
                 .willThrow(new ProductNotFoundException());
 
         // when
-        mockMvc.perform(get("/api/v1/products/" + 0L + "/reviews?size=150&page=0&sort=rating,desc"))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/products/" + 0L + "/reviews?size=150&page=0&sort=rating,desc"));
 
         // then
-        PageRequest pageable = PageRequest.of(0, 150,
-                Sort.by("rating", "id").descending());
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         verify(reviewService).findPageByProductId(0L, pageable);
     }
 
@@ -512,15 +531,17 @@ class ReviewControllerTest extends ControllerTest {
                 .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
 
         // when
-        mockMvc.perform(
-                        put("/api/v1/reviews/" + reviewId)
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateRequest))
-                ).andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                put("/api/v1/reviews/" + reviewId)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -543,15 +564,17 @@ class ReviewControllerTest extends ControllerTest {
                 .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
 
         // when
-        mockMvc.perform(
-                        put("/api/v1/reviews/" + reviewId)
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateRequest))
-                ).andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                put("/api/v1/reviews/" + reviewId)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -574,15 +597,17 @@ class ReviewControllerTest extends ControllerTest {
                 .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
 
         // when
-        mockMvc.perform(
-                        put("/api/v1/reviews/" + reviewId)
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateRequest))
-                ).andExpect(status().isForbidden())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                put("/api/v1/reviews/" + reviewId)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest))
+        );
 
         // then
+        resultActions.andExpect(status().isForbidden())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -635,13 +660,15 @@ class ReviewControllerTest extends ControllerTest {
                 .delete(reviewId, memberId);
 
         // when
-        mockMvc.perform(
-                        delete("/api/v1/reviews/" + reviewId)
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                ).andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                delete("/api/v1/reviews/" + reviewId)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
 
         // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -663,13 +690,15 @@ class ReviewControllerTest extends ControllerTest {
                 .delete(reviewId, memberId);
 
         // when
-        mockMvc.perform(
-                        delete("/api/v1/reviews/" + reviewId)
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                ).andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                delete("/api/v1/reviews/" + reviewId)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
 
         // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -691,13 +720,15 @@ class ReviewControllerTest extends ControllerTest {
                 .delete(reviewId, memberId);
 
         // when
-        mockMvc.perform(
-                        delete("/api/v1/reviews/" + reviewId)
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                ).andExpect(status().isForbidden())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                delete("/api/v1/reviews/" + reviewId)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
 
         // then
+        resultActions.andExpect(status().isForbidden())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),

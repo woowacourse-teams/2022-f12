@@ -2,6 +2,7 @@
 == Product API
 
 === 제품 단일 제품 조회
+
 ==== 발생 가능 에러
 
 - 40420
@@ -20,6 +21,7 @@ operation::products-get[snippets='http-request,http-response']
 - 없을 경우 모든 제품 조회
 
 ==== category 조건
+
 - `keyboard` (키보드)
 - `mouse` (마우스)
 - `monitor` (모니터)
@@ -28,6 +30,7 @@ operation::products-get[snippets='http-request,http-response']
 - 없을 경우 모든 제품 조회
 
 ==== sort 조건
+
 - `rating,desc`(평점순)
 - `reviewCount,desc`(리뷰 많은순)
 - 없을 경우 등록 순서
