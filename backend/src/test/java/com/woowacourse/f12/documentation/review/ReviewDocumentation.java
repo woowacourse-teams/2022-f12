@@ -4,6 +4,7 @@ import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,6 +29,7 @@ import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.presentation.review.ReviewController;
 import java.util.List;
@@ -274,5 +276,23 @@ public class ReviewDocumentation extends Documentation {
                 .andDo(
                         document("reviews-page-get-own")
                 );
+    }
+
+    @Test
+    void 인벤토리_아이디로_리뷰를_조회하는_API_문서화() throws Exception {
+        // given
+        Long inventoryId = 1L;
+        given(reviewService.findByInventoryProductId(inventoryId))
+                .willReturn(ReviewWithProductResponse.from(REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L))));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/inventoryProducts/" + inventoryId + "/reviews")
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("reviews-get-by-inventoryProductId"));
     }
 }

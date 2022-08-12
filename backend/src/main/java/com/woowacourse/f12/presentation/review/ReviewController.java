@@ -5,6 +5,7 @@ import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.presentation.auth.LoginRequired;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
 import java.net.URI;
@@ -87,5 +88,11 @@ public class ReviewController {
         final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPageByMemberId(memberId,
                 pageable);
         return ResponseEntity.ok(reviewWithProductPageResponse);
+    }
+
+    @GetMapping("/inventoryProducts/{inventoryProductId}/reviews")
+    public ResponseEntity<ReviewWithProductResponse> showReview(@PathVariable final Long inventoryProductId) {
+        final ReviewWithProductResponse reviewResponse = reviewService.findByInventoryProductId(inventoryProductId);
+        return ResponseEntity.ok(reviewResponse);
     }
 }

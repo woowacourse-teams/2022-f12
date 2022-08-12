@@ -12,9 +12,11 @@ import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
+import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
@@ -130,10 +132,26 @@ public class ReviewService {
     }
 
     public ReviewWithProductPageResponse findPageByMemberId(final Long memberId, final Pageable pageable) {
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
-        final Slice<Review> page = reviewRepository.findPageByMember(member, pageable);
+        validateMemberExist(memberId);
+        final Slice<Review> page = reviewRepository.findPageByMemberId(memberId, pageable);
 
         return ReviewWithProductPageResponse.from(page);
+    }
+
+    private void validateMemberExist(final Long memberId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    public ReviewWithProductResponse findByInventoryProductId(final Long inventoryProductId) {
+        final InventoryProduct inventoryProduct = inventoryProductRepository.findById(inventoryProductId)
+                .orElseThrow(InventoryProductNotFoundException::new);
+
+        final Review review = reviewRepository.findByMemberAndProduct(
+                        inventoryProduct.getMember(), inventoryProduct.getProduct())
+                .orElseThrow(ReviewNotFoundException::new);
+
+        return ReviewWithProductResponse.from(review);
     }
 }

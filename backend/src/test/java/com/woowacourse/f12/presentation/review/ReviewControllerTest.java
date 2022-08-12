@@ -2,6 +2,7 @@ package com.woowacourse.f12.presentation.review;
 
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,6 +27,7 @@ import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.badrequest.BlankContentException;
 import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
@@ -695,5 +697,23 @@ class ReviewControllerTest {
         // then
         verify(reviewService).findPageByMemberId(memberId,
                 PageRequest.of(0, 2, Sort.by("createdAt", "id").descending()));
+    }
+
+    @Test
+    void 인벤토리_아이디로_리뷰_조회_성공() throws Exception {
+        // given
+        Long inventoryId = 1L;
+        given(reviewService.findByInventoryProductId(inventoryId))
+                .willReturn(ReviewWithProductResponse.from(REVIEW_RATING_1.작성(KEYBOARD_1.생성(), CORINNE.생성())));
+
+        // when
+        mockMvc.perform(
+                        get("/api/v1/inventoryProducts/" + inventoryId + "/reviews")
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(reviewService).findByInventoryProductId(eq(inventoryId));
     }
 }

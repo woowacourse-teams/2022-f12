@@ -6,17 +6,13 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
-import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,16 +90,5 @@ public class InventoryProductService {
         if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException();
         }
-    }
-
-    public ReviewWithProductResponse findReviewById(final Long id) {
-        final InventoryProduct inventoryProduct = inventoryProductRepository.findById(id)
-                .orElseThrow(InventoryProductNotFoundException::new);
-
-        final Review review = reviewRepository.findByMemberAndProduct(
-                        inventoryProduct.getMember(), inventoryProduct.getProduct())
-                .orElseThrow(ReviewNotFoundException::new);
-
-        return ReviewWithProductResponse.from(review);
     }
 }

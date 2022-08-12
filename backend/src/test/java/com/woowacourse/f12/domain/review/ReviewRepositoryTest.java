@@ -287,7 +287,7 @@ class ReviewRepositoryTest {
         Pageable pageable = PageRequest.of(0, 2, Sort.by(desc("createdAt")));
 
         // when
-        Slice<Review> page = reviewRepository.findPageByMember(corinne, pageable);
+        Slice<Review> page = reviewRepository.findPageByMemberId(corinne.getId(), pageable);
 
         // then
         assertAll(

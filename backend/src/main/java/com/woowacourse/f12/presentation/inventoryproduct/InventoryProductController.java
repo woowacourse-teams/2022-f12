@@ -3,7 +3,6 @@ package com.woowacourse.f12.presentation.inventoryproduct;
 import com.woowacourse.f12.application.inventoryproduct.InventoryProductService;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.presentation.auth.LoginRequired;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
 import javax.validation.Valid;
@@ -45,11 +44,5 @@ public class InventoryProductController {
     public ResponseEntity<InventoryProductsResponse> show(@PathVariable final Long memberId) {
         final InventoryProductsResponse inventoryProductsResponse = inventoryProductService.findByMemberId(memberId);
         return ResponseEntity.ok(inventoryProductsResponse);
-    }
-
-    @GetMapping("/inventoryProducts/{inventoryProductId}/reviews")
-    public ResponseEntity<ReviewWithProductResponse> showReview(@PathVariable final Long inventoryProductId) {
-        final ReviewWithProductResponse reviewResponse = inventoryProductService.findReviewById(inventoryProductId);
-        return ResponseEntity.ok(reviewResponse);
     }
 }
