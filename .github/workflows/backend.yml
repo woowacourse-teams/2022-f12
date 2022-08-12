@@ -31,12 +31,6 @@ jobs:
       - name: gradle build
         run: ./gradlew build
 
-      - name: publish unit test results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          files: backend/build/test-results/test/TEST-*.xml
-
       - name: add comments to a pull request
         uses: mikepenz/action-junit-report@v3
         if: always()
@@ -69,7 +63,7 @@ jobs:
         id: analysis_results
         run: |
           RESPONSE=$(curl -X GET -G '${{ env.SONARQUBE_AUTH_URL }}/api/measures/search' \
-          -d projectKeys=F12-local \
+          -d projectKeys=F12 \
           -d metricKeys=bugs,vulnerabilities,security_hotspots,code_smells,coverage,tests,test_success_density,test_failures,test_errors,skipped_tests,duplicated_lines_density,duplicated_files,duplicated_blocks \
           | jq '.measures')
           echo "$RESPONSE" | jq -c '.[] | .' | while read -r data;
