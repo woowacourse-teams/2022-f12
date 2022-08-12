@@ -19,57 +19,38 @@ defaults:
     working-directory: backend
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-
-      - name: set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-
-      - name: grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: gradle build
-        run: ./gradlew build
-
-      - name: publish unit test results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          files: backend/build/test-results/test/TEST-*.xml
-
-      - name: add comments to a pull request
-        uses: mikepenz/action-junit-report@v3
-        if: always()
-        with:
-          report_paths: backend/build/test-results/test/TEST-*.xml
   analysis:
     runs-on: ubuntu-latest
     env:
       SONARQUBE_PROJECT_KEY: F12
       SONARQUBE_URL: ${{ secrets.SONARQUBE_URL }}
       SONARQUBE_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+      SONARQUBE_AUTH_URL: ${{ secrets.SONARQUBE_AUTH_URL }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
       PR_BRANCH: ${{ github.event.pull_request.branch }}
     steps:
       - name: checkout source code
         uses: actions/checkout@v2
 
-      - name: grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: sonaqube Analysis
-        run: ./gradlew test sonarqube
-          -Dsonar.host.url=${{ env.SONARQUBE_URL }}
-          -Dsonar.projectKey=${{ env.SONARQUBE_PROJECT_KEY }}
-          -Dsonar.projectName=${{ env.SONARQUBE_PROJECT_KEY }}-${{ env.PR_NUMBER }}
-          -Dsonar.login=${{ env.SONARQUBE_TOKEN }}
-
+      - name: get analysis results
+        id: analysis_results
+        run: |
+          RESPONSE=$(curl -X GET -G '${{ env.SONARQUBE_AUTH_URL }}/api/measures/search' \
+          -d projectKeys=F12-local \
+          -d metricKeys=bugs,vulnerabilities,security_hotspots,code_smells,coverage,tests,test_success_density,test_failures,test_errors,skipped_tests,duplicated_lines_density,duplicated_files,duplicated_blocks \
+          | jq '.measures')
+          echo "$RESPONSE" | jq -c '.[] | .' | while read -r data;
+          do
+            METRIC=$(echo $data | jq -r '.metric')
+            VALUE=$(echo $data | jq -r '.value')
+            BEST_VALUE=$(echo $data | jq -r '.bestValue')
+            echo "::set-output name=${METRIC}_value::${VALUE}"
+            if [ $BEST_VALUE == true ]; then
+              echo "::set-output name=${METRIC}_best_value::✅"
+            else
+              echo "::set-output name=${METRIC}_best_value::❌"                 
+            fi
+          done
       - name: comment Sonarqube URL
         uses: actions/github-script@v4
         with:
@@ -81,5 +62,16 @@ jobs:
               repo: context.repo.repo,
               body: `## 🚧 Analysis Results
             ${ SONARQUBE_PROJECT_KEY }-${ PR_NUMBER }
+            
+            Bugs :    ${{ steps.analysis_results.outputs.bugs_value }}    ${{ steps.analysis_results.outputs.bugs_best_value }}
+            Vulnerabilities :    ${{ steps.analysis_results.outputs.vulnerabilities_value }}    ${{ steps.analysis_results.outputs.vulnerabilities_best_value }} 
+            Security Hotspots :    ${{ steps.analysis_results.outputs.security_hotspots_value }}    ${{ steps.analysis_results.outputs.security_hotspots_best_value }} 
+            Code Smells :    ${{ steps.analysis_results.outputs.code_smells_value }}    ${{ steps.analysis_results.outputs.code_smells_best_value }} 
+            Coverage :    ${{ steps.analysis_results.outputs.coverage_value }}    ${{ steps.analysis_results.outputs.coverage_best_value }} 
+            Tests :    ${{ steps.analysis_results.outputs.tests_value }}    ${{ steps.analysis_results.outputs.tests_best_value }} 
+            Test Success Density :    ${{ steps.analysis_results.outputs.test_success_density_value }}    ${{ steps.analysis_results.outputs.test_success_density_best_value }} 
+            Test Failures :    ${{ steps.analysis_results.outputs.test_failures_value }}    ${{ steps.analysis_results.outputs.test_failures_best_value }}             
+            Duplicated Lines Density :    ${{ steps.analysis_results.outputs.duplicated_lines_density_value }}    ${{ steps.analysis_results.outputs.duplicated_lines_density_best_value }}
+            
             [분석 결과 확인하기](${SONARQUBE_URL})`
             })
