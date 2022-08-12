@@ -2,8 +2,10 @@ package com.woowacourse.f12.presentation.review;
 
 import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.presentation.auth.LoginRequired;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
 import java.net.URI;
@@ -40,16 +42,17 @@ public class ReviewController {
     }
 
     @GetMapping("/products/{productId}/reviews")
-    public ResponseEntity<ReviewPageResponse> showPageByProductId(@PathVariable final Long productId,
-                                                                  final Pageable pageable) {
-        final ReviewPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, pageable);
+    public ResponseEntity<ReviewWithAuthorPageResponse> showPageByProductId(@PathVariable final Long productId,
+                                                                            final Pageable pageable) {
+        final ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, pageable);
         return ResponseEntity.ok(reviewPageResponse);
     }
 
     @GetMapping("/reviews")
-    public ResponseEntity<ReviewWithProductPageResponse> showPage(final Pageable pageable) {
-        final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPage(pageable);
-        return ResponseEntity.ok(reviewWithProductPageResponse);
+    public ResponseEntity<ReviewWithAuthorAndProductPageResponse> showPage(final Pageable pageable) {
+        final ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = reviewService.findPage(
+                pageable);
+        return ResponseEntity.ok(reviewWithAuthorAndProductPageResponse);
     }
 
     @PutMapping("/reviews/{reviewId}")
@@ -68,5 +71,28 @@ public class ReviewController {
         reviewService.delete(reviewId, memberId);
         return ResponseEntity.noContent()
                 .build();
+    }
+
+    @GetMapping("/members/{memberId}/reviews")
+    public ResponseEntity<ReviewWithProductPageResponse> showPageByMemberId(@PathVariable final Long memberId,
+                                                                            final Pageable pageable) {
+        final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPageByMemberId(memberId,
+                pageable);
+        return ResponseEntity.ok(reviewWithProductPageResponse);
+    }
+
+    @GetMapping("/members/me/reviews")
+    @LoginRequired
+    public ResponseEntity<ReviewWithProductPageResponse> showMyReviewPage(@VerifiedMember final Long memberId,
+                                                                          final Pageable pageable) {
+        final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPageByMemberId(memberId,
+                pageable);
+        return ResponseEntity.ok(reviewWithProductPageResponse);
+    }
+
+    @GetMapping("/inventoryProducts/{inventoryProductId}/reviews")
+    public ResponseEntity<ReviewWithProductResponse> showReview(@PathVariable final Long inventoryProductId) {
+        final ReviewWithProductResponse reviewResponse = reviewService.findByInventoryProductId(inventoryProductId);
+        return ResponseEntity.ok(reviewResponse);
     }
 }

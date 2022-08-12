@@ -4,6 +4,7 @@ import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,8 +30,10 @@ import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.review.ReviewPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
 import com.woowacourse.f12.exception.badrequest.BlankContentException;
 import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
@@ -392,13 +395,13 @@ class ReviewControllerTest extends ControllerTest {
         Product product1 = KEYBOARD_1.생성(1L);
         Product product2 = KEYBOARD_2.생성(2L);
         Member member = CORINNE.생성(1L);
-        ReviewWithProductPageResponse reviewWithProductPageResponse = ReviewWithProductPageResponse.from(
+        ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = ReviewWithAuthorAndProductPageResponse.from(
                 new SliceImpl<>(
                         List.of(REVIEW_RATING_5.작성(1L, product1, member), REVIEW_RATING_4.작성(2L, product2, member)),
                         pageable, false));
 
         given(reviewService.findPage(any(Pageable.class)))
-                .willReturn(reviewWithProductPageResponse);
+                .willReturn(reviewWithAuthorAndProductPageResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/api/v1/reviews?page=0&size=10&sort=createdAt,desc"));
@@ -420,13 +423,13 @@ class ReviewControllerTest extends ControllerTest {
         Product product = KEYBOARD_1.생성(1L);
         Member corinne = CORINNE.생성(1L);
         Member mincho = MINCHO.생성(2L);
-        ReviewPageResponse reviewPageResponse = ReviewPageResponse.from(
+        ReviewWithAuthorPageResponse reviewWithAuthorPageResponse = ReviewWithAuthorPageResponse.from(
                 new SliceImpl<>(
                         List.of(REVIEW_RATING_5.작성(1L, product, corinne), REVIEW_RATING_4.작성(2L, product, mincho)),
                         pageable, false));
 
         given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
-                .willReturn(reviewPageResponse);
+                .willReturn(reviewWithAuthorPageResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -700,5 +703,78 @@ class ReviewControllerTest extends ControllerTest {
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(reviewService).delete(reviewId, memberId)
         );
+    }
+
+    @Test
+    void 회원_아이디로_리뷰_목록_조회_성공() throws Exception {
+        // given
+        Long memberId = 1L;
+        PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+        given(reviewService.findPageByMemberId(anyLong(), any(Pageable.class)))
+                .willReturn(ReviewWithProductPageResponse.from(
+                        new SliceImpl<>(List.of(
+                                REVIEW_RATING_4.작성(2L, KEYBOARD_2.생성(2L), CORINNE.생성(memberId)),
+                                REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(memberId))),
+                                pageable, false)));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/" + memberId + "/reviews?size=10&page=0&sort=createdAt,desc"));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("reviews-page-get-by-memberId"));
+        verify(reviewService).findPageByMemberId(memberId,
+                PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
+    }
+
+    @Test
+    void 내_리뷰_목록_조회_성공() throws Exception {
+        // given
+        Long memberId = 1L;
+        PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+        given(reviewService.findPageByMemberId(anyLong(), any(Pageable.class)))
+                .willReturn(ReviewWithProductPageResponse.from(
+                        new SliceImpl<>(List.of(
+                                REVIEW_RATING_4.작성(2L, KEYBOARD_2.생성(2L), CORINNE.생성(memberId)),
+                                REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(memberId))),
+                                pageable, false)));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/me/reviews?size=10&page=0&sort=createdAt,desc")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("reviews-page-get-own"));
+        verify(reviewService).findPageByMemberId(memberId,
+                PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
+    }
+
+    @Test
+    void 인벤토리_아이디로_리뷰_조회_성공() throws Exception {
+        // given
+        Long inventoryId = 1L;
+        given(reviewService.findByInventoryProductId(inventoryId))
+                .willReturn(ReviewWithProductResponse.from(REVIEW_RATING_1.작성(KEYBOARD_1.생성(1L), CORINNE.생성(1L))));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/inventoryProducts/" + inventoryId + "/reviews")
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("reviews-get-by-inventoryProductId"));
+        verify(reviewService).findByInventoryProductId(inventoryId);
     }
 }

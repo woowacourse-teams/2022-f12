@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/members")
+@RequestMapping("/api/v1")
 public class InventoryProductController {
 
     private final InventoryProductService inventoryProductService;
@@ -24,7 +24,7 @@ public class InventoryProductController {
         this.inventoryProductService = inventoryProductService;
     }
 
-    @PatchMapping("/inventoryProducts")
+    @PatchMapping("/members/inventoryProducts")
     @LoginRequired
     public ResponseEntity<Void> updateProfileProducts(
             @RequestBody @Valid final ProfileProductRequest profileProductRequest,
@@ -33,14 +33,14 @@ public class InventoryProductController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/inventoryProducts")
+    @GetMapping("/members/inventoryProducts")
     @LoginRequired
     public ResponseEntity<InventoryProductsResponse> showMyInventoryProducts(@VerifiedMember final Long memberId) {
         final InventoryProductsResponse inventoryProductsResponse = inventoryProductService.findByMemberId(memberId);
         return ResponseEntity.ok(inventoryProductsResponse);
     }
 
-    @GetMapping("/{memberId}/inventoryProducts")
+    @GetMapping("/members/{memberId}/inventoryProducts")
     public ResponseEntity<InventoryProductsResponse> show(@PathVariable final Long memberId) {
         final InventoryProductsResponse inventoryProductsResponse = inventoryProductService.findByMemberId(memberId);
         return ResponseEntity.ok(inventoryProductsResponse);

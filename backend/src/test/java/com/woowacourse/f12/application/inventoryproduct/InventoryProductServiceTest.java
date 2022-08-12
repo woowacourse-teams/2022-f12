@@ -2,6 +2,7 @@ package com.woowacourse.f12.application.inventoryproduct;
 
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.ProductFixture.SOFTWARE_1;
@@ -21,7 +22,6 @@ import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsRespon
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductUpdateException;
-import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ class InventoryProductServiceTest {
         // given
         List<Long> selectedInventoryProductIds = List.of(2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
-        Member member = MemberFixtures.CORINNE.생성(1L);
+        Member member = CORINNE.생성(1L);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
         given(inventoryProductRepository.updateBulkProfileProductByMember(member, false))
@@ -73,7 +73,7 @@ class InventoryProductServiceTest {
         // given
         List<Long> selectedInventoryProductIds = List.of(2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
-        Member member = MemberFixtures.CORINNE.생성(1L);
+        Member member = CORINNE.생성(1L);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
         given(inventoryProductRepository.updateBulkProfileProductByMember(member, false))
@@ -98,7 +98,7 @@ class InventoryProductServiceTest {
         // given
         List<Long> selectedInventoryProductIds = List.of(1L, 2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
-        Member member = MemberFixtures.CORINNE.생성(1L);
+        Member member = CORINNE.생성(1L);
         InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성());
         InventoryProduct inventoryProduct2 = UNSELECTED_INVENTORY_PRODUCT.생성(2L, member, KEYBOARD_2.생성());
 
@@ -121,7 +121,7 @@ class InventoryProductServiceTest {
         // given
         List<Long> selectedInventoryProductIds = List.of(1L, 2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
-        Member member = MemberFixtures.CORINNE.생성(1L);
+        Member member = CORINNE.생성(1L);
         InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, member, SOFTWARE_1.생성());
         InventoryProduct inventoryProduct2 = UNSELECTED_INVENTORY_PRODUCT.생성(2L, member, KEYBOARD_2.생성());
 
@@ -143,7 +143,7 @@ class InventoryProductServiceTest {
     void 등록된_장비를_멤버_id로_조회한다() {
         // given
         Long memberId = 1L;
-        Member member = MemberFixtures.CORINNE.생성(memberId);
+        Member member = CORINNE.생성(memberId);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성(1L));
         given(memberRepository.existsById(1L))
                 .willReturn(true);

@@ -34,6 +34,10 @@ operation::reviews-by-product-page-get[snippets='http-request,http-response']
 
 operation::reviews-page-get[snippets='http-request,http-response']
 
+=== 인벤토리 아이디로 리뷰 조회
+
+operation::reviews-get-by-inventoryProductId[snippets='http-request,http-response']
+
 === 리뷰 수정
 
 ==== 발생 가능 에러

@@ -1,6 +1,7 @@
 package com.woowacourse.f12.presentation.inventoryproduct;
 
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,7 +28,6 @@ import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategory
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.presentation.ControllerTest;
-import com.woowacourse.f12.support.MemberFixtures;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -206,7 +206,7 @@ class InventoryProductControllerTest extends ControllerTest {
     void 멤버_id_로_조회한다() throws Exception {
         // given
         Long memberId = 1L;
-        Member member = MemberFixtures.CORINNE.생성(memberId);
+        Member member = CORINNE.생성(memberId);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성(1L));
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -238,7 +238,7 @@ class InventoryProductControllerTest extends ControllerTest {
     void 다른_멤버_id_로_조회한다() throws Exception {
         // given
         Long memberId = 1L;
-        Member member = MemberFixtures.CORINNE.생성(memberId);
+        Member member = CORINNE.생성(memberId);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성(1L));
         given(inventoryProductService.findByMemberId(memberId))
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
