@@ -148,11 +148,8 @@ const patchInventoryProducts = (req, res, ctx) => {
   if (token === undefined) {
     return res(ctx.status(401));
   }
-  const { selectedInventoryProductId, unselectedInventoryProductId } = req.body;
-  if (
-    selectedInventoryProductId === undefined &&
-    unselectedInventoryProductId === undefined
-  ) {
+  const { selectedInventoryProductIds } = req.body;
+  if (selectedInventoryProductIds === undefined) {
     return res(ctx.status(400));
   }
   return res(ctx.status(200));
