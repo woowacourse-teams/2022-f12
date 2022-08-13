@@ -20,14 +20,9 @@ function Login() {
 
   useEffect(() => {
     const githubCode = searchParam.get('code');
-    if (!githubCode) {
-      showAlert('로그인을 취소했거나 오류가 발생했습니다.');
-      navigate(ROUTES.HOME);
-      return;
-    }
 
-    login(searchParam.get('code')).catch(() => {
-      showAlert('로그인에 실패했습니다. 잠시 후 다시 시도해주세요.');
+    login(githubCode).catch(async () => {
+      await showAlert('로그인에 실패했습니다. 잠시 후 다시 시도해주세요.');
       navigate(ROUTES.HOME);
     });
   }, []);

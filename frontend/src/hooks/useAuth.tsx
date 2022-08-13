@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   IsLoggedInContext,
@@ -10,9 +11,10 @@ import useGet from '@/hooks/api/useGet';
 import useModal from '@/hooks/useModal';
 
 import { ENDPOINTS } from '@/constants/api';
+import ROUTES from '@/constants/routes';
 
 type Return = {
-  login: (githubCode: string) => Promise<void>;
+  login: (code: string) => Promise<void>;
   logout: () => void;
   isLoggedIn: boolean;
 };
@@ -25,9 +27,17 @@ function useAuth(): Return {
 
   const fetchUserData = useGet<UserData>({ url: ENDPOINTS.LOGIN });
 
-  const login = async (githubCode: string) => {
+  const navigate = useNavigate();
+
+  const login = async (code: string) => {
+    if (!code) {
+      await showAlert('로그인을 취소했거나 오류가 발생했습니다.');
+      navigate(ROUTES.HOME);
+      return;
+    }
+
     try {
-      const userData = await fetchUserData({ code: githubCode });
+      const userData = await fetchUserData({ code });
       setUserData(userData);
     } catch (error) {
       if (error instanceof Error) {
