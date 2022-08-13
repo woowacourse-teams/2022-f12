@@ -4,7 +4,7 @@ import Modal from '@/components/common/Modal/Modal';
 
 export default {
   component: Modal,
-  title: 'Components/Modal',
+  title: 'Components/Common/Modal',
 };
 
 type Props = {

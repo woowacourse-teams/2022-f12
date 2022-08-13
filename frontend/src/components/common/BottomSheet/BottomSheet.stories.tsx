@@ -5,7 +5,7 @@ import BottomSheet from '@/components/common/BottomSheet/BottomSheet';
 
 export default {
   component: BottomSheet,
-  title: 'Components/BottomSheet',
+  title: 'Components/Common/BottomSheet',
 };
 
 const Container = styled.div`

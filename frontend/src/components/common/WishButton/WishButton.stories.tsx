@@ -4,7 +4,7 @@ import WishButton from '@/components/common/WishButton/WishButton';
 
 export default {
   component: WishButton,
-  title: 'Components/WishButton',
+  title: 'Components/Common/WishButton',
 };
 
 const Template: ComponentStory<typeof WishButton> = (args) => <WishButton {...args} />;

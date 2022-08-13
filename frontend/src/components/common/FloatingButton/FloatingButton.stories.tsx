@@ -8,7 +8,7 @@ import Plus from '@/assets/plus.svg';
 
 export default {
   component: FloatingButton,
-  title: 'Components/FloatingButton',
+  title: 'Components/Common/FloatingButton',
 };
 
 const Template: ComponentStory<typeof FloatingButton> = (args) => (

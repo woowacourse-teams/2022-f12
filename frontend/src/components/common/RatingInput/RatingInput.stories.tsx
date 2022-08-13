@@ -4,7 +4,7 @@ import RatingInput from '@/components/common/RatingInput/RatingInput';
 
 export default {
   component: RatingInput,
-  title: 'Components/RatingInput',
+  title: 'Components/Common/RatingInput',
 };
 
 const Template = () => {

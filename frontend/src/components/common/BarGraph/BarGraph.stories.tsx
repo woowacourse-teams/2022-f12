@@ -4,7 +4,7 @@ import BarGraph from '@/components/common/BarGraph/BarGraph';
 
 export default {
   component: BarGraph,
-  title: 'Components/BarGraph',
+  title: 'Components/Common/BarGraph',
 };
 
 const Template: ComponentStory<typeof BarGraph> = (args) => <BarGraph {...args} />;

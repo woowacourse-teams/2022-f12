@@ -1,26 +1,16 @@
-import { useState } from 'react';
-
 import ProductSelect from '@/components/Profile/ProductSelect/ProductSelect';
 
 import { products } from '@/mocks/data';
 
 export default {
   component: ProductSelect,
-  title: 'Components/ProductSelect',
+  title: 'Components/Profile/ProductSelect',
 };
 
 const sampleProducts = products.slice(0, 6);
 
-const Template = () => {
-  return (
-    <ProductSelect
-      submitHandler={() => {
-        console.log('hi');
-      }}
-      updateProfileProduct={() => {}}
-      inventoryList={{}}
-    />
-  );
+const Template = (args) => {
+  return <ProductSelect inventoryList={sampleProducts} {...args} />;
 };
 
 export const Default = () => <Template />;

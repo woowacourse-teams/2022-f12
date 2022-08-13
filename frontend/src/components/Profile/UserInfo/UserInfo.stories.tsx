@@ -5,7 +5,7 @@ import UserInfo from '@/components/Profile/UserInfo/UserInfo';
 
 export default {
   component: UserInfo,
-  title: 'Components/UserInfo',
+  title: 'Components/Profile/UserInfo',
 };
 
 const Container = styled.div`

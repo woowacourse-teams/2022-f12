@@ -4,7 +4,7 @@ import ProfileCard from '@/components/Profile/ProfileCard/ProfileCard';
 
 export default {
   component: ProfileCard,
-  title: 'Components/ProfileCard',
+  title: 'Components/Profile/ProfileCard',
 };
 
 const Template: ComponentStory<typeof ProfileCard> = (args) => (

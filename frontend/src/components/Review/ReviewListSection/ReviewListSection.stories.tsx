@@ -1,4 +1,4 @@
-import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
+import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListSection';
 
 import { reviewsWithProduct } from '@/mocks/data';
 
@@ -14,7 +14,6 @@ const Template = () => (
     getNextPage={() => undefined}
     isLoading={false}
     isError={false}
-    isReady={true}
   />
 );
 

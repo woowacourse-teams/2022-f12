@@ -4,7 +4,7 @@ import Chip from '@/components/common/Chip/Chip';
 
 export default {
   component: Chip,
-  title: 'Components/Chip',
+  title: 'Components/Common/Chip',
 };
 
 const Template: ComponentStory<typeof Chip> = (args) => <Chip {...args} />;

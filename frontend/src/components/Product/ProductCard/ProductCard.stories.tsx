@@ -6,7 +6,7 @@ import { products } from '@/mocks/data';
 
 export default {
   component: ProductCard,
-  title: 'Components/ProductCard',
+  title: 'Components/Product/ProductCard',
 };
 
 const Template: ComponentStory<typeof ProductCard> = (args) => <ProductCard {...args} />;

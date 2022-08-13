@@ -4,7 +4,7 @@ import SearchFilter from '@/components/common/SearchFilter/SearchFilter';
 
 export default {
   component: SearchFilter,
-  title: 'Components/SearchFilter',
+  title: 'Components/Common/SearchFilter',
 };
 
 const Template = () => {

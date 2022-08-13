@@ -5,7 +5,7 @@ import ReviewBottomSheet from '@/components/Review/ReviewBottomSheet/ReviewBotto
 
 export default {
   component: ReviewBottomSheet,
-  title: 'Components/ReviewBottomSheet',
+  title: 'Components/Review/ReviewBottomSheet',
 };
 
 const Container = styled.div`

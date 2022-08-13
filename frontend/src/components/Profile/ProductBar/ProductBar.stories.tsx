@@ -5,7 +5,7 @@ import ProductBar from '@/components/Profile/ProductBar/ProductBar';
 
 export default {
   component: ProductBar,
-  title: 'Components/ProductBar',
+  title: 'Components/Profile/ProductBar',
 };
 
 const Container = styled.div`
