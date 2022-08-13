@@ -7,8 +7,8 @@ import * as S from '@/components/Review/ReviewForm/ReviewForm.style';
 type Props = {
   handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
   isEdit: boolean;
-  rating?: number;
-  content?: string;
+  rating?: Review['rating'];
+  content?: Review['content'];
 };
 
 const initialState = {

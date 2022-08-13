@@ -11,20 +11,7 @@ import useSearch from '@/hooks/useSearch';
 import useUrlSyncState from '@/hooks/useUrlSyncState';
 
 import { ENDPOINTS } from '@/constants/api';
-
-const careerLevels = {
-  none: '경력 없음',
-  junior: '0-2년차',
-  midlevel: '3-5년차',
-  senior: '6년차 이상',
-} as const;
-
-const jobTypes = {
-  frontend: '프론트엔드',
-  backend: '백엔드',
-  mobile: '모바일',
-  etc: '기타',
-} as const;
+import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 
 function ProfileSearch() {
   const [careerLevel, setCareerLevel] = useUrlSyncState('careerLevel');
@@ -56,13 +43,13 @@ function ProfileSearch() {
             title={'경력'}
             value={careerLevel}
             setValue={setCareerLevel}
-            options={careerLevels}
+            options={CAREER_LEVELS}
           />
           <SearchFilter
             title={'직군'}
             value={jobType}
             setValue={setJobType}
-            options={jobTypes}
+            options={JOB_TYPES}
           />
         </S.SearchFilterWrapper>
       </S.SearchWrapper>

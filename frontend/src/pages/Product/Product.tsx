@@ -28,7 +28,7 @@ function Product() {
   const productId = Number(id);
 
   const [product, isProductReady, isProductError] = useProduct({
-    productId: Number(productId),
+    id: Number(productId),
   });
   const {
     reviews,

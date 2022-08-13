@@ -15,10 +15,8 @@ type Props = {
   memberId?: string;
 };
 
-type Return = {
+type Return = Omit<DataFetchStatus, 'isLoading'> & {
   items: InventoryProduct[];
-  isReady: boolean;
-  isError: boolean;
   refetch: () => void;
   updateProfileProduct: (ids: number[]) => Promise<boolean>;
 };

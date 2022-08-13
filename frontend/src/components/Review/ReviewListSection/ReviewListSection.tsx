@@ -7,11 +7,9 @@ import * as S from '@/components/Review/ReviewListSection/ReviewListSection.styl
 
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 
-type Props = {
+type Props = Omit<DataFetchStatus, 'isReady'> & {
   columns: number;
   data: Review[];
-  isLoading: boolean;
-  isError: boolean;
   getNextPage: () => void;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;

@@ -17,13 +17,13 @@ const Template: ComponentStory<typeof UserInfo> = (args) => (
     <UserInfo {...args} />
   </Container>
 );
-const defaultArg = {
-  id: '1',
+const defaultArg: Member = {
+  id: 1,
   gitHubId: '아저씨',
-  name: '아저씨',
   imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
-  careerLevel: '경력없음',
-  jobType: '프론트엔드',
+  name: '아저씨',
+  careerLevel: 'none',
+  jobType: 'frontend',
 };
 
 export const Default = () => <Template userData={defaultArg} />;

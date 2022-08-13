@@ -10,11 +10,9 @@ type Props = {
   headers?: null | AxiosRequestHeaders;
 };
 
-type Return<T> = {
+type Return<T> = Omit<DataFetchStatus, 'isLoading'> & {
   data: T;
   refetch: () => void;
-  isReady: boolean;
-  isError: boolean;
 };
 
 function useGetOne<T>({ url, headers }: Props): Return<T> {

@@ -4,15 +4,6 @@ import * as S from '@/components/Profile/UserInfo/UserInfo.style';
 
 import GithubIcon from '@/assets/github.svg';
 
-type Member = {
-  id: string;
-  gitHubId: string;
-  name: string;
-  imageUrl: string;
-  careerLevel: string;
-  jobType: string;
-};
-
 type Props = {
   userData: Member;
 };

@@ -5,8 +5,8 @@ import { BASE_URL, ENDPOINTS } from '@/constants/api';
 import {
   InventoryProducts,
   members,
-  myData,
-  otherData,
+  myUserData,
+  otherUserData,
   products,
   reviewsWithOutProduct,
   reviewsWithProduct,
@@ -160,7 +160,7 @@ const getMyInfo = (req, res, ctx) => {
   if (token === undefined) {
     return res(ctx.status(401));
   }
-  return res(ctx.status(200), ctx.json(myData), ctx.delay());
+  return res(ctx.status(200), ctx.json(myUserData), ctx.delay());
 };
 
 // 추가 정보 입력
@@ -173,7 +173,7 @@ const submitAdditionalInfo = (req, res, ctx) => {
 };
 
 const getOtherMemberInfo = (req, res, ctx) => {
-  return res(ctx.json(otherData));
+  return res(ctx.json(otherUserData));
 };
 
 const searchMember = (req, res, ctx) => {

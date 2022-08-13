@@ -1,8 +1,8 @@
 import * as S from '@/pages/Register/Register.style';
 
 type Props = {
-  careerLevel: string;
-  jobType: string;
+  careerLevel: CareerLevels[CareerLevel];
+  jobType: JobTypes[JobType];
   handleEdit: () => void;
   handleConfirm: () => void;
 };

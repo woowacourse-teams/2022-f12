@@ -11,19 +11,9 @@ import useAuth from '@/hooks/useAuth';
 import ROUTES from '@/constants/routes';
 
 type Props = {
-  loginUserGithubId: string;
-  reviewId: number;
-  reviewData: {
-    product?: {
-      id: number;
-      name: string;
-      imageUrl: string;
-    };
-    rating: number;
-    content: string;
-    author: Review['author'];
-    createdAt: string;
-  };
+  loginUserGithubId: Member['gitHubId'];
+  reviewId: Review['id'];
+  reviewData: Omit<Review, 'id'>;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
 };
@@ -90,7 +80,7 @@ function ReviewCard({
           handleClose={toggleEditSheetOpen}
           handleEdit={handleEdit}
           isEdit
-          reviewId={reviewId}
+          id={reviewId}
           rating={rating}
           content={content}
         />

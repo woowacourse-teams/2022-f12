@@ -9,10 +9,8 @@ import * as S from '@/components/Product/ProductListSection/ProductListSection.s
 
 import ROUTES from '@/constants/routes';
 
-type Props = {
+type Props = Omit<DataFetchStatus, 'isReady'> & {
   data: Product[];
-  isLoading: boolean;
-  isError: boolean;
   getNextPage?: () => void;
 };
 

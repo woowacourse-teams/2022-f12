@@ -3,12 +3,7 @@ import ReviewCount from '@/components/common/ReviewCount/ReviewCount';
 
 import * as S from '@/components/Product/ProductCard/ProductCard.style';
 
-type Props = {
-  imageUrl?: string;
-  name: string;
-  rating: number;
-  reviewCount: number;
-};
+type Props = Omit<Product, 'id' | 'category'>;
 
 function ProductCard({ imageUrl, name, rating, reviewCount }: Props) {
   return (

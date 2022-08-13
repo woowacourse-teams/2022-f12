@@ -18,15 +18,6 @@ import useInventory from '@/hooks/useInventory';
 
 import { ENDPOINTS } from '@/constants/api';
 
-type Member = {
-  id: string;
-  gitHubId: string;
-  name: string;
-  imageUrl: string;
-  careerLevel: string;
-  jobType: string;
-};
-
 function Profile() {
   const userData = useContext(UserDataContext);
   const { memberId } = useParams();

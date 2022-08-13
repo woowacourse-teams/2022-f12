@@ -13,10 +13,8 @@ type ErrorResponseBody = {
   errorCode: keyof typeof API_ERROR_MESSAGES;
 };
 
-type Return = {
+type Return = Omit<DataFetchStatus, 'isReady'> & {
   axiosInstance: AxiosInstance;
-  isLoading: boolean;
-  isError: boolean;
 };
 
 function useAxios(): Return {

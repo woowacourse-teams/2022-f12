@@ -13,6 +13,7 @@ import usePatch from '@/hooks/api/usePatch';
 import useModal from '@/hooks/useModal';
 
 import { ENDPOINTS } from '@/constants/api';
+import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 import ROUTES from '@/constants/routes';
 
 const titles = {
@@ -21,29 +22,10 @@ const titles = {
   3: '입력한 정보를 확인해주세요',
 };
 
-const careerLevels = {
-  none: '경력 없음',
-  junior: '0-2년차',
-  midlevel: '3-5년차',
-  senior: '6년차 이상',
-} as const;
-
-const jobTypes = {
-  frontend: '프론트엔드',
-  backend: '백엔드',
-  mobile: '모바일',
-  etc: '기타',
-} as const;
-
-type UserInfo = {
-  careerLevel: keyof typeof careerLevels;
-  jobType: keyof typeof jobTypes;
-};
-
 function Register() {
   const [step, setStep] = useState(1);
-  const [careerLevel, setCareerLevel] = useState<UserInfo['careerLevel']>(null);
-  const [jobType, setJobType] = useState<UserInfo['jobType']>(null);
+  const [careerLevel, setCareerLevel] = useState<CareerLevel>(null);
+  const [jobType, setJobType] = useState<JobType>(null);
   const navigate = useNavigate();
   const userData = useContext(UserDataContext);
 
@@ -55,7 +37,7 @@ function Register() {
 
   const handleAdditionalInfoSubmit = async () => {
     const confirmation = await getConfirm(
-      `${careerLevels[careerLevel]}, ${jobTypes[jobType]} 개발자이신가요?`
+      `${CAREER_LEVELS[careerLevel]}, ${JOB_TYPES[jobType]} 개발자이신가요?`
     );
     if (confirmation) {
       patchAdditionalInfo({ careerLevel, jobType }).catch((error) => {
@@ -78,22 +60,22 @@ function Register() {
   const stepButtons = [
     <AdditionalInfoForm
       key="0"
-      options={careerLevels}
+      options={CAREER_LEVELS}
       input={careerLevel}
       setInput={setCareerLevel}
       setStep={setStep}
     />,
     <AdditionalInfoForm
       key="1"
-      options={jobTypes}
+      options={JOB_TYPES}
       input={jobType}
       setInput={setJobType}
       setStep={setStep}
     />,
     <ConfirmInfoForm
       key="2"
-      careerLevel={careerLevels[careerLevel]}
-      jobType={jobTypes[jobType]}
+      careerLevel={CAREER_LEVELS[careerLevel]}
+      jobType={JOB_TYPES[jobType]}
       handleConfirm={handleAdditionalInfoSubmit}
       handleEdit={handleEditButtonClick}
     />,

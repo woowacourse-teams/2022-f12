@@ -3,16 +3,16 @@ import useGetOne from '@/hooks/api/useGetOne';
 import { ENDPOINTS } from '@/constants/api';
 
 type Props = {
-  productId: number;
+  id: number;
 };
 
-function useProduct({ productId }: Props): [Product, boolean, boolean] {
+function useProduct({ id }: Props): [Product, boolean, boolean] {
   const {
     data: product,
     isReady,
     isError,
   } = useGetOne<Product>({
-    url: `${ENDPOINTS.PRODUCT(productId)}`,
+    url: `${ENDPOINTS.PRODUCT(id)}`,
   });
 
   return [product, isReady, isError];

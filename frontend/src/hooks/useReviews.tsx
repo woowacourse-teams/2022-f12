@@ -8,30 +8,27 @@ import useSessionStorage from '@/hooks/useSessionStorage';
 import { ENDPOINTS } from '@/constants/api';
 
 type PropsWithoutProductId = { size: string };
-type PropsWithProductId = PropsWithoutProductId & { productId: number };
+type PropsWithProductId = PropsWithoutProductId & { productId: Product['id'] };
 type Props = {
   size: string;
-  productId?: number;
+  productId?: Product['id'];
   reviewId?: number;
 };
 
-type ReturnTypeWithoutProductId = {
+type ReturnWithoutProductId = DataFetchStatus & {
   reviews: Review[];
-  isReady: boolean;
-  isLoading: boolean;
-  isError: boolean;
   getNextPage: () => void;
 };
-type ReturnTypeWithProductId = ReturnTypeWithoutProductId & {
+type ReturnWithProductId = ReturnWithoutProductId & {
   handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
   handleEdit: (reviewInput: ReviewInput, id: number) => Promise<void>;
   handleDelete: (id: number) => Promise<void>;
 };
-type ReturnType = ReturnTypeWithoutProductId & ReturnTypeWithProductId;
+type Return = ReturnWithoutProductId & ReturnWithProductId;
 
-function useReviews({ size }: PropsWithoutProductId): ReturnTypeWithoutProductId;
-function useReviews({ size, productId }: PropsWithProductId): ReturnTypeWithProductId;
-function useReviews({ size, productId }: Props): ReturnType {
+function useReviews({ size }: PropsWithoutProductId): ReturnWithoutProductId;
+function useReviews({ size, productId }: PropsWithProductId): ReturnWithProductId;
+function useReviews({ size, productId }: Props): Return {
   const [data] = useSessionStorage<UserData>('userData');
   const { showAlert, getConfirm } = useModal();
   const {

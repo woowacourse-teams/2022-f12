@@ -2,10 +2,8 @@ import { PropsWithChildren, useEffect, useMemo, useRef } from 'react';
 
 import Loading from '@/components/common/Loading/Loading';
 
-type Props = {
+type Props = Omit<DataFetchStatus, 'isReady'> & {
   handleContentLoad: () => void;
-  isLoading: boolean;
-  isError: boolean;
 };
 
 function InfiniteScroll({

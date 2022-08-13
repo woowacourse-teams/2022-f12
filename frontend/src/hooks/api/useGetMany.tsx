@@ -21,11 +21,8 @@ type Data<T> = {
   items: T[];
 };
 
-type Return<T> = {
+type Return<T> = DataFetchStatus & {
   data: T[];
-  isLoading: boolean;
-  isReady: boolean;
-  isError: boolean;
   getNextPage: () => void;
   refetch: () => void;
 };

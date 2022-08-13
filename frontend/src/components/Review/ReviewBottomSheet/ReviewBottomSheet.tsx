@@ -3,14 +3,11 @@ import BottomSheet from '@/components/common/BottomSheet/BottomSheet';
 import * as S from '@/components/Review/ReviewBottomSheet/ReviewBottomSheet.style';
 import ReviewForm from '@/components/Review/ReviewForm/ReviewForm';
 
-type Props = {
+type Props = Partial<Pick<Review, 'id' | 'rating' | 'content'>> & {
   handleClose: () => void;
   handleSubmit?: (reviewInput: ReviewInput) => Promise<void>;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
   isEdit: boolean;
-  reviewId?: number;
-  rating?: number;
-  content?: string;
 };
 
 function ReviewBottomSheet({
@@ -18,14 +15,14 @@ function ReviewBottomSheet({
   handleSubmit,
   handleEdit,
   isEdit = false,
-  reviewId,
+  id,
   rating,
   content,
 }: Props) {
   const handleCloseWithSubmit = async (reviewInput: ReviewInput) => {
     try {
       if (isEdit) {
-        await handleEdit(reviewInput, reviewId);
+        await handleEdit(reviewInput, id);
       } else {
         await handleSubmit(reviewInput);
       }

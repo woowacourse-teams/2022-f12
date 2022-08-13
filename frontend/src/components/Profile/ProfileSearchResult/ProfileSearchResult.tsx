@@ -4,11 +4,9 @@ import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlace
 import ProfileCard from '@/components/Profile/ProfileCard/ProfileCard';
 import * as S from '@/components/Profile/ProfileSearchResult/ProfileSearchResult.style';
 
-type Props = {
+type Props = Omit<DataFetchStatus, 'isReady'> & {
   data: ProfileSearchResult[];
   getNextPage: () => void;
-  isLoading: boolean;
-  isError: boolean;
 };
 
 function ProfileSearchResult({
