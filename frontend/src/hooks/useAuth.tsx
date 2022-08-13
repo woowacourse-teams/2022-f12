@@ -39,13 +39,8 @@ function useAuth(): Return {
     try {
       const userData = await fetchUserData({ code });
       setUserData(userData);
-    } catch (error) {
-      if (error instanceof Error) {
-        await showAlert(error.message);
-        return;
-      }
-
-      await showAlert('알 수 없는 오류 발생');
+    } catch {
+      throw new Error('로그인 오류');
     }
   };
 
