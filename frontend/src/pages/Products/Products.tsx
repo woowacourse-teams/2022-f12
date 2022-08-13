@@ -6,11 +6,11 @@ import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import { CATEGORY } from '@/components/common/CategoryNav/CategoryNav';
 import Loading from '@/components/common/Loading/Loading';
 import SearchBar from '@/components/common/SearchBar/SearchBar';
+import SearchFilter from '@/components/common/SearchFilter/SearchFilter';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import Select from '@/components/common/Select/Select';
 
-import ProductListSection from '@/components/ProductListSection/ProductListSection';
-import SearchFilter from '@/components/SearchFilter/SearchFilter';
+import ProductListSection from '@/components/Product/ProductListSection/ProductListSection';
 
 import useSearch from '@/hooks/useSearch';
 import useUrlSyncState from '@/hooks/useUrlSyncState';

@@ -9,8 +9,4 @@ export default {
 
 const Template: ComponentStory<typeof Chip> = (args) => <Chip {...args} />;
 
-export const Default = () => (
-  <Template paddingTopBottom={0.4} paddingLeftRight={1} fontSize={1}>
-    프론트엔드
-  </Template>
-);
+export const Default = () => <Template size={'s'}>프론트엔드</Template>;

@@ -7,11 +7,11 @@ import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import BarGraph from '@/components/common/BarGraph/BarGraph';
 import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
 import Loading from '@/components/common/Loading/Loading';
-import ProductDetail from '@/components/common/ProductDetail/ProductDetail';
 import StickyWrapper from '@/components/common/StickyWrapper/StickyWrapper';
 
-import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
-import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
+import ProductDetail from '@/components/Product/ProductDetail/ProductDetail';
+import ReviewBottomSheet from '@/components/Review/ReviewBottomSheet/ReviewBottomSheet';
+import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListSection';
 
 import useAuth from '@/hooks/useAuth';
 import useProduct from '@/hooks/useProduct';

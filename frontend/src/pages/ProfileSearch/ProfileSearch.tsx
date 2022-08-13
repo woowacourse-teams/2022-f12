@@ -3,9 +3,9 @@ import * as S from '@/pages/ProfileSearch/ProfileSearch.style';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
 import SearchBar from '@/components/common/SearchBar/SearchBar';
+import SearchFilter from '@/components/common/SearchFilter/SearchFilter';
 
-import ProfileSearchResult from '@/components/ProfileSearchResult/ProfileSearchResult';
-import SearchFilter from '@/components/SearchFilter/SearchFilter';
+import ProfileSearchResult from '@/components/Profile/ProfileSearchResult/ProfileSearchResult';
 
 import useSearch from '@/hooks/useSearch';
 import useUrlSyncState from '@/hooks/useUrlSyncState';

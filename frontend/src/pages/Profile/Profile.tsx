@@ -5,11 +5,11 @@ import * as S from '@/pages/Profile/Profile.style';
 
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
-import ProductSelect from '@/components/common/ProductSelect/ProductSelect';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
-import UserInfo from '@/components/common/UserInfo/UserInfo';
 
-import InventoryProductList from '@/components/InventoryProductList/InventoryProductList';
+import InventoryProductList from '@/components/Profile/InventoryProductList/InventoryProductList';
+import ProductSelect from '@/components/Profile/ProductSelect/ProductSelect';
+import UserInfo from '@/components/Profile/UserInfo/UserInfo';
 
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 

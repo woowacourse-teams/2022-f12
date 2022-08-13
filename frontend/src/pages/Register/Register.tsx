@@ -1,8 +1,8 @@
-import ConfirmInfoForm from './ConfirmInfoForm';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AdditionalInfoForm from '@/pages/Register/AdditionalInfoForm';
+import ConfirmInfoForm from '@/pages/Register/ConfirmInfoForm';
 import * as S from '@/pages/Register/Register.style';
 
 import Stepper from '@/components/common/Stepper/Stepper';

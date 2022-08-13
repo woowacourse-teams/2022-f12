@@ -2,8 +2,8 @@ import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
-import ProductListSection from '@/components/ProductListSection/ProductListSection';
-import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
+import ProductListSection from '@/components/Product/ProductListSection/ProductListSection';
+import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListSection';
 
 import useProducts from '@/hooks/useProducts';
 import useReviews from '@/hooks/useReviews';
