@@ -66,7 +66,7 @@ function Products() {
   });
 
   const title = useMemo(
-    () => (category in CATEGORY ? CATEGORY[category as keyof CATEGORY] : '모든 상품'),
+    () => (category in CATEGORY ? CATEGORY[category as keyof CATEGORY] : '모든 제품'),
     [category]
   );
 

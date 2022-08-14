@@ -73,9 +73,7 @@ function Profile() {
         </AsyncWrapper>
       </S.ProfileSection>
       <S.InventorySection>
-        <SectionHeader title={'보유한 장비 목록'}>
-          <S.Description>리뷰를 작성한 상품들이 표시됩니다.</S.Description>
-        </SectionHeader>
+        <SectionHeader title={'리뷰를 작성한 제품 목록'} />
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isInventoryProductsReady}

@@ -12,7 +12,7 @@ import {
   reviewsWithProduct,
 } from '@/mocks/data';
 
-// 상품 목록 조회
+// 제품 목록 조회
 const getKeyboards = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
@@ -26,7 +26,7 @@ const getKeyboards = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
-// 상품 상세 조회
+// 제품 상세 조회
 const getKeyboard = (req, res, ctx) => {
   const { id } = req.params;
 
@@ -35,8 +35,7 @@ const getKeyboard = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
-// 상품 사용자 통계 조회
-// 상품 상세 조회
+// 제품 사용자 통계 조회
 const getStatistics = (req, res, ctx) => {
   const response = {
     careerLevel: {
@@ -70,7 +69,7 @@ const getReviews = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
-// 상품 별 리뷰 목록 조회
+// 제품 별 리뷰 목록 조회
 const getReviewsByProductId = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));

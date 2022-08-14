@@ -73,7 +73,7 @@ function ProductSelect({
           {isEditMode ? '수정 완료' : '수정하기'}
         </S.EditButton>
       )}
-      <SectionHeader title="대표 장비" />
+      <SectionHeader title="데스크 셋업" />
       {isEditMode ? (
         <S.OptionsContainer>
           {Object.entries(inventoryList)
@@ -108,7 +108,7 @@ function ProductSelect({
         ))
       ) : (
         <S.NoContentMessage>
-          등록된 장비가 없어요! {editable && '수정하기로 대표 장비를 등록해주세요!'}
+          등록한 제품이 없어요! {editable && '수정하기로 데스크 셋업을 꾸며보세요!'}
         </S.NoContentMessage>
       )}
     </S.Container>

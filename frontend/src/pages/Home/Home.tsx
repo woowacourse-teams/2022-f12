@@ -28,7 +28,7 @@ function Home() {
 
   return (
     <>
-      <SectionHeader title={'인기 있는 상품'} />
+      <SectionHeader title={'인기 있는 제품'} />
       <AsyncWrapper
         fallback={<Loading />}
         isReady={isProductReady}

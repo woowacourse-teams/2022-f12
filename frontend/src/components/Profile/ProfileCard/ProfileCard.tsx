@@ -152,7 +152,7 @@ function ProfileCard({
                             {equipment.name}
                           </Link>
                         ) : (
-                          `대표 장비로 등록된 ${equipment.name}가 없습니다.`
+                          `데스크 셋업에 추가한 ${equipment.name}가 없어요`
                         )}
                       </S.ProductTitle>
                     </S.ProductImageWrapper>
