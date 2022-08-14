@@ -6,16 +6,17 @@ type Props = {
   id: number;
 };
 
-function useProduct({ id }: Props): [Product, boolean, boolean] {
+function useProduct({ id }: Props): [Product, boolean, boolean, () => void] {
   const {
     data: product,
     isReady,
     isError,
+    refetch,
   } = useGetOne<Product>({
     url: `${ENDPOINTS.PRODUCT(id)}`,
   });
 
-  return [product, isReady, isError];
+  return [product, isReady, isError, refetch];
 }
 
 export default useProduct;

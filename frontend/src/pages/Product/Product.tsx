@@ -27,9 +27,13 @@ function Product() {
   const { productId: id } = useParams();
   const productId = Number(id);
 
-  const [product, isProductReady, isProductError] = useProduct({
+  const [product, isProductReady, isProductError, refetchProduct] = useProduct({
     id: Number(productId),
   });
+  const [statistics, isStatisticsReady, isStatisticsError, refetchStatistics] =
+    useStatistics({
+      productId: Number(productId),
+    });
   const {
     reviews,
     isLoading: isReviewLoading,
@@ -42,9 +46,10 @@ function Product() {
   } = useReviews({
     size: '6',
     productId,
-  });
-  const [statistics, isStatisticsReady, isStatisticsError] = useStatistics({
-    productId: Number(productId),
+    handleRefetchOnSuccess: () => {
+      refetchProduct();
+      refetchStatistics();
+    },
   });
 
   const [isSheetOpen, toggleSheetOpen] = useReducer((isSheetOpen: boolean) => {

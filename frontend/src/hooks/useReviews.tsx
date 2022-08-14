@@ -9,11 +9,15 @@ import { ENDPOINTS } from '@/constants/api';
 import { SUCCESS_MESSAGES, CONFIRM_MESSAGES } from '@/constants/messages';
 
 type PropsWithoutProductId = { size: string };
-type PropsWithProductId = PropsWithoutProductId & { productId: Product['id'] };
+type PropsWithProductId = PropsWithoutProductId & {
+  productId: Product['id'];
+  handleRefetchOnSuccess?: () => void;
+};
 type Props = {
   size: string;
   productId?: Product['id'];
   reviewId?: number;
+  handleRefetchOnSuccess?: () => void;
 };
 
 type ReturnWithoutProductId = DataFetchStatus & {
@@ -28,8 +32,12 @@ type ReturnWithProductId = ReturnWithoutProductId & {
 type Return = ReturnWithoutProductId & ReturnWithProductId;
 
 function useReviews({ size }: PropsWithoutProductId): ReturnWithoutProductId;
-function useReviews({ size, productId }: PropsWithProductId): ReturnWithProductId;
-function useReviews({ size, productId }: Props): Return {
+function useReviews({
+  size,
+  productId,
+  handleRefetchOnSuccess,
+}: PropsWithProductId): ReturnWithProductId;
+function useReviews({ size, productId, handleRefetchOnSuccess }: Props): Return {
   const [data] = useSessionStorage<UserData>('userData');
   const { showAlert, getConfirm } = useModal();
   const {
@@ -76,6 +84,7 @@ function useReviews({ size, productId }: Props): Return {
     await showAlert(message);
 
     refetch();
+    handleRefetchOnSuccess();
     scrollReviewListToTop();
   };
 
