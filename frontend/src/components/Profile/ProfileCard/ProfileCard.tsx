@@ -6,6 +6,10 @@ import Chip from '@/components/common/Chip/Chip';
 
 import * as S from '@/components/Profile/ProfileCard/ProfileCard.style';
 
+import TITLE from '@/constants/header';
+import { GITHUB_URL } from '@/constants/link';
+import LOTTIE_FILES from '@/constants/lottieFiles';
+import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 import ROUTES from '@/constants/routes';
 
 import GithubIcon from '@/assets/github.svg';
@@ -31,17 +35,6 @@ type Props = {
   jobType: string;
   profileProducts: ProfileProduct[];
 };
-
-const chipMapper = {
-  frontend: '프론트엔드',
-  backend: '백엔드',
-  mobile: '모바일',
-  etc: '기타',
-  none: '경력 없음',
-  junior: '0-2년차',
-  midlevel: '3-5년차',
-  senior: '6년차 이상',
-} as const;
 
 function ProfileCard({
   id,
@@ -107,7 +100,7 @@ function ProfileCard({
           <S.UserNameWrapper>
             <S.UserName>{gitHubId}</S.UserName>
             <S.LinkWrapper
-              href={`https://github.com/${gitHubId}`}
+              href={`${GITHUB_URL}${gitHubId}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -115,13 +108,8 @@ function ProfileCard({
             </S.LinkWrapper>
           </S.UserNameWrapper>
           <S.UserCareer>
-            {[careerLevel, jobType].map((userInfo, index) => {
-              return (
-                <Chip key={index} size={'s'}>
-                  {chipMapper[userInfo]}
-                </Chip>
-              );
-            })}
+            <Chip size="s">{JOB_TYPES[jobType]}</Chip>
+            <Chip size="s">{CAREER_LEVELS[careerLevel]}</Chip>
           </S.UserCareer>
         </S.UserInfoWrapper>
         <S.InventoryWrapper>
@@ -140,9 +128,8 @@ function ProfileCard({
                         </Link>
                       ) : (
                         <Player
-                          autoplay
                           loop
-                          src="https://assets1.lottiefiles.com/private_files/lf30_oqpbtola.json"
+                          src={LOTTIE_FILES.EMPTY_BOX}
                           style={{ height: '80px', width: '80px' }}
                         />
                       )}
@@ -152,7 +139,7 @@ function ProfileCard({
                             {equipment.name}
                           </Link>
                         ) : (
-                          `데스크 셋업에 추가한 ${equipment.name}가 없어요`
+                          `${TITLE.DESK_SETUP}에 추가한 ${equipment.name}가 없어요`
                         )}
                       </S.ProductTitle>
                     </S.ProductImageWrapper>

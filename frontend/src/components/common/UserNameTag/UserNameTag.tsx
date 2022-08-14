@@ -8,7 +8,7 @@ type Props = {
 function UserNameTag({ imageUrl, username = '' }: Props) {
   return (
     <S.Container>
-      <S.Avatar src={imageUrl} alt={``} />
+      <S.Avatar src={imageUrl} alt="" />
       <S.Username>{username}</S.Username>
     </S.Container>
   );

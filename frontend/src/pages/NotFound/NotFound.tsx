@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import * as S from '@/pages/NotFound/NotFound.style';
 
+import LOTTIE_FILES from '@/constants/lottieFiles';
 import ROUTES from '@/constants/routes';
 
 function NotFound() {
@@ -13,7 +14,7 @@ function NotFound() {
       <Player
         autoplay
         loop
-        src="https://assets2.lottiefiles.com/private_files/lf30_ss4osrae.json"
+        src={LOTTIE_FILES.NOT_FOUND}
         style={{ height: '300px', width: '300px' }}
       />
       <S.Description style={{ width: '100%', textAlign: 'center' }}>

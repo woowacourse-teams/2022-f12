@@ -3,7 +3,7 @@ export const CAREER_LEVELS: CareerLevels = {
   junior: '0-2년차',
   midlevel: '3-5년차',
   senior: '6년차 이상',
-};
+} as const;
 
 export const JOB_TYPES: JobTypes = {
   frontend: '프론트엔드',

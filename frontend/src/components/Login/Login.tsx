@@ -8,6 +8,7 @@ import { UserDataContext } from '@/contexts/LoginContextProvider';
 import useAuth from '@/hooks/useAuth';
 
 import ROUTES from '@/constants/routes';
+import SEARCH_PARAMS from '@/constants/searchParams';
 
 function Login() {
   const { login } = useAuth();
@@ -17,7 +18,7 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const githubCode = searchParam.get('code');
+    const githubCode = searchParam.get(SEARCH_PARAMS.CODE);
 
     login(githubCode).catch(() => {
       navigate(ROUTES.HOME);

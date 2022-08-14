@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import * as S from '@/pages/Products/Products.style';
 
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
-import { CATEGORY } from '@/components/common/CategoryNav/CategoryNav';
 import Loading from '@/components/common/Loading/Loading';
 import SearchBar from '@/components/common/SearchBar/SearchBar';
 import SearchFilter from '@/components/common/SearchFilter/SearchFilter';
@@ -16,6 +15,9 @@ import useSearch from '@/hooks/useSearch';
 import useUrlSyncState from '@/hooks/useUrlSyncState';
 
 import { ENDPOINTS } from '@/constants/api';
+import TITLE from '@/constants/header';
+import { CATEGORIES } from '@/constants/product';
+import SEARCH_PARAMS from '@/constants/searchParams';
 
 type Option = { value: string; text: string };
 
@@ -34,20 +36,10 @@ const options: ProductSortOption[] = [
 
 const DefaultSort = options[1];
 
-type CATEGORY = typeof CATEGORY;
-
-const categories = {
-  keyboard: '키보드',
-  mouse: '마우스',
-  monitor: '모니터',
-  stand: '거치대',
-  software: '소프트웨어',
-} as const;
-
 function Products() {
-  const [keyword, setKeyword] = useUrlSyncState('keyword');
-  const [category, setCategory] = useUrlSyncState('category');
-  const [sort, setSort] = useUrlSyncState('sort', DefaultSort.value);
+  const [keyword, setKeyword] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
+  const [category, setCategory] = useUrlSyncState(SEARCH_PARAMS.CATEGORY);
+  const [sort, setSort] = useUrlSyncState(SEARCH_PARAMS.SORT, DefaultSort.value);
 
   const {
     result: products,
@@ -66,7 +58,7 @@ function Products() {
   });
 
   const title = useMemo(
-    () => (category in CATEGORY ? CATEGORY[category as keyof CATEGORY] : '모든 제품'),
+    () => (category in CATEGORIES ? CATEGORIES[category as Category] : TITLE.ALL_PRODUCT),
     [category]
   );
 
@@ -78,7 +70,7 @@ function Products() {
           title={'카테고리'}
           value={category}
           setValue={setCategory}
-          options={categories}
+          options={CATEGORIES}
         />
       </S.SearchBarWrapper>
       <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>

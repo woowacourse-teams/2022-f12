@@ -4,6 +4,8 @@ import RatingInput from '@/components/common/RatingInput/RatingInput';
 
 import * as S from '@/components/Review/ReviewForm/ReviewForm.style';
 
+import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
+
 type Props = {
   handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
   isEdit: boolean;
@@ -91,7 +93,9 @@ function ReviewForm({
         </S.Label>
         <S.Footer>
           <S.SubmitButton>{isEdit ? '리뷰 수정' : '리뷰 추가'}</S.SubmitButton>
-          {isFormInvalid && <S.ErrorMessage>모든 항목을 입력해주세요</S.ErrorMessage>}
+          {isFormInvalid && (
+            <S.ErrorMessage>{VALIDATION_ERROR_MESSAGES.FORM_INCOMPLETE}</S.ErrorMessage>
+          )}
         </S.Footer>
       </S.Form>
     </S.Container>

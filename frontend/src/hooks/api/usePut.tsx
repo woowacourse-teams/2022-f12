@@ -7,6 +7,8 @@ import useAxios from '@/hooks/api/useAxios';
 import useError from '@/hooks/useError';
 import useModal from '@/hooks/useModal';
 
+import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
+
 type Props = {
   url: string;
   headers: null | AxiosRequestHeaders;
@@ -21,7 +23,7 @@ function usePut<T>({ url, headers }: Props): (input: T, id: number) => Promise<v
 
   const putData = async (body: T, id: number) => {
     if (!userData || !userData.token) {
-      await showAlert('로그인이 필요합니다.');
+      await showAlert(VALIDATION_ERROR_MESSAGES.LOGIN_REQUIRED);
       return;
     }
 

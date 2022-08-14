@@ -12,11 +12,12 @@ import useUrlSyncState from '@/hooks/useUrlSyncState';
 
 import { ENDPOINTS } from '@/constants/api';
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
+import SEARCH_PARAMS from '@/constants/searchParams';
 
 function ProfileSearch() {
-  const [careerLevel, setCareerLevel] = useUrlSyncState('careerLevel');
-  const [jobType, setJobType] = useUrlSyncState('jobType');
-  const [searchInput, setSearchInput] = useUrlSyncState('keyword');
+  const [careerLevel, setCareerLevel] = useUrlSyncState(SEARCH_PARAMS.CAREER_LEVEL);
+  const [jobType, setJobType] = useUrlSyncState(SEARCH_PARAMS.JOB_TYPE);
+  const [searchInput, setSearchInput] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
 
   const {
     result: profiles,

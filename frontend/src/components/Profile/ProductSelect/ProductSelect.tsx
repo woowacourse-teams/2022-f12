@@ -5,6 +5,8 @@ import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import ProductBar from '@/components/Profile/ProductBar/ProductBar';
 import * as S from '@/components/Profile/ProductSelect/ProductSelect.style';
 
+import TITLE from '@/constants/header';
+
 type Props = {
   submitHandler?: () => void;
   updateProfileProduct?: (array: number[]) => Promise<boolean>;
@@ -73,7 +75,7 @@ function ProductSelect({
           {isEditMode ? '수정 완료' : '수정하기'}
         </S.EditButton>
       )}
-      <SectionHeader title="데스크 셋업" />
+      <SectionHeader title={TITLE.DESK_SETUP} />
       {isEditMode ? (
         <S.OptionsContainer>
           {Object.entries(inventoryList)
@@ -108,7 +110,8 @@ function ProductSelect({
         ))
       ) : (
         <S.NoContentMessage>
-          등록한 제품이 없어요! {editable && '수정하기로 데스크 셋업을 꾸며보세요!'}
+          등록한 제품이 없어요!{' '}
+          {editable && `수정하기로 ${TITLE.DESK_SETUP}을 꾸며보세요!`}
         </S.NoContentMessage>
       )}
     </S.Container>

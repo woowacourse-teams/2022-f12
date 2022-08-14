@@ -2,18 +2,20 @@ import logError from '@/utils/logError';
 
 import useModal from '@/hooks/useModal';
 
+import { API_ERROR_CODE_EXCEPTION_MESSAGES } from '@/constants/messages';
+
 function useError() {
   const { showAlert } = useModal();
 
   const handleError = async (error: Error, additionalMessage?: string) => {
     if (!(error instanceof Error)) {
-      await showAlert('알 수 없는 오류 발생');
+      await showAlert(API_ERROR_CODE_EXCEPTION_MESSAGES.UNKNOWN);
       console.log(error);
       throw new Error('API 요청에서 오류 발생');
     }
 
     logError(error, additionalMessage);
-    await showAlert('사용자에게 표시할 오류 메시지');
+    await showAlert(error.message);
     throw new Error('API 요청에서 오류 발생');
   };
 

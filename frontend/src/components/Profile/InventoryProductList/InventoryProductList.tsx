@@ -4,15 +4,8 @@ import { Link } from 'react-router-dom';
 import * as S from '@/components/Profile/InventoryProductList/InventoryProductList.style';
 import ProductBar from '@/components/Profile/ProductBar/ProductBar';
 
+import { CATEGORIES } from '@/constants/product';
 import ROUTES from '@/constants/routes';
-
-const categories = {
-  keyboard: '키보드',
-  mouse: '마우스',
-  monitor: '모니터',
-  stand: '거치대',
-  software: '소프트웨어',
-} as const;
 
 type Props = {
   inventoryList: Record<string, InventoryProduct[]>;
@@ -23,7 +16,7 @@ function InventoryProductList({ inventoryList }: Props) {
     <>
       {Object.entries(inventoryList).map(([category, items]) => (
         <Fragment key={category}>
-          <S.CategoryTitle>{categories[category]}</S.CategoryTitle>
+          <S.CategoryTitle>{CATEGORIES[category]}</S.CategoryTitle>
           <S.Container>
             {items.map(({ id: inventoryId, selected, product: { name } }) => (
               <Link key={inventoryId} to={`${ROUTES.PRODUCT}/${inventoryId}`}>

@@ -91,7 +91,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
       })
       .catch(async (error: Error) => {
         logError(error, getErrorStateMessage());
-        await showAlert('사용자에게 표시할 오류 메시지');
+        await showAlert(error.message);
       });
   }, [nextPageTrigger, refetchTrigger]);
 

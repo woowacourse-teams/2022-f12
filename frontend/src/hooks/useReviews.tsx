@@ -6,6 +6,7 @@ import useModal from '@/hooks/useModal';
 import useSessionStorage from '@/hooks/useSessionStorage';
 
 import { ENDPOINTS } from '@/constants/api';
+import { SUCCESS_MESSAGES, CONFIRM_MESSAGES } from '@/constants/messages';
 
 type PropsWithoutProductId = { size: string };
 type PropsWithProductId = PropsWithoutProductId & { productId: Product['id'] };
@@ -82,7 +83,7 @@ function useReviews({ size, productId }: Props): Return {
     try {
       await postReview(reviewInput);
 
-      await handleRequestSuccess('리뷰가 작성되었습니다.');
+      await handleRequestSuccess(SUCCESS_MESSAGES.REVIEW_CREATE);
     } catch {
       return;
     }
@@ -92,20 +93,20 @@ function useReviews({ size, productId }: Props): Return {
     try {
       await putReview(reviewInput, id);
 
-      await handleRequestSuccess('리뷰가 수정되었습니다.');
+      await handleRequestSuccess(SUCCESS_MESSAGES.REVIEW_EDIT);
     } catch {
       return;
     }
   };
 
   const handleDelete = async (id: number) => {
-    const confirmation = await getConfirm('리뷰를 삭제하시겠습니까?');
+    const confirmation = await getConfirm(CONFIRM_MESSAGES.REVIEW_DELETE);
     if (!confirmation) return;
 
     try {
       await deleteReview(id);
 
-      await handleRequestSuccess('리뷰가 삭제되었습니다.');
+      await handleRequestSuccess(SUCCESS_MESSAGES.REVIEW_DELETE);
     } catch {
       return;
     }

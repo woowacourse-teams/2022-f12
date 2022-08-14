@@ -8,6 +8,8 @@ import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListS
 import useProducts from '@/hooks/useProducts';
 import useReviews from '@/hooks/useReviews';
 
+import TITLE from '@/constants/header';
+
 function Home() {
   const {
     products,
@@ -28,7 +30,7 @@ function Home() {
 
   return (
     <>
-      <SectionHeader title={'인기 있는 제품'} />
+      <SectionHeader title={TITLE.POPULAR_PRODUCT} />
       <AsyncWrapper
         fallback={<Loading />}
         isReady={isProductReady}
@@ -41,7 +43,7 @@ function Home() {
         />
       </AsyncWrapper>
 
-      <SectionHeader title={'최근 작성된 후기'} />
+      <SectionHeader title={TITLE.RECENT_REVIEW} />
       <AsyncWrapper
         fallback={<Loading />}
         isReady={isReviewReady}

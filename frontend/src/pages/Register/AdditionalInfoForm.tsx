@@ -2,6 +2,8 @@ import * as S from '@/pages/Register/Register.style';
 
 import useModal from '@/hooks/useModal';
 
+import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
+
 type Props = {
   options: Record<string, string>;
   input: string;
@@ -22,7 +24,7 @@ function AdditionalInfoForm({ options, input, setInput, setStep }: Props) {
     HTMLButtonElement
   > = async () => {
     if (!input) {
-      await showAlert('선택 후 이동 가능합니다.');
+      await showAlert(VALIDATION_ERROR_MESSAGES.ADDITIONAL_INFO_SELECT_REQUIRED);
       return;
     }
 

@@ -11,6 +11,11 @@ import useGet from '@/hooks/api/useGet';
 import useModal from '@/hooks/useModal';
 
 import { ENDPOINTS } from '@/constants/api';
+import {
+  FAILURE_MESSAGES,
+  SUCCESS_MESSAGES,
+  CONFIRM_MESSAGES,
+} from '@/constants/messages';
 import ROUTES from '@/constants/routes';
 
 type Return = {
@@ -31,7 +36,7 @@ function useAuth(): Return {
 
   const login = async (code: string) => {
     if (!code) {
-      await showAlert('로그인을 취소했거나 오류가 발생했습니다.');
+      await showAlert(FAILURE_MESSAGES.LOGIN_CANCELED);
       navigate(ROUTES.HOME);
       return;
     }
@@ -45,13 +50,13 @@ function useAuth(): Return {
   };
 
   const logout = async () => {
-    const confirmation = await getConfirm('로그아웃 하시겠습니까?');
+    const confirmation = await getConfirm(CONFIRM_MESSAGES.LOGOUT);
     if (confirmation) {
       try {
         handleLogout();
-        await showAlert('로그아웃이 완료되었습니다.');
+        await showAlert(SUCCESS_MESSAGES.LOGOUT);
       } catch {
-        await showAlert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+        await showAlert(FAILURE_MESSAGES.LOGOUT);
       }
     }
   };

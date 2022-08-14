@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useLayoutEffect } from 'react';
 
 import ProtectedRoute from '@/pages/common/ProtectedRoute/ProtectedRoutes';
 
@@ -7,6 +7,7 @@ import { UserDataContext } from '@/contexts/LoginContextProvider';
 import useAuth from '@/hooks/useAuth';
 import useModal from '@/hooks/useModal';
 
+import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
 import ROUTES from '@/constants/routes';
 
 function RegisterCompleteRoute() {
@@ -16,7 +17,15 @@ function RegisterCompleteRoute() {
 
   const isRegistered = !isLoggedIn || (isLoggedIn && userData?.registerCompleted);
 
-  if (!isRegistered) showAlert('추가 정보 입력 후 이용해주세요.');
+  useLayoutEffect(() => {
+    (async () => {
+      if (!isRegistered) {
+        await showAlert(VALIDATION_ERROR_MESSAGES.ADDITIONAL_INFO_REQUIRED);
+      }
+    })().catch(() => {
+      window.alert(VALIDATION_ERROR_MESSAGES.ADDITIONAL_INFO_REQUIRED);
+    });
+  });
 
   return <ProtectedRoute when={isRegistered} redirectPath={ROUTES.REGISTER} />;
 }
