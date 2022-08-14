@@ -78,6 +78,7 @@ function Products() {
           <Select value={sort} setValue={setSort} options={options} />
         </SectionHeader>
         <ProductListSection
+          title={title}
           data={products}
           getNextPage={getNextPage}
           isLoading={isLoading}

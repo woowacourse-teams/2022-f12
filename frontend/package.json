@@ -4,6 +4,7 @@
   "description": "개발자의 모든 도구 - F12",
   "main": "index.js",
   "scripts": {
+    "test": "cypress run --browser chrome",
     "build-main": "npx webpack build --config webpack.prod.js",
     "build-release": "npx webpack build --config webpack.test.js",
     "start": "npx webpack serve --config webpack.dev.js",

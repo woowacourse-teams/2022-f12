@@ -37,6 +37,7 @@ function Home() {
         isError={isProductError}
       >
         <ProductListSection
+          title={TITLE.POPULAR_PRODUCT}
           data={products}
           isLoading={isProductLoading}
           isError={isProductError}

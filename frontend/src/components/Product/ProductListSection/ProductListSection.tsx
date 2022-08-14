@@ -10,11 +10,12 @@ import * as S from '@/components/Product/ProductListSection/ProductListSection.s
 import ROUTES from '@/constants/routes';
 
 type Props = Omit<DataFetchStatus, 'isReady'> & {
+  title: string;
   data: Product[];
   getNextPage?: () => void;
 };
 
-function ProductListSection({ data, isLoading, isError, getNextPage }: Props) {
+function ProductListSection({ title, data, isLoading, isError, getNextPage }: Props) {
   const isSinglePage = getNextPage === undefined;
   const productList = (
     <Masonry columnCount={4}>
@@ -33,7 +34,7 @@ function ProductListSection({ data, isLoading, isError, getNextPage }: Props) {
   );
 
   return (
-    <S.Container>
+    <S.Container aria-label={title}>
       <S.Wrapper>
         {isSinglePage ? (
           productList
