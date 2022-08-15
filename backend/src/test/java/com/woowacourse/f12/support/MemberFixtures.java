@@ -66,4 +66,19 @@ public enum MemberFixtures {
                 .inventoryProducts(new InventoryProducts(List.of(inventoryProducts)))
                 .build();
     }
+
+    public Member 추가정보를_입력하여_생성(final CareerLevel careerLevel, final JobType jobType) {
+        return 추가정보를_입력하여_생성(null, careerLevel, jobType);
+    }
+
+    public Member 추가정보를_입력하여_생성(final Long id, final CareerLevel careerLevel, final JobType jobType) {
+        return Member.builder()
+                .id(id)
+                .gitHubId(this.gitHubId)
+                .name(this.name)
+                .imageUrl(this.imageUrl)
+                .careerLevel(careerLevel)
+                .jobType(jobType)
+                .build();
+    }
 }

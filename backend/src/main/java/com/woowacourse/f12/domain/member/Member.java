@@ -57,16 +57,35 @@ public class Member {
         this.inventoryProducts = inventoryProducts;
     }
 
-    public void updateName(final String name) {
-        this.name = name;
+    public void update(final Member updateMember) {
+        updateName(updateMember.name);
+        updateImageUrl(updateMember.imageUrl);
+        updateCareerLevel(updateMember.careerLevel);
+        updateJobType(updateMember.jobType);
     }
 
-    public void updateCareerLevel(final CareerLevel careerLevel) {
-        this.careerLevel = careerLevel;
+    private void updateName(final String name) {
+        if (Objects.nonNull(name)) {
+            this.name = name;
+        }
     }
 
-    public void updateJobType(final JobType jobType) {
-        this.jobType = jobType;
+    private void updateImageUrl(String imageUrl) {
+        if (Objects.nonNull(imageUrl)) {
+            this.imageUrl = imageUrl;
+        }
+    }
+
+    private void updateCareerLevel(final CareerLevel careerLevel) {
+        if (Objects.nonNull(careerLevel)) {
+            this.careerLevel = careerLevel;
+        }
+    }
+
+    private void updateJobType(final JobType jobType) {
+        if (Objects.nonNull(jobType)) {
+            this.jobType = jobType;
+        }
     }
 
     public boolean isRegisterCompleted() {
