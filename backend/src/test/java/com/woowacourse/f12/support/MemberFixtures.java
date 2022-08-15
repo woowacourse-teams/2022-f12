@@ -1,16 +1,18 @@
 package com.woowacourse.f12.support;
 
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
-
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
+
 import java.util.List;
+
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
 
 public enum MemberFixtures {
 
@@ -61,7 +63,7 @@ public enum MemberFixtures {
                 .imageUrl(this.imageUrl)
                 .careerLevel(this.careerLevel)
                 .jobType(this.jobType)
-                .inventoryProducts(List.of(inventoryProduct))
+                .inventoryProducts(new InventoryProducts(List.of(inventoryProduct)))
                 .build();
     }
 }
