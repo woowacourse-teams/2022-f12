@@ -16,15 +16,18 @@ import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.presentation.review.ReviewController;
+import com.woowacourse.f12.support.RequestLogTimer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ReviewController.class)
+@Import(RequestLogTimer.class)
 class AuthInterceptorTest {
 
     @Autowired
