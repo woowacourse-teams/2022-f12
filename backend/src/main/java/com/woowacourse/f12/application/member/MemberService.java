@@ -12,11 +12,12 @@ import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
-import java.util.Objects;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -36,8 +37,7 @@ public class MemberService {
     @Transactional
     public void updateMember(final Long memberId, final MemberRequest memberRequest) {
         final Member member = findMember(memberId);
-        member.updateCareerLevel(memberRequest.getCareerLevel().toCareerLevel());
-        member.updateJobType(memberRequest.getJobType().toJobType());
+        member.update(memberRequest.toMember());
     }
 
     private Member findMember(final Long memberId) {

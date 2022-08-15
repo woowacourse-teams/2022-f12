@@ -64,7 +64,7 @@ public class Member {
         updateJobType(updateMember.jobType);
     }
 
-    public void updateName(final String name) {
+    private void updateName(final String name) {
         if (Objects.nonNull(name)) {
             this.name = name;
         }
@@ -76,13 +76,13 @@ public class Member {
         }
     }
 
-    public void updateCareerLevel(final CareerLevel careerLevel) {
+    private void updateCareerLevel(final CareerLevel careerLevel) {
         if (Objects.nonNull(careerLevel)) {
             this.careerLevel = careerLevel;
         }
     }
 
-    public void updateJobType(final JobType jobType) {
+    private void updateJobType(final JobType jobType) {
         if (Objects.nonNull(jobType)) {
             this.jobType = jobType;
         }
