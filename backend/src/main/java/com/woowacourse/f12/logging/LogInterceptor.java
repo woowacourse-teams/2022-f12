@@ -1,4 +1,4 @@
-package com.woowacourse.f12.presentation;
+package com.woowacourse.f12.logging;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,11 +13,18 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 public class LogInterceptor implements HandlerInterceptor {
 
     private static final String REQUEST_LOG_FORMAT = "METHOD: {}, URL : {}, AUTHORIZATION : {}, BODY : {}";
+    private static final String QUERY_COUNT_LOG_FORMAT = "QUERY_COUNT: {}";
     private static final String RESPONSE_LOG_FORMAT = "STATUS_CODE: {}, BODY : {}";
 
+    private final QueryInspector queryInspector;
+
+    public LogInterceptor(final QueryInspector queryInspector) {
+        this.queryInspector = queryInspector;
+    }
+
     @Override
-    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
-            throws Exception {
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
+                             final Object handler) {
         final String body = new String(new ContentCachingRequestWrapper(request).getContentAsByteArray());
         log.info(REQUEST_LOG_FORMAT, request.getMethod(), request.getRequestURI(), request.getHeader("Authorization"),
                 body);
@@ -26,10 +33,10 @@ public class LogInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response,
-                                final Object handler, final Exception ex)
-            throws Exception {
+                                final Object handler, final Exception ex) {
         final ContentCachingResponseWrapper contentCachingResponseWrapper = new ContentCachingResponseWrapper(response);
         final String responseBody = new String(contentCachingResponseWrapper.getContentAsByteArray());
+        log.info(QUERY_COUNT_LOG_FORMAT, queryInspector.getQueryCount());
         log.info(RESPONSE_LOG_FORMAT, response.getStatus(), responseBody);
     }
 }
