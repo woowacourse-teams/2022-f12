@@ -10,6 +10,7 @@ import org.hibernate.annotations.BatchSize;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -61,6 +62,14 @@ public class InventoryProducts {
                 .filter(InventoryProduct::isSelected)
                 .map(InventoryProduct::getProduct)
                 .collect(Collectors.toList());
+    }
+
+    public boolean contains(final InventoryProducts inventoryProducts) {
+        return new HashSet<>(items).containsAll(inventoryProducts.getItems());
+    }
+
+    public int size() {
+        return items.size();
     }
 
     @Override

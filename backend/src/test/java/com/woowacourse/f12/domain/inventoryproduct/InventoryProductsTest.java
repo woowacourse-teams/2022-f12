@@ -51,4 +51,34 @@ class InventoryProductsTest {
         assertThat(profileProducts).hasSize(1)
                 .containsExactly(product1);
     }
+
+    @Test
+    void 인벤토리_장비에_포함되는지_확인한다() {
+        // given
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, null, KEYBOARD_1.생성(1L));
+        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_2.생성(2L));
+        List<InventoryProduct> items = List.of(selectedInventoryProduct, unselectedInventoryProduct);
+        InventoryProducts inventoryProducts = new InventoryProducts(items);
+
+        // when
+        boolean contains = inventoryProducts.contains(new InventoryProducts(List.of(selectedInventoryProduct, unselectedInventoryProduct)));
+
+        // then
+        assertThat(contains).isTrue();
+    }
+
+    @Test
+    void 인벤토리_장비의_개수를_확인한다() {
+        // given
+        Product product1 = KEYBOARD_1.생성(1L);
+        Product product2 = KEYBOARD_2.생성(2L);
+        List<InventoryProduct> items = List.of(SELECTED_INVENTORY_PRODUCT.생성(1L, null, product1), UNSELECTED_INVENTORY_PRODUCT.생성(2L, null, product2));
+        InventoryProducts inventoryProducts = new InventoryProducts(items);
+
+        // when
+        int size = inventoryProducts.size();
+
+        // then
+        assertThat(size).isEqualTo(2);
+    }
 }
