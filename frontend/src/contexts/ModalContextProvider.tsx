@@ -1,10 +1,12 @@
-import Modal from '@/components/common/Modal/Modal';
 import { createContext, PropsWithChildren, useState } from 'react';
 
-export const ShowAlertContext = createContext<(message: string) => void>(null);
+import Modal from '@/components/common/Modal/Modal';
+
+export const ShowAlertContext = createContext<(message: string) => Promise<void>>(null);
 export const GetConfirmContext =
   createContext<(message: string) => Promise<boolean>>(null);
 
+let resolveAlert: () => void;
 let resolveConfirm: (value: boolean | PromiseLike<boolean>) => void;
 
 function ModalContextProvider({ children }: PropsWithChildren) {
@@ -12,12 +14,17 @@ function ModalContextProvider({ children }: PropsWithChildren) {
   const [alertOpen, setAlertOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const showAlert = (message: string) => {
+  const showAlert = (message: string): Promise<void> => {
     setMessage(message);
     setAlertOpen(true);
+
+    return new Promise((resolve) => {
+      resolveAlert = resolve;
+    });
   };
 
   const handleAlertClose = () => {
+    resolveAlert();
     setAlertOpen(false);
   };
 

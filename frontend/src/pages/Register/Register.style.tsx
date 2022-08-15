@@ -73,5 +73,6 @@ export const ConfirmInfo = styled.div`
 export const FlexRowWrapper = styled.div`
   margin-top: 3rem;
   display: flex;
+  justify-content: center;
   gap: 1rem;
 `;

@@ -12,6 +12,7 @@ export const Container = styled.section<{ scrollOffset: number }>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 2;
 `;
 
 export const Backdrop = styled.div`

@@ -1,4 +1,4 @@
-export const myData = {
+export const myUserData: Member = {
   id: 1,
   gitHubId: 'hamcheeseburger',
   name: '유현지',
@@ -7,7 +7,7 @@ export const myData = {
   jobType: 'backend',
 };
 
-export const otherData = {
+export const otherUserData: Member = {
   id: 1,
   gitHubId: 'yangdongjue5510',
   name: 'Dongjue Yang',
@@ -16,7 +16,7 @@ export const otherData = {
   jobType: 'backend',
 };
 
-export const members = [
+export const members: ProfileSearchResult[] = [
   {
     id: 20,
     gitHubId: 'deuk960214',
@@ -55,8 +55,7 @@ export const members = [
       {
         id: 74,
         name: '마이크로소프트 무선 블루투스 모바일 마우스 3600',
-        imageUrl:
-          'https://image.auction.co.kr/itemimage/22/98/15/229815dc00.jpg',
+        imageUrl: 'https://image.auction.co.kr/itemimage/22/98/15/229815dc00.jpg',
         reviewCount: 1,
         rating: 4.0,
         category: 'mouse',
@@ -148,7 +147,7 @@ export const members = [
   },
 ];
 
-export const products = [
+export const products: Product[] = [
   {
     id: 3,
     name: '레오폴드 FC900RBT PD 그레이 블루 한글 (저소음 적축)',
@@ -483,7 +482,7 @@ const getReviewProductData: (
   imageUrl,
 });
 
-export const InventoryProducts = {
+export const InventoryProducts: { items: InventoryProduct[] } = {
   items: [
     {
       id: 1,

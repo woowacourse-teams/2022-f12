@@ -1,7 +1,14 @@
-import ProductListSection from '@/components/ProductListSection/ProductListSection';
-import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
+
+import ProductListSection from '@/components/Product/ProductListSection/ProductListSection';
+import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListSection';
+
 import useProducts from '@/hooks/useProducts';
 import useReviews from '@/hooks/useReviews';
+
+import TITLE from '@/constants/header';
 
 function Home() {
   const {
@@ -23,21 +30,34 @@ function Home() {
 
   return (
     <>
-      <ProductListSection
-        title={'인기 있는 상품'}
-        data={products}
-        isLoading={isProductLoading}
+      <SectionHeader title={TITLE.POPULAR_PRODUCT} />
+      <AsyncWrapper
+        fallback={<Loading />}
         isReady={isProductReady}
         isError={isProductError}
-      />
-      <ReviewListSection
-        columns={2}
-        data={reviews}
-        getNextPage={getNextPage}
-        isLoading={isReviewLoading}
+      >
+        <ProductListSection
+          title={TITLE.POPULAR_PRODUCT}
+          data={products}
+          isLoading={isProductLoading}
+          isError={isProductError}
+        />
+      </AsyncWrapper>
+
+      <SectionHeader title={TITLE.RECENT_REVIEW} />
+      <AsyncWrapper
+        fallback={<Loading />}
         isReady={isReviewReady}
         isError={isReviewError}
-      />
+      >
+        <ReviewListSection
+          columns={2}
+          data={reviews}
+          getNextPage={getNextPage}
+          isLoading={isReviewLoading}
+          isError={isReviewError}
+        />
+      </AsyncWrapper>
     </>
   );
 }
