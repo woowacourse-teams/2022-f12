@@ -2,10 +2,11 @@ package com.woowacourse.f12.domain.inventoryproduct;
 
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Product;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface InventoryProductRepository extends JpaRepository<InventoryProduct, Long> {
 

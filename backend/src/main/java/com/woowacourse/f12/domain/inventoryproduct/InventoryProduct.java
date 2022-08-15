@@ -2,18 +2,11 @@ package com.woowacourse.f12.domain.inventoryproduct;
 
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Product;
-import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
+
+import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "inventory_product")
@@ -44,10 +37,6 @@ public class InventoryProduct {
         this.selected = selected;
         this.member = member;
         this.product = product;
-    }
-
-    public void updateSelected(boolean selected) {
-        this.selected = selected;
     }
 
     @Override
