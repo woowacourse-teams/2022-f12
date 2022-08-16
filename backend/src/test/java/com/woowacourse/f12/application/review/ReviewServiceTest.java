@@ -370,7 +370,7 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(review));
         willDoNothing().given(reviewRepository)
                 .delete(any(Review.class));
-        given(inventoryProductRepository.findByMemberIdAndProductId(memberId, productId))
+        given(inventoryProductRepository.findByMemberAndProduct(member, product))
                 .willReturn(Optional.of(inventoryProduct));
         willDoNothing().given(inventoryProductRepository)
                 .delete(any(InventoryProduct.class));
@@ -381,7 +381,7 @@ class ReviewServiceTest {
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId),
                 () -> verify(reviewRepository).delete(review),
-                () -> verify(inventoryProductRepository).findByMemberIdAndProductId(memberId, productId),
+                () -> verify(inventoryProductRepository).findByMemberAndProduct(member, product),
                 () -> verify(inventoryProductRepository).delete(inventoryProduct)
         );
     }
@@ -465,7 +465,7 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(review));
         willDoNothing().given(reviewRepository)
                 .delete(any(Review.class));
-        given(inventoryProductRepository.findByMemberIdAndProductId(memberId, productId))
+        given(inventoryProductRepository.findByMemberAndProduct(member, product))
                 .willReturn(Optional.empty());
 
         // when, then
@@ -475,7 +475,7 @@ class ReviewServiceTest {
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId),
                 () -> verify(reviewRepository).delete(any(Review.class)),
-                () -> verify(inventoryProductRepository).findByMemberIdAndProductId(memberId, productId),
+                () -> verify(inventoryProductRepository).findByMemberAndProduct(member, product),
                 () -> verify(inventoryProductRepository, times(0)).delete(any(InventoryProduct.class))
         );
     }

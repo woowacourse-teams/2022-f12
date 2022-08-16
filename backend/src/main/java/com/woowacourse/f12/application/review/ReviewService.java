@@ -113,7 +113,7 @@ public class ReviewService {
     public void delete(final Long reviewId, final Long memberId) {
         final Review review = findTarget(reviewId, memberId);
         reviewRepository.delete(review);
-        final InventoryProduct inventoryProduct = inventoryProductRepository.findByMemberIdAndProductId(memberId, review.getProduct().getId())
+        final InventoryProduct inventoryProduct = inventoryProductRepository.findByMemberAndProduct(review.getMember(), review.getProduct())
                 .orElseThrow(InventoryProductNotFoundException::new);
         inventoryProductRepository.delete(inventoryProduct);
     }
