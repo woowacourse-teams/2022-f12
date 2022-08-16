@@ -7,7 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.woowacourse.f12.exception.internalserver.IllegalRequestLogTimerState;
+import com.woowacourse.f12.exception.internalserver.IllegalRequestLogTimerStateException;
 import java.time.Clock;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +33,7 @@ class RequestLogTimerTest {
         // when
         requestLogTimer.start();
         requestLogTimer.stop();
-        Long timeTaken = requestLogTimer.getSpentTime();
+        Long timeTaken = requestLogTimer.getTakenTime();
 
         // then
         assertAll(
@@ -46,7 +46,7 @@ class RequestLogTimerTest {
     void 시작하지_않았는데_측정_종료하는_경우_예외_발생한다() {
         // given, when, then
         assertThatThrownBy(() -> requestLogTimer.stop())
-                .isExactlyInstanceOf(IllegalRequestLogTimerState.class);
+                .isExactlyInstanceOf(IllegalRequestLogTimerStateException.class);
     }
 
     @Test
@@ -57,7 +57,7 @@ class RequestLogTimerTest {
         requestLogTimer.start();
 
         // when, then
-        assertThatThrownBy(() -> requestLogTimer.getSpentTime())
-                .isExactlyInstanceOf(IllegalRequestLogTimerState.class);
+        assertThatThrownBy(() -> requestLogTimer.getTakenTime())
+                .isExactlyInstanceOf(IllegalRequestLogTimerStateException.class);
     }
 }
