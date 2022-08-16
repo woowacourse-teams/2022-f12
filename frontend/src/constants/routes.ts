@@ -5,7 +5,7 @@ const ROUTES = {
   REGISTER: '/register',
   LOGIN: '/login',
   PROFILE: '/profile',
-  PROFILE_SEARCH: '/profile/search',
+  PROFILE_SEARCH: '/profiles',
   NOT_FOUND: '*',
 } as const;
 

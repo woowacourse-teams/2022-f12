@@ -1,40 +1,30 @@
-import { useState } from 'react';
-
-import SearchBar from '@/components/common/SearchBar/SearchBar';
-import SearchFilter from '@/components/SearchFilter/SearchFilter';
-
 import * as S from '@/pages/ProfileSearch/ProfileSearch.style';
-import ProfileSearchResult from '@/components/ProfileSearchResult/ProfileSearchResult';
-import Loading from '@/components/common/Loading/Loading';
+
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
+import SearchBar from '@/components/common/SearchBar/SearchBar';
+import SearchFilter from '@/components/common/SearchFilter/SearchFilter';
+
+import ProfileSearchResult from '@/components/Profile/ProfileSearchResult/ProfileSearchResult';
+
 import useSearch from '@/hooks/useSearch';
+import useUrlSyncState from '@/hooks/useUrlSyncState';
+
 import { ENDPOINTS } from '@/constants/api';
-
-const careerLevels = {
-  none: '경력 없음',
-  junior: '0-2년차',
-  midlevel: '3-5년차',
-  senior: '6년차 이상',
-} as const;
-
-const jobTypes = {
-  frontend: '프론트엔드',
-  backend: '백엔드',
-  mobile: '모바일',
-  etc: '기타',
-} as const;
+import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
+import SEARCH_PARAMS from '@/constants/searchParams';
 
 function ProfileSearch() {
-  const [careerLevel, setCareerLevel] = useState('');
-  const [jobType, setJobType] = useState('');
-  const [searchInput, setSearchInput] = useState('');
+  const [careerLevel, setCareerLevel] = useUrlSyncState(SEARCH_PARAMS.CAREER_LEVEL);
+  const [jobType, setJobType] = useUrlSyncState(SEARCH_PARAMS.JOB_TYPE);
+  const [searchInput, setSearchInput] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
 
   const {
     result: profiles,
     getNextPage,
-    isError: isProfileSearchError,
-    isLoading: isProfileSearchLoading,
-    isReady: isProfileSearchReady,
+    isError,
+    isLoading,
+    isReady,
   } = useSearch<ProfileSearchResult>({
     url: ENDPOINTS.MEMBERS,
     query: searchInput,
@@ -54,27 +44,22 @@ function ProfileSearch() {
             title={'경력'}
             value={careerLevel}
             setValue={setCareerLevel}
-            options={careerLevels}
+            options={CAREER_LEVELS}
           />
           <SearchFilter
             title={'직군'}
             value={jobType}
             setValue={setJobType}
-            options={jobTypes}
+            options={JOB_TYPES}
           />
         </S.SearchFilterWrapper>
       </S.SearchWrapper>
-      <AsyncWrapper
-        fallback={<Loading />}
-        isReady={isProfileSearchReady}
-        isError={isProfileSearchError}
-      >
+      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
         <ProfileSearchResult
           data={profiles}
           getNextPage={getNextPage}
-          isLoading={isProfileSearchLoading}
-          isReady={isProfileSearchReady}
-          isError={isProfileSearchError}
+          isLoading={isLoading}
+          isError={isError}
         />
       </AsyncWrapper>
     </S.Container>

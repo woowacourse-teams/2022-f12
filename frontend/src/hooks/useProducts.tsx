@@ -1,4 +1,5 @@
 import useGetMany from '@/hooks/api/useGetMany';
+
 import { ENDPOINTS } from '@/constants/api';
 
 type Sort = 'rating,desc' | 'reviewCount,desc';
@@ -6,18 +7,15 @@ type Sort = 'rating,desc' | 'reviewCount,desc';
 type Props = {
   size: string;
   sort?: Sort;
-  category?: string;
+  category?: Category;
 };
 
-type ReturnType = {
+type Return = DataFetchStatus & {
   products: Product[];
   getNextPage: () => void;
-  isLoading: boolean;
-  isReady: boolean;
-  isError: boolean;
 };
 
-function useProducts({ size, sort, category }: Props): ReturnType {
+function useProducts({ size, sort, category }: Props): Return {
   const params = { size, sort, category };
   const {
     data: products,

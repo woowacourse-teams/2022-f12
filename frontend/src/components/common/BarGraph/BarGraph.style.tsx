@@ -39,10 +39,7 @@ export const DataWrapper = styled.div`
   width: 320px;
   border-top: 1px solid rgba(229, 233, 235, 0.7);
   border-bottom: 1px solid rgba(229, 233, 235, 0.7);
-  background-image: linear-gradient(
-    transparent 49px,
-    rgba(229, 233, 235, 0.4) 49px
-  );
+  background-image: linear-gradient(transparent 49px, rgba(229, 233, 235, 0.4) 49px);
   background-size: 100% 50px;
 `;
 

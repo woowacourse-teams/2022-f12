@@ -1,9 +1,10 @@
-import Select from '@/components/common/Select/Select';
 import { useState } from 'react';
+
+import Select from '@/components/common/Select/Select';
 
 export default {
   component: Select,
-  title: 'Components/Select',
+  title: 'Components/Common/Select',
 };
 
 const options = [

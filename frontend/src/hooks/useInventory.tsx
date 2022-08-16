@@ -1,22 +1,27 @@
-import { ENDPOINTS } from '@/constants/api';
+import { useContext } from 'react';
+
 import { UserDataContext } from '@/contexts/LoginContextProvider';
+
 import useGetOne from '@/hooks/api/useGetOne';
 import usePatch from '@/hooks/api/usePatch';
-import { useContext } from 'react';
+
+import { ENDPOINTS } from '@/constants/api';
 
 type InventoryResponse = {
   items: InventoryProduct[];
 };
 
-type Return = {
+type Props = {
+  memberId?: string;
+};
+
+type Return = Omit<DataFetchStatus, 'isLoading'> & {
   items: InventoryProduct[];
-  isReady: boolean;
-  isError: boolean;
   refetch: () => void;
   updateProfileProduct: (ids: number[]) => Promise<boolean>;
 };
 
-function useInventory(): Return {
+function useInventory({ memberId }: Props): Return {
   const userData = useContext(UserDataContext);
   const {
     data: inventoryProducts,
@@ -24,7 +29,9 @@ function useInventory(): Return {
     isReady,
     isError,
   } = useGetOne<InventoryResponse>({
-    url: ENDPOINTS.INVENTORY_PRODUCTS,
+    url: memberId
+      ? ENDPOINTS.OTHER_INVENTORY_PRODUCTS(memberId)
+      : ENDPOINTS.INVENTORY_PRODUCTS,
     headers: { Authorization: `Bearer ${userData?.token}` },
   });
 
