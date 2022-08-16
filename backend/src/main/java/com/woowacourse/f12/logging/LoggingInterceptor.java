@@ -1,4 +1,4 @@
-package com.woowacourse.f12.presentation;
+package com.woowacourse.f12.logging;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
