@@ -7,7 +7,6 @@ import * as S from '@/components/Profile/ProfileSearchResult/ProfileSearchResult
 type Props = Omit<DataFetchStatus, 'isReady'> & {
   data: ProfileSearchResult[];
   getNextPage: () => void;
-  animationTrigger: boolean;
 };
 
 function ProfileSearchResult({
@@ -15,7 +14,6 @@ function ProfileSearchResult({
   getNextPage,
   isLoading,
   isError,
-  animationTrigger,
 }: Props) {
   const profileSearchDataList = profileSearchData.map(
     ({ id, gitHubId, imageUrl, careerLevel, jobType, profileProducts }, index) => {
@@ -28,7 +26,6 @@ function ProfileSearchResult({
           careerLevel={careerLevel}
           jobType={jobType}
           profileProducts={profileProducts}
-          animationTrigger={animationTrigger}
           index={index}
         />
       );

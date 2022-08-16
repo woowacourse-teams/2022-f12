@@ -13,8 +13,6 @@ import useUrlSyncState from '@/hooks/useUrlSyncState';
 import { ENDPOINTS } from '@/constants/api';
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 import SEARCH_PARAMS from '@/constants/searchParams';
-import useAnimation from '@/hooks/useAnimation';
-import { useEffect } from 'react';
 
 function ProfileSearch() {
   const [careerLevel, setCareerLevel] = useUrlSyncState(SEARCH_PARAMS.CAREER_LEVEL);
@@ -36,12 +34,6 @@ function ProfileSearch() {
     },
     size: '4',
   });
-
-  const [, handleUnmount, animationTrigger] = useAnimation(isReady);
-
-  useEffect(() => {
-    handleUnmount();
-  }, [isReady]);
 
   return (
     <S.Container>
@@ -68,7 +60,6 @@ function ProfileSearch() {
           getNextPage={getNextPage}
           isLoading={isLoading}
           isError={isError}
-          animationTrigger={animationTrigger}
         />
       </AsyncWrapper>
     </S.Container>

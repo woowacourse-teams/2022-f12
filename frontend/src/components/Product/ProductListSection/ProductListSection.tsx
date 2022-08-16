@@ -13,17 +13,9 @@ type Props = Omit<DataFetchStatus, 'isReady'> & {
   title: string;
   data: Product[];
   getNextPage?: () => void;
-  animationTrigger?: boolean;
 };
 
-function ProductListSection({
-  title,
-  data,
-  isLoading,
-  isError,
-  getNextPage,
-  animationTrigger,
-}: Props) {
+function ProductListSection({ title, data, isLoading, isError, getNextPage }: Props) {
   const isSinglePage = getNextPage === undefined;
   const productList = (
     <Masonry columnCount={4}>
@@ -34,8 +26,7 @@ function ProductListSection({
             name={name}
             rating={rating}
             reviewCount={reviewCount}
-            animationTrigger={animationTrigger}
-            index={index}
+            index={index % 12}
           />
         </Link>
       ))}

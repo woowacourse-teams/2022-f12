@@ -1,15 +1,29 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Container = styled.div<{ animationTrigger: boolean; index: number }>`
+export const Container = styled.div<{ index: number }>`
   display: flex;
   background-color: white;
   padding: 1rem;
   width: 380px;
   border-radius: 0.4rem;
   box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
-  ${({ animationTrigger }) =>
-    !animationTrigger && 'transform : translateY(-10px); scale: 1.1; opacity: 0;'}
-  transition: 300ms ${({ index }) => (index + 1) * 100}ms;
+  ${({ index }) => css`
+    animation: fade-in-${index} ${500 + index * 50}ms;
+
+    @keyframes fade-in-${index} {
+      0% {
+        transform: translateY(-10px);
+        scale: 1.1;
+        opacity: 0;
+      }
+
+      ${index * 5}% {
+        transform: translateY(-10px);
+        scale: 1.1;
+        opacity: 0;
+      }
+    }
+  `}
 `;
 
 export const LeftSection = styled.div`
