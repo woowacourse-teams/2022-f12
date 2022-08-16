@@ -2,17 +2,23 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  width: max-content;
+  gap: 0.5rem;
 `;
 
 export const ImageWrapper = styled.div`
-  width: 30%;
+  width: 3rem;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   border: 2px solid ${({ theme }) => theme.colors.gray};
   overflow: hidden;
+`;
+
+export const InfoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 `;
 
 export const UserNameWrapper = styled.div`
@@ -26,7 +32,8 @@ export const ProfileImage = styled.img`
 `;
 
 export const Username = styled.p`
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
 `;
 
 export const ChipWrapper = styled.div`

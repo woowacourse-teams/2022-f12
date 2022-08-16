@@ -7,6 +7,8 @@ import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
+import DeskSetup from '@/components/DeskSetup/DeskSetup';
+import DeskSetupCard from '@/components/DeskSetupCard/DeskSetupCard';
 import InventoryProductList from '@/components/Profile/InventoryProductList/InventoryProductList';
 import ProductSelect from '@/components/Profile/ProductSelect/ProductSelect';
 import UserInfo from '@/components/Profile/UserInfo/UserInfo';
@@ -52,6 +54,7 @@ function Profile() {
   return (
     <S.Container>
       <S.ProfileSection>
+        <S.EmptySection />
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isUserInfoReady}
@@ -59,7 +62,26 @@ function Profile() {
         >
           <UserInfo userData={userInfo} />
         </AsyncWrapper>
+        <S.FollowButton>팔로우</S.FollowButton>
+      </S.ProfileSection>
+      <S.DeskSetupSection>
+        <DeskSetup />
+      </S.DeskSetupSection>
+      <S.InventorySection>
+        <S.InventoryItemHeaderWrapper>
+          <SectionHeader title={'리뷰를 작성한 제품'} />
+          <S.EditDeskSetupButton>데스크 셋업 변경하기</S.EditDeskSetupButton>
+        </S.InventoryItemHeaderWrapper>
         <AsyncWrapper
+          fallback={<Loading />}
+          isReady={isInventoryProductsReady}
+          isError={isUserInfoError}
+        >
+          <InventoryProductList inventoryList={inventoryList} />
+        </AsyncWrapper>
+      </S.InventorySection>
+
+      {/* <AsyncWrapper
           fallback={<Loading />}
           isReady={isInventoryProductsReady}
           isError={isUserInfoError}
@@ -70,18 +92,7 @@ function Profile() {
             inventoryList={inventoryList}
             editable={isOwnProfile}
           />
-        </AsyncWrapper>
-      </S.ProfileSection>
-      <S.InventorySection>
-        <SectionHeader title={'리뷰를 작성한 제품 목록'} />
-        <AsyncWrapper
-          fallback={<Loading />}
-          isReady={isInventoryProductsReady}
-          isError={isUserInfoError}
-        >
-          <InventoryProductList inventoryList={inventoryList} />
-        </AsyncWrapper>
-      </S.InventorySection>
+        </AsyncWrapper> */}
     </S.Container>
   );
 }

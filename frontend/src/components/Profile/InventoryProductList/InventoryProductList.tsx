@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
+import DeskSetupCard from '@/components/DeskSetupCard/DeskSetupCard';
 import * as S from '@/components/Profile/InventoryProductList/InventoryProductList.style';
 import ProductBar from '@/components/Profile/ProductBar/ProductBar';
 
@@ -20,11 +21,12 @@ function InventoryProductList({ inventoryList }: Props) {
           <S.Container>
             {items.map(({ id: inventoryId, selected, product: { name } }) => (
               <Link key={inventoryId} to={`${ROUTES.PRODUCT}/${inventoryId}`}>
-                <ProductBar
+                <DeskSetupCard inventoryId={inventoryId} size="s" />
+                {/* <ProductBar
                   key={inventoryId}
                   name={name}
                   barType={selected ? 'selected' : 'default'}
-                />
+                /> */}
               </Link>
             ))}
           </S.Container>
