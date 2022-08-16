@@ -75,7 +75,7 @@ class InventoryProductServiceTest {
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
         given(inventoryProductRepository.findAllById(selectedInventoryProductIds))
-                .willReturn(List.of(UNSELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_1.생성(1L))));
+                .willReturn(List.of(UNSELECTED_INVENTORY_PRODUCT.생성(2L, member, KEYBOARD_1.생성(1L))));
 
         // when, then
         assertAll(
