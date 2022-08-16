@@ -13,6 +13,7 @@ type Props = Omit<DataFetchStatus, 'isReady'> & {
   getNextPage: () => void;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
+  animationTrigger?: boolean;
 };
 
 function ReviewListSection({
@@ -23,6 +24,7 @@ function ReviewListSection({
   handleEdit,
   isLoading,
   isError,
+  animationTrigger,
 }: Props) {
   const userData = useContext(UserDataContext);
   const loginUserGithubId = userData?.member.gitHubId;
@@ -35,7 +37,7 @@ function ReviewListSection({
         isError={isError}
       >
         <S.Wrapper columns={columns}>
-          {reviewData.map(({ id, ...reviewData }) => (
+          {reviewData.map(({ id, ...reviewData }, index) => (
             <ReviewCard
               key={id}
               reviewId={id}
@@ -43,6 +45,8 @@ function ReviewListSection({
               loginUserGithubId={loginUserGithubId}
               handleDelete={handleDelete}
               handleEdit={handleEdit}
+              animationTrigger={animationTrigger}
+              index={index}
             />
           ))}
         </S.Wrapper>

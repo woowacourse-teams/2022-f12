@@ -1,13 +1,17 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-export const Container = styled.article`
+export const Container = styled.article<{ animationTrigger: boolean; index: number }>`
   display: flex;
   gap: 1rem;
   border-radius: 0.375rem;
   padding: 1rem;
   width: 100%;
   height: max-content;
+
+  ${({ animationTrigger }) =>
+    !animationTrigger && 'transform : translateY(-10px); scale: 1.1; opacity: 0;'}
+  transition: 300ms ${({ index }) => (index + 1) * 50}ms;
 `;
 
 export const ProductArea = styled(Link)`

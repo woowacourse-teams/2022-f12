@@ -16,6 +16,8 @@ type Props = {
   reviewData: Omit<Review, 'id'>;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
+  animationTrigger?: boolean;
+  index?: number;
 };
 
 function ReviewCard({
@@ -24,6 +26,8 @@ function ReviewCard({
   handleDelete,
   handleEdit,
   reviewData,
+  animationTrigger = true,
+  index = 0,
 }: Props) {
   const { product, rating, content, author, createdAt } = reviewData;
   const { isLoggedIn } = useAuth();
@@ -48,7 +52,7 @@ function ReviewCard({
   };
 
   return (
-    <S.Container>
+    <S.Container animationTrigger={animationTrigger} index={index}>
       {product && (
         <S.ProductArea to={`${ROUTES.PRODUCT}/${product.id}`}>
           <S.ImageWrapper>

@@ -53,6 +53,12 @@ function Product() {
     },
   });
 
+  const [, handleReviewUnmount, reviewAnimationTrigger] = useAnimation(isReviewReady);
+
+  useEffect(() => {
+    handleReviewUnmount();
+  }, [isReviewReady]);
+
   const [isSheetOpen, toggleSheetOpen] = useReducer((isSheetOpen: boolean) => {
     if (!isLoggedIn) return false;
 
@@ -65,8 +71,6 @@ function Product() {
   useEffect(() => {
     if (!isLoggedIn) toggleSheetOpen();
   }, [isLoggedIn]);
-
-  console.log(shouldSheetRender);
 
   return (
     <S.Container>
@@ -107,6 +111,7 @@ function Product() {
             handleEdit={handleReviewEdit}
             isLoading={isReviewLoading}
             isError={isReviewError}
+            animationTrigger={reviewAnimationTrigger}
           />
         </AsyncWrapper>
         {shouldSheetRender && (
