@@ -1,5 +1,27 @@
 package com.woowacourse.f12.application.member;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.response.member.MemberPageResponse;
+import com.woowacourse.f12.dto.response.member.MemberResponse;
+import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
+import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.support.MemberFixtures;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
+
+import java.util.List;
+import java.util.Optional;
+
 import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
@@ -14,27 +36,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
-
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.dto.request.member.MemberRequest;
-import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
-import com.woowacourse.f12.dto.response.member.MemberPageResponse;
-import com.woowacourse.f12.dto.response.member.MemberResponse;
-import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
-import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import com.woowacourse.f12.support.MemberFixtures;
-import java.util.List;
-import java.util.Optional;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.SliceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -111,7 +112,7 @@ class MemberServiceTest {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
-        Member member = CORINNE.대표장비를_추가해서_생성(1L, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
 
         given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
