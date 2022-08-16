@@ -44,10 +44,6 @@ public class InventoryProduct {
         return product.isSameCategory(category);
     }
 
-    public Category getCategory() {
-        return product.getCategory();
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

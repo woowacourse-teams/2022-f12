@@ -49,7 +49,8 @@ public class InventoryProducts {
 
     private void validateCategoryNotDuplicated(final List<InventoryProduct> selectedItems) {
         final long distinctCount = selectedItems.stream()
-                .map(InventoryProduct::getCategory)
+                .map(InventoryProduct::getProduct)
+                .map(Product::getCategory)
                 .distinct()
                 .count();
         if (distinctCount != selectedItems.size()) {
