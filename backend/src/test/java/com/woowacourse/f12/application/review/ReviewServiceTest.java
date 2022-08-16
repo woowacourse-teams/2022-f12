@@ -1,5 +1,34 @@
 package com.woowacourse.f12.application.review;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.domain.product.ProductRepository;
+import com.woowacourse.f12.domain.review.Review;
+import com.woowacourse.f12.domain.review.ReviewRepository;
+import com.woowacourse.f12.dto.request.review.ReviewRequest;
+import com.woowacourse.f12.dto.response.review.*;
+import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
+import com.woowacourse.f12.exception.forbidden.NotAuthorException;
+import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
+import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
+import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
+import com.woowacourse.f12.support.ReviewFixtures;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
+import org.springframework.data.domain.Sort.Order;
+
+import java.util.List;
+import java.util.Optional;
+
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
@@ -13,50 +42,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.domain.product.Product;
-import com.woowacourse.f12.domain.product.ProductRepository;
-import com.woowacourse.f12.domain.review.Review;
-import com.woowacourse.f12.domain.review.ReviewRepository;
-import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithAuthorResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
-import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileArgumentException;
-import com.woowacourse.f12.exception.forbidden.NotAuthorException;
-import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
-import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
-import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
-import com.woowacourse.f12.support.ReviewFixtures;
-import java.util.List;
-import java.util.Optional;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceTest {
@@ -365,12 +354,15 @@ class ReviewServiceTest {
     }
 
     @Test
-    void 로그인한_회원이_리뷰_작성자와_일치하면_삭제한다() {
+    void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰와_인벤토리_제품을_삭제한다() {
         // given
         Long reviewId = 1L;
         Long memberId = 1L;
+        Long productId = 1L;
         Member member = CORINNE.생성(memberId);
-        Review review = REVIEW_RATING_5.작성(reviewId, KEYBOARD_1.생성(), member);
+        Product product = KEYBOARD_1.생성(productId);
+        Review review = REVIEW_RATING_5.작성(reviewId, product, member);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, product);
 
         given(memberRepository.findById(memberId))
                 .willReturn(Optional.of(member));
@@ -378,13 +370,19 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(review));
         willDoNothing().given(reviewRepository)
                 .delete(any(Review.class));
+        given(inventoryProductRepository.findByMemberIdAndProductId(memberId, productId))
+                .willReturn(Optional.of(inventoryProduct));
+        willDoNothing().given(inventoryProductRepository)
+                .delete(any(InventoryProduct.class));
 
         // when, then
         assertAll(
                 () -> assertDoesNotThrow(() -> reviewService.delete(reviewId, memberId)),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId),
-                () -> verify(reviewRepository).delete(review)
+                () -> verify(reviewRepository).delete(review),
+                () -> verify(inventoryProductRepository).findByMemberIdAndProductId(memberId, productId),
+                () -> verify(inventoryProductRepository).delete(inventoryProduct)
         );
     }
 
@@ -453,6 +451,36 @@ class ReviewServiceTest {
     }
 
     @Test
+    void 삭제하려는_리뷰에_해당하는_인벤토리가_존재하지_않으면_예외를_반환한다() {
+        // given
+        Long memberId = 1L;
+        Long reviewId = 1L;
+        Long productId = 1L;
+        Member member = CORINNE.생성(memberId);
+        Product product = KEYBOARD_1.생성(productId);
+        Review review = REVIEW_RATING_5.작성(reviewId, product, member);
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.of(member));
+        given(reviewRepository.findById(reviewId))
+                .willReturn(Optional.of(review));
+        willDoNothing().given(reviewRepository)
+                .delete(any(Review.class));
+        given(inventoryProductRepository.findByMemberIdAndProductId(memberId, productId))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.delete(reviewId, memberId))
+                        .isExactlyInstanceOf(InventoryProductNotFoundException.class),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(reviewRepository).findById(reviewId),
+                () -> verify(reviewRepository).delete(any(Review.class)),
+                () -> verify(inventoryProductRepository).findByMemberIdAndProductId(memberId, productId),
+                () -> verify(inventoryProductRepository, times(0)).delete(any(InventoryProduct.class))
+        );
+    }
+
+    @Test
     void 회원_아이디로_회원이_작성한_리뷰_목록을_조회한다() {
         // given
         Member corinne = CORINNE.생성(1L);
@@ -474,7 +502,7 @@ class ReviewServiceTest {
                         .containsExactly(ReviewWithProductResponse.from(review2),
                                 ReviewWithProductResponse.from(review1)),
                 () -> verify(memberRepository).existsById(corinne.getId()),
-                () -> verify(reviewRepository).findPageByMemberId(eq(corinne.getId()), eq(pageable))
+                () -> verify(reviewRepository).findPageByMemberId(corinne.getId(), pageable)
         );
     }
 
