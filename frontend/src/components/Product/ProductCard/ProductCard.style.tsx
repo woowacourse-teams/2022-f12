@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Container = styled.article`
+export const Container = styled.article<{ animationTrigger: boolean; index: number }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -18,6 +18,9 @@ export const Container = styled.article`
       text-decoration: underline;
     }
   }
+  ${({ animationTrigger }) =>
+    !animationTrigger && 'transform : translateY(-10px); scale: 1.1; opacity: 0;'}
+  transition: 300ms ${({ index }) => (index + 1) * 100}ms;
 `;
 
 export const ImageWrapper = styled.div`

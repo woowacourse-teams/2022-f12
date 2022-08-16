@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import * as S from '@/pages/Products/Products.style';
 
@@ -18,6 +18,7 @@ import { ENDPOINTS } from '@/constants/api';
 import TITLE from '@/constants/header';
 import { CATEGORIES } from '@/constants/product';
 import SEARCH_PARAMS from '@/constants/searchParams';
+import useAnimation from '@/hooks/useAnimation';
 
 type Option = { value: string; text: string };
 
@@ -62,6 +63,12 @@ function Products() {
     [category]
   );
 
+  const [, handleTransitionEnd, animationTrigger] = useAnimation(isReady);
+
+  useEffect(() => {
+    handleTransitionEnd();
+  }, [isReady]);
+
   return (
     <>
       <S.SearchBarWrapper>
@@ -73,16 +80,17 @@ function Products() {
           options={CATEGORIES}
         />
       </S.SearchBarWrapper>
+      <SectionHeader title={title}>
+        <Select value={sort} setValue={setSort} options={options} />
+      </SectionHeader>
       <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
-        <SectionHeader title={title}>
-          <Select value={sort} setValue={setSort} options={options} />
-        </SectionHeader>
         <ProductListSection
           title={title}
           data={products}
           getNextPage={getNextPage}
           isLoading={isLoading}
           isError={isError}
+          animationTrigger={animationTrigger}
         />
       </AsyncWrapper>
     </>

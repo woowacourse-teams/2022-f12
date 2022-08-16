@@ -3,11 +3,21 @@ import ReviewCount from '@/components/common/ReviewCount/ReviewCount';
 
 import * as S from '@/components/Product/ProductCard/ProductCard.style';
 
-type Props = Omit<Product, 'id' | 'category'>;
+type Props = Omit<Product, 'id' | 'category'> & {
+  animationTrigger: boolean;
+  index: number;
+};
 
-function ProductCard({ imageUrl, name, rating, reviewCount }: Props) {
+function ProductCard({
+  imageUrl,
+  name,
+  rating,
+  reviewCount,
+  animationTrigger,
+  index,
+}: Props) {
   return (
-    <S.Container aria-label={name}>
+    <S.Container aria-label={name} animationTrigger={animationTrigger} index={index}>
       <S.ImageWrapper>
         <S.Image src={imageUrl} />
       </S.ImageWrapper>
