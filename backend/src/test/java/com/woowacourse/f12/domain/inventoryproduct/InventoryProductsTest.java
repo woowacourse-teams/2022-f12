@@ -39,17 +39,17 @@ class InventoryProductsTest {
     @Test
     void 대표장비를_추출한다() {
         // given
-        Product product1 = KEYBOARD_1.생성(1L);
-        Product product2 = KEYBOARD_2.생성(2L);
-        List<InventoryProduct> items = List.of(SELECTED_INVENTORY_PRODUCT.생성(null, product1), UNSELECTED_INVENTORY_PRODUCT.생성(null, product2));
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(null, KEYBOARD_1.생성(1L));
+        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(null, KEYBOARD_2.생성(2L));
+        List<InventoryProduct> items = List.of(selectedInventoryProduct, unselectedInventoryProduct);
         InventoryProducts inventoryProducts = new InventoryProducts(items);
 
         // when
-        List<Product> profileProducts = inventoryProducts.getProfileProducts();
+        List<InventoryProduct> profileProducts = inventoryProducts.getProfileProducts();
 
         // then
         assertThat(profileProducts).hasSize(1)
-                .containsExactly(product1);
+                .containsExactly(selectedInventoryProduct);
     }
 
     @Test

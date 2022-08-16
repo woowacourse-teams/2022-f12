@@ -1,12 +1,14 @@
 package com.woowacourse.f12.dto.response.member;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
+import lombok.Getter;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.Getter;
 
 @Getter
 public class MemberWithProfileProductResponse {
@@ -36,8 +38,9 @@ public class MemberWithProfileProductResponse {
     }
 
     public static MemberWithProfileProductResponse from(final Member member) {
-        final List<ProductResponse> profileProducts = member.getProfileProducts()
+        final List<ProductResponse> profileProducts = member.getProfileProduct()
                 .stream()
+                .map(InventoryProduct::getProduct)
                 .map(ProductResponse::from)
                 .collect(Collectors.toList());
         return new MemberWithProfileProductResponse(member.getId(), member.getGitHubId(), member.getName(),

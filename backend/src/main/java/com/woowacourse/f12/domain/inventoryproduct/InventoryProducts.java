@@ -58,10 +58,9 @@ public class InventoryProducts {
         }
     }
 
-    public List<Product> getProfileProducts() {
+    public List<InventoryProduct> getProfileProducts() {
         return items.stream()
                 .filter(InventoryProduct::isSelected)
-                .map(InventoryProduct::getProduct)
                 .collect(Collectors.toList());
     }
 

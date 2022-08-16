@@ -1,7 +1,7 @@
 package com.woowacourse.f12.domain.member;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
-import com.woowacourse.f12.domain.product.Product;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -92,7 +92,7 @@ public class Member {
         return Objects.nonNull(this.careerLevel) && Objects.nonNull(this.jobType);
     }
 
-    public List<Product> getProfileProducts() {
+    public List<InventoryProduct> getProfileProduct() {
         return this.inventoryProducts.getProfileProducts();
     }
 
