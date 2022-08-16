@@ -125,14 +125,14 @@ public class ReviewService {
         return target;
     }
 
-    private Review findReviewById(Long reviewId) {
-        return reviewRepository.findById(reviewId)
-                .orElseThrow(ReviewNotFoundException::new);
-    }
-
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
+    }
+
+    private Review findReviewById(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(ReviewNotFoundException::new);
     }
 
     private void validateAuthor(final Member member, final Review target) {
