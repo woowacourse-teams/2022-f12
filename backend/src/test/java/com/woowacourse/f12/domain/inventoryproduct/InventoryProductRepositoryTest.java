@@ -107,7 +107,7 @@ class InventoryProductRepositoryTest {
         inventoryProductRepository.save(inventoryProduct);
 
         // when
-        Optional<InventoryProduct> actual = inventoryProductRepository.findByMemberAndProduct(member, product);
+        Optional<InventoryProduct> actual = inventoryProductRepository.findByMemberIdAndProductId(member.getId(), product.getId());
 
         // then
         assertThat(actual).isPresent();
