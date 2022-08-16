@@ -21,6 +21,7 @@ import useStatistics from '@/hooks/useStatistics';
 import theme from '@/style/theme';
 
 import Plus from '@/assets/plus.svg';
+import useAnimation from '@/hooks/useAnimation';
 
 function Product() {
   const { isLoggedIn } = useAuth();
@@ -58,9 +59,14 @@ function Product() {
     return !isSheetOpen;
   }, false);
 
+  const [shouldSheetRender, handleSheetUnmount, sheetAnimationTrigger] =
+    useAnimation(isSheetOpen);
+
   useEffect(() => {
     if (!isLoggedIn) toggleSheetOpen();
   }, [isLoggedIn]);
+
+  console.log(shouldSheetRender);
 
   return (
     <S.Container>
@@ -103,10 +109,12 @@ function Product() {
             isError={isReviewError}
           />
         </AsyncWrapper>
-        {isSheetOpen && (
+        {shouldSheetRender && (
           <ReviewBottomSheet
             handleClose={toggleSheetOpen}
             handleSubmit={handleReviewSubmit}
+            handleUnmount={handleSheetUnmount}
+            animationTrigger={sheetAnimationTrigger}
             isEdit={false}
           />
         )}
