@@ -39,7 +39,7 @@ public class InventoryProductService {
 
     private void validateUpdatable(final Member member, final List<Long> selectedInventoryProductIds) {
         final InventoryProducts selectedInventoryProducts = new InventoryProducts(inventoryProductRepository.findAllById(selectedInventoryProductIds));
-        if (!member.getInventoryProducts().contains(selectedInventoryProducts)) {
+        if (!member.contains(selectedInventoryProducts)) {
             throw new InvalidProfileProductUpdateException();
         }
     }

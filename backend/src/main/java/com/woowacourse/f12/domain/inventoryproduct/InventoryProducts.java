@@ -41,7 +41,7 @@ public class InventoryProducts {
 
     private void validateNotContainsSoftware(final List<InventoryProduct> selectedItems) {
         final boolean containsSoftware = selectedItems.stream()
-                .anyMatch(inventoryProduct -> inventoryProduct.getProduct().isSameCategory(Category.SOFTWARE));
+                .anyMatch(inventoryProduct -> inventoryProduct.isSameCategory(Category.SOFTWARE));
         if (containsSoftware) {
             throw new InvalidProfileProductCategoryException();
         }
@@ -49,7 +49,7 @@ public class InventoryProducts {
 
     private void validateCategoryNotDuplicated(final List<InventoryProduct> selectedItems) {
         final long distinctCount = selectedItems.stream()
-                .map(it -> it.getProduct().getCategory())
+                .map(InventoryProduct::getCategory)
                 .distinct()
                 .count();
         if (distinctCount != selectedItems.size()) {

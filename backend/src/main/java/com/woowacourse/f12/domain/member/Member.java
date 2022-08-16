@@ -96,6 +96,10 @@ public class Member {
         return this.inventoryProducts.getProfileProducts();
     }
 
+    public boolean contains(final InventoryProducts inventoryProducts) {
+        return this.inventoryProducts.contains(inventoryProducts);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

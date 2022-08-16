@@ -1,6 +1,7 @@
 package com.woowacourse.f12.domain.inventoryproduct;
 
 import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.domain.product.Product;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,6 +38,14 @@ public class InventoryProduct {
         this.selected = selected;
         this.member = member;
         this.product = product;
+    }
+
+    public boolean isSameCategory(final Category category) {
+        return product.isSameCategory(category);
+    }
+
+    public Category getCategory() {
+        return product.getCategory();
     }
 
     @Override
