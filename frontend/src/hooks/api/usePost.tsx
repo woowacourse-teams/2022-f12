@@ -1,9 +1,13 @@
 import { AxiosRequestHeaders } from 'axios';
 import { useContext } from 'react';
+
 import { UserDataContext } from '@/contexts/LoginContextProvider';
+
 import useAxios from '@/hooks/api/useAxios';
-import useModal from '@/hooks/useModal';
 import useError from '@/hooks/useError';
+import useModal from '@/hooks/useModal';
+
+import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
 
 type Props = {
   url: string;
@@ -19,7 +23,7 @@ function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
 
   const postData = async (body: T) => {
     if (!userData || !userData.token) {
-      showAlert('로그인이 필요합니다.');
+      await showAlert(VALIDATION_ERROR_MESSAGES.LOGIN_REQUIRED);
       return;
     }
 
@@ -32,7 +36,7 @@ function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
         (string, [key, value]) => `${string}\n${key}: ${value as string}`,
         ''
       );
-      handleError(
+      await handleError(
         error as Error,
         `body: ${requestBodyString},\n    token: ${userData.token}`
       );

@@ -1,112 +1,49 @@
-import Stepper from '@/components/common/Stepper/Stepper';
-import * as S from '@/pages/Register/Register.style';
 import { useContext, useEffect, useState } from 'react';
-import usePatch from '@/hooks/api/usePatch';
-import { UserDataContext } from '@/contexts/LoginContextProvider';
-import { ENDPOINTS } from '@/constants/api';
 import { useNavigate } from 'react-router-dom';
-import ROUTES from '@/constants/routes';
+
+import AdditionalInfoForm from '@/pages/Register/AdditionalInfoForm';
+import ConfirmInfoForm from '@/pages/Register/ConfirmInfoForm';
+import * as S from '@/pages/Register/Register.style';
+
+import Stepper from '@/components/common/Stepper/Stepper';
+
+import { UserDataContext } from '@/contexts/LoginContextProvider';
+
+import usePatch from '@/hooks/api/usePatch';
 import useModal from '@/hooks/useModal';
 
-const messages = {
+import { ENDPOINTS } from '@/constants/api';
+import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
+import ROUTES from '@/constants/routes';
+
+const titles = {
   1: '경력을 선택해주세요',
   2: '직군을 선택해주세요',
   3: '입력한 정보를 확인해주세요',
 };
 
-const careerLevel = {
-  none: '경력 없음',
-  junior: '0-2년차',
-  midlevel: '3-5년차',
-  senior: '6년차 이상',
-} as const;
-
-const jobType = {
-  frontend: '프론트엔드',
-  backend: '백엔드',
-  mobile: '모바일',
-  etc: '기타',
-} as const;
-
-type UserInfo = {
-  careerLevel: keyof typeof careerLevel;
-  jobType: keyof typeof jobType;
-};
-
 function Register() {
   const [step, setStep] = useState(1);
-  const [additionalInfo, setAdditionalInfo] = useState<UserInfo>({
-    careerLevel: null,
-    jobType: null,
-  });
-  const { showAlert, getConfirm } = useModal();
-
+  const [careerLevel, setCareerLevel] = useState<CareerLevel>(null);
+  const [jobType, setJobType] = useState<JobType>(null);
+  const navigate = useNavigate();
   const userData = useContext(UserDataContext);
 
+  const { getConfirm } = useModal();
   const patchAdditionalInfo = usePatch({
     url: ENDPOINTS.ME,
     headers: { Authorization: `Bearer ${userData?.token}` },
   });
 
-  const navigate = useNavigate();
-
-  const renderSelectButton = (step: number) => {
-    switch (step) {
-      case 1:
-        return careerLevel;
-      case 2:
-        return jobType;
-    }
-  };
-
-  const handleSelectButtonClick: React.MouseEventHandler<HTMLButtonElement> = (
-    e
-  ) => {
-    if (!(e.target instanceof HTMLButtonElement)) return;
-    if (!(e.target.value in careerLevel) && !(e.target.value in jobType))
-      return;
-
-    if (step === 1) {
-      setAdditionalInfo({
-        ...additionalInfo,
-        careerLevel: e.target.value as keyof typeof careerLevel,
-      });
-    } else {
-      setAdditionalInfo({
-        ...additionalInfo,
-        jobType: e.target.value as keyof typeof jobType,
-      });
-    }
-  };
-
-  const handleAdditionalInfoSubmit = async (input: UserInfo) => {
+  const handleAdditionalInfoSubmit = async () => {
     const confirmation = await getConfirm(
-      `${careerLevel[input.careerLevel]}, ${
-        jobType[input.jobType]
-      } 개발자이신가요?`
+      `${CAREER_LEVELS[careerLevel]}, ${JOB_TYPES[jobType]} 개발자이신가요?`
     );
     if (confirmation) {
-      patchAdditionalInfo(input).catch((error) => {
+      patchAdditionalInfo({ careerLevel, jobType }).catch((error) => {
         console.log(error);
       });
     }
-  };
-
-  const handleConfirmButtonClick = async () => {
-    if (step === 1 && additionalInfo.careerLevel === null) {
-      showAlert('경력을 선택해주세요.');
-      return;
-    }
-    if (step === 2 && additionalInfo.jobType === null) {
-      showAlert('직군을 선택해주세요.');
-      return;
-    }
-    if (step === 1 || step === 2) {
-      setStep(step + 1);
-      return;
-    }
-
-    await handleAdditionalInfoSubmit(additionalInfo);
   };
 
   const handleEditButtonClick = () => {
@@ -119,48 +56,38 @@ function Register() {
     navigate(ROUTES.HOME);
   }, [userData]);
 
+  const stepNames = ['연차 입력', '직군 입력', '정보 확인'];
+  const stepButtons = [
+    <AdditionalInfoForm
+      key="0"
+      options={CAREER_LEVELS}
+      input={careerLevel}
+      setInput={setCareerLevel}
+      setStep={setStep}
+    />,
+    <AdditionalInfoForm
+      key="1"
+      options={JOB_TYPES}
+      input={jobType}
+      setInput={setJobType}
+      setStep={setStep}
+    />,
+    <ConfirmInfoForm
+      key="2"
+      careerLevel={CAREER_LEVELS[careerLevel]}
+      jobType={JOB_TYPES[jobType]}
+      handleConfirm={handleAdditionalInfoSubmit}
+      handleEdit={handleEditButtonClick}
+    />,
+  ];
+
   return (
     <S.Container>
       <S.Header>추가 정보 입력하기</S.Header>
-      <Stepper step={step} />
+      <Stepper names={stepNames} currentStage={step} />
+      <S.Title>{titles[step]}</S.Title>
       <S.FlexWrapper>
-        <S.Title>{messages[step]}</S.Title>
-        <S.FlexGapWrapper>
-          {(step === 1 || step === 2) &&
-            Object.entries(renderSelectButton(step)).map(
-              ([value, content], index: number) => (
-                <S.SelectButton
-                  key={index}
-                  onClick={handleSelectButtonClick}
-                  value={value}
-                  selected={
-                    value === additionalInfo.careerLevel ||
-                    value === additionalInfo.jobType
-                  }
-                >
-                  {content}
-                </S.SelectButton>
-              )
-            )}
-          {step === 3 && (
-            <>
-              <S.ConfirmInfo>
-                {careerLevel[additionalInfo.careerLevel]}
-              </S.ConfirmInfo>
-              <S.ConfirmInfo>{jobType[additionalInfo.jobType]}</S.ConfirmInfo>
-            </>
-          )}
-        </S.FlexGapWrapper>
-        <S.FlexRowWrapper>
-          {step === 3 && (
-            <S.EditButton onClick={handleEditButtonClick}>
-              수정하기
-            </S.EditButton>
-          )}
-          <S.ConfirmButton onClick={handleConfirmButtonClick}>
-            {step === 1 || step === 2 ? '선택 완료' : '제출하기'}
-          </S.ConfirmButton>
-        </S.FlexRowWrapper>
+        <S.FlexGapWrapper>{stepButtons[step - 1]}</S.FlexGapWrapper>
       </S.FlexWrapper>
     </S.Container>
   );

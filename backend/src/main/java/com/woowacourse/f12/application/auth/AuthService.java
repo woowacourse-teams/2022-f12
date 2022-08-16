@@ -24,12 +24,22 @@ public class AuthService {
 
     @Transactional
     public LoginResponse login(final String code) {
-        final String gitHubAccessToken = gitHubOauthClient.getAccessToken(code);
-        final GitHubProfileResponse gitHubProfileResponse = gitHubOauthClient.getProfile(gitHubAccessToken);
-        final Member member = memberRepository.findByGitHubId(gitHubProfileResponse.getGitHubId())
-                .orElseGet(() -> memberRepository.save(gitHubProfileResponse.toMember()));
-        member.updateName(gitHubProfileResponse.getName());
+        final GitHubProfileResponse gitHubProfileResponse = getGitHubProfileResponse(code);
+        final Member member = addOrUpdateMember(gitHubProfileResponse);
         final String applicationAccessToken = jwtProvider.createToken(member.getId());
         return LoginResponse.of(applicationAccessToken, member);
+    }
+
+    private GitHubProfileResponse getGitHubProfileResponse(final String code) {
+        final String gitHubAccessToken = gitHubOauthClient.getAccessToken(code);
+        return gitHubOauthClient.getProfile(gitHubAccessToken);
+    }
+
+    private Member addOrUpdateMember(final GitHubProfileResponse gitHubProfileResponse) {
+        final Member requestedMember = gitHubProfileResponse.toMember();
+        final Member member = memberRepository.findByGitHubId(gitHubProfileResponse.getGitHubId())
+                .orElseGet(() -> memberRepository.save(requestedMember));
+        member.update(requestedMember);
+        return member;
     }
 }

@@ -1,90 +1,66 @@
-import ProductDetail from '@/components/common/ProductDetail/ProductDetail';
+import { useReducer, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
 import * as S from '@/pages/Product/Product.style';
 
-import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
-import useReviews from '@/hooks/useReviews';
-import useProduct from '@/hooks/useProduct';
-import { useParams } from 'react-router-dom';
-import StickyWrapper from '@/components/common/StickyWrapper/StickyWrapper';
-import ReviewBottomSheet from '@/components/ReviewBottomSheet/ReviewBottomSheet';
-import { useReducer, useRef } from 'react';
-import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
-import Plus from '@/assets/plus.svg';
-import theme from '@/style/theme';
-import useAuth from '@/hooks/useAuth';
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
-import Loading from '@/components/common/Loading/Loading';
-import useModal from '@/hooks/useModal';
 import BarGraph from '@/components/common/BarGraph/BarGraph';
+import FloatingButton from '@/components/common/FloatingButton/FloatingButton';
+import Loading from '@/components/common/Loading/Loading';
+import StickyWrapper from '@/components/common/StickyWrapper/StickyWrapper';
+
+import ProductDetail from '@/components/Product/ProductDetail/ProductDetail';
+import ReviewBottomSheet from '@/components/Review/ReviewBottomSheet/ReviewBottomSheet';
+import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListSection';
+
+import useAuth from '@/hooks/useAuth';
+import useProduct from '@/hooks/useProduct';
+import useReviews from '@/hooks/useReviews';
 import useStatistics from '@/hooks/useStatistics';
+
+import theme from '@/style/theme';
+
+import Plus from '@/assets/plus.svg';
 
 function Product() {
   const { isLoggedIn } = useAuth();
   const { productId: id } = useParams();
   const productId = Number(id);
 
-  const [product, isProductReady, isProductError] = useProduct({
-    productId: Number(productId),
+  const [product, isProductReady, isProductError, refetchProduct] = useProduct({
+    id: Number(productId),
   });
+  const [statistics, isStatisticsReady, isStatisticsError, refetchStatistics] =
+    useStatistics({
+      productId: Number(productId),
+    });
   const {
     reviews,
     isLoading: isReviewLoading,
     isReady: isReviewReady,
     isError: isReviewError,
     getNextPage,
-    refetch: refetchReview,
-    postReview,
-    deleteReview,
-    putReview: editReview,
+    handleSubmit: handleReviewSubmit,
+    handleEdit: handleReviewEdit,
+    handleDelete: handleReviewDelete,
   } = useReviews({
     size: '6',
     productId,
+    handleRefetchOnSuccess: () => {
+      refetchProduct();
+      refetchStatistics();
+    },
   });
-  const [statistics, isStatisticsReady, isStatisticsError] = useStatistics({
-    productId: Number(productId),
-  });
 
-  const [isSheetOpen, toggleSheetOpen] = useReducer(
-    (isSheetOpen: boolean) => !isSheetOpen,
-    false
-  );
-  const { showAlert, getConfirm } = useModal();
+  const [isSheetOpen, toggleSheetOpen] = useReducer((isSheetOpen: boolean) => {
+    if (!isLoggedIn) return false;
 
-  const reviewListRef = useRef<HTMLDivElement | null>();
+    return !isSheetOpen;
+  }, false);
 
-  const handleReviewSubmit = async (reviewInput: ReviewInput) => {
-    await postReview(reviewInput);
-    refetchReview();
-    const topOfElement = reviewListRef.current;
-    window.scrollTo({
-      top: reviewListRef.current && Number(topOfElement.offsetTop),
-      behavior: 'smooth',
-    });
-  };
-
-  const handleReviewEdit = (reviewInput: ReviewInput, id: number) => {
-    editReview(reviewInput, id)
-      .then(() => {
-        showAlert('리뷰가 수정되었습니다.');
-        refetchReview();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const handleReviewDeletion = async (id: number) => {
-    const confirmation = await getConfirm('리뷰를 삭제하시겠습니까?');
-    if (!confirmation) return;
-
-    deleteReview(id)
-      .then(() => {
-        refetchReview();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  useEffect(() => {
+    if (!isLoggedIn) toggleSheetOpen();
+  }, [isLoggedIn]);
 
   return (
     <S.Container>
@@ -97,34 +73,37 @@ function Product() {
           >
             <ProductDetail product={product} />
           </AsyncWrapper>
-          <S.BarGraphWrapper>
-            <AsyncWrapper
-              fallback={<Loading />}
-              isReady={isStatisticsReady}
-              isError={isStatisticsError}
-            >
-              <BarGraph statistics={statistics} />
-            </AsyncWrapper>
-          </S.BarGraphWrapper>
+          <AsyncWrapper
+            fallback={<Loading />}
+            isReady={isStatisticsReady}
+            isError={isStatisticsError}
+          >
+            <BarGraph statistics={statistics} />
+          </AsyncWrapper>
         </S.ProductDetailWrapper>
       </StickyWrapper>
-      <S.Wrapper ref={reviewListRef}>
-        {!isSheetOpen && isLoggedIn && (
+      <S.Wrapper>
+        {isLoggedIn && (
           <FloatingButton clickHandler={toggleSheetOpen}>
             <Plus stroke={theme.colors.white} />
           </FloatingButton>
         )}
-        <ReviewListSection
-          columns={1}
-          data={reviews}
-          getNextPage={getNextPage}
-          handleDelete={handleReviewDeletion}
-          handleEdit={handleReviewEdit}
-          isLoading={isReviewLoading}
+        <AsyncWrapper
+          fallback={<Loading />}
           isReady={isReviewReady}
           isError={isReviewError}
-        />
-        {isSheetOpen && isLoggedIn && (
+        >
+          <ReviewListSection
+            columns={1}
+            data={reviews}
+            getNextPage={getNextPage}
+            handleDelete={handleReviewDelete}
+            handleEdit={handleReviewEdit}
+            isLoading={isReviewLoading}
+            isError={isReviewError}
+          />
+        </AsyncWrapper>
+        {isSheetOpen && (
           <ReviewBottomSheet
             handleClose={toggleSheetOpen}
             handleSubmit={handleReviewSubmit}

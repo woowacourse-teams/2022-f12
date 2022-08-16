@@ -1,22 +1,19 @@
-import { createPortal } from 'react-dom';
-import * as S from '@/components/common/Modal/Modal.style';
 import { PropsWithChildren, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+
+import * as S from '@/components/common/Modal/Modal.style';
 
 type Props = {
   handleClose: () => void;
   handleConfirm?: () => void;
 };
 
-function Modal({
-  handleClose,
-  handleConfirm,
-  children,
-}: PropsWithChildren<Props>) {
+function Modal({ handleClose, handleConfirm, children }: PropsWithChildren<Props>) {
   const [scrollOffset, setScrollOffset] = useState(0);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    setScrollOffset(window.pageYOffset);
+    setScrollOffset(window.scrollY);
 
     return () => {
       document.body.style.overflow = 'auto';
@@ -28,10 +25,7 @@ function Modal({
       <S.Backdrop onClick={handleClose} />
       <S.Content>
         {children}
-        <ActionButtons
-          handleClose={handleClose}
-          handleConfirm={handleConfirm}
-        />
+        <ActionButtons handleClose={handleClose} handleConfirm={handleConfirm} />
       </S.Content>
     </S.Container>,
     document.querySelector('#root')
@@ -55,9 +49,7 @@ function ActionButtons({ handleClose, handleConfirm }: ActionButtonProps) {
   return (
     <S.ButtonContainer>
       <S.CloseButton onClick={handleClose}>닫기</S.CloseButton>
-      {handleConfirm && (
-        <S.ConfirmButton onClick={handleConfirm}>확인</S.ConfirmButton>
-      )}
+      {handleConfirm && <S.ConfirmButton onClick={handleConfirm}>확인</S.ConfirmButton>}
     </S.ButtonContainer>
   );
 }

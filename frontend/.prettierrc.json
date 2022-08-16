@@ -1,8 +1,21 @@
 {
   "tabWidth": 2,
-  "printWidth": 80,
+  "printWidth": 90,
   "singleQuote": true,
   "endOfLine": "auto",
   "arrowParens": "always",
-  "trailingComma": "es5"
+  "trailingComma": "es5",
+  "importOrder": [
+    "@/App",
+    "^@/pages/(.*)$",
+    "^@/components/common(.*)$",
+    "^@/components(.*)$",
+    "^@/contexts(.*)$",
+    "^@/hooks/(.*)$",
+    "^@/constants(.*)$",
+    "^@/style(.*)$",
+    "^@/assets(.*)$",
+    "^@/mocks(.*)$"
+  ],
+  "importOrderSeparation": true
 }

@@ -73,18 +73,16 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
         String token = loginResponse.getToken();
+        LoginMemberResponse loginMemberResponse = loginResponse.getMember();
 
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        Member expectedMember = CORINNE.추가정보를_입력하여_생성(loginMemberResponse.getId(), JUNIOR, BACKEND);
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", token);
 
         // then
-        Member expectedMember = 응답을_회원으로_변환한다(loginResponse.getMember());
-        expectedMember.updateCareerLevel(JUNIOR);
-        expectedMember.updateJobType(BACKEND);
-
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
@@ -163,7 +161,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
-        Member member = CORINNE.대표장비를_추가해서_생성(memberId, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
         MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
                 member);
         assertAll(
@@ -198,7 +196,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
-        Member member = CORINNE.대표장비를_추가해서_생성(memberId, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
         MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
                 member);
 
@@ -236,7 +234,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
-        Member member = CORINNE.대표장비를_추가해서_생성(memberId, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
         MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
                 member);
         assertAll(
@@ -276,7 +274,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
-        Member member = CORINNE.대표장비를_추가해서_생성(memberId, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
         MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
                 member);
         assertAll(

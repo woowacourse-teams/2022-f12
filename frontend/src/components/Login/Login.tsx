@@ -1,29 +1,26 @@
-import Loading from '@/components/common/Loading/Loading';
-import ROUTES from '@/constants/routes';
-import { UserDataContext } from '@/contexts/LoginContextProvider';
-import useAuth from '@/hooks/useAuth';
-import useModal from '@/hooks/useModal';
 import { useContext, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+import Loading from '@/components/common/Loading/Loading';
+
+import { UserDataContext } from '@/contexts/LoginContextProvider';
+
+import useAuth from '@/hooks/useAuth';
+
+import ROUTES from '@/constants/routes';
+import SEARCH_PARAMS from '@/constants/searchParams';
+
 function Login() {
   const { login } = useAuth();
-  const { showAlert } = useModal();
   const [searchParam] = useSearchParams();
   const userData = useContext(UserDataContext);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const githubCode = searchParam.get('code');
-    if (!githubCode) {
-      showAlert('로그인을 취소했거나 오류가 발생했습니다.');
-      navigate(ROUTES.HOME);
-      return;
-    }
+    const githubCode = searchParam.get(SEARCH_PARAMS.CODE);
 
-    login(searchParam.get('code')).catch(() => {
-      showAlert('로그인에 실패했습니다. 잠시 후 다시 시도해주세요.');
+    login(githubCode).catch(() => {
       navigate(ROUTES.HOME);
     });
   }, []);

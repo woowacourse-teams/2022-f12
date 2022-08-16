@@ -1,25 +1,14 @@
 package com.woowacourse.f12.domain.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.product.Product;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
 import lombok.Builder;
 import lombok.Getter;
-import org.hibernate.annotations.BatchSize;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "member")
@@ -50,16 +39,15 @@ public class Member {
     private JobType jobType;
 
     @Builder.Default
-    @BatchSize(size = 150)
-    @OneToMany(mappedBy = "member")
-    private List<InventoryProduct> inventoryProducts = new ArrayList<>();
+    @Embedded
+    private InventoryProducts inventoryProducts = new InventoryProducts();
 
     protected Member() {
     }
 
     private Member(final Long id, final String gitHubId, final String name, final String imageUrl,
                    final CareerLevel careerLevel, final JobType jobType,
-                   final List<InventoryProduct> inventoryProducts) {
+                   final InventoryProducts inventoryProducts) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
@@ -69,27 +57,47 @@ public class Member {
         this.inventoryProducts = inventoryProducts;
     }
 
-    public void updateName(final String name) {
-        this.name = name;
+    public void update(final Member updateMember) {
+        updateName(updateMember.name);
+        updateImageUrl(updateMember.imageUrl);
+        updateCareerLevel(updateMember.careerLevel);
+        updateJobType(updateMember.jobType);
     }
 
-    public void updateCareerLevel(final CareerLevel careerLevel) {
-        this.careerLevel = careerLevel;
+    private void updateName(final String name) {
+        if (Objects.nonNull(name)) {
+            this.name = name;
+        }
     }
 
-    public void updateJobType(final JobType jobType) {
-        this.jobType = jobType;
+    private void updateImageUrl(String imageUrl) {
+        if (Objects.nonNull(imageUrl)) {
+            this.imageUrl = imageUrl;
+        }
+    }
+
+    private void updateCareerLevel(final CareerLevel careerLevel) {
+        if (Objects.nonNull(careerLevel)) {
+            this.careerLevel = careerLevel;
+        }
+    }
+
+    private void updateJobType(final JobType jobType) {
+        if (Objects.nonNull(jobType)) {
+            this.jobType = jobType;
+        }
     }
 
     public boolean isRegisterCompleted() {
         return Objects.nonNull(this.careerLevel) && Objects.nonNull(this.jobType);
     }
 
-    public List<Product> getProfileProducts() {
-        return this.inventoryProducts.stream()
-                .filter(InventoryProduct::isSelected)
-                .map(InventoryProduct::getProduct)
-                .collect(Collectors.toList());
+    public List<InventoryProduct> getProfileProduct() {
+        return this.inventoryProducts.getProfileProducts();
+    }
+
+    public boolean contains(final InventoryProducts inventoryProducts) {
+        return this.inventoryProducts.contains(inventoryProducts);
     }
 
     @Override

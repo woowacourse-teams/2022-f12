@@ -563,7 +563,6 @@ class ReviewServiceTest {
     @Test
     void 인벤토리_아이디로_리뷰를_조회할때_리뷰가_존재하지_않는다면_예외가_발생한다() {
         //given
-        Review review = ReviewFixtures.REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L));
         given(inventoryProductRepository.findById(any(Long.class)))
                 .willReturn(Optional.of(SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L))));
         given(reviewRepository.findByMemberAndProduct(any(Member.class), any(Product.class)))

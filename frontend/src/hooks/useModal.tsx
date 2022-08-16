@@ -1,8 +1,6 @@
-import {
-  GetConfirmContext,
-  ShowAlertContext,
-} from '@/contexts/ModalContextProvider';
 import { useContext } from 'react';
+
+import { GetConfirmContext, ShowAlertContext } from '@/contexts/ModalContextProvider';
 
 function useModal() {
   const showAlert = useContext(ShowAlertContext);
