@@ -4,7 +4,7 @@ import F12Load from '@/assets/F12LOAD.gif';
 
 const Container = styled.section`
   width: 100%;
-  height: 25rem;
+  height: 20rem;
   display: flex;
   justify-content: center;
   align-items: center;
