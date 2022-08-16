@@ -77,15 +77,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
-
-        Member expectedMember = Member.builder()
-                .id(loginMemberResponse.getId())
-                .gitHubId(loginMemberResponse.getGitHubId())
-                .name(loginMemberResponse.getName())
-                .imageUrl(loginMemberResponse.getImageUrl())
-                .careerLevel(JUNIOR)
-                .jobType(BACKEND)
-                .build();
+        Member expectedMember = CORINNE.추가정보를_입력하여_생성(loginMemberResponse.getId(), JUNIOR, BACKEND);
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", token);
