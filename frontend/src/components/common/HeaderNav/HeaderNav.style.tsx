@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
@@ -53,5 +52,3 @@ export const TransparentButton = styled.button`
   border: none;
   font-size: 1rem;
 `;
-
-export const ProfileLink = styled(Link)``;
