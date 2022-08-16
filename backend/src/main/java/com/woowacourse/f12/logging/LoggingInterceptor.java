@@ -1,4 +1,4 @@
-package com.woowacourse.f12.presentation;
+package com.woowacourse.f12.logging;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,21 +14,28 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class LoggingInterceptor implements HandlerInterceptor {
 
-    private static final String REQUEST_LOG_FORMAT = "METHOD: {}, URL : {}, AUTHORIZATION : {}, BODY : {}";
-    private static final String RESPONSE_LOG_FORMAT = "STATUS_CODE: {}, URL : {}, BODY : {}, TIME_TAKEN : {}";
+    private static final String REQUEST_LOG_FORMAT = "METHOD: {}, URL: {}, AUTHORIZATION: {}, BODY: {}";
+    private static final String RESPONSE_LOG_FORMAT =
+            "STATUS_CODE: {}, METHOD: {}, URL: {}, QUERY_COUNT: {}, TIME_TAKEN: {}ms, BODY: {}";
+    private static final String QUERY_COUNT_WARNING_LOG_FORMAT = "쿼리가 {}번 이상 실행되었습니다.";
 
-    private final StopWatch requestLogTimer;
+    private static final int QUERY_COUNT_WARNING_STANDARD = 10;
 
-    public LoggingInterceptor(final StopWatch requestLogTimer) {
-        this.requestLogTimer = requestLogTimer;
+    private final StopWatch apiTimer;
+    private final ApiQueryCounter apiQueryCounter;
+
+    public LoggingInterceptor(final StopWatch apiTimer, final ApiQueryCounter apiQueryCounter) {
+        this.apiTimer = apiTimer;
+        this.apiQueryCounter = apiQueryCounter;
     }
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
                              final Object handler) {
-        requestLogTimer.start();
+        apiTimer.start();
 
         final String body = new String(new ContentCachingRequestWrapper(request).getContentAsByteArray());
+
         log.info(REQUEST_LOG_FORMAT, request.getMethod(), request.getRequestURI(), request.getHeader("Authorization"),
                 body);
         return true;
@@ -37,11 +44,16 @@ public class LoggingInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response,
                                 final Object handler, final Exception ex) {
-        requestLogTimer.stop();
+        apiTimer.stop();
 
         final ContentCachingResponseWrapper contentCachingResponseWrapper = new ContentCachingResponseWrapper(response);
         final String responseBody = new String(contentCachingResponseWrapper.getContentAsByteArray());
-        log.info(RESPONSE_LOG_FORMAT, response.getStatus(), request.getRequestURI(), responseBody,
-                requestLogTimer.getLastTaskTimeMillis());
+        final int queryCount = apiQueryCounter.getCount();
+
+        log.info(RESPONSE_LOG_FORMAT, response.getStatus(), request.getMethod(), request.getRequestURI(),
+                queryCount, apiTimer.getLastTaskTimeMillis(), responseBody);
+        if (queryCount >= QUERY_COUNT_WARNING_STANDARD) {
+            log.warn(QUERY_COUNT_WARNING_LOG_FORMAT, QUERY_COUNT_WARNING_STANDARD);
+        }
     }
 }

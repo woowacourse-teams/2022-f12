@@ -30,7 +30,7 @@ import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
-import com.woowacourse.f12.presentation.ControllerTest;
+import com.woowacourse.f12.presentation.PresentationTest;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(ProductController.class)
-class ProductControllerTest extends ControllerTest {
+class ProductPresentationTest extends PresentationTest {
 
     @Autowired
     private MockMvc mockMvc;

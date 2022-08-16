@@ -10,7 +10,10 @@ import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import com.woowacourse.f12.presentation.ControllerTest;
+import com.woowacourse.f12.presentation.PresentationTest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,10 +26,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
@@ -48,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
-class MemberControllerTest extends ControllerTest {
+class MemberPresentationTest extends PresentationTest {
 
     @Autowired
     private MockMvc mockMvc;

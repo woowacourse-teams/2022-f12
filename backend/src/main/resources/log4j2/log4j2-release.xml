@@ -3,7 +3,7 @@
     <Properties>
         <Property name="log">logs/log/log</Property>
         <Property name="db-log">logs/db/db</Property>
-        <Property name="log-pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %t %class{36}.%M L:%L %m%n</Property>
+        <Property name="log-pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %t L:%L %m%n</Property>
         <Property name="file-pattern">%d{yyyy-MM-dd}-%i.log.gz</Property>
     </Properties>
     <Appenders>
