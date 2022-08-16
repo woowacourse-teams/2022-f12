@@ -1,5 +1,30 @@
 package com.woowacourse.f12.documentation.member;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.woowacourse.f12.application.auth.JwtProvider;
+import com.woowacourse.f12.application.member.MemberService;
+import com.woowacourse.f12.documentation.Documentation;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.response.member.MemberPageResponse;
+import com.woowacourse.f12.dto.response.member.MemberResponse;
+import com.woowacourse.f12.presentation.member.MemberController;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.List;
+
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
@@ -14,32 +39,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woowacourse.f12.application.auth.JwtProvider;
-import com.woowacourse.f12.application.member.MemberService;
-import com.woowacourse.f12.documentation.Documentation;
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.dto.request.member.MemberRequest;
-import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
-import com.woowacourse.f12.dto.response.member.MemberPageResponse;
-import com.woowacourse.f12.dto.response.member.MemberResponse;
-import com.woowacourse.f12.presentation.member.MemberController;
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.SliceImpl;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-
 @WebMvcTest(MemberController.class)
-public class MemberDocumentation extends Documentation {
+class MemberDocumentation extends Documentation {
 
     @Autowired
     private MockMvc mockMvc;

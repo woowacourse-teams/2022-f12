@@ -33,7 +33,7 @@ import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class ReviewAcceptanceTest extends AcceptanceTest {
+class ReviewAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private ProductRepository productRepository;
