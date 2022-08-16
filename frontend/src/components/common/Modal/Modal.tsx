@@ -6,9 +6,17 @@ import * as S from '@/components/common/Modal/Modal.style';
 type Props = {
   handleClose: () => void;
   handleConfirm?: () => void;
+  handleUnmount?: () => void;
+  animationTrigger?: boolean;
 };
 
-function Modal({ handleClose, handleConfirm, children }: PropsWithChildren<Props>) {
+function Modal({
+  handleClose,
+  handleConfirm,
+  handleUnmount,
+  animationTrigger = true,
+  children,
+}: PropsWithChildren<Props>) {
   const [scrollOffset, setScrollOffset] = useState(0);
 
   useEffect(() => {
@@ -21,9 +29,9 @@ function Modal({ handleClose, handleConfirm, children }: PropsWithChildren<Props
   }, []);
 
   return createPortal(
-    <S.Container scrollOffset={scrollOffset}>
-      <S.Backdrop onClick={handleClose} />
-      <S.Content>
+    <S.Container scrollOffset={scrollOffset} onTransitionEnd={handleUnmount}>
+      <S.Backdrop onClick={handleClose} animationTrigger={animationTrigger} />
+      <S.Content animationTrigger={animationTrigger}>
         {children}
         <ActionButtons handleClose={handleClose} handleConfirm={handleConfirm} />
       </S.Content>

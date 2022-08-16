@@ -1,6 +1,7 @@
 import { createContext, PropsWithChildren, useState } from 'react';
 
 import Modal from '@/components/common/Modal/Modal';
+import useAnimation from '@/hooks/useAnimation';
 
 export const ShowAlertContext = createContext<(message: string) => Promise<void>>(null);
 export const GetConfirmContext =
@@ -13,6 +14,11 @@ function ModalContextProvider({ children }: PropsWithChildren) {
   const [message, setMessage] = useState('');
   const [alertOpen, setAlertOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const [shouldRenderAlert, handleAlertUnmount, alertAnimationTrigger] =
+    useAnimation(alertOpen);
+  const [shouldRenderConfirm, handleConfirmUnmount, confirmAnimationTrigger] =
+    useAnimation(confirmOpen);
 
   const showAlert = (message: string): Promise<void> => {
     setMessage(message);
@@ -33,6 +39,14 @@ function ModalContextProvider({ children }: PropsWithChildren) {
     setConfirmOpen(true);
   };
 
+  const getConfirm: (message: string) => Promise<boolean> = (message) => {
+    showConfirm(message);
+
+    return new Promise((resolve) => {
+      resolveConfirm = resolve;
+    });
+  };
+
   const handleConfirmClose = () => {
     resolveConfirm(false);
     setConfirmOpen(false);
@@ -43,25 +57,26 @@ function ModalContextProvider({ children }: PropsWithChildren) {
     setConfirmOpen(false);
   };
 
-  const getConfirm: (message: string) => Promise<boolean> = (message) => {
-    showConfirm(message);
-
-    return new Promise((resolve) => {
-      resolveConfirm = resolve;
-    });
-  };
-
   return (
     <ShowAlertContext.Provider value={showAlert}>
       <GetConfirmContext.Provider value={getConfirm}>
         {children}
-        {alertOpen && (
-          <Modal handleClose={handleAlertClose}>
+        {shouldRenderAlert && (
+          <Modal
+            handleClose={handleAlertClose}
+            handleUnmount={handleAlertUnmount}
+            animationTrigger={alertAnimationTrigger}
+          >
             <Modal.Body>{message}</Modal.Body>
           </Modal>
         )}
-        {confirmOpen && (
-          <Modal handleClose={handleConfirmClose} handleConfirm={handleConfirm}>
+        {shouldRenderConfirm && (
+          <Modal
+            handleClose={handleConfirmClose}
+            handleConfirm={handleConfirm}
+            handleUnmount={handleConfirmUnmount}
+            animationTrigger={confirmAnimationTrigger}
+          >
             <Modal.Body>{message}</Modal.Body>
           </Modal>
         )}
