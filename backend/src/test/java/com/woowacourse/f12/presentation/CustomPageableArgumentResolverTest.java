@@ -26,7 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ProductController.class)
-public class CustomPageableArgumentResolverTest extends ControllerTest {
+public class CustomPageableArgumentResolverTest extends PresentationTest {
 
     @Autowired
     private MockMvc mockMvc;

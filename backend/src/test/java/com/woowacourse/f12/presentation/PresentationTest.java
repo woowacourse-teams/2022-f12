@@ -12,6 +12,6 @@ import org.springframework.restdocs.RestDocumentationExtension;
 @AutoConfigureRestDocs
 @ExtendWith(RestDocumentationExtension.class)
 @Import({AuthTokenExtractor.class, JwtProvider.class, RestDocsConfig.class, LoggingConfig.class, ApiQueryCounter.class})
-public class ControllerTest {
+public class PresentationTest {
 
 }

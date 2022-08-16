@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.presentation.ControllerTest;
+import com.woowacourse.f12.presentation.PresentationTest;
 import com.woowacourse.f12.presentation.review.ReviewController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ReviewController.class)
-class AuthInterceptorTest extends ControllerTest {
+class AuthInterceptorTest extends PresentationTest {
 
     @Autowired
     private MockMvc mockMvc;

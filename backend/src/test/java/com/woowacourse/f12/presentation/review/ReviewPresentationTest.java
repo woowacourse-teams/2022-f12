@@ -43,7 +43,7 @@ import com.woowacourse.f12.exception.forbidden.NotAuthorException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
-import com.woowacourse.f12.presentation.ControllerTest;
+import com.woowacourse.f12.presentation.PresentationTest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +61,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(ReviewController.class)
-class ReviewControllerTest extends ControllerTest {
+class ReviewPresentationTest extends PresentationTest {
 
     private static final long PRODUCT_ID = 1L;
 
@@ -76,7 +76,7 @@ class ReviewControllerTest extends ControllerTest {
     @MockBean
     private JwtProvider jwtProvider;
 
-    public ReviewControllerTest() {
+    public ReviewPresentationTest() {
         this.objectMapper = new ObjectMapper();
     }
 

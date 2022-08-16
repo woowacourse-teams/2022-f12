@@ -27,7 +27,7 @@ import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsRespon
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
-import com.woowacourse.f12.presentation.ControllerTest;
+import com.woowacourse.f12.presentation.PresentationTest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(InventoryProductController.class)
-class InventoryProductControllerTest extends ControllerTest {
+class InventoryProductPresentationTest extends PresentationTest {
 
     @Autowired
     private MockMvc mockMvc;

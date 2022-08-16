@@ -12,7 +12,7 @@ import com.woowacourse.f12.application.auth.AuthService;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
 import com.woowacourse.f12.exception.internalserver.GitHubServerException;
-import com.woowacourse.f12.presentation.ControllerTest;
+import com.woowacourse.f12.presentation.PresentationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(AuthController.class)
-class AuthControllerTest extends ControllerTest {
+class AuthPresentationTest extends PresentationTest {
 
     @Autowired
     private MockMvc mockMvc;
