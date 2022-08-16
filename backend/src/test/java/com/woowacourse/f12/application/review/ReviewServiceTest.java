@@ -41,8 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -354,12 +354,15 @@ class ReviewServiceTest {
     }
 
     @Test
-    void 로그인한_회원이_리뷰_작성자와_일치하면_삭제한다() {
+    void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰와_인벤토리_제품을_삭제한다() {
         // given
         Long reviewId = 1L;
         Long memberId = 1L;
+        Long productId = 1L;
         Member member = CORINNE.생성(memberId);
-        Review review = REVIEW_RATING_5.작성(reviewId, KEYBOARD_1.생성(), member);
+        Product product = KEYBOARD_1.생성(productId);
+        Review review = REVIEW_RATING_5.작성(reviewId, product, member);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, product);
 
         given(memberRepository.findById(memberId))
                 .willReturn(Optional.of(member));
@@ -367,13 +370,19 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(review));
         willDoNothing().given(reviewRepository)
                 .delete(any(Review.class));
+        given(inventoryProductRepository.findByMemberAndProduct(member, product))
+                .willReturn(Optional.of(inventoryProduct));
+        willDoNothing().given(inventoryProductRepository)
+                .delete(any(InventoryProduct.class));
 
         // when, then
         assertAll(
                 () -> assertDoesNotThrow(() -> reviewService.delete(reviewId, memberId)),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId),
-                () -> verify(reviewRepository).delete(review)
+                () -> verify(reviewRepository).delete(review),
+                () -> verify(inventoryProductRepository).findByMemberAndProduct(member, product),
+                () -> verify(inventoryProductRepository).delete(inventoryProduct)
         );
     }
 
@@ -442,6 +451,36 @@ class ReviewServiceTest {
     }
 
     @Test
+    void 삭제하려는_리뷰에_해당하는_인벤토리가_존재하지_않으면_예외를_반환한다() {
+        // given
+        Long memberId = 1L;
+        Long reviewId = 1L;
+        Long productId = 1L;
+        Member member = CORINNE.생성(memberId);
+        Product product = KEYBOARD_1.생성(productId);
+        Review review = REVIEW_RATING_5.작성(reviewId, product, member);
+        given(memberRepository.findById(memberId))
+                .willReturn(Optional.of(member));
+        given(reviewRepository.findById(reviewId))
+                .willReturn(Optional.of(review));
+        willDoNothing().given(reviewRepository)
+                .delete(any(Review.class));
+        given(inventoryProductRepository.findByMemberAndProduct(member, product))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> reviewService.delete(reviewId, memberId))
+                        .isExactlyInstanceOf(InventoryProductNotFoundException.class),
+                () -> verify(memberRepository).findById(memberId),
+                () -> verify(reviewRepository).findById(reviewId),
+                () -> verify(reviewRepository).delete(any(Review.class)),
+                () -> verify(inventoryProductRepository).findByMemberAndProduct(member, product),
+                () -> verify(inventoryProductRepository, times(0)).delete(any(InventoryProduct.class))
+        );
+    }
+
+    @Test
     void 회원_아이디로_회원이_작성한_리뷰_목록을_조회한다() {
         // given
         Member corinne = CORINNE.생성(1L);
@@ -463,7 +502,7 @@ class ReviewServiceTest {
                         .containsExactly(ReviewWithProductResponse.from(review2),
                                 ReviewWithProductResponse.from(review1)),
                 () -> verify(memberRepository).existsById(corinne.getId()),
-                () -> verify(reviewRepository).findPageByMemberId(eq(corinne.getId()), eq(pageable))
+                () -> verify(reviewRepository).findPageByMemberId(corinne.getId(), pageable)
         );
     }
 

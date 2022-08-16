@@ -48,8 +48,7 @@ class ProductRepositoryTest {
         Member member = memberRepository.save(CORINNE.생성());
         리뷰_저장(REVIEW_RATING_4.작성(product, member));
         리뷰_저장(REVIEW_RATING_5.작성(product, member));
-        entityManager.flush();
-        entityManager.refresh(product);
+        entityManager.clear();
 
         // when
         Product savedProduct = productRepository.findById(product.getId())

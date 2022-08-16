@@ -46,8 +46,7 @@ public class ReviewService {
     @Transactional
     public Long saveReviewAndInventoryProduct(final Long productId, final Long memberId,
                                               final ReviewRequest reviewRequest) {
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+        final Member member = findMemberById(memberId);
         validateRegisterCompleted(member);
         final Product product = productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
@@ -112,17 +111,28 @@ public class ReviewService {
 
     @Transactional
     public void delete(final Long reviewId, final Long memberId) {
-        final Review target = findTarget(reviewId, memberId);
-        reviewRepository.delete(target);
+        final Review review = findTarget(reviewId, memberId);
+        reviewRepository.delete(review);
+        final InventoryProduct inventoryProduct = inventoryProductRepository.findByMemberAndProduct(review.getMember(), review.getProduct())
+                .orElseThrow(InventoryProductNotFoundException::new);
+        inventoryProductRepository.delete(inventoryProduct);
     }
 
     private Review findTarget(final Long reviewId, final Long memberId) {
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
-        final Review target = reviewRepository.findById(reviewId)
-                .orElseThrow(ReviewNotFoundException::new);
+        final Member member = findMemberById(memberId);
+        final Review target = findReviewById(reviewId);
         validateAuthor(member, target);
         return target;
+    }
+
+    private Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+    }
+
+    private Review findReviewById(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(ReviewNotFoundException::new);
     }
 
     private void validateAuthor(final Member member, final Review target) {

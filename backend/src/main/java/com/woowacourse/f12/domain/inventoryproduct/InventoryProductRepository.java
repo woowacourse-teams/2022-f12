@@ -7,10 +7,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface InventoryProductRepository extends JpaRepository<InventoryProduct, Long> {
 
     List<InventoryProduct> findByMemberId(Long memberId);
+
+    Optional<InventoryProduct> findByMemberAndProduct(Member member, Product product);
 
     boolean existsByMemberAndProduct(Member member, Product product);
 

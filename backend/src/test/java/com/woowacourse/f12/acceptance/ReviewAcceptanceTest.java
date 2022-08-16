@@ -1,11 +1,26 @@
 package com.woowacourse.f12.acceptance;
 
+import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.domain.product.ProductRepository;
+import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.request.review.ReviewRequest;
+import com.woowacourse.f12.dto.response.ExceptionResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
+import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
+import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
+import com.woowacourse.f12.dto.response.product.ProductResponse;
+import com.woowacourse.f12.dto.response.review.*;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PUT_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.*;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
 import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
@@ -18,28 +33,7 @@ import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.woowacourse.f12.domain.product.Product;
-import com.woowacourse.f12.domain.product.ProductRepository;
-import com.woowacourse.f12.dto.request.member.MemberRequest;
-import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.ExceptionResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.dto.response.product.ProductResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
-import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-
-public class ReviewAcceptanceTest extends AcceptanceTest {
+class ReviewAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private ProductRepository productRepository;
@@ -192,7 +186,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰를_삭제한다() {
+    void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰를_삭제하고_인벤토리_장비도_삭제한다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
@@ -207,11 +201,15 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 "/api/v1/reviews?page=0&size=2&sort=createdAt,desc")
                 .as(ReviewWithAuthorAndProductPageResponse.class)
                 .getItems();
+        List<InventoryProductResponse> inventoryProducts = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/inventoryProducts", token)
+                .as(InventoryProductsResponse.class)
+                .getItems();
 
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
-                () -> assertThat(reviews).isEmpty()
+                () -> assertThat(reviews).isEmpty(),
+                () -> assertThat(inventoryProducts).isEmpty()
         );
     }
 
