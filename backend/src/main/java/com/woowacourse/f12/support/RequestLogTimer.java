@@ -1,24 +1,29 @@
 package com.woowacourse.f12.support;
 
 import com.woowacourse.f12.exception.internalserver.IllegalRequestLogTimerState;
+import java.time.Clock;
 import java.util.Objects;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
-@Component
 @RequestScope
 public class RequestLogTimer {
+
+    private final Clock clock;
 
     private Long startTime;
     private Long endTime;
 
+    public RequestLogTimer(final Clock clock) {
+        this.clock = clock;
+    }
+
     public void start() {
-        this.startTime = System.currentTimeMillis();
+        this.startTime = clock.millis();
     }
 
     public void stop() {
         validateTime(startTime);
-        this.endTime = System.currentTimeMillis();
+        this.endTime = clock.millis();
     }
 
     public Long getSpentTime() {
