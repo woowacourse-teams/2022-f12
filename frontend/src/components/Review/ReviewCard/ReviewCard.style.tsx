@@ -17,7 +17,6 @@ export const Container = styled.article<{ index: number }>`
         transform: translateY(-10px);
         scale: 1.1;
         opacity: 0;
-        box-shadow: 5px 5px 10px #00000088;
       }
 
       ${index * 5}% {
