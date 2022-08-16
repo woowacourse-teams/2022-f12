@@ -1,16 +1,18 @@
 import { rest } from 'msw';
+
 import { BASE_URL, ENDPOINTS } from '@/constants/api';
+
 import {
   InventoryProducts,
   members,
-  myData,
-  otherData,
+  myUserData,
+  otherUserData,
   products,
   reviewsWithOutProduct,
   reviewsWithProduct,
 } from '@/mocks/data';
 
-// 상품 목록 조회
+// 제품 목록 조회
 const getKeyboards = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
@@ -24,19 +26,16 @@ const getKeyboards = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
-// 상품 상세 조회
+// 제품 상세 조회
 const getKeyboard = (req, res, ctx) => {
   const { id } = req.params;
 
-  const response = products.find(
-    ({ id: productId }) => productId === Number(id)
-  );
+  const response = products.find(({ id: productId }) => productId === Number(id));
 
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
-// 상품 사용자 통계 조회
-// 상품 상세 조회
+// 제품 사용자 통계 조회
 const getStatistics = (req, res, ctx) => {
   const response = {
     careerLevel: {
@@ -70,7 +69,7 @@ const getReviews = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
-// 상품 별 리뷰 목록 조회
+// 제품 별 리뷰 목록 조회
 const getReviewsByProductId = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
@@ -148,11 +147,8 @@ const patchInventoryProducts = (req, res, ctx) => {
   if (token === undefined) {
     return res(ctx.status(401));
   }
-  const { selectedInventoryProductId, unselectedInventoryProductId } = req.body;
-  if (
-    selectedInventoryProductId === undefined &&
-    unselectedInventoryProductId === undefined
-  ) {
+  const { selectedInventoryProductIds } = req.body;
+  if (selectedInventoryProductIds === undefined) {
     return res(ctx.status(400));
   }
   return res(ctx.status(200));
@@ -163,7 +159,7 @@ const getMyInfo = (req, res, ctx) => {
   if (token === undefined) {
     return res(ctx.status(401));
   }
-  return res(ctx.status(200), ctx.json(myData), ctx.delay());
+  return res(ctx.status(200), ctx.json(myUserData), ctx.delay());
 };
 
 // 추가 정보 입력
@@ -176,7 +172,7 @@ const submitAdditionalInfo = (req, res, ctx) => {
 };
 
 const getOtherMemberInfo = (req, res, ctx) => {
-  return res(ctx.json(otherData));
+  return res(ctx.json(otherUserData));
 };
 
 const searchMember = (req, res, ctx) => {
@@ -210,10 +206,7 @@ export const handlers = [
   rest.patch(`${BASE_URL}${ENDPOINTS.ME}`, submitAdditionalInfo),
   // 아래 핸들러 순서 유의미 => getOtherMemberInfo보다 아래에 위치하면 요청 matching에서 오류 발생
   rest.get(`${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`, getInventoryProducts),
-  rest.patch(
-    `${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`,
-    patchInventoryProducts
-  ),
+  rest.patch(`${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`, patchInventoryProducts),
 
   rest.get(`${BASE_URL}${ENDPOINTS.MEMBERS}`, searchMember),
   rest.get(`${BASE_URL}${ENDPOINTS.MEMBERS}/:memberId`, getOtherMemberInfo),
@@ -230,15 +223,9 @@ export const handlers = [
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
     postReviewByProductId
   ),
-  rest.get(
-    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
-    getReviewsByProductId
-  ),
+  rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`, getReviewsByProductId),
   rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS}`, getReviews),
-  rest.put(
-    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
-    updateReviewByReviewId
-  ),
+  rest.put(`${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`, updateReviewByReviewId),
   rest.delete(
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
     deleteReviewByReviewId

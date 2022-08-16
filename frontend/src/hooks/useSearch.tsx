@@ -7,16 +7,13 @@ type Props = {
   size: string;
 };
 
-type ReturnType<T> = {
+type Return<T> = DataFetchStatus & {
   result: T[];
-  isLoading: boolean;
-  isReady: boolean;
-  isError: boolean;
   getNextPage: () => void;
   refetch: () => void;
 };
 
-function useSearch<T>({ url, query, filter, size }: Props): ReturnType<T> {
+function useSearch<T>({ url, query, filter, size }: Props): Return<T> {
   const params = { query, ...filter, size };
   const {
     data: result,

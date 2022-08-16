@@ -1,14 +1,23 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import * as S from '@/pages/Products/Products.style';
-import ProductListSection from '@/components/ProductListSection/ProductListSection';
-import Select from '@/components/common/Select/Select';
-import { useLocation, useSearchParams } from 'react-router-dom';
-import { CATEGORY } from '@/components/common/CategoryNav/CategoryNav';
-import useSearch from '@/hooks/useSearch';
-import { ENDPOINTS } from '@/constants/api';
+
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
 import SearchBar from '@/components/common/SearchBar/SearchBar';
-import SearchFilter from '@/components/SearchFilter/SearchFilter';
+import SearchFilter from '@/components/common/SearchFilter/SearchFilter';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
+import Select from '@/components/common/Select/Select';
+
+import ProductListSection from '@/components/Product/ProductListSection/ProductListSection';
+
+import useSearch from '@/hooks/useSearch';
+import useUrlSyncState from '@/hooks/useUrlSyncState';
+
+import { ENDPOINTS } from '@/constants/api';
+import TITLE from '@/constants/header';
+import { CATEGORIES } from '@/constants/product';
+import SEARCH_PARAMS from '@/constants/searchParams';
 
 type Option = { value: string; text: string };
 
@@ -27,30 +36,10 @@ const options: ProductSortOption[] = [
 
 const DefaultSort = options[1];
 
-type CATEGORY = typeof CATEGORY;
-
-const categories = {
-  keyboard: '키보드',
-  mouse: '마우스',
-  monitor: '모니터',
-  stand: '거치대',
-  software: '소프트웨어',
-} as const;
-
 function Products() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
-
-  const [sort, setSort] = useState<string>(
-    // ,(쉼표)의 경우 param에 포함되면 encode, 상태로 사용하려면 decode 필요
-    searchParams.get('sort')
-      ? decodeURIComponent(searchParams.get('sort'))
-      : DefaultSort.value
-  );
-  const [keyword, setKeyword] = useState<string>(searchParams.get('keyword'));
-  const [category, setCategory] = useState<string>(
-    searchParams.get('category')
-  );
+  const [keyword, setKeyword] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
+  const [category, setCategory] = useUrlSyncState(SEARCH_PARAMS.CATEGORY);
+  const [sort, setSort] = useUrlSyncState(SEARCH_PARAMS.SORT, DefaultSort.value);
 
   const {
     result: products,
@@ -69,42 +58,9 @@ function Products() {
   });
 
   const title = useMemo(
-    () =>
-      category in CATEGORY ? CATEGORY[category as keyof CATEGORY] : '모든 상품',
+    () => (category in CATEGORIES ? CATEGORIES[category as Category] : TITLE.ALL_PRODUCT),
     [category]
   );
-
-  // setState가 아니라 뒤로가기 등 상황에서 UI 동기화
-  // 컴포넌트가 navigate 되지 않아 처리해주지 않으면 초기값 지정이 자동으로 되지 않음
-  useEffect(() => {
-    setCategory(searchParams.get('category'));
-    setSort(searchParams.get('sort') || DefaultSort.value);
-    setKeyword(searchParams.get('keyword'));
-  }, [location.key]);
-
-  const updateSearchParam = (key: string, value: string) => {
-    if (searchParams.get(key) === value) return;
-
-    if (value === null) {
-      searchParams.delete(key);
-    } else {
-      searchParams.set(key, value);
-    }
-
-    setSearchParams(searchParams);
-  };
-
-  useEffect(() => {
-    updateSearchParam('category', category);
-  }, [category]);
-
-  useEffect(() => {
-    updateSearchParam('sort', sort);
-  }, [sort]);
-
-  useEffect(() => {
-    updateSearchParam('keyword', keyword);
-  }, [keyword]);
 
   return (
     <>
@@ -114,18 +70,21 @@ function Products() {
           title={'카테고리'}
           value={category}
           setValue={setCategory}
-          options={categories}
+          options={CATEGORIES}
         />
       </S.SearchBarWrapper>
-      <ProductListSection
-        title={title}
-        data={!!products && products}
-        getNextPage={getNextPage}
-        addOn={<Select value={sort} setValue={setSort} options={options} />}
-        isLoading={isLoading}
-        isReady={isReady}
-        isError={isError}
-      />
+      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
+        <SectionHeader title={title}>
+          <Select value={sort} setValue={setSort} options={options} />
+        </SectionHeader>
+        <ProductListSection
+          title={title}
+          data={products}
+          getNextPage={getNextPage}
+          isLoading={isLoading}
+          isError={isError}
+        />
+      </AsyncWrapper>
     </>
   );
 }

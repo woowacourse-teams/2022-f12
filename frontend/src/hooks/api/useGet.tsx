@@ -1,4 +1,5 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
+
 import useAxios from '@/hooks/api/useAxios';
 import useError from '@/hooks/useError';
 
@@ -22,7 +23,7 @@ function useGet<T>({
       });
       return data;
     } catch (error) {
-      handleError(error as Error);
+      await handleError(error as Error);
     }
   };
 

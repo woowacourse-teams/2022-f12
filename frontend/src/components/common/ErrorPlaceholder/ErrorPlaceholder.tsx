@@ -1,17 +1,17 @@
 import { Player } from '@lottiefiles/react-lottie-player';
 
+import LOTTIE_FILES from '@/constants/lottieFiles';
+
 function ErrorPlaceholder() {
   return (
     <>
       <Player
         autoplay
         loop
-        src="https://assets2.lottiefiles.com/datafiles/AP6eAJ4K8cbfOl9/data.json"
+        src={LOTTIE_FILES.ERROR}
         style={{ height: '200px', width: '200px' }}
       />
-      <div style={{ width: '100%', textAlign: 'center' }}>
-        오류가 발생했어요..
-      </div>
+      <div style={{ width: '100%', textAlign: 'center' }}>오류가 발생했어요..</div>
     </>
   );
 }

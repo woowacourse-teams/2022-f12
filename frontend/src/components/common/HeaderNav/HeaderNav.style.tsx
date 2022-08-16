@@ -33,7 +33,7 @@ export const Nav = styled.nav`
   }
 `;
 
-export const FlexLeftUl = styled.ul`
+export const FlexLeftWrapper = styled.ul`
   width: 90%;
   height: 3rem;
   margin: 0 auto;
@@ -42,11 +42,11 @@ export const FlexLeftUl = styled.ul`
   gap: 2rem;
 `;
 
-export const FlexRightUl = styled(FlexLeftUl)`
+export const FlexRightWrapper = styled(FlexLeftWrapper)`
   justify-content: flex-end;
 `;
 
-export const LoginButton = styled.a``;
+export const LoginLink = styled.a``;
 
 export const TransparentButton = styled.button`
   background-color: transparent;
