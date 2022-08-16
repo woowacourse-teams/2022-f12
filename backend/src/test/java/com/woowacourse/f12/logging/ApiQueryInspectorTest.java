@@ -15,6 +15,9 @@ class ApiQueryInspectorTest {
     @Autowired
     private ApiQueryInspector apiQueryInspector;
 
+    @Autowired
+    private ApiQueryCounter apiQueryCounter;
+
     @Test
     void inspect는_원래_쿼리를_그대로_반환한다() {
         // given, when
@@ -33,6 +36,6 @@ class ApiQueryInspectorTest {
         apiQueryInspector.inspect("sql");
 
         // then
-        assertThat(apiQueryInspector.getQueryCount()).isEqualTo(1);
+        assertThat(apiQueryCounter.getCount()).isEqualTo(1);
     }
 }

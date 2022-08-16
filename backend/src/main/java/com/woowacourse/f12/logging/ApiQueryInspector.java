@@ -25,8 +25,4 @@ public class ApiQueryInspector implements StatementInspector {
     private boolean isInRequestScope() {
         return Objects.nonNull(RequestContextHolder.getRequestAttributes());
     }
-
-    public int getQueryCount() {
-        return apiQueryCounter.getCount();
-    }
 }
