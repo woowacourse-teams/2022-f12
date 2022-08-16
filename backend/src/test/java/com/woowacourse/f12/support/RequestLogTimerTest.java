@@ -2,48 +2,62 @@ package com.woowacourse.f12.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import com.woowacourse.f12.exception.internalserver.IllegalRequestLogTimerState;
-import org.junit.jupiter.api.BeforeEach;
+import com.woowacourse.f12.exception.internalserver.IllegalRequestLogTimerStateException;
+import java.time.Clock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class RequestLogTimerTest {
 
-    private RequestLogTimer requestLogTimer;
+    @Mock
+    private Clock clock;
 
-    @BeforeEach
-    void setUp() {
-        requestLogTimer = new RequestLogTimer();
-    }
+    @InjectMocks
+    private RequestLogTimer requestLogTimer;
 
     @Test
     void 측정_시작과_끝_사이_걸리는_시간을_측정한다() throws InterruptedException {
         // given
-        requestLogTimer.start();
-        Thread.sleep(5000);
-        requestLogTimer.stop();
+        given(clock.millis())
+                .willReturn(1L, 2L);
 
         // when
-        Long timeTaken = requestLogTimer.getSpentTime();
+        requestLogTimer.start();
+        requestLogTimer.stop();
+        Long timeTaken = requestLogTimer.getTakenTime();
 
         // then
-        assertThat(timeTaken).isGreaterThan(4999);
+        assertAll(
+                () -> assertThat(timeTaken).isGreaterThanOrEqualTo(1),
+                () -> verify(clock, times(2)).millis()
+        );
     }
 
     @Test
     void 시작하지_않았는데_측정_종료하는_경우_예외_발생한다() {
         // given, when, then
         assertThatThrownBy(() -> requestLogTimer.stop())
-                .isExactlyInstanceOf(IllegalRequestLogTimerState.class);
+                .isExactlyInstanceOf(IllegalRequestLogTimerStateException.class);
     }
 
     @Test
     void 측정_종료하지_않고_측정_시간을_구하면_예외_발생한다() {
         // given
+        given(clock.millis())
+                .willReturn(1L);
         requestLogTimer.start();
 
         // when, then
-        assertThatThrownBy(() -> requestLogTimer.getSpentTime())
-                .isExactlyInstanceOf(IllegalRequestLogTimerState.class);
+        assertThatThrownBy(() -> requestLogTimer.getTakenTime())
+                .isExactlyInstanceOf(IllegalRequestLogTimerStateException.class);
     }
 }
