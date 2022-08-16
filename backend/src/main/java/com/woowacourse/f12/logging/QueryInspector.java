@@ -1,8 +1,9 @@
 package com.woowacourse.f12.logging;
 
+import java.util.Objects;
 import org.hibernate.resource.jdbc.spi.StatementInspector;
-import org.springframework.beans.factory.support.ScopeNotActiveException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @Component
 public class QueryInspector implements StatementInspector {
@@ -15,11 +16,14 @@ public class QueryInspector implements StatementInspector {
 
     @Override
     public String inspect(final String sql) {
-        try {
+        if (isInRequest()) {
             queryCounter.increaseCount();
-        } catch (ScopeNotActiveException ignored) {
         }
         return sql;
+    }
+
+    private boolean isInRequest() {
+        return Objects.nonNull(RequestContextHolder.getRequestAttributes());
     }
 
     public int getQueryCount() {
