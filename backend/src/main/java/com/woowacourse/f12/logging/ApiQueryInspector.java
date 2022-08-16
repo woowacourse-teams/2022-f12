@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 
 @Component
-public class QueryInspector implements StatementInspector {
+public class ApiQueryInspector implements StatementInspector {
 
     private final QueryCounter queryCounter;
 
-    public QueryInspector(final QueryCounter queryCounter) {
+    public ApiQueryInspector(final QueryCounter queryCounter) {
         this.queryCounter = queryCounter;
     }
 

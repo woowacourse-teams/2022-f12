@@ -4,15 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-class QueryInspectorTest {
+class ApiQueryInspectorTest {
 
     @Test
     void inspect는_실행될_sql문을_그대로_반환한다() {
         // given
-        QueryInspector queryInspector = new QueryInspector(new QueryCounter());
+        ApiQueryInspector apiQueryInspector = new ApiQueryInspector(new QueryCounter());
 
         // when
-        String inspectResult = queryInspector.inspect("sql");
+        String inspectResult = apiQueryInspector.inspect("sql");
 
         // then
         assertThat(inspectResult).isEqualTo("sql");
@@ -21,12 +21,12 @@ class QueryInspectorTest {
     @Test
     void inspect가_실행되면_QueryCounter의_count를_증가시킨다() {
         // given
-        QueryInspector queryInspector = new QueryInspector(new QueryCounter());
+        ApiQueryInspector apiQueryInspector = new ApiQueryInspector(new QueryCounter());
 
         // when
-        queryInspector.inspect("sql");
+        apiQueryInspector.inspect("sql");
 
         // then
-        assertThat(queryInspector.getQueryCount()).isEqualTo(1);
+        assertThat(apiQueryInspector.getQueryCount()).isEqualTo(1);
     }
 }

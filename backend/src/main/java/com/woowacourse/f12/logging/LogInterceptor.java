@@ -16,10 +16,10 @@ public class LogInterceptor implements HandlerInterceptor {
     private static final String QUERY_COUNT_LOG_FORMAT = "QUERY_COUNT: {}";
     private static final String RESPONSE_LOG_FORMAT = "STATUS_CODE: {}, BODY : {}";
 
-    private final QueryInspector queryInspector;
+    private final ApiQueryInspector apiQueryInspector;
 
-    public LogInterceptor(final QueryInspector queryInspector) {
-        this.queryInspector = queryInspector;
+    public LogInterceptor(final ApiQueryInspector apiQueryInspector) {
+        this.apiQueryInspector = apiQueryInspector;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class LogInterceptor implements HandlerInterceptor {
                                 final Object handler, final Exception ex) {
         final ContentCachingResponseWrapper contentCachingResponseWrapper = new ContentCachingResponseWrapper(response);
         final String responseBody = new String(contentCachingResponseWrapper.getContentAsByteArray());
-        log.info(QUERY_COUNT_LOG_FORMAT, queryInspector.getQueryCount());
+        log.info(QUERY_COUNT_LOG_FORMAT, apiQueryInspector.getQueryCount());
         log.info(RESPONSE_LOG_FORMAT, response.getStatus(), responseBody);
     }
 }
