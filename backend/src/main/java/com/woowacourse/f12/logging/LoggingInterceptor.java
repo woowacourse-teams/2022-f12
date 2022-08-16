@@ -13,8 +13,8 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 @Component
 public class LoggingInterceptor implements HandlerInterceptor {
 
-    private static final String REQUEST_LOG_FORMAT = "METHOD: {}, URL : {}, AUTHORIZATION : {}, BODY : {}";
-    private static final String RESPONSE_LOG_FORMAT = "STATUS_CODE: {}, URL : {}, BODY : {}, TIME_TAKEN : {}";
+    private static final String REQUEST_LOG_FORMAT = "METHOD: {}, URL: {}, AUTHORIZATION: {}, BODY: {}";
+    private static final String RESPONSE_LOG_FORMAT = "STATUS_CODE: {}, URL: {}, TIME_TAKEN: {}, BODY: {}";
 
     private final StopWatch requestLogTimer;
 
