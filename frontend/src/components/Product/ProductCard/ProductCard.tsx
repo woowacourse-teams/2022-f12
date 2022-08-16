@@ -4,8 +4,8 @@ import ReviewCount from '@/components/common/ReviewCount/ReviewCount';
 import * as S from '@/components/Product/ProductCard/ProductCard.style';
 
 type Props = Omit<Product, 'id' | 'category'> & {
-  animationTrigger: boolean;
-  index: number;
+  animationTrigger?: boolean;
+  index?: number;
 };
 
 function ProductCard({
@@ -13,8 +13,8 @@ function ProductCard({
   name,
   rating,
   reviewCount,
-  animationTrigger,
-  index,
+  animationTrigger = true,
+  index = 0,
 }: Props) {
   return (
     <S.Container aria-label={name} animationTrigger={animationTrigger} index={index}>

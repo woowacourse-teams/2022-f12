@@ -34,8 +34,8 @@ type Props = {
   careerLevel: string;
   jobType: string;
   profileProducts: ProfileProduct[];
-  animationTrigger: boolean;
-  index: number;
+  animationTrigger?: boolean;
+  index?: number;
 };
 
 function ProfileCard({
@@ -45,8 +45,8 @@ function ProfileCard({
   careerLevel,
   jobType,
   profileProducts,
-  animationTrigger,
-  index,
+  animationTrigger = true,
+  index = 0,
 }: Props) {
   const [positionX, setPositionX] = useState(0);
 
