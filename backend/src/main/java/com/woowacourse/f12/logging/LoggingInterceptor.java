@@ -14,12 +14,15 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 public class LoggingInterceptor implements HandlerInterceptor {
 
     private static final String REQUEST_LOG_FORMAT = "METHOD: {}, URL: {}, AUTHORIZATION: {}, BODY: {}";
+    private static final String QUERY_COUNT_LOG_FORMAT = "QUERY_COUNT: {}";
     private static final String RESPONSE_LOG_FORMAT = "STATUS_CODE: {}, URL: {}, TIME_TAKEN: {}, BODY: {}";
 
     private final StopWatch apiTimer;
+    private final ApiQueryCounter apiQueryCounter;
 
-    public LoggingInterceptor(final StopWatch apiTimer) {
+    public LoggingInterceptor(final StopWatch apiTimer, final ApiQueryCounter apiQueryCounter) {
         this.apiTimer = apiTimer;
+        this.apiQueryCounter = apiQueryCounter;
     }
 
     @Override
@@ -28,6 +31,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
         apiTimer.start();
 
         final String body = new String(new ContentCachingRequestWrapper(request).getContentAsByteArray());
+
         log.info(REQUEST_LOG_FORMAT, request.getMethod(), request.getRequestURI(), request.getHeader("Authorization"),
                 body);
         return true;
@@ -40,6 +44,8 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
         final ContentCachingResponseWrapper contentCachingResponseWrapper = new ContentCachingResponseWrapper(response);
         final String responseBody = new String(contentCachingResponseWrapper.getContentAsByteArray());
+
+        log.info(QUERY_COUNT_LOG_FORMAT, apiQueryCounter.getCount());
         log.info(RESPONSE_LOG_FORMAT, response.getStatus(), request.getRequestURI(), responseBody,
                 apiTimer.getLastTaskTimeMillis());
     }

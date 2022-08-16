@@ -7,7 +7,7 @@ import org.springframework.web.context.annotation.RequestScope;
 @Getter
 @Component
 @RequestScope
-public class QueryCounter {
+public class ApiQueryCounter {
 
     private int count;
 

@@ -4,17 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-class QueryCounterTest {
+class ApiQueryCounterTest {
 
     @Test
     void 쿼리_개수를_증가시킨다() {
         // given
-        QueryCounter queryCounter = new QueryCounter();
+        ApiQueryCounter apiQueryCounter = new ApiQueryCounter();
 
         // when
-        queryCounter.increaseCount();
+        apiQueryCounter.increaseCount();
 
         // then
-        assertThat(queryCounter.getCount()).isEqualTo(1);
+        assertThat(apiQueryCounter.getCount()).isEqualTo(1);
     }
 }

@@ -8,16 +8,16 @@ import org.springframework.web.context.request.RequestContextHolder;
 @Component
 public class ApiQueryInspector implements StatementInspector {
 
-    private final QueryCounter queryCounter;
+    private final ApiQueryCounter apiQueryCounter;
 
-    public ApiQueryInspector(final QueryCounter queryCounter) {
-        this.queryCounter = queryCounter;
+    public ApiQueryInspector(final ApiQueryCounter apiQueryCounter) {
+        this.apiQueryCounter = apiQueryCounter;
     }
 
     @Override
     public String inspect(final String sql) {
         if (isInRequestScope()) {
-            queryCounter.increaseCount();
+            apiQueryCounter.increaseCount();
         }
         return sql;
     }
@@ -27,6 +27,6 @@ public class ApiQueryInspector implements StatementInspector {
     }
 
     public int getQueryCount() {
-        return queryCounter.getCount();
+        return apiQueryCounter.getCount();
     }
 }

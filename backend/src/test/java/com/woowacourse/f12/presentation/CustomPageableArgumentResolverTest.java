@@ -10,19 +10,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.product.ProductService;
-import com.woowacourse.f12.config.LoggingConfig;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.presentation.product.ProductController;
-import com.woowacourse.f12.support.AuthTokenExtractor;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
@@ -30,8 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ProductController.class)
-@Import({AuthTokenExtractor.class, JwtProvider.class, LoggingConfig.class})
-public class CustomPageableArgumentResolverTest {
+public class CustomPageableArgumentResolverTest extends ControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
