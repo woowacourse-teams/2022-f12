@@ -36,6 +36,6 @@ class ApiQueryInspectorTest {
         apiQueryInspector.inspect("sql");
 
         // then
-        assertThat(apiQueryCounter.getCount()).isEqualTo(1);
+        assertThat(apiQueryCounter.getCount()).isOne();
     }
 }

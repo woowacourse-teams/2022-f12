@@ -15,6 +15,6 @@ class ApiQueryCounterTest {
         apiQueryCounter.increaseCount();
 
         // then
-        assertThat(apiQueryCounter.getCount()).isEqualTo(1);
+        assertThat(apiQueryCounter.getCount()).isOne();
     }
 }
