@@ -13,6 +13,7 @@ type Props = Omit<DataFetchStatus, 'isReady'> & {
   getNextPage: () => void;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
+  pageSize?: number;
 };
 
 function ReviewListSection({
@@ -23,6 +24,7 @@ function ReviewListSection({
   handleEdit,
   isLoading,
   isError,
+  pageSize = 10,
 }: Props) {
   const userData = useContext(UserDataContext);
   const loginUserGithubId = userData?.member.gitHubId;
@@ -43,7 +45,7 @@ function ReviewListSection({
               loginUserGithubId={loginUserGithubId}
               handleDelete={handleDelete}
               handleEdit={handleEdit}
-              index={index}
+              index={index % pageSize}
             />
           ))}
         </S.Wrapper>

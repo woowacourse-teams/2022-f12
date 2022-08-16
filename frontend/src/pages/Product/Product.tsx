@@ -23,6 +23,8 @@ import theme from '@/style/theme';
 import Plus from '@/assets/plus.svg';
 import useAnimation from '@/hooks/useAnimation';
 
+export const PRODUCT_PAGE_REVIEW_SIZE = 6;
+
 function Product() {
   const { isLoggedIn } = useAuth();
   const { productId: id } = useParams();
@@ -45,7 +47,7 @@ function Product() {
     handleEdit: handleReviewEdit,
     handleDelete: handleReviewDelete,
   } = useReviews({
-    size: '6',
+    size: String(PRODUCT_PAGE_REVIEW_SIZE),
     productId,
     handleRefetchOnSuccess: () => {
       refetchProduct();
@@ -105,6 +107,7 @@ function Product() {
             handleEdit={handleReviewEdit}
             isLoading={isReviewLoading}
             isError={isReviewError}
+            pageSize={PRODUCT_PAGE_REVIEW_SIZE}
           />
         </AsyncWrapper>
         {shouldSheetRender && (

@@ -13,9 +13,17 @@ type Props = Omit<DataFetchStatus, 'isReady'> & {
   title: string;
   data: Product[];
   getNextPage?: () => void;
+  pageSize?: number;
 };
 
-function ProductListSection({ title, data, isLoading, isError, getNextPage }: Props) {
+function ProductListSection({
+  title,
+  data,
+  isLoading,
+  isError,
+  getNextPage,
+  pageSize = 12,
+}: Props) {
   const isSinglePage = getNextPage === undefined;
   const productList = (
     <Masonry columnCount={4}>
@@ -26,7 +34,7 @@ function ProductListSection({ title, data, isLoading, isError, getNextPage }: Pr
             name={name}
             rating={rating}
             reviewCount={reviewCount}
-            index={index % 12}
+            index={index % pageSize}
           />
         </Link>
       ))}

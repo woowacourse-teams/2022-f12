@@ -36,6 +36,8 @@ const options: ProductSortOption[] = [
 
 const DefaultSort = options[1];
 
+const PRODUCT_SEARCH_SIZE = 12;
+
 function Products() {
   const [keyword, setKeyword] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
   const [category, setCategory] = useUrlSyncState(SEARCH_PARAMS.CATEGORY);
@@ -49,7 +51,7 @@ function Products() {
     isError,
   } = useSearch<Product>({
     url: ENDPOINTS.PRODUCTS,
-    size: '12',
+    size: String(PRODUCT_SEARCH_SIZE),
     query: keyword,
     filter: {
       category,
@@ -83,6 +85,7 @@ function Products() {
           getNextPage={getNextPage}
           isLoading={isLoading}
           isError={isError}
+          pageSize={PRODUCT_SEARCH_SIZE}
         />
       </AsyncWrapper>
     </>

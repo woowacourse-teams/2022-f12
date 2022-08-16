@@ -14,6 +14,8 @@ import { ENDPOINTS } from '@/constants/api';
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 import SEARCH_PARAMS from '@/constants/searchParams';
 
+export const PROFILE_SEARCH_SIZE = 4;
+
 function ProfileSearch() {
   const [careerLevel, setCareerLevel] = useUrlSyncState(SEARCH_PARAMS.CAREER_LEVEL);
   const [jobType, setJobType] = useUrlSyncState(SEARCH_PARAMS.JOB_TYPE);
@@ -32,7 +34,7 @@ function ProfileSearch() {
       career: careerLevel,
       jobType: jobType,
     },
-    size: '4',
+    size: String(PROFILE_SEARCH_SIZE),
   });
 
   return (
