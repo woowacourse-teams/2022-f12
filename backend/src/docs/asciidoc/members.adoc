@@ -32,3 +32,11 @@ operation::members-update[snippets='http-request,http-response']
 - 40000, 40001
 
 operation::members-search[snippets='http-request,http-response']
+
+=== 다른 회원 팔로우
+
+==== 발생 가능 에러
+
+- 40050, 40410
+
+operation::follow[snippets='http-request,http-response']

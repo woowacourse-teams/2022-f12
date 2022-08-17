@@ -7,16 +7,11 @@ import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.presentation.auth.LoginRequired;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
-import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/members")
@@ -54,5 +49,13 @@ public class MemberController {
             @ModelAttribute final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
         final MemberPageResponse memberPageResponse = memberService.findByContains(memberSearchRequest, pageable);
         return ResponseEntity.ok(memberPageResponse);
+    }
+
+    @PostMapping("/{memberId}/following")
+    @LoginRequired
+    public ResponseEntity<Void> follow(@VerifiedMember final Long followerId, @PathVariable("memberId") final Long followeeId) {
+        memberService.follow(followerId, followeeId);
+        return ResponseEntity.noContent()
+                .build();
     }
 }
