@@ -6,10 +6,10 @@ import UserNameTag from '@/components/common/UserNameTag/UserNameTag';
 import ReviewBottomSheet from '@/components/Review/ReviewBottomSheet/ReviewBottomSheet';
 import * as S from '@/components/Review/ReviewCard/ReviewCard.style';
 
+import useAnimation from '@/hooks/useAnimation';
 import useAuth from '@/hooks/useAuth';
 
 import ROUTES from '@/constants/routes';
-import useAnimation from '@/hooks/useAnimation';
 
 type Props = {
   reviewId: Review['id'];
