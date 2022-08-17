@@ -76,7 +76,7 @@ function ProfileSearch({ type = 'default' }: Props) {
           />
         </S.SearchFilterWrapper>
       </S.SearchWrapper>
-      <SectionHeader title={type === 'following' ? '팔로잉 프로필' : '프로필 검색'} />
+      <SectionHeader title={type === 'following' ? '팔로잉' : '프로필 검색'} />
       <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
         <ProfileSearchResult
           data={profiles}

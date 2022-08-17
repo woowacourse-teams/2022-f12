@@ -42,7 +42,7 @@ function HeaderNav() {
           {isLoggedIn ? (
             <>
               <CustomNavLink to={ROUTES.MY_PROFILE}>내 프로필</CustomNavLink>
-              <CustomNavLink to={ROUTES.FOLLOWING}>팔로잉 프로필</CustomNavLink>
+              <CustomNavLink to={ROUTES.FOLLOWING}>팔로잉</CustomNavLink>
               <S.TransparentButton onClick={logout}>로그아웃</S.TransparentButton>
             </>
           ) : (
