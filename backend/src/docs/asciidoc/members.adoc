@@ -40,3 +40,11 @@ operation::members-search[snippets='http-request,http-response']
 - 40050, 40051, 40410
 
 operation::follow[snippets='http-request,http-response']
+
+=== 다른 회원 언팔로우
+
+==== 발생 가능 에러
+
+- 40052, 40410
+
+operation::unfollow[snippets='http-request,http-response']
