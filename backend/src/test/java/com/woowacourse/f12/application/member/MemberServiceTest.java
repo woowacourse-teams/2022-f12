@@ -140,7 +140,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void 키워드와_옵션으로_회원을_조회한다() {
+    void 비회원이_키워드와_옵션으로_회원을_조회한다() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
@@ -151,14 +151,45 @@ class MemberServiceTest {
 
         // when
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", SENIOR_CONSTANT, BACKEND_CONSTANT);
-        MemberPageResponse memberPageResponse = memberService.findByContains(memberSearchRequest, pageable);
+        MemberPageResponse memberPageResponse = memberService.findByContains(null, memberSearchRequest, pageable);
 
         // then
         assertAll(
                 () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(MemberWithProfileProductResponse.from(member))
+                        .containsOnly(MemberWithProfileProductResponse.from(member, false))
+        );
+    }
+
+    @Test
+    void 회원이_키워드와_옵션으로_회원을_조회한다() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
+
+        Long loggedInId = 2L;
+        Following following = Following.builder()
+                .followerId(loggedInId)
+                .followeeId(member.getId())
+                .build();
+
+        given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(followingRepository.findByFollowerIdAndFolloweeIdIn(loggedInId, List.of(member.getId())))
+                .willReturn(List.of(following));
+
+        // when
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", SENIOR_CONSTANT, BACKEND_CONSTANT);
+        MemberPageResponse memberPageResponse = memberService.findByContains(loggedInId, memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.from(member, true))
         );
     }
 

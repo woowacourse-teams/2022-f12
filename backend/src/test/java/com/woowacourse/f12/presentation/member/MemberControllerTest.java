@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.member.MemberService;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.Following;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
@@ -286,7 +287,7 @@ class MemberControllerTest extends PresentationTest {
     }
 
     @Test
-    void 키워드와_옵션으로_회원을_조회한다() throws Exception {
+    void 비회원이_키워드와_옵션으로_회원을_조회한다() throws Exception {
         // given
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE_CONSTANT, BACKEND_CONSTANT);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
@@ -296,7 +297,7 @@ class MemberControllerTest extends PresentationTest {
 
         MemberPageResponse memberPageResponse = MemberPageResponse.from(
                 new SliceImpl<>(List.of(member), pageable, false));
-        given(memberService.findByContains(any(MemberSearchRequest.class), any(PageRequest.class)))
+        given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
 
         // when
@@ -309,7 +310,43 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(document("members-search"))
                 .andDo(print());
 
-        verify(memberService).findByContains(refEq(memberSearchRequest), refEq(pageable));
+        verify(memberService).findByContains(isNull(), refEq(memberSearchRequest), refEq(pageable));
+    }
+
+    @Test
+    void 회원이_키워드와_옵션으로_회원을_조회한다() throws Exception {
+        // given
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE_CONSTANT, BACKEND_CONSTANT);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
+                KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
+        Long loggedInId = 2L;
+        Following following = Following.builder()
+                .followerId(loggedInId)
+                .followeeId(member.getId())
+                .build();
+        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+                new SliceImpl<>(List.of(member), pageable, false), List.of(following));
+        String authorizationHeader = "Bearer Token";
+
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(loggedInId.toString());
+        given(memberService.findByContains(eq(loggedInId), any(MemberSearchRequest.class), any(PageRequest.class)))
+                .willReturn(memberPageResponse);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members?query=cheese&careerLevel=none&jobType=backend&page=0&size=10")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("members-search-when-logged-in"))
+                .andDo(print());
+
+        verify(memberService).findByContains(eq(loggedInId), refEq(memberSearchRequest), refEq(pageable));
     }
 
     @Test
@@ -323,7 +360,7 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(memberService, times(0)).findByContains(any(MemberSearchRequest.class), any(PageRequest.class));
+        verify(memberService, times(0)).findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class));
     }
 
     @Test
@@ -337,7 +374,7 @@ class MemberControllerTest extends PresentationTest {
 
         MemberPageResponse memberPageResponse = MemberPageResponse.from(
                 new SliceImpl<>(List.of(member), pageable, false));
-        given(memberService.findByContains(any(MemberSearchRequest.class), any(PageRequest.class)))
+        given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
 
         // when
@@ -349,7 +386,7 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isOk())
                 .andDo(print());
 
-        verify(memberService).findByContains(refEq(memberSearchRequest), refEq(pageable));
+        verify(memberService).findByContains(isNull(), refEq(memberSearchRequest), refEq(pageable));
     }
 
     @Test

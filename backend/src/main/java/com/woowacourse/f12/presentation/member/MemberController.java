@@ -47,8 +47,8 @@ public class MemberController {
 
     @GetMapping
     public ResponseEntity<MemberPageResponse> searchMembers(
-            @ModelAttribute final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
-        final MemberPageResponse memberPageResponse = memberService.findByContains(memberSearchRequest, pageable);
+            @VerifiedMember final Long loggedInId, @ModelAttribute final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
+        final MemberPageResponse memberPageResponse = memberService.findByContains(loggedInId, memberSearchRequest, pageable);
         return ResponseEntity.ok(memberPageResponse);
     }
 

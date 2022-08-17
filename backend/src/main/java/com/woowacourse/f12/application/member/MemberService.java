@@ -18,7 +18,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -58,12 +60,19 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    public MemberPageResponse findByContains(final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
+    public MemberPageResponse findByContains(@Nullable final Long loggedInId, final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
         final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
         final JobType jobType = parseJobType(memberSearchRequest);
         final Slice<Member> slice = memberRepository.findBySearchConditions(memberSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
-        return MemberPageResponse.from(slice);
+        if (loggedInId == null) {
+            return MemberPageResponse.from(slice);
+        }
+        final List<Following> followings = followingRepository.findByFollowerIdAndFolloweeIdIn(loggedInId, slice.getContent()
+                .stream()
+                .map(Member::getId)
+                .collect(Collectors.toList()));
+        return MemberPageResponse.from(slice, followings);
     }
 
     private JobType parseJobType(final MemberSearchRequest memberSearchRequest) {

@@ -33,13 +33,21 @@ operation::members-get-by-memberId-when-logged-in[snippets='http-request,http-re
 
 operation::members-update[snippets='http-request,http-response']
 
-=== 회원 검색
+=== 비로그인 상태로 회원 검색
 
 ==== 발생 가능 에러
 
 - 40000, 40001
 
 operation::members-search[snippets='http-request,http-response']
+
+=== 로그인 상태로 회원 검색
+
+==== 발생 가능 에러
+
+- 40000, 40001
+
+operation::members-search-when-logged-in[snippets='http-request,http-response']
 
 === 다른 회원 팔로우
 

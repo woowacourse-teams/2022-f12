@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -49,5 +51,26 @@ class FollowingRepositoryTest {
 
         // then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 팔로워_아이디와_팔로이_아이디_목록으로_팔로잉을_조회한다() {
+        // given
+        Following following1 = Following.builder()
+                .followerId(1L)
+                .followeeId(2L)
+                .build();
+        Following following2 = Following.builder()
+                .followerId(1L)
+                .followeeId(3L)
+                .build();
+        followingRepository.saveAll(List.of(following1, following2));
+
+        // when
+        List<Following> followings = followingRepository.findByFollowerIdAndFolloweeIdIn(1L, List.of(2L));
+
+        // then
+        assertThat(followings).hasSize(1)
+                .containsExactly(following1);
     }
 }
