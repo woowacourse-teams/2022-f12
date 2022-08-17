@@ -20,14 +20,14 @@ public class MemberWithProfileProductResponse {
     private CareerLevelConstant careerLevel;
     private JobTypeConstant jobType;
     private List<ProductResponse> profileProducts;
+    private int followerCount;
 
     private MemberWithProfileProductResponse() {
     }
 
     public MemberWithProfileProductResponse(final Long id, final String gitHubId, final String name,
-                                            final String imageUrl,
-                                            final CareerLevelConstant careerLevel, final JobTypeConstant jobType,
-                                            final List<ProductResponse> profileProducts) {
+                                            final String imageUrl, final CareerLevelConstant careerLevel, final JobTypeConstant jobType,
+                                            final List<ProductResponse> profileProducts, final int followerCount) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
@@ -35,6 +35,7 @@ public class MemberWithProfileProductResponse {
         this.careerLevel = careerLevel;
         this.jobType = jobType;
         this.profileProducts = profileProducts;
+        this.followerCount = followerCount;
     }
 
     public static MemberWithProfileProductResponse from(final Member member) {
@@ -45,6 +46,6 @@ public class MemberWithProfileProductResponse {
                 .collect(Collectors.toList());
         return new MemberWithProfileProductResponse(member.getId(), member.getGitHubId(), member.getName(),
                 member.getImageUrl(), CareerLevelConstant.from(member.getCareerLevel()),
-                JobTypeConstant.from(member.getJobType()), profileProducts);
+                JobTypeConstant.from(member.getJobType()), profileProducts, member.getFollowerCount());
     }
 }
