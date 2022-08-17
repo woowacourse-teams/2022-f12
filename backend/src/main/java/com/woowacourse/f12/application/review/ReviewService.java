@@ -85,7 +85,8 @@ public class ReviewService {
         inventoryProductRepository.save(inventoryProduct);
     }
 
-    public ReviewWithAuthorPageResponse findPageByProductId(final Long productId, final Pageable pageable) {
+    public ReviewWithAuthorPageResponse findPageByProductId(final Long productId, final Long memberId,
+                                                            final Pageable pageable) {
         validateKeyboardExists(productId);
         final Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
         return ReviewWithAuthorPageResponse.from(page);

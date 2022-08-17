@@ -1,34 +1,5 @@
 package com.woowacourse.f12.application.review;
 
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.domain.product.Product;
-import com.woowacourse.f12.domain.product.ProductRepository;
-import com.woowacourse.f12.domain.review.Review;
-import com.woowacourse.f12.domain.review.ReviewRepository;
-import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.review.*;
-import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
-import com.woowacourse.f12.exception.badrequest.RegisterNotCompletedException;
-import com.woowacourse.f12.exception.forbidden.NotAuthorException;
-import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
-import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
-import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
-import com.woowacourse.f12.support.ReviewFixtures;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
-import org.springframework.data.domain.Sort.Order;
-
-import java.util.List;
-import java.util.Optional;
-
 import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
@@ -43,9 +14,48 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.refEq;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.domain.product.ProductRepository;
+import com.woowacourse.f12.domain.review.Review;
+import com.woowacourse.f12.domain.review.ReviewRepository;
+import com.woowacourse.f12.dto.request.review.ReviewRequest;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
+import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
+import com.woowacourse.f12.exception.badrequest.RegisterNotCompletedException;
+import com.woowacourse.f12.exception.forbidden.NotAuthorException;
+import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
+import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
+import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
+import com.woowacourse.f12.support.ReviewFixtures;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceTest {
@@ -205,7 +215,7 @@ class ReviewServiceTest {
                 .willReturn(slice);
 
         // when
-        ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, pageable);
+        ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, null, pageable);
 
         // then
         assertAll(
@@ -227,7 +237,7 @@ class ReviewServiceTest {
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> reviewService.findPageByProductId(0L, pageable))
+                () -> assertThatThrownBy(() -> reviewService.findPageByProductId(0L, null, pageable))
                         .isExactlyInstanceOf(ProductNotFoundException.class),
                 () -> verify(productRepository).existsById(0L)
         );
