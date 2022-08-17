@@ -19,16 +19,17 @@ function ProfileSearchResult({
   const profileSearchDataList = profileSearchData.map(
     ({ id, gitHubId, imageUrl, careerLevel, jobType, profileProducts }, index) => {
       return (
-        <ProfileCard
-          id={id}
-          key={id}
-          gitHubId={gitHubId}
-          imageUrl={imageUrl}
-          careerLevel={careerLevel}
-          jobType={jobType}
-          profileProducts={profileProducts}
-          index={index % PROFILE_SEARCH_SIZE}
-        />
+        <S.CardWrapper key={id}>
+          <ProfileCard
+            id={id}
+            gitHubId={gitHubId}
+            imageUrl={imageUrl}
+            careerLevel={careerLevel}
+            jobType={jobType}
+            profileProducts={profileProducts}
+            index={index % PROFILE_SEARCH_SIZE}
+          />
+        </S.CardWrapper>
       );
     }
   );
