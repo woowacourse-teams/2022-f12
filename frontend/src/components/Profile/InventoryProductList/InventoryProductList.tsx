@@ -70,56 +70,56 @@ function InventoryProductList({
           </S.EditDeskSetupButton>
         )}
       </S.FlexWrapper>
-      {isEditMode
-        ? Object.entries(inventoryList)
-            .filter(([category]) => category !== 'software')
-            .map(([category, items]) => (
-              <Fragment key={category}>
-                <S.CategoryTitle>{CATEGORIES[category]}</S.CategoryTitle>
-                <S.Container>
-                  {items.map((item) => (
-                    <S.PseudoButton
-                      key={item.id}
-                      onClick={() => {
-                        handleSelect(category, item.id);
-                      }}
-                    >
-                      <DeskSetupCard
-                        key={item.id}
-                        item={item.product}
-                        borderType={
-                          selectedState[category] === item.id
-                            ? 'selectedAnimation'
-                            : 'default'
-                        }
-                        size={'s'}
-                      />
-                    </S.PseudoButton>
-                  ))}
-                </S.Container>
-              </Fragment>
-            ))
-        : Object.entries(inventoryList).map(([category, items]) => (
+      {isEditMode ? (
+        Object.entries(inventoryList)
+          .filter(([category]) => category !== 'software')
+          .map(([category, items]) => (
             <Fragment key={category}>
               <S.CategoryTitle>{CATEGORIES[category]}</S.CategoryTitle>
-              {items?.length > 0 ? (
-                <S.Container>
-                  {items.map((item) => (
+              <S.Container>
+                {items.map((item) => (
+                  <S.PseudoButton
+                    key={item.id}
+                    onClick={() => {
+                      handleSelect(category, item.id);
+                    }}
+                  >
                     <DeskSetupCard
                       key={item.id}
                       item={item.product}
                       borderType={
-                        selectedState[category] === item.id ? 'selected' : 'default'
+                        selectedState[category] === item.id
+                          ? 'selectedAnimation'
+                          : 'default'
                       }
                       size={'s'}
                     />
-                  ))}
-                </S.Container>
-              ) : (
-                <S.NoContents>리뷰를 작성한 제품이 없어요</S.NoContents>
-              )}
+                  </S.PseudoButton>
+                ))}
+              </S.Container>
             </Fragment>
-          ))}
+          ))
+      ) : Object.keys(inventoryList).length > 0 ? (
+        Object.entries(inventoryList).map(([category, items]) => (
+          <Fragment key={category}>
+            <S.CategoryTitle>{CATEGORIES[category]}</S.CategoryTitle>
+            <S.Container>
+              {items.map((item) => (
+                <DeskSetupCard
+                  key={item.id}
+                  item={item.product}
+                  borderType={
+                    selectedState[category] === item.id ? 'selected' : 'default'
+                  }
+                  size={'s'}
+                />
+              ))}
+            </S.Container>
+          </Fragment>
+        ))
+      ) : (
+        <S.NoContents>리뷰를 작성한 제품이 없어요</S.NoContents>
+      )}
     </>
   );
 }

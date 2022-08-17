@@ -31,5 +31,5 @@ export const PseudoButton = styled.div`
 
 export const NoContents = styled.div`
   width: 100%;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 `;
