@@ -3,6 +3,7 @@ package com.woowacourse.f12.presentation.member;
 import com.woowacourse.f12.application.member.MemberService;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.response.member.LoggedInMemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.presentation.auth.LoginRequired;
@@ -25,14 +26,14 @@ public class MemberController {
 
     @GetMapping("/me")
     @LoginRequired
-    public ResponseEntity<MemberResponse> showLoggedIn(@VerifiedMember final Long memberId) {
-        final MemberResponse memberResponse = memberService.findById(memberId);
-        return ResponseEntity.ok(memberResponse);
+    public ResponseEntity<LoggedInMemberResponse> showLoggedIn(@VerifiedMember final Long memberId) {
+        final LoggedInMemberResponse loggedInMemberResponse = memberService.findByLoggedInId(memberId);
+        return ResponseEntity.ok(loggedInMemberResponse);
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<MemberResponse> show(@PathVariable final Long memberId) {
-        final MemberResponse memberResponse = memberService.findById(memberId);
+    public ResponseEntity<MemberResponse> show(@PathVariable final Long memberId, @VerifiedMember final Long loggedInMemberId) {
+        final MemberResponse memberResponse = memberService.findById(memberId, loggedInMemberId);
         return ResponseEntity.ok(memberResponse);
     }
 
@@ -46,8 +47,8 @@ public class MemberController {
 
     @GetMapping
     public ResponseEntity<MemberPageResponse> searchMembers(
-            @ModelAttribute final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
-        final MemberPageResponse memberPageResponse = memberService.findByContains(memberSearchRequest, pageable);
+            @VerifiedMember final Long loggedInId, @ModelAttribute final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
+        final MemberPageResponse memberPageResponse = memberService.findByContains(loggedInId, memberSearchRequest, pageable);
         return ResponseEntity.ok(memberPageResponse);
     }
 

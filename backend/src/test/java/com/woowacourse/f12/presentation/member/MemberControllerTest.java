@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.member.MemberService;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.Following;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.response.member.LoggedInMemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
@@ -70,8 +72,8 @@ class MemberControllerTest extends PresentationTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(memberService.findById(1L))
-                .willReturn(MemberResponse.from(CORINNE.생성(1L)));
+        given(memberService.findByLoggedInId(1L))
+                .willReturn(LoggedInMemberResponse.from(CORINNE.생성(1L)));
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -87,7 +89,7 @@ class MemberControllerTest extends PresentationTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(memberService).findById(1L)
+                () -> verify(memberService).findByLoggedInId(1L)
         );
     }
 
@@ -95,8 +97,8 @@ class MemberControllerTest extends PresentationTest {
     void 비로그인_상태에서_회원정보를_조회_성공() throws Exception {
         // given
         Long memberId = 1L;
-        given(memberService.findById(memberId))
-                .willReturn(MemberResponse.from(CORINNE.생성(memberId)));
+        given(memberService.findById(memberId, null))
+                .willReturn(MemberResponse.from(CORINNE.생성(memberId), false));
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -108,14 +110,14 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(document("members-get-by-memberId"))
                 .andDo(print());
 
-        verify(memberService).findById(1L);
+        verify(memberService).findById(1L, null);
     }
 
     @Test
     void 비로그인_상태에서_회원정보를_조회_실패_등록되지_않은_회원일_경우() throws Exception {
         // given
         Long memberId = 1L;
-        given(memberService.findById(memberId))
+        given(memberService.findById(memberId, null))
                 .willThrow(new MemberNotFoundException());
 
         // when
@@ -127,7 +129,34 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isNotFound())
                 .andDo(print());
 
-        verify(memberService).findById(1L);
+        verify(memberService).findById(1L, null);
+    }
+
+    @Test
+    void 로그인된_상태에서_다른_회원의_정보_조회_성공() throws Exception {
+        // given
+        Long targetId = 1L;
+        Long loggedInId = 2L;
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(loggedInId.toString());
+        given(memberService.findById(targetId, loggedInId))
+                .willReturn(MemberResponse.from(CORINNE.생성(targetId), false));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/" + targetId)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("members-get-by-memberId-when-logged-in"))
+                .andDo(print());
+        assertAll(
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(memberService).findById(targetId, loggedInId)
+        );
     }
 
     @Test
@@ -258,7 +287,7 @@ class MemberControllerTest extends PresentationTest {
     }
 
     @Test
-    void 키워드와_옵션으로_회원을_조회한다() throws Exception {
+    void 비회원이_키워드와_옵션으로_회원을_조회한다() throws Exception {
         // given
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE_CONSTANT, BACKEND_CONSTANT);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
@@ -268,7 +297,7 @@ class MemberControllerTest extends PresentationTest {
 
         MemberPageResponse memberPageResponse = MemberPageResponse.from(
                 new SliceImpl<>(List.of(member), pageable, false));
-        given(memberService.findByContains(any(MemberSearchRequest.class), any(PageRequest.class)))
+        given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
 
         // when
@@ -281,7 +310,43 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(document("members-search"))
                 .andDo(print());
 
-        verify(memberService).findByContains(refEq(memberSearchRequest), refEq(pageable));
+        verify(memberService).findByContains(isNull(), refEq(memberSearchRequest), refEq(pageable));
+    }
+
+    @Test
+    void 회원이_키워드와_옵션으로_회원을_조회한다() throws Exception {
+        // given
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE_CONSTANT, BACKEND_CONSTANT);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
+                KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
+        Long loggedInId = 2L;
+        Following following = Following.builder()
+                .followerId(loggedInId)
+                .followeeId(member.getId())
+                .build();
+        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+                new SliceImpl<>(List.of(member), pageable, false), List.of(following));
+        String authorizationHeader = "Bearer Token";
+
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(loggedInId.toString());
+        given(memberService.findByContains(eq(loggedInId), any(MemberSearchRequest.class), any(PageRequest.class)))
+                .willReturn(memberPageResponse);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members?query=cheese&careerLevel=none&jobType=backend&page=0&size=10")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("members-search-when-logged-in"))
+                .andDo(print());
+
+        verify(memberService).findByContains(eq(loggedInId), refEq(memberSearchRequest), refEq(pageable));
     }
 
     @Test
@@ -295,7 +360,7 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(memberService, times(0)).findByContains(any(MemberSearchRequest.class), any(PageRequest.class));
+        verify(memberService, times(0)).findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class));
     }
 
     @Test
@@ -309,7 +374,7 @@ class MemberControllerTest extends PresentationTest {
 
         MemberPageResponse memberPageResponse = MemberPageResponse.from(
                 new SliceImpl<>(List.of(member), pageable, false));
-        given(memberService.findByContains(any(MemberSearchRequest.class), any(PageRequest.class)))
+        given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
 
         // when
@@ -321,7 +386,7 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isOk())
                 .andDo(print());
 
-        verify(memberService).findByContains(refEq(memberSearchRequest), refEq(pageable));
+        verify(memberService).findByContains(isNull(), refEq(memberSearchRequest), refEq(pageable));
     }
 
     @Test

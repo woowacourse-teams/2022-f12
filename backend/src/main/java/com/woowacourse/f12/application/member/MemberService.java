@@ -4,6 +4,7 @@ package com.woowacourse.f12.application.member;
 import com.woowacourse.f12.domain.member.*;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.response.member.LoggedInMemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
@@ -13,10 +14,13 @@ import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,9 +34,19 @@ public class MemberService {
         this.followingRepository = followingRepository;
     }
 
-    public MemberResponse findById(final Long memberId) {
-        final Member member = findMember(memberId);
-        return MemberResponse.from(member);
+    public LoggedInMemberResponse findByLoggedInId(final Long loggedInId) {
+        final Member member = findMember(loggedInId);
+        return LoggedInMemberResponse.from(member);
+    }
+
+    public MemberResponse findById(final Long targetId, final Long loggedInId) {
+        final Member member = findMember(targetId);
+        final boolean following = isFollowing(loggedInId, targetId);
+        return MemberResponse.from(member, following);
+    }
+
+    private boolean isFollowing(@Nullable final Long followerId, final Long followeeId) {
+        return Objects.nonNull(followerId) && followingRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId);
     }
 
     @Transactional
@@ -46,12 +60,19 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    public MemberPageResponse findByContains(final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
+    public MemberPageResponse findByContains(@Nullable final Long loggedInId, final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
         final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
         final JobType jobType = parseJobType(memberSearchRequest);
         final Slice<Member> slice = memberRepository.findBySearchConditions(memberSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
-        return MemberPageResponse.from(slice);
+        if (loggedInId == null) {
+            return MemberPageResponse.from(slice);
+        }
+        final List<Following> followings = followingRepository.findByFollowerIdAndFolloweeIdIn(loggedInId, slice.getContent()
+                .stream()
+                .map(Member::getId)
+                .collect(Collectors.toList()));
+        return MemberPageResponse.from(slice, followings);
     }
 
     private JobType parseJobType(final MemberSearchRequest memberSearchRequest) {
