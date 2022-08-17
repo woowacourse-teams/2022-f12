@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 3rem;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
 `;
 
 export const CategoryTitle = styled.h2`
