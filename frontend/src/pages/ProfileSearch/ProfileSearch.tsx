@@ -28,10 +28,7 @@ function ProfileSearch() {
   } = useSearch<ProfileSearchResult>({
     url: ENDPOINTS.MEMBERS,
     query: searchInput,
-    filter: {
-      career: careerLevel,
-      jobType: jobType,
-    },
+    filter: { careerLevel, jobType },
     size: '4',
   });
 
