@@ -24,13 +24,12 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 public class LoggingFilter extends OncePerRequestFilter {
 
     private static final String REQUEST_LOG_NO_BODY_FORMAT = "REQUEST :: METHOD: {}, URL: {}, AUTHORIZATION: {}";
-    private static final String REQUEST_LOG_FORMAT = REQUEST_LOG_NO_BODY_FORMAT.concat(", BODY: {}");
+    private static final String REQUEST_LOG_FORMAT = REQUEST_LOG_NO_BODY_FORMAT + ", BODY: {}";
     private static final String RESPONSE_LOG_NO_BODY_FORMAT = "RESPONSE :: STATUS_CODE: {}, METHOD: {}, URL: {}, QUERY_COUNT: {}, TIME_TAKEN: {}ms";
-    private static final String RESPONSE_LOG_FORMAT = RESPONSE_LOG_NO_BODY_FORMAT.concat(", BODY: {}");
+    private static final String RESPONSE_LOG_FORMAT = RESPONSE_LOG_NO_BODY_FORMAT + ", BODY: {}";
     private static final String QUERY_COUNT_WARNING_LOG_FORMAT = "쿼리가 {}번 이상 실행되었습니다.";
 
     private static final int QUERY_COUNT_WARNING_STANDARD = 10;
-    private static final String NOT_JSON_VALUE = "NOT_JSON_VALUE";
     private static final String START_OF_PARAMS = "?";
     private static final String PARAM_DELIMITER = "&";
     private static final String KEY_VALUE_DELIMITER = "=";
@@ -68,26 +67,28 @@ public class LoggingFilter extends OncePerRequestFilter {
 
     private void logRequest(final ContentCachingRequestWrapper request) {
         final String requestBody = new String(request.getContentAsByteArray());
+        final String requestURIWithParams = getRequestURIWithParams(request);
 
         if (requestBody.isBlank()) {
-            log.info(REQUEST_LOG_NO_BODY_FORMAT, request.getMethod(), getRequestURIWithParams(request),
+            log.info(REQUEST_LOG_NO_BODY_FORMAT, request.getMethod(), requestURIWithParams,
                     request.getHeader(AUTHORIZATION));
             return;
         }
-        log.info(REQUEST_LOG_FORMAT, request.getMethod(), getRequestURIWithParams(request),
+        log.info(REQUEST_LOG_FORMAT, request.getMethod(), requestURIWithParams,
                 request.getHeader(AUTHORIZATION), requestBody);
     }
 
     private void logResponse(final ContentCachingRequestWrapper request, final ContentCachingResponseWrapper response) {
         final Optional<String> jsonResponseBody = getJsonResponseBody(response);
         final int queryCount = apiQueryCounter.getCount();
+        final String requestURIWithParams = getRequestURIWithParams(request);
 
         if (jsonResponseBody.isEmpty()) {
             log.info(RESPONSE_LOG_NO_BODY_FORMAT, response.getStatus(), request.getMethod(),
-                    getRequestURIWithParams(request), queryCount, apiTimer.getLastTaskTimeMillis());
+                    requestURIWithParams, queryCount, apiTimer.getLastTaskTimeMillis());
             return;
         }
-        log.info(RESPONSE_LOG_FORMAT, response.getStatus(), request.getMethod(), getRequestURIWithParams(request),
+        log.info(RESPONSE_LOG_FORMAT, response.getStatus(), request.getMethod(), requestURIWithParams,
                 queryCount, apiTimer.getLastTaskTimeMillis(), jsonResponseBody.get());
     }
 
@@ -98,20 +99,21 @@ public class LoggingFilter extends OncePerRequestFilter {
             return requestURI;
         }
         final String parsedParams = parseParams(params);
-        return requestURI.concat(parsedParams);
+        return requestURI + parsedParams;
     }
 
     private String parseParams(final Map<String, String[]> params) {
         final String everyParamStrings = params.entrySet().stream()
                 .map(this::toParamString)
                 .collect(Collectors.joining(PARAM_DELIMITER));
-        return START_OF_PARAMS.concat(everyParamStrings);
+        return START_OF_PARAMS + everyParamStrings;
     }
 
     private String toParamString(final Entry<String, String[]> entry) {
         final String key = entry.getKey();
+        final StringBuilder builder = new StringBuilder();
         return Arrays.stream(entry.getValue())
-                .map(value -> key.concat(KEY_VALUE_DELIMITER).concat(value))
+                .map(value -> builder.append(key).append(KEY_VALUE_DELIMITER).append(value))
                 .collect(Collectors.joining(PARAM_DELIMITER));
     }
 
