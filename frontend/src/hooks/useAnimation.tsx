@@ -12,11 +12,11 @@ function useAnimation(condition: boolean): [boolean, () => void, boolean] {
   const shouldRender = condition || isComplete;
   const animationTrigger = condition && isComplete;
 
-  const handleTransitionEnd = () => {
+  const handleUnmount = () => {
     if (!condition) setComplete(false);
   };
 
-  return [shouldRender, handleTransitionEnd, animationTrigger];
+  return [shouldRender, handleUnmount, animationTrigger];
 }
 
 export default useAnimation;

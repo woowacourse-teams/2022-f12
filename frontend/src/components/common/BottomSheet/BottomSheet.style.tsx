@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
-export const Container = styled.section`
+export const Container = styled.section<{
+  animationTrigger?: boolean;
+}>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -11,19 +13,10 @@ export const Container = styled.section`
 
   width: 50%;
 
-  transform-origin: bottom;
-  animation: slide-up 0.2s ease;
+  transition: 200ms;
 
-  @keyframes slide-up {
-    0% {
-      transform: translateY(20rem);
-      opacity: 0;
-    }
-    100% {
-      transform: translateY(0rem);
-      opacity: 1;
-    }
-  }
+  ${({ animationTrigger }) =>
+    !animationTrigger && 'transform: translateY(20rem); opacity: 0;'}
 `;
 
 export const Backdrop = styled.div`

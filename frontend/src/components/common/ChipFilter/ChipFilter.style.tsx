@@ -13,4 +13,6 @@ export const Button = styled.button<{
   border-radius: 2rem;
   border: none;
   font-weight: 500;
+
+  transition: 300ms;
 `;

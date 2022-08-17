@@ -13,19 +13,28 @@ type Props = Omit<DataFetchStatus, 'isReady'> & {
   title: string;
   data: Product[];
   getNextPage?: () => void;
+  pageSize?: number;
 };
 
-function ProductListSection({ title, data, isLoading, isError, getNextPage }: Props) {
+function ProductListSection({
+  title,
+  data,
+  isLoading,
+  isError,
+  getNextPage,
+  pageSize = 12,
+}: Props) {
   const isSinglePage = getNextPage === undefined;
   const productList = (
     <Masonry columnCount={4}>
-      {data.map(({ id, imageUrl, name, rating, reviewCount }) => (
+      {data.map(({ id, imageUrl, name, rating, reviewCount }, index) => (
         <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
           <ProductCard
             imageUrl={imageUrl}
             name={name}
             rating={rating}
             reviewCount={reviewCount}
+            index={index % pageSize}
           />
         </Link>
       ))}

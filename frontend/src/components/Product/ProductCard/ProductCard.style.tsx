@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Container = styled.article`
+export const Container = styled.article<{ index: number }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -18,8 +18,25 @@ export const Container = styled.article`
       text-decoration: underline;
     }
   }
-`;
 
+  ${({ index }) => css`
+    animation: fade-in-${index} ${500 + index * 50}ms;
+
+    @keyframes fade-in-${index} {
+      0% {
+        transform: translateY(-10px);
+        scale: 1.1;
+        opacity: 0;
+      }
+
+      ${index * 5}% {
+        transform: translateY(-10px);
+        scale: 1.1;
+        opacity: 0;
+      }
+    }
+  `}
+`;
 export const ImageWrapper = styled.div`
   width: 100%;
   overflow: hidden;
