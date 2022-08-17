@@ -1,23 +1,24 @@
 package com.woowacourse.f12.application.auth;
 
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
+import com.woowacourse.f12.dto.response.member.MemberResponse;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE_UPDATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.response.member.MemberResponse;
-import java.util.Optional;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -60,7 +61,7 @@ class AuthServiceTest {
         assertAll(
                 () -> assertThat(loginResponse.getToken()).isEqualTo(applicationToken),
                 () -> assertThat(loginResponse.getMember()).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(member)),
+                        .isEqualTo(MemberResponse.from(member, false)),
                 () -> verify(gitHubOauthClient).getAccessToken(code),
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
@@ -93,7 +94,7 @@ class AuthServiceTest {
         assertAll(
                 () -> assertThat(loginResponse.getToken()).isEqualTo(applicationToken),
                 () -> assertThat(loginResponse.getMember()).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(member)),
+                        .isEqualTo(MemberResponse.from(member, false)),
                 () -> verify(gitHubOauthClient).getAccessToken(code),
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),

@@ -7,6 +7,7 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.response.member.LoggedInMemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
@@ -70,8 +71,8 @@ class MemberControllerTest extends PresentationTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(memberService.findById(1L))
-                .willReturn(MemberResponse.from(CORINNE.생성(1L)));
+        given(memberService.findByLoggedInId(1L))
+                .willReturn(LoggedInMemberResponse.from(CORINNE.생성(1L)));
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -87,7 +88,7 @@ class MemberControllerTest extends PresentationTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(memberService).findById(1L)
+                () -> verify(memberService).findByLoggedInId(1L)
         );
     }
 
@@ -95,8 +96,8 @@ class MemberControllerTest extends PresentationTest {
     void 비로그인_상태에서_회원정보를_조회_성공() throws Exception {
         // given
         Long memberId = 1L;
-        given(memberService.findById(memberId))
-                .willReturn(MemberResponse.from(CORINNE.생성(memberId)));
+        given(memberService.findById(memberId, null))
+                .willReturn(MemberResponse.from(CORINNE.생성(memberId), false));
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -108,14 +109,14 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(document("members-get-by-memberId"))
                 .andDo(print());
 
-        verify(memberService).findById(1L);
+        verify(memberService).findById(1L, null);
     }
 
     @Test
     void 비로그인_상태에서_회원정보를_조회_실패_등록되지_않은_회원일_경우() throws Exception {
         // given
         Long memberId = 1L;
-        given(memberService.findById(memberId))
+        given(memberService.findById(memberId, null))
                 .willThrow(new MemberNotFoundException());
 
         // when
@@ -127,7 +128,34 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isNotFound())
                 .andDo(print());
 
-        verify(memberService).findById(1L);
+        verify(memberService).findById(1L, null);
+    }
+
+    @Test
+    void 로그인된_상태에서_다른_회원의_정보_조회_성공() throws Exception {
+        // given
+        Long targetId = 1L;
+        Long loggedInId = 2L;
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(loggedInId.toString());
+        given(memberService.findById(targetId, loggedInId))
+                .willReturn(MemberResponse.from(CORINNE.생성(targetId), false));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/" + targetId)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("members-get-by-memberId-when-logged-in"))
+                .andDo(print());
+        assertAll(
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(memberService).findById(targetId, loggedInId)
+        );
     }
 
     @Test

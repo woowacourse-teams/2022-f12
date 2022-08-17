@@ -55,19 +55,43 @@ class MemberServiceTest {
     private MemberService memberService;
 
     @Test
-    void 멤버_아이디로_회원정보를_조회한다() {
+    void 비회원이_멤버_아이디로_회원정보를_조회한다() {
         // given
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(CORINNE.생성(1L)));
 
         // when
-        MemberResponse memberResponse = memberService.findById(1L);
+        MemberResponse memberResponse = memberService.findById(1L, null);
 
         // then
         assertAll(
                 () -> assertThat(memberResponse).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(CORINNE.생성(1L))),
+                        .isEqualTo(MemberResponse.from(CORINNE.생성(1L), false)),
                 () -> verify(memberRepository).findById(1L)
+        );
+    }
+
+    @Test
+    void 로그인된_회원이_다른_회원의_정보를_아이디로_조회한다() {
+        // given
+        Long targetId = 1L;
+        Long loggedInId = 2L;
+        Member corinne = CORINNE.생성(targetId);
+
+        given(memberRepository.findById(targetId))
+                .willReturn(Optional.of(corinne));
+        given(followingRepository.existsByFollowerIdAndFolloweeId(loggedInId, targetId))
+                .willReturn(false);
+
+        // when
+        MemberResponse actual = memberService.findById(targetId, loggedInId);
+
+        // then
+        assertAll(
+                () -> assertThat(actual).usingRecursiveComparison()
+                        .isEqualTo(MemberResponse.from(corinne, false)),
+                () -> verify(memberRepository).findById(targetId),
+                () -> verify(followingRepository).existsByFollowerIdAndFolloweeId(loggedInId, targetId)
         );
     }
 
@@ -79,7 +103,7 @@ class MemberServiceTest {
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> memberService.findById(1L))
+                () -> assertThatThrownBy(() -> memberService.findById(1L, null))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
                 () -> verify(memberRepository).findById(1L)
         );
@@ -93,11 +117,11 @@ class MemberServiceTest {
                 .willReturn(Optional.of(member));
 
         // when
-        MemberResponse memberResponse = memberService.findById(1L);
+        MemberResponse memberResponse = memberService.findById(1L, null);
         // then
         assertAll(
                 () -> assertThat(memberResponse).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(member)),
+                        .isEqualTo(MemberResponse.from(member, false)),
                 () -> verify(memberRepository).findById(1L)
         );
     }

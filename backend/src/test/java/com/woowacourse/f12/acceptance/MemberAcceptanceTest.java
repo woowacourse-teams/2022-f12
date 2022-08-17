@@ -63,7 +63,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(memberGetResponse.as(MemberResponse.class)).usingRecursiveComparison()
                         .comparingOnlyFields("careerLevel", "jobType")
-                        .isEqualTo(MemberResponse.from(member)),
+                        .isEqualTo(MemberResponse.from(member, false)),
                 () -> assertThat(memberUpdatedResponse.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }
@@ -86,7 +86,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember))
+                        .isEqualTo(MemberResponse.from(expectedMember, false))
         );
     }
 
@@ -105,7 +105,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember))
+                        .isEqualTo(MemberResponse.from(expectedMember, false))
         );
     }
 
@@ -134,7 +134,79 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember))
+                        .isEqualTo(MemberResponse.from(expectedMember, false))
+        );
+    }
+
+    @Test
+    void 로그인_상태에서_팔로우한_회원의_정보를_조회한다() {
+        // given
+        LoginResponse firstLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        String firstToken = firstLoginResponse.getToken();
+
+        MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstToken, memberRequest);
+
+        LoginResponse secondLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
+        String secondToken = secondLoginResponse.getToken();
+        LoginMemberResponse secondLoginResponseMember = secondLoginResponse.getMember();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", secondToken, memberRequest);
+
+        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + secondLoginResponseMember.getId() + "/following", firstToken);
+
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/" + secondLoginResponseMember.getId(), firstToken);
+
+        // then
+        Member expectedMember = Member.builder()
+                .id(secondLoginResponseMember.getId())
+                .name(secondLoginResponseMember.getName())
+                .gitHubId(secondLoginResponseMember.getGitHubId())
+                .imageUrl(secondLoginResponseMember.getImageUrl())
+                .careerLevel(JUNIOR)
+                .jobType(BACKEND)
+                .followerCount(1)
+                .build();
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
+                        .isEqualTo(MemberResponse.from(expectedMember, true))
+        );
+    }
+
+    @Test
+    void 로그인_상태에서_팔로우하지_않은_회원의_정보를_조회한다() {
+        // given
+        LoginResponse firstLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        String firstToken = firstLoginResponse.getToken();
+
+        MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstToken, memberRequest);
+
+        LoginResponse secondLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
+        String secondToken = secondLoginResponse.getToken();
+        LoginMemberResponse secondLoginResponseMember = secondLoginResponse.getMember();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", secondToken, memberRequest);
+
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/" + secondLoginResponseMember.getId(), firstToken);
+
+        // then
+        Member expectedMember = Member.builder()
+                .id(secondLoginResponseMember.getId())
+                .name(secondLoginResponseMember.getName())
+                .gitHubId(secondLoginResponseMember.getGitHubId())
+                .imageUrl(secondLoginResponseMember.getImageUrl())
+                .careerLevel(JUNIOR)
+                .jobType(BACKEND)
+                .followerCount(0)
+                .build();
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
+                        .isEqualTo(MemberResponse.from(expectedMember, false))
         );
     }
 

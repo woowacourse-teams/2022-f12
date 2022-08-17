@@ -10,6 +10,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.util.Objects;
+
 @Component
 public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -28,6 +30,9 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
                                   final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         final String authorizationHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        if (Objects.isNull(authorizationHeader)) {
+            return null;
+        }
         final String payload = jwtProvider.getPayload(authorizationHeader);
         try {
             return Long.parseLong(payload);
