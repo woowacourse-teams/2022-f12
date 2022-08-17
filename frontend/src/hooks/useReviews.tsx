@@ -40,6 +40,27 @@ function useReviews({
 function useReviews({ size, productId, handleRefetchOnSuccess }: Props): Return {
   const [data] = useSessionStorage<UserData>('userData');
   const { showAlert, getConfirm } = useModal();
+
+  const hasToken = data && data.token !== undefined;
+
+  const CommonParams = {
+    params: {
+      size,
+      sort: 'createdAt,desc',
+    },
+  };
+
+  const ParamsWithProduct = {
+    ...CommonParams,
+    url: ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId),
+    headers: hasToken ? { Authorization: `Bearer ${data.token}` } : null,
+  };
+
+  const ParamsWithoutProduct = {
+    ...CommonParams,
+    url: ENDPOINTS.REVIEWS,
+  };
+
   const {
     data: reviews,
     getNextPage,
@@ -47,31 +68,17 @@ function useReviews({ size, productId, handleRefetchOnSuccess }: Props): Return 
     isReady,
     isLoading,
     isError,
-  } = useGetMany<Review>({
-    url:
-      productId !== undefined
-        ? `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`
-        : `${ENDPOINTS.REVIEWS}`,
-    params: {
-      size,
-      sort: 'createdAt,desc',
-    },
-  });
+  } = useGetMany<Review>(
+    productId === undefined ? ParamsWithoutProduct : ParamsWithProduct
+  );
 
   const postReview = usePost<ReviewInput>({
     url: `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`,
-    headers: { Authorization: `Bearer ${data?.token}` },
   });
 
-  const deleteReview = useDelete({
-    url: `${ENDPOINTS.REVIEWS}`,
-    headers: { Authorization: `Bearer ${data?.token}` },
-  });
+  const deleteReview = useDelete({ url: `${ENDPOINTS.REVIEWS}` });
 
-  const putReview = usePut<ReviewInput>({
-    url: `${ENDPOINTS.REVIEWS}`,
-    headers: { Authorization: `Bearer ${data?.token}` },
-  });
+  const putReview = usePut<ReviewInput>({ url: `${ENDPOINTS.REVIEWS}` });
 
   const scrollReviewListToTop = () => {
     window.scrollTo({
