@@ -114,6 +114,7 @@ sonarqube {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.profile", "Sonar way"
         property "sonar.test.inclusions", "**/*Test.java"
+        property "sonar.coverage.exclusions", "**/*F12Application*,**/*Request*,**/*Response*,**/*Exception*,**/*Fake*,**/*Fixture*,**/test/**/*Util*,**/RestDocsConfig*"
         property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     }
 }
