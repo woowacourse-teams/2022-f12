@@ -10,6 +10,7 @@ import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
+import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.badrequest.SelfFollowException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
@@ -431,5 +432,89 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(print());
 
         verify(memberService).follow(followerId, followeeId);
+    }
+
+    @Test
+    void 언팔로우_성공() throws Exception {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(followerId.toString());
+        willDoNothing().given(memberService)
+                .unfollow(followerId, followeeId);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/api/v1/members/" + followeeId + "/following")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isNoContent())
+                .andDo(document("unfollow"))
+                .andDo(print());
+
+        verify(memberService).unfollow(followerId, followeeId);
+    }
+
+    @Test
+    void 언팔로우_실패_팔로워_또는_팔로이가_없음() throws Exception {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(followerId.toString());
+        willThrow(new MemberNotFoundException())
+                .given(memberService)
+                .unfollow(followerId, followeeId);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/api/v1/members/" + followeeId + "/following")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
+        verify(memberService).unfollow(followerId, followeeId);
+    }
+
+    @Test
+    void 언팔로우_실패_팔로우_상태가_아님() throws Exception {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(followerId.toString());
+        willThrow(new NotFollowingException())
+                .given(memberService)
+                .unfollow(followerId, followeeId);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/api/v1/members/" + followeeId + "/following")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
+        verify(memberService).unfollow(followerId, followeeId);
     }
 }

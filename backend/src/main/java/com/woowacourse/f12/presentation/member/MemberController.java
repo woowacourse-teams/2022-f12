@@ -58,4 +58,12 @@ public class MemberController {
         return ResponseEntity.noContent()
                 .build();
     }
+
+    @DeleteMapping("/{memberId}/following")
+    @LoginRequired
+    public ResponseEntity<Void> unfollow(@VerifiedMember final Long followerId, @PathVariable("memberId") final Long followeeId) {
+        memberService.unfollow(followerId, followeeId);
+        return ResponseEntity.noContent()
+                .build();
+    }
 }
