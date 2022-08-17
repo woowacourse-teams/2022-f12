@@ -3,6 +3,7 @@ import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlace
 
 import ProfileCard from '@/components/Profile/ProfileCard/ProfileCard';
 import * as S from '@/components/Profile/ProfileSearchResult/ProfileSearchResult.style';
+import { PROFILE_SEARCH_SIZE } from '@/pages/ProfileSearch/ProfileSearch';
 
 type Props = Omit<DataFetchStatus, 'isReady'> & {
   data: ProfileSearchResult[];
@@ -16,7 +17,7 @@ function ProfileSearchResult({
   isError,
 }: Props) {
   const profileSearchDataList = profileSearchData.map(
-    ({ id, gitHubId, imageUrl, careerLevel, jobType, profileProducts }) => {
+    ({ id, gitHubId, imageUrl, careerLevel, jobType, profileProducts }, index) => {
       return (
         <ProfileCard
           id={id}
@@ -26,6 +27,7 @@ function ProfileSearchResult({
           careerLevel={careerLevel}
           jobType={jobType}
           profileProducts={profileProducts}
+          index={index % PROFILE_SEARCH_SIZE}
         />
       );
     }

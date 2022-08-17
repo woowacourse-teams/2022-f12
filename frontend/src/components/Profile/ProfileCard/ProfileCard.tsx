@@ -34,6 +34,7 @@ type Props = {
   careerLevel: string;
   jobType: string;
   profileProducts: ProfileProduct[];
+  index?: number;
 };
 
 function ProfileCard({
@@ -43,6 +44,7 @@ function ProfileCard({
   careerLevel,
   jobType,
   profileProducts,
+  index = 0,
 }: Props) {
   const [positionX, setPositionX] = useState(0);
 
@@ -89,7 +91,7 @@ function ProfileCard({
   );
 
   return (
-    <S.Container>
+    <S.Container index={index}>
       <S.LeftSection>
         <S.ProfileImageWrapper>
           <S.ProfileImage src={imageUrl} />

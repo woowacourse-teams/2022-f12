@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import CategoryNav from '@/components/common/CategoryNav/CategoryNav';
 import * as S from '@/components/common/HeaderNav/HeaderNav.style';
@@ -9,6 +9,7 @@ import useAuth from '@/hooks/useAuth';
 
 import { GITHUB_AUTH_URL } from '@/constants/api';
 import ROUTES from '@/constants/routes';
+import { CustomNavLink } from '@/style/GlobalStyles';
 
 function HeaderNav() {
   const [categoryOpen, setCategoryOpen] = useState(false);
@@ -34,13 +35,13 @@ function HeaderNav() {
           <S.TransparentButton onClick={handleCategoryToggle} aria-label="카테고리">
             카테고리
           </S.TransparentButton>
-          <Link to={ROUTES.PRODUCTS}>제품 검색</Link>
-          <Link to={ROUTES.PROFILE_SEARCH}>프로필 검색</Link>
+          <CustomNavLink to={ROUTES.PRODUCTS}>제품 검색</CustomNavLink>
+          <CustomNavLink to={ROUTES.PROFILE_SEARCH}>프로필 검색</CustomNavLink>
         </S.FlexLeftWrapper>
         <S.FlexRightWrapper>
           {isLoggedIn ? (
             <>
-              <S.ProfileLink to={ROUTES.PROFILE}>내 프로필</S.ProfileLink>
+              <CustomNavLink to={ROUTES.PROFILE}>내 프로필</CustomNavLink>
               <S.TransparentButton onClick={logout}>로그아웃</S.TransparentButton>
             </>
           ) : (
