@@ -12,7 +12,7 @@ function DeskSetup({ inventoryList }: Props) {
 
   const selectedItemsByCategory = Object.values(selectedItems).reduce(
     (products, { product }) => {
-      return { ...products, [product.category]: product };
+      return { ...products, [product.category]: { product } };
     },
     {}
   );
@@ -26,13 +26,8 @@ function DeskSetup({ inventoryList }: Props) {
       <S.Container>
         <S.CardWrapper>
           {deskSetupItems.length > 0 ? (
-            deskSetupItems.map((item: Product) => (
-              <DeskSetupCard
-                key={item.id}
-                item={item}
-                size={'l'}
-                borderType={'default'}
-              />
+            deskSetupItems.map((item: InventoryProduct, index) => (
+              <DeskSetupCard key={index} item={item} size={'l'} borderType={'default'} />
             ))
           ) : (
             <S.NoContents>데스크 셋업에 추가한 제품이 없어요</S.NoContents>

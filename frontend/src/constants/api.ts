@@ -13,6 +13,7 @@ export const ENDPOINTS = {
   LOGIN: '/login',
   INVENTORY_PRODUCTS: '/members/inventoryProducts',
   OTHER_INVENTORY_PRODUCTS: (id: string) => `/members/${id}/inventoryProducts`,
+  REVIEW_BY_INVENTORY_PRODUCT_ID: (id: string) => `/inventoryProducts/${id}/reviews`,
   MEMBERS: '/members',
   ME: '/members/me',
   MY_FOLLOWING: '/members/me/followees',
