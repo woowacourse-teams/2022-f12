@@ -9,11 +9,10 @@ import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
+import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
+import com.woowacourse.f12.exception.badrequest.SelfFollowException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,6 +26,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
@@ -36,18 +39,16 @@ import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
-class MemberPresentationTest extends PresentationTest {
+class MemberControllerTest extends PresentationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -320,5 +321,115 @@ class MemberPresentationTest extends PresentationTest {
                 .andDo(print());
 
         verify(memberService).findByContains(refEq(memberSearchRequest), refEq(pageable));
+    }
+
+    @Test
+    void 팔로우_성공() throws Exception {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(followerId.toString());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/members/" + followeeId + "/following")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isNoContent())
+                .andDo(document("follow"))
+                .andDo(print());
+
+        verify(memberService).follow(followerId, followeeId);
+    }
+
+    @Test
+    void 팔로우_실패_자기_자신을_팔로우() throws Exception {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 1L;
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(followerId.toString());
+        willThrow(new SelfFollowException())
+                .given(memberService)
+                .follow(followerId, followeeId);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/members/" + followeeId + "/following")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
+        verify(memberService).follow(followerId, followeeId);
+    }
+
+    @Test
+    void 팔로우_실패_팔로워_또는_팔로이가_없음() throws Exception {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(followerId.toString());
+        willThrow(new MemberNotFoundException())
+                .given(memberService)
+                .follow(followerId, followeeId);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/members/" + followeeId + "/following")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
+        verify(memberService).follow(followerId, followeeId);
+    }
+
+    @Test
+    void 팔로우_실패_이미_팔로우_상태임() throws Exception {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(followerId.toString());
+        willThrow(new AlreadyFollowingException())
+                .given(memberService)
+                .follow(followerId, followeeId);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/members/" + followeeId + "/following")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
+        verify(memberService).follow(followerId, followeeId);
     }
 }

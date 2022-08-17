@@ -1,14 +1,12 @@
 package com.woowacourse.f12.application.member;
 
 
-import com.woowacourse.f12.domain.member.CareerLevel;
-import com.woowacourse.f12.domain.member.JobType;
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.domain.member.*;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
+import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
@@ -24,9 +22,11 @@ import java.util.Objects;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final FollowingRepository followingRepository;
 
-    public MemberService(final MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, FollowingRepository followingRepository) {
         this.memberRepository = memberRepository;
+        this.followingRepository = followingRepository;
     }
 
     public MemberResponse findById(final Long memberId) {
@@ -67,5 +67,27 @@ public class MemberService {
             return null;
         }
         return careerLevelConstant.toCareerLevel();
+    }
+
+    public void follow(final Long followerId, final Long followeeId) {
+        validateFollowingMembersExist(followerId, followeeId);
+        validateNotFollowing(followerId, followeeId);
+        final Following following = Following.builder()
+                .followerId(followerId)
+                .followeeId(followeeId)
+                .build();
+        followingRepository.save(following);
+    }
+
+    private void validateFollowingMembersExist(final Long followerId, final Long followeeId) {
+        if (!memberRepository.existsById(followerId) || !memberRepository.existsById(followeeId)) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    private void validateNotFollowing(Long followerId, Long followeeId) {
+        if (followingRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId)) {
+            throw new AlreadyFollowingException();
+        }
     }
 }

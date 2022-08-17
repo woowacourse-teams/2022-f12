@@ -320,6 +320,26 @@ class MemberAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @Test
+    void 다른_회원을_팔로우한다() {
+        // given
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+
+        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
+
+        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", secondLoginResponse.getToken(), memberRequest);
+
+        Long targetId = secondLoginResponse.getMember().getId();
+
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + targetId + "/following", firstLoginResponse.getToken());
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     private Product 제품을_저장한다(Product product) {
         return productRepository.save(product);
     }
