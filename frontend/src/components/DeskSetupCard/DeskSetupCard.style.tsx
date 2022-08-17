@@ -18,6 +18,7 @@ const cardSize = {
   s: {
     width: '170px',
     height: '235px',
+    imageHeight: '140px',
     titleFontSize: '0.9rem',
     titleHeight: '1.8rem',
     buttonFontSize: '0.5rem',
@@ -26,6 +27,7 @@ const cardSize = {
   l: {
     width: '230px',
     height: '305px',
+    imageHeight: '200px',
     titleFontSize: '1rem',
     titleHeight: '2rem',
     buttonFontSize: '0.8rem',
@@ -75,14 +77,18 @@ export const Container = styled.div<{
   }
 `;
 
-export const ImageWrapper = styled.div`
+export const ImageWrapper = styled.div<{ size: 's' | 'l' }>`
   border: 1px solid ${({ theme }) => theme.colors.secondary};
+  ${({ size }) => `
+    height: ${cardSize[size].imageHeight};
+  `}
   margin-bottom: 0.45rem;
   width: 100%;
 `;
 
 export const ProductImage = styled.img`
   width: 100%;
+  height: 100%;
   object-fit: contain;
 `;
 

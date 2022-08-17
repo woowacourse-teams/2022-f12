@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 3rem;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-gap: 1rem;
 `;
 
 export const CategoryTitle = styled.h2`
@@ -27,4 +27,9 @@ export const PseudoButton = styled.div`
   background-color: transparent;
   border: none;
   cursor: pointer;
+`;
+
+export const NoContents = styled.div`
+  width: 100%;
+  font-size: 1.2rem;
 `;

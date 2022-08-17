@@ -491,7 +491,7 @@ export const InventoryProducts: { items: InventoryProduct[] } = {
         id: 1,
         name: '키보드1',
         imageUrl:
-          'http://img.danawa.com/prod_img/500000/833/414/img/15414833_1.jpg?shrink=330:330&_v=20211013110445',
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Jenkins_logo.svg/1200px-Jenkins_logo.svg.png',
         reviewCount: 0,
         rating: 0.0,
         category: 'keyboard',

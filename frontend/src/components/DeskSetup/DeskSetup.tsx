@@ -25,9 +25,18 @@ function DeskSetup({ inventoryList }: Props) {
     <>
       <S.Container>
         <S.CardWrapper>
-          {deskSetupItems.map((item: Product) => (
-            <DeskSetupCard key={item.id} item={item} size={'l'} borderType={'default'} />
-          ))}
+          {deskSetupItems.length > 0 ? (
+            deskSetupItems.map((item: Product) => (
+              <DeskSetupCard
+                key={item.id}
+                item={item}
+                size={'l'}
+                borderType={'default'}
+              />
+            ))
+          ) : (
+            <S.NoContents>데스크 셋업에 추가한 제품이 없어요</S.NoContents>
+          )}
         </S.CardWrapper>
       </S.Container>
     </>

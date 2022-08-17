@@ -4,10 +4,12 @@ import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 
 type Props = {
   userData: Member;
+  isOwnProfile: boolean;
 };
 
-function UserInfo({ userData }: Props) {
+function UserInfo({ userData, isOwnProfile }: Props) {
   const { imageUrl, gitHubId, jobType, careerLevel } = userData;
+
   return (
     <>
       <S.Container>
@@ -30,6 +32,7 @@ function UserInfo({ userData }: Props) {
           <S.FollowerCount>0명이 팔로우함</S.FollowerCount>
         </S.InfoWrapper>
       </S.Container>
+      {!isOwnProfile && <S.FollowButton>팔로우</S.FollowButton>}
     </>
   );
 }

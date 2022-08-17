@@ -12,3 +12,10 @@ export const CardWrapper = styled.div`
   justify-content: center;
   gap: 4rem;
 `;
+
+export const NoContents = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  font-size: 1.5rem;
+`;

@@ -57,9 +57,8 @@ function Profile() {
           isReady={isUserInfoReady}
           isError={isUserInfoError}
         >
-          <UserInfo userData={userInfo} />
+          <UserInfo userData={userInfo} isOwnProfile={isOwnProfile} />
         </AsyncWrapper>
-        <S.FollowButton>팔로우</S.FollowButton>
       </S.ProfileSection>
       <S.DeskSetupSection>
         <AsyncWrapper
