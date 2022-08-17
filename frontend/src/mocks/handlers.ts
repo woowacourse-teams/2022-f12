@@ -230,4 +230,6 @@ export const handlers = [
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
     deleteReviewByReviewId
   ),
+
+  rest.get(`${BASE_URL}${ENDPOINTS.MY_FOLLOWING}`, searchMember),
 ];
