@@ -1,15 +1,6 @@
 package com.woowacourse.f12.domain.member;
 
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
-import static com.woowacourse.f12.support.MemberFixtures.NOT_ADDITIONAL_INFO;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import com.woowacourse.f12.config.JpaConfig;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -20,12 +11,48 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
+
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.support.MemberFixtures.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 @DataJpaTest
 @Import({JpaConfig.class})
 class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private FollowingRepository followingRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Test
+    void 회원_조회_시_팔로워_수를_함께_조회한다() {
+        // given
+        Member corinne = CORINNE.생성();
+        Member mincho = MINCHO.생성();
+        memberRepository.saveAll(List.of(corinne, mincho));
+        followingRepository.save(Following.builder()
+                .followerId(corinne.getId())
+                .followeeId(mincho.getId())
+                .build());
+        entityManager.clear();
+
+        // when
+        Member savedMincho = memberRepository.findById(mincho.getId())
+                .get();
+
+        // then
+        assertThat(savedMincho.getFollowerCount()).isOne();
+    }
 
     @Test
     void 키워드와_옵션을_입력하지않고_회원을_조회한다() {

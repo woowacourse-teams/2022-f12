@@ -14,24 +14,25 @@ public class MemberResponse {
     private String imageUrl;
     private CareerLevelConstant careerLevel;
     private JobTypeConstant jobType;
+    private int followerCount;
 
     private MemberResponse() {
     }
 
     public MemberResponse(final Long id, final String gitHubId, final String name, final String imageUrl,
-                          final CareerLevelConstant careerLevel,
-                          final JobTypeConstant jobType) {
+                          final CareerLevelConstant careerLevel, final JobTypeConstant jobType, final int followerCount) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
+        this.followerCount = followerCount;
     }
 
     public static MemberResponse from(final Member member) {
         return new MemberResponse(member.getId(), member.getGitHubId(), member.getName(), member.getImageUrl(),
-                CareerLevelConstant.from(member.getCareerLevel()),
-                JobTypeConstant.from(member.getJobType()));
+                CareerLevelConstant.from(member.getCareerLevel()), JobTypeConstant.from(member.getJobType()),
+                member.getFollowerCount());
     }
 }

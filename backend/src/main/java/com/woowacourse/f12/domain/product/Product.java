@@ -10,6 +10,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "product", uniqueConstraints = {
         @UniqueConstraint(name = "NAME_UNIQUE", columnNames = {"name"})})
+@Builder
 @Getter
 public class Product {
 
@@ -38,11 +39,13 @@ public class Product {
     protected Product() {
     }
 
-    @Builder
-    private Product(final Long id, final String name, final String imageUrl, final Category category) {
+    private Product(final Long id, final String name, final String imageUrl, final int reviewCount, final double rating,
+                    final Category category) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.reviewCount = reviewCount;
+        this.rating = rating;
         this.category = category;
     }
 
