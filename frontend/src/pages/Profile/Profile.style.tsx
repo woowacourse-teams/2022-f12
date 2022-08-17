@@ -4,18 +4,17 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4rem;
+  gap: 3rem;
 `;
 
 export const ProfileSection = styled.section`
-  width: 100%;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 1.5rem;
+  width: 100%;
+  gap: 1rem;
 `;
-
-export const EmptySection = styled.section``;
 
 export const InventorySection = styled.section`
   width: 95%;
@@ -43,6 +42,7 @@ export const InventoryProductList = styled.div`
 export const Description = styled.p``;
 
 export const FollowButton = styled.button`
+  /* align-self: end; */
   padding: 0.4rem 1.4rem;
   background-color: ${({ theme }) => theme.colors.primary};
   border-radius: 0.4rem;

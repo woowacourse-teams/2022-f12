@@ -52,7 +52,6 @@ function Profile() {
   return (
     <S.Container>
       <S.ProfileSection>
-        <S.EmptySection />
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isUserInfoReady}
