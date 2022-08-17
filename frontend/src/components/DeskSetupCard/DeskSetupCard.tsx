@@ -11,7 +11,7 @@ type Props = {
 function DeskSetupCard({ size, item, borderType }: Props) {
   return (
     <S.Container size={size} borderType={borderType}>
-      <S.ImageWrapper>
+      <S.ImageWrapper size={size}>
         <S.ProductImage
           src={
             item.imageUrl
