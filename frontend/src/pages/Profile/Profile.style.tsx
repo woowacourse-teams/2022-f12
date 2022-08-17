@@ -41,13 +41,12 @@ export const InventoryProductList = styled.div`
 
 export const Description = styled.p``;
 
-export const FollowButton = styled.button`
-  /* align-self: end; */
-  padding: 0.4rem 1.4rem;
-  background-color: ${({ theme }) => theme.colors.primary};
-  border-radius: 0.4rem;
-  box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
-`;
+// export const FollowButton = styled.button`
+//   padding: 0.4rem 1.4rem;
+//   background-color: ${({ theme }) => theme.colors.primary};
+//   border-radius: 0.4rem;
+//   box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
+// `;
 
 export const EditDeskSetupButton = styled.button`
   padding: 0.4rem 1.4rem;

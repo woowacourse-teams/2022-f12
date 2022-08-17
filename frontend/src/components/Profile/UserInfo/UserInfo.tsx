@@ -30,6 +30,7 @@ function UserInfo({ userData }: Props) {
           <S.FollowerCount>0명이 팔로우함</S.FollowerCount>
         </S.InfoWrapper>
       </S.Container>
+      <S.FollowButton>팔로우</S.FollowButton>
     </>
   );
 }

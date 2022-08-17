@@ -45,3 +45,10 @@ export const ChipWrapper = styled.div`
 export const FollowerCount = styled.div`
   font-size: 0.95rem;
 `;
+
+export const FollowButton = styled.button`
+  padding: 0.4rem 1.4rem;
+  background-color: ${({ theme }) => theme.colors.primary};
+  border-radius: 0.4rem;
+  box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
+`;
