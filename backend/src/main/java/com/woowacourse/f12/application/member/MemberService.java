@@ -7,6 +7,7 @@ import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
+import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
@@ -85,7 +86,14 @@ public class MemberService {
         }
     }
 
-    private void validateNotFollowing(Long followerId, Long followeeId) {
+    public void unfollow(final Long followerId, final Long followeeId) {
+        validateFollowingMembersExist(followerId, followeeId);
+        final Following following = followingRepository.findByFollowerIdAndFolloweeId(followerId, followeeId)
+                .orElseThrow(NotFollowingException::new);
+        followingRepository.delete(following);
+    }
+
+    private void validateNotFollowing(final Long followerId, final Long followeeId) {
         if (followingRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId)) {
             throw new AlreadyFollowingException();
         }

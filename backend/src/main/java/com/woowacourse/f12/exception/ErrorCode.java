@@ -24,6 +24,7 @@ public enum ErrorCode {
 
     SELF_FOLLOW("40050"),
     ALREADY_FOLLOWING("40051"),
+    NOT_FOLLOWING("40052"),
 
     NOT_EXIST_TOKEN("40100"),
     EXPIRED_TOKEN("40101"),

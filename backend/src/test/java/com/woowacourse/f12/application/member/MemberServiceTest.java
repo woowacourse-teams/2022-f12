@@ -11,6 +11,7 @@ import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
+import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.support.MemberFixtures;
 import org.junit.jupiter.api.Test;
@@ -38,8 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.verify;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
@@ -226,6 +226,115 @@ class MemberServiceTest {
                 () -> verify(memberRepository).existsById(followeeId),
                 () -> verify(followingRepository).existsByFollowerIdAndFolloweeId(followerId, followeeId),
                 () -> verify(followingRepository, times(0)).save(any(Following.class))
+        );
+    }
+
+    @Test
+    void 다른_회원을_언팔로우한다() {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+        Following following = Following.builder()
+                .followerId(followerId)
+                .followeeId(followeeId)
+                .build();
+
+        given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followeeId))
+                .willReturn(true);
+        given(followingRepository.findByFollowerIdAndFolloweeId(followerId, followeeId))
+                .willReturn(Optional.of(following));
+        willDoNothing().given(followingRepository)
+                .delete(following);
+
+        // when
+        memberService.unfollow(followerId, followeeId);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followeeId),
+                () -> verify(followingRepository).findByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository).delete(following)
+        );
+    }
+
+    @Test
+    void 다른_회원을_언팔로우할_때_팔로워가_존재하지_않으면_예외를_반환한다() {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+        Following following = Following.builder()
+                .followerId(followerId)
+                .followeeId(followeeId)
+                .build();
+
+        given(memberRepository.existsById(followerId))
+                .willReturn(false);
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followeeId))
+                        .isExactlyInstanceOf(MemberNotFoundException.class),
+                () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository, times(0)).existsById(followeeId),
+                () -> verify(followingRepository, times(0)).findByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository, times(0)).delete(following)
+        );
+    }
+
+    @Test
+    void 다른_회원을_언팔로우할_때_팔로이가_존재하지_않으면_예외를_반환한다() {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+        Following following = Following.builder()
+                .followerId(followerId)
+                .followeeId(followeeId)
+                .build();
+
+        given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followeeId))
+                .willReturn(false);
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followeeId))
+                        .isExactlyInstanceOf(MemberNotFoundException.class),
+                () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followeeId),
+                () -> verify(followingRepository, times(0)).findByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository, times(0)).delete(following)
+        );
+    }
+
+    @Test
+    void 다른_회원을_언팔로우할_때_팔로잉_상태가_아니면_예외를_반환한다() {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+        Following following = Following.builder()
+                .followerId(followerId)
+                .followeeId(followeeId)
+                .build();
+
+        given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followeeId))
+                .willReturn(true);
+        given(followingRepository.findByFollowerIdAndFolloweeId(followerId, followeeId))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followeeId))
+                        .isExactlyInstanceOf(NotFollowingException.class),
+                () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followeeId),
+                () -> verify(followingRepository).findByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository, times(0)).delete(following)
         );
     }
 }
