@@ -6,6 +6,7 @@ import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
+import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
@@ -70,6 +71,7 @@ public class MemberService {
 
     public void follow(final Long followerId, final Long followeeId) {
         validateFollowingMembersExist(followerId, followeeId);
+        validateNotFollowing(followerId, followeeId);
         final Following following = Following.builder()
                 .followerId(followerId)
                 .followeeId(followeeId)
@@ -80,6 +82,12 @@ public class MemberService {
     private void validateFollowingMembersExist(final Long followerId, final Long followeeId) {
         if (!memberRepository.existsById(followerId) || !memberRepository.existsById(followeeId)) {
             throw new MemberNotFoundException();
+        }
+    }
+
+    private void validateNotFollowing(Long followerId, Long followeeId) {
+        if (followingRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId)) {
+            throw new AlreadyFollowingException();
         }
     }
 }

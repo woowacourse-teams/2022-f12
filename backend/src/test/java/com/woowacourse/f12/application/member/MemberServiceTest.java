@@ -10,6 +10,7 @@ import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
+import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.support.MemberFixtures;
 import org.junit.jupiter.api.Test;
@@ -157,7 +158,12 @@ class MemberServiceTest {
         memberService.follow(followerId, followeeId);
 
         // then
-        verify(followingRepository).save(following);
+        assertAll(
+                () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followeeId),
+                () -> verify(followingRepository).existsByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository).save(following)
+        );
     }
 
     @Test
@@ -174,6 +180,7 @@ class MemberServiceTest {
                         .isExactlyInstanceOf(MemberNotFoundException.class),
                 () -> verify(memberRepository).existsById(followerId),
                 () -> verify(memberRepository, times(0)).existsById(followeeId),
+                () -> verify(followingRepository, times(0)).existsByFollowerIdAndFolloweeId(followerId, followeeId),
                 () -> verify(followingRepository, times(0)).save(any(Following.class))
         );
     }
@@ -194,6 +201,30 @@ class MemberServiceTest {
                         .isExactlyInstanceOf(MemberNotFoundException.class),
                 () -> verify(memberRepository).existsById(followerId),
                 () -> verify(memberRepository).existsById(followeeId),
+                () -> verify(followingRepository, times(0)).existsByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository, times(0)).save(any(Following.class))
+        );
+    }
+
+    @Test
+    void 이미_팔로우하고_있는_회원을_팔로우하려_하면_예외를_반환한다() {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+        given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followeeId))
+                .willReturn(true);
+        given(followingRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId))
+                .willReturn(true);
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> memberService.follow(followerId, followeeId))
+                        .isExactlyInstanceOf(AlreadyFollowingException.class),
+                () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followeeId),
+                () -> verify(followingRepository).existsByFollowerIdAndFolloweeId(followerId, followeeId),
                 () -> verify(followingRepository, times(0)).save(any(Following.class))
         );
     }

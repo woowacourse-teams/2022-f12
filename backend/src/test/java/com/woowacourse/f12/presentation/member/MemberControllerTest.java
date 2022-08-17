@@ -9,6 +9,7 @@ import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
+import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
 import com.woowacourse.f12.exception.badrequest.SelfFollowException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
@@ -399,6 +400,34 @@ class MemberControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
+        verify(memberService).follow(followerId, followeeId);
+    }
+
+    @Test
+    void 팔로우_실패_이미_팔로우_상태임() throws Exception {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(followerId.toString());
+        willThrow(new AlreadyFollowingException())
+                .given(memberService)
+                .follow(followerId, followeeId);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/members/" + followeeId + "/following")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest())
                 .andDo(print());
 
         verify(memberService).follow(followerId, followeeId);
