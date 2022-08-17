@@ -102,18 +102,22 @@ function InventoryProductList({
         : Object.entries(inventoryList).map(([category, items]) => (
             <Fragment key={category}>
               <S.CategoryTitle>{CATEGORIES[category]}</S.CategoryTitle>
-              <S.Container>
-                {items.map((item) => (
-                  <DeskSetupCard
-                    key={item.id}
-                    item={item.product}
-                    borderType={
-                      selectedState[category] === item.id ? 'selected' : 'default'
-                    }
-                    size={'s'}
-                  />
-                ))}
-              </S.Container>
+              {items?.length > 0 ? (
+                <S.Container>
+                  {items.map((item) => (
+                    <DeskSetupCard
+                      key={item.id}
+                      item={item.product}
+                      borderType={
+                        selectedState[category] === item.id ? 'selected' : 'default'
+                      }
+                      size={'s'}
+                    />
+                  ))}
+                </S.Container>
+              ) : (
+                <S.NoItemContent>리뷰를 작성한 제품이 없어요</S.NoItemContent>
+              )}
             </Fragment>
           ))}
     </>
