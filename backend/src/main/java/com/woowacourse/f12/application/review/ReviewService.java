@@ -89,7 +89,7 @@ public class ReviewService {
                                                             final Pageable pageable) {
         validateKeyboardExists(productId);
         final Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
-        return ReviewWithAuthorPageResponse.from(page);
+        return ReviewWithAuthorPageResponse.of(page, memberId);
     }
 
     private void validateKeyboardExists(final Long productId) {

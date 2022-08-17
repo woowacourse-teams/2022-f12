@@ -221,7 +221,68 @@ class ReviewServiceTest {
         assertAll(
                 () -> assertThat(reviewPageResponse.getItems()).hasSize(1)
                         .usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(ReviewWithAuthorResponse.from(review)),
+                        .containsOnly(ReviewWithAuthorResponse.of(review, null)),
+                () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
+                () -> verify(productRepository).existsById(productId),
+                () -> verify(reviewRepository).findPageByProductId(productId, pageable)
+        );
+    }
+
+    @Test
+    void 로그인_하지_않은_경우_특정_제품에_대한_리뷰_목록을_조회한다() {
+        // given
+        Long productId = 1L;
+        Product product = KEYBOARD_1.생성();
+        Member member = CORINNE.생성(1L);
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
+        Review review = REVIEW_RATING_5.작성(1L, product, member);
+        Slice<Review> slice = new SliceImpl<>(List.of(review), pageable, true);
+
+        given(productRepository.existsById(productId))
+                .willReturn(true);
+        given(reviewRepository.findPageByProductId(productId, pageable))
+                .willReturn(slice);
+
+        // when
+        ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, member.getId(),
+                pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(reviewPageResponse.getItems()).hasSize(1)
+                        .usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(ReviewWithAuthorResponse.of(review, member.getId()))
+                        .extracting("authorMatch").containsExactly(true),
+                () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
+                () -> verify(productRepository).existsById(productId),
+                () -> verify(reviewRepository).findPageByProductId(productId, pageable)
+        );
+    }
+
+    @Test
+    void 로그인한_경우_특정_제품에_대한_리뷰_목록을_조회한다() {
+        // given
+        Long productId = 1L;
+        Product product = KEYBOARD_1.생성();
+        Member member = CORINNE.생성(1L);
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
+        Review review = REVIEW_RATING_5.작성(1L, product, member);
+        Slice<Review> slice = new SliceImpl<>(List.of(review), pageable, true);
+
+        given(productRepository.existsById(productId))
+                .willReturn(true);
+        given(reviewRepository.findPageByProductId(productId, pageable))
+                .willReturn(slice);
+
+        // when
+        ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, null, pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(reviewPageResponse.getItems()).hasSize(1)
+                        .usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(ReviewWithAuthorResponse.of(review, null))
+                        .extracting("authorMatch").containsExactly(false),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue(),
                 () -> verify(productRepository).existsById(productId),
                 () -> verify(reviewRepository).findPageByProductId(productId, pageable)

@@ -2,7 +2,6 @@ package com.woowacourse.f12.dto.response.review;
 
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.review.Review;
-import java.util.Objects;
 import lombok.Getter;
 
 @Getter
@@ -31,17 +30,11 @@ public class ReviewWithAuthorResponse {
         this.authorMatch = authorMatch;
     }
 
-    public static ReviewWithAuthorResponse from(final Review review) {
-        final ReviewAuthorResponse author = ReviewAuthorResponse.from(review.getMember());
-        return new ReviewWithAuthorResponse(review.getId(), author, review.getProduct().getId(), review.getContent(),
-                review.getRating(), review.getCreatedAt().toString(), false);
-    }
-
     public static ReviewWithAuthorResponse of(final Review review, final Long memberId) {
         final Member author = review.getMember();
         final ReviewAuthorResponse authorResponse = ReviewAuthorResponse.from(author);
         return new ReviewWithAuthorResponse(review.getId(), authorResponse, review.getProduct().getId(),
                 review.getContent(),
-                review.getRating(), review.getCreatedAt().toString(), Objects.equals(memberId, author.getId()));
+                review.getRating(), review.getCreatedAt().toString(), author.isSameId(memberId));
     }
 }

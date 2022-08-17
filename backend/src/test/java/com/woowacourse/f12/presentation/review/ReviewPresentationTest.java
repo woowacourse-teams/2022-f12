@@ -440,10 +440,10 @@ class ReviewPresentationTest extends PresentationTest {
         Product product = KEYBOARD_1.생성(1L);
         Member corinne = CORINNE.생성(1L);
         Member mincho = MINCHO.생성(2L);
-        ReviewWithAuthorPageResponse reviewWithAuthorPageResponse = ReviewWithAuthorPageResponse.from(
+        ReviewWithAuthorPageResponse reviewWithAuthorPageResponse = ReviewWithAuthorPageResponse.of(
                 new SliceImpl<>(
                         List.of(REVIEW_RATING_5.작성(1L, product, corinne), REVIEW_RATING_4.작성(2L, product, mincho)),
-                        pageable, false));
+                        pageable, false), null);
 
         given(reviewService.findPageByProductId(anyLong(), nullable(Long.class), any(Pageable.class)))
                 .willReturn(reviewWithAuthorPageResponse);
