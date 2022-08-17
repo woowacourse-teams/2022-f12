@@ -1,26 +1,21 @@
-import { Link } from 'react-router-dom';
-
 import * as S from '@/components/DeskSetupCard/DeskSetupCard.style';
 
-import ROUTES from '@/constants/routes';
-
 type Props = {
-  inventoryId?: number;
+  item: Product;
   size: 's' | 'l';
+  borderType: 'default' | 'selected' | 'selectedAnimation';
 };
 
-function DeskSetupCard({ inventoryId, size }: Props) {
+function DeskSetupCard({ size, item, borderType }: Props) {
   return (
-    <S.Container size={size}>
-      <Link key={inventoryId} to={`${ROUTES.PRODUCT}/${inventoryId}`}>
-        <S.ImageWrapper>
-          <S.ProductImage src="https://img.danawa.com/prod_img/500000/337/103/img/10103337_1.jpg?shrink=330:330&_v=20220510143846" />
-        </S.ImageWrapper>
-        <S.ProductTitle size={size}>
-          키보드키보드키보드키보드키보드키보드키보드키보드키보드키보드
-        </S.ProductTitle>
-        <S.ReviewOpenButton size={size}>리뷰 보기</S.ReviewOpenButton>
-      </Link>
+    <S.Container size={size} borderType={borderType}>
+      <S.ImageWrapper>
+        <S.ProductImage src={item.imageUrl} />
+      </S.ImageWrapper>
+      <S.ProductTitleWrapper size={size}>
+        <S.ProductTitle size={size}>{item.name}</S.ProductTitle>
+      </S.ProductTitleWrapper>
+      <S.ReviewOpenButton size={size}>리뷰 보기</S.ReviewOpenButton>
     </S.Container>
   );
 }

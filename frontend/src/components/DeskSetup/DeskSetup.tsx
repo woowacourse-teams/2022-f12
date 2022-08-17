@@ -1,25 +1,35 @@
 import DeskSetupCard from '@/components//DeskSetupCard/DeskSetupCard';
 import * as S from '@/components/DeskSetup/DeskSetup.style';
 
-import GitHubIcon from '@/assets/github.svg';
+type Props = {
+  inventoryList: Record<string, InventoryProduct[]>;
+};
 
-function DeskSetup() {
+function DeskSetup({ inventoryList }: Props) {
+  const selectedItems = Object.values(inventoryList)
+    .flat()
+    .filter(({ selected }) => selected);
+
+  const selectedItemsByCategory = Object.values(selectedItems).reduce(
+    (products, { product }) => {
+      return { ...products, [product.category]: product };
+    },
+    {}
+  );
+
+  const deskSetupItems = Object.entries(selectedItemsByCategory)
+    .filter(([category]) => category !== 'software')
+    .map(([_, item]) => item);
+
   return (
     <>
       <S.Container>
         <S.CardWrapper>
-          <DeskSetupCard size={'l'} />
-          <DeskSetupCard size={'l'} />
-          <DeskSetupCard size={'l'} />
-          <DeskSetupCard size={'l'} />
+          {deskSetupItems.map((item: Product) => (
+            <DeskSetupCard key={item.id} item={item} size={'l'} borderType={'default'} />
+          ))}
         </S.CardWrapper>
       </S.Container>
-      <S.GitHubWrapper>
-        <S.GitHubId>@hamcheeseburger</S.GitHubId>
-        <S.GitHubLink>
-          <GitHubIcon />
-        </S.GitHubLink>
-      </S.GitHubWrapper>
     </>
   );
 }

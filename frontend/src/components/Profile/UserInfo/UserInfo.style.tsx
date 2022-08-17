@@ -18,12 +18,12 @@ export const ImageWrapper = styled.div`
 export const InfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  font-size: 1.1rem;
   gap: 0.4rem;
 `;
 
 export const UserNameWrapper = styled.div`
   display: flex;
-  gap: 0.7rem;
 `;
 
 export const ProfileImage = styled.img`
@@ -31,8 +31,8 @@ export const ProfileImage = styled.img`
   object-fit: cover;
 `;
 
-export const Username = styled.p`
-  font-size: 1.2rem;
+export const GitHubId = styled.a`
+  text-decoration: underline;
   font-weight: 600;
 `;
 
@@ -41,5 +41,3 @@ export const ChipWrapper = styled.div`
   align-items: center;
   gap: 1rem;
 `;
-
-export const GithubLink = styled.a``;

@@ -29,6 +29,7 @@ function Profile() {
   const {
     items,
     isReady: isInventoryProductsReady,
+    isError: isInventoryProductError,
     refetch: refetchInventoryProducts,
     updateProfileProduct,
   } = useInventory({ memberId });
@@ -65,19 +66,26 @@ function Profile() {
         <S.FollowButton>팔로우</S.FollowButton>
       </S.ProfileSection>
       <S.DeskSetupSection>
-        <DeskSetup />
-      </S.DeskSetupSection>
-      <S.InventorySection>
-        <S.InventoryItemHeaderWrapper>
-          <SectionHeader title={'리뷰를 작성한 제품'} />
-          <S.EditDeskSetupButton>데스크 셋업 변경하기</S.EditDeskSetupButton>
-        </S.InventoryItemHeaderWrapper>
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isInventoryProductsReady}
-          isError={isUserInfoError}
+          isError={isInventoryProductError}
         >
-          <InventoryProductList inventoryList={inventoryList} />
+          <DeskSetup inventoryList={inventoryList} />
+        </AsyncWrapper>
+      </S.DeskSetupSection>
+      <S.InventorySection>
+        <AsyncWrapper
+          fallback={<Loading />}
+          isReady={isInventoryProductsReady}
+          isError={isInventoryProductError}
+        >
+          <InventoryProductList
+            inventoryList={inventoryList}
+            editable={isOwnProfile}
+            submitHandler={refetchInventoryProducts}
+            updateProfileProduct={updateProfileProduct}
+          />
         </AsyncWrapper>
       </S.InventorySection>
 

@@ -4,7 +4,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 4rem;
 `;
 
 export const ProfileSection = styled.section`
@@ -15,7 +15,7 @@ export const ProfileSection = styled.section`
   gap: 1.5rem;
 `;
 
-export const EmptySection = styled.div``;
+export const EmptySection = styled.section``;
 
 export const InventorySection = styled.section`
   width: 95%;

@@ -17,7 +17,16 @@ function UserInfo({ userData }: Props) {
         <S.InfoWrapper>
           {`${CAREER_LEVELS[careerLevel]}, `}
           {`${JOB_TYPES[jobType]} 개발자`}
-          <S.Username>{`@${gitHubId}의 데스크 셋업`}</S.Username>
+          <S.UserNameWrapper>
+            <S.GitHubId
+              href={`https://www.github.com/${gitHubId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {`@${gitHubId}`}
+            </S.GitHubId>
+            {`의 데스크 셋업`}
+          </S.UserNameWrapper>
         </S.InfoWrapper>
       </S.Container>
     </>

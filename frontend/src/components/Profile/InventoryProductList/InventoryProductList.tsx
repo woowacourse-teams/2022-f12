@@ -1,37 +1,121 @@
-import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Fragment, useState } from 'react';
+
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
 import DeskSetupCard from '@/components/DeskSetupCard/DeskSetupCard';
 import * as S from '@/components/Profile/InventoryProductList/InventoryProductList.style';
-import ProductBar from '@/components/Profile/ProductBar/ProductBar';
 
 import { CATEGORIES } from '@/constants/product';
-import ROUTES from '@/constants/routes';
 
 type Props = {
+  submitHandler?: () => void;
+  updateProfileProduct?: (array: number[]) => Promise<boolean>;
   inventoryList: Record<string, InventoryProduct[]>;
+  editable: boolean;
 };
 
-function InventoryProductList({ inventoryList }: Props) {
+function InventoryProductList({
+  inventoryList,
+  editable,
+  submitHandler,
+  updateProfileProduct,
+}: Props) {
+  const selectedItems = Object.values(inventoryList)
+    .flat()
+    .filter(({ selected }) => selected);
+
+  const selectedItemsIdsByCategory = Object.values(selectedItems).reduce(
+    (ids, { id, product: { category } }) => {
+      return { ...ids, [category]: id };
+    },
+    {}
+  );
+
+  const [isEditMode, setEditMode] = useState(false);
+  const [selectedState, setSelectedState] = useState(selectedItemsIdsByCategory);
+
+  const handleEdit = async () => {
+    if (!editable) return;
+    if (isEditMode) {
+      const didPatch = await updateProfileProduct(Object.values(selectedState));
+      if (didPatch) submitHandler();
+      setEditMode(false);
+
+      return;
+    }
+
+    setEditMode(true);
+  };
+
+  const handleSelect = (key: string, id: number) => {
+    if (Object.values(selectedState).includes(id)) {
+      const newState = { ...selectedState };
+      delete newState[key];
+      setSelectedState(newState);
+      return;
+    }
+
+    setSelectedState((prev) => {
+      return { ...prev, [key]: id };
+    });
+  };
+
   return (
     <>
-      {Object.entries(inventoryList).map(([category, items]) => (
-        <Fragment key={category}>
-          <S.CategoryTitle>{CATEGORIES[category]}</S.CategoryTitle>
-          <S.Container>
-            {items.map(({ id: inventoryId, selected, product: { name } }) => (
-              <Link key={inventoryId} to={`${ROUTES.PRODUCT}/${inventoryId}`}>
-                <DeskSetupCard inventoryId={inventoryId} size="s" />
-                {/* <ProductBar
-                  key={inventoryId}
-                  name={name}
-                  barType={selected ? 'selected' : 'default'}
-                /> */}
-              </Link>
-            ))}
-          </S.Container>
-        </Fragment>
-      ))}
+      <S.FlexWrapper>
+        <SectionHeader title={'리뷰를 작성한 제품'} />
+        {editable && (
+          <S.EditDeskSetupButton onClick={handleEdit}>
+            {isEditMode ? '데스크 셋업 변경 완료' : '데스크 셋업 변경하기'}
+          </S.EditDeskSetupButton>
+        )}
+      </S.FlexWrapper>
+      {isEditMode
+        ? Object.entries(inventoryList)
+            .filter(([category]) => category !== 'software')
+            .map(([category, items]) => (
+              <Fragment key={category}>
+                <S.CategoryTitle>{CATEGORIES[category]}</S.CategoryTitle>
+                <S.Container>
+                  {items.map((item) => (
+                    <S.PseudoButton
+                      key={item.id}
+                      onClick={() => {
+                        handleSelect(category, item.id);
+                      }}
+                    >
+                      <DeskSetupCard
+                        key={item.id}
+                        item={item.product}
+                        borderType={
+                          selectedState[category] === item.id
+                            ? 'selectedAnimation'
+                            : 'default'
+                        }
+                        size={'s'}
+                      />
+                    </S.PseudoButton>
+                  ))}
+                </S.Container>
+              </Fragment>
+            ))
+        : Object.entries(inventoryList).map(([category, items]) => (
+            <Fragment key={category}>
+              <S.CategoryTitle>{CATEGORIES[category]}</S.CategoryTitle>
+              <S.Container>
+                {items.map((item) => (
+                  <DeskSetupCard
+                    key={item.id}
+                    item={item.product}
+                    borderType={
+                      selectedState[category] === item.id ? 'selected' : 'default'
+                    }
+                    size={'s'}
+                  />
+                ))}
+              </S.Container>
+            </Fragment>
+          ))}
     </>
   );
 }
