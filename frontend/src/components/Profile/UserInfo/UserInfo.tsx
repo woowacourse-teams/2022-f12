@@ -1,3 +1,5 @@
+import { useParams } from 'react-router-dom';
+
 import * as S from '@/components/Profile/UserInfo/UserInfo.style';
 
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
@@ -8,6 +10,10 @@ type Props = {
 
 function UserInfo({ userData }: Props) {
   const { imageUrl, gitHubId, jobType, careerLevel } = userData;
+  const { memberId } = useParams();
+
+  const isOwnProfile = !memberId;
+
   return (
     <>
       <S.Container>
@@ -30,7 +36,7 @@ function UserInfo({ userData }: Props) {
           <S.FollowerCount>0명이 팔로우함</S.FollowerCount>
         </S.InfoWrapper>
       </S.Container>
-      <S.FollowButton>팔로우</S.FollowButton>
+      {!isOwnProfile && <S.FollowButton>팔로우</S.FollowButton>}
     </>
   );
 }
