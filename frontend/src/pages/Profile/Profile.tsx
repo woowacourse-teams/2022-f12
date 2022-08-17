@@ -5,12 +5,9 @@ import * as S from '@/pages/Profile/Profile.style';
 
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
-import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
 import DeskSetup from '@/components/DeskSetup/DeskSetup';
-import DeskSetupCard from '@/components/DeskSetupCard/DeskSetupCard';
 import InventoryProductList from '@/components/Profile/InventoryProductList/InventoryProductList';
-import ProductSelect from '@/components/Profile/ProductSelect/ProductSelect';
 import UserInfo from '@/components/Profile/UserInfo/UserInfo';
 
 import { UserDataContext } from '@/contexts/LoginContextProvider';
