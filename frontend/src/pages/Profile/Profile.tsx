@@ -5,10 +5,9 @@ import * as S from '@/pages/Profile/Profile.style';
 
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
-import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
+import DeskSetup from '@/components/DeskSetup/DeskSetup';
 import InventoryProductList from '@/components/Profile/InventoryProductList/InventoryProductList';
-import ProductSelect from '@/components/Profile/ProductSelect/ProductSelect';
 import UserInfo from '@/components/Profile/UserInfo/UserInfo';
 
 import { UserDataContext } from '@/contexts/LoginContextProvider';
@@ -27,6 +26,7 @@ function Profile() {
   const {
     items,
     isReady: isInventoryProductsReady,
+    isError: isInventoryProductError,
     refetch: refetchInventoryProducts,
     updateProfileProduct,
   } = useInventory({ memberId });
@@ -59,27 +59,29 @@ function Profile() {
         >
           <UserInfo userData={userInfo} />
         </AsyncWrapper>
+        <S.FollowButton>팔로우</S.FollowButton>
+      </S.ProfileSection>
+      <S.DeskSetupSection>
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isInventoryProductsReady}
-          isError={isUserInfoError}
+          isError={isInventoryProductError}
         >
-          <ProductSelect
-            submitHandler={refetchInventoryProducts}
-            updateProfileProduct={updateProfileProduct}
+          <DeskSetup inventoryList={inventoryList} />
+        </AsyncWrapper>
+      </S.DeskSetupSection>
+      <S.InventorySection>
+        <AsyncWrapper
+          fallback={<Loading />}
+          isReady={isInventoryProductsReady}
+          isError={isInventoryProductError}
+        >
+          <InventoryProductList
             inventoryList={inventoryList}
             editable={isOwnProfile}
+            submitHandler={refetchInventoryProducts}
+            updateProfileProduct={updateProfileProduct}
           />
-        </AsyncWrapper>
-      </S.ProfileSection>
-      <S.InventorySection>
-        <SectionHeader title={'리뷰를 작성한 제품 목록'} />
-        <AsyncWrapper
-          fallback={<Loading />}
-          isReady={isInventoryProductsReady}
-          isError={isUserInfoError}
-        >
-          <InventoryProductList inventoryList={inventoryList} />
         </AsyncWrapper>
       </S.InventorySection>
     </S.Container>
