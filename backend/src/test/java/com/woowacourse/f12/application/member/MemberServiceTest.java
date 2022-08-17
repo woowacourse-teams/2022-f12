@@ -1,6 +1,8 @@
 package com.woowacourse.f12.application.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.Following;
+import com.woowacourse.f12.domain.member.FollowingRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
@@ -34,14 +36,19 @@ import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
+
+    @Mock
+    private FollowingRepository followingRepository;
 
     @InjectMocks
     private MemberService memberService;
@@ -130,4 +137,64 @@ class MemberServiceTest {
         );
     }
 
+    @Test
+    void 다른_회원을_팔로우한다() {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+        Following following = Following.builder()
+                .followerId(followerId)
+                .followeeId(followeeId)
+                .build();
+
+        given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followeeId))
+                .willReturn(true);
+        given(followingRepository.save(following)).willReturn(following);
+
+        // when
+        memberService.follow(followerId, followeeId);
+
+        // then
+        verify(followingRepository).save(following);
+    }
+
+    @Test
+    void 다른_회원을_팔로우할때_팔로워가_존재하지_않으면_예외를_반환한다() {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+        given(memberRepository.existsById(followerId))
+                .willReturn(false);
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> memberService.follow(followerId, followeeId))
+                        .isExactlyInstanceOf(MemberNotFoundException.class),
+                () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository, times(0)).existsById(followeeId),
+                () -> verify(followingRepository, times(0)).save(any(Following.class))
+        );
+    }
+
+    @Test
+    void 다른_회원을_팔로우할때_팔로이가_존재하지_않으면_예외를_반환한다() {
+        // given
+        Long followerId = 1L;
+        Long followeeId = 2L;
+        given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followeeId))
+                .willReturn(false);
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> memberService.follow(followerId, followeeId))
+                        .isExactlyInstanceOf(MemberNotFoundException.class),
+                () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followeeId),
+                () -> verify(followingRepository, times(0)).save(any(Following.class))
+        );
+    }
 }
