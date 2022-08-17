@@ -29,8 +29,7 @@ export const PseudoButton = styled.div`
   cursor: pointer;
 `;
 
-export const NoItemContent = styled.div`
-  display: block;
+export const NoContents = styled.div`
   width: 100%;
   font-size: 1.1rem;
 `;
