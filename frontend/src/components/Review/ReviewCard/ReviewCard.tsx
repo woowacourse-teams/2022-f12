@@ -12,7 +12,6 @@ import ROUTES from '@/constants/routes';
 import useAnimation from '@/hooks/useAnimation';
 
 type Props = {
-  loginUserGithubId: Member['gitHubId'];
   reviewId: Review['id'];
   reviewData: Omit<Review, 'id'>;
   handleDelete?: (id: number) => void;
@@ -22,13 +21,12 @@ type Props = {
 
 function ReviewCard({
   reviewId,
-  loginUserGithubId,
   handleDelete,
   handleEdit,
   reviewData,
   index = 0,
 }: Props) {
-  const { product, rating, content, author, createdAt } = reviewData;
+  const { product, rating, content, author, createdAt, authorMatch } = reviewData;
   const { isLoggedIn } = useAuth();
 
   const [isEditSheetOpen, toggleEditSheetOpen] = useReducer((isSheetOpen: boolean) => {
@@ -69,7 +67,7 @@ function ReviewCard({
             <S.ProfileLink to={`${ROUTES.PROFILE}/${author.id}`}>
               <UserNameTag imageUrl={author.imageUrl} username={author.gitHubId} />
             </S.ProfileLink>
-            {!product && loginUserGithubId === author.gitHubId && (
+            {!product && authorMatch && (
               <>
                 <S.EditButton onClick={handleEditClick}>수정</S.EditButton>
                 <S.DeleteButton onClick={handleDeleteClick}>삭제</S.DeleteButton>
