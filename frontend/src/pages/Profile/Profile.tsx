@@ -57,7 +57,7 @@ function Profile() {
           isReady={isUserInfoReady}
           isError={isUserInfoError}
         >
-          <UserInfo userData={userInfo} />
+          <UserInfo userData={userInfo} isOwnProfile={isOwnProfile} />
         </AsyncWrapper>
       </S.ProfileSection>
       <S.DeskSetupSection>

@@ -1,18 +1,14 @@
-import { useParams } from 'react-router-dom';
-
 import * as S from '@/components/Profile/UserInfo/UserInfo.style';
 
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 
 type Props = {
   userData: Member;
+  isOwnProfile: boolean;
 };
 
-function UserInfo({ userData }: Props) {
+function UserInfo({ userData, isOwnProfile }: Props) {
   const { imageUrl, gitHubId, jobType, careerLevel } = userData;
-  const { memberId } = useParams();
-
-  const isOwnProfile = !memberId;
 
   return (
     <>
