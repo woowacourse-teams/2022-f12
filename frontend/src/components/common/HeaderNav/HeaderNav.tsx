@@ -41,7 +41,7 @@ function HeaderNav() {
         <S.FlexRightWrapper>
           {isLoggedIn ? (
             <>
-              <CustomNavLink to={ROUTES.PROFILE}>내 프로필</CustomNavLink>
+              <CustomNavLink to={ROUTES.MY_PROFILE}>내 프로필</CustomNavLink>
               <S.TransparentButton onClick={logout}>로그아웃</S.TransparentButton>
             </>
           ) : (

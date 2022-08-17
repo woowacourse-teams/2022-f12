@@ -43,8 +43,7 @@ export const PAGES: Route[] = [
           { path: ROUTES.PROFILE_SEARCH, element: <ProfileSearch /> },
           { path: `${ROUTES.PROFILE}/:memberId`, element: <Profile /> },
 
-          USER_ROUTES([{ path: ROUTES.PROFILE, element: <Profile /> }]),
-
+          USER_ROUTES([{ path: ROUTES.MY_PROFILE, element: <Profile /> }]),
           NON_USER_ROUTES([
             {
               element: <NonUserRoutes />,
