@@ -60,7 +60,12 @@ export const Title = styled.h1`
   font-size: 1.5rem;
 `;
 
-export const Body = styled.div``;
+export const Body = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  word-break: break-all;
+`;
 
 export const ButtonContainer = styled.div`
   display: flex;
