@@ -26,7 +26,7 @@ function ReviewCard({
   reviewData,
   index = 0,
 }: Props) {
-  const { product, rating, content, author, createdAt, authorMatch } = reviewData;
+  const { product, rating, content, author, createdAt, authorMatch = false } = reviewData;
   const { isLoggedIn } = useAuth();
 
   const [isEditSheetOpen, toggleEditSheetOpen] = useReducer((isSheetOpen: boolean) => {
@@ -68,10 +68,14 @@ function ReviewCard({
               <UserNameTag imageUrl={author.imageUrl} username={author.gitHubId} />
             </S.ProfileLink>
             {!product && authorMatch && (
-              <>
-                <S.EditButton onClick={handleEditClick}>수정</S.EditButton>
-                <S.DeleteButton onClick={handleDeleteClick}>삭제</S.DeleteButton>
-              </>
+              <S.ReviewModifyButtonWrapper>
+                <S.ReviewModifyButton onClick={handleEditClick}>
+                  수정
+                </S.ReviewModifyButton>
+                <S.ReviewModifyButton onClick={handleDeleteClick}>
+                  삭제
+                </S.ReviewModifyButton>
+              </S.ReviewModifyButtonWrapper>
             )}
           </S.UserWrapper>
           <Rating type="정수" rating={rating} />

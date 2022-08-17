@@ -85,7 +85,8 @@ export const Wrapper = styled.div`
 
 export const UserWrapper = styled.div`
   display: flex;
-  gap: 0.3rem;
+  gap: 1rem;
+  align-items: center;
 `;
 
 export const ProfileLink = styled(Link)`
@@ -102,14 +103,18 @@ export const CreatedAt = styled.p`
   align-self: flex-end;
 `;
 
-export const EditButton = styled.button`
-  border: none;
-  width: 2.5rem;
-  border-radius: 0.5rem;
-  background-color: ${({ theme }) => theme.colors.secondary};
+export const ReviewModifyButtonWrapper = styled.div`
+  display: flex;
+  gap: 0.5rem;
 `;
 
-export const DeleteButton = styled(EditButton)``;
+export const ReviewModifyButton = styled.button`
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+  background-color: ${({ theme }) => theme.colors.secondary};
+`;
 
 export const Content = styled.p`
   line-height: 1.4;
