@@ -85,19 +85,6 @@ function Profile() {
           />
         </AsyncWrapper>
       </S.InventorySection>
-
-      {/* <AsyncWrapper
-          fallback={<Loading />}
-          isReady={isInventoryProductsReady}
-          isError={isUserInfoError}
-        >
-          <ProductSelect
-            submitHandler={refetchInventoryProducts}
-            updateProfileProduct={updateProfileProduct}
-            inventoryList={inventoryList}
-            editable={isOwnProfile}
-          />
-        </AsyncWrapper> */}
     </S.Container>
   );
 }

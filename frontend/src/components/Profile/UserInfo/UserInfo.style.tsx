@@ -4,11 +4,11 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   width: max-content;
-  gap: 0.5rem;
+  gap: 0.6rem;
 `;
 
 export const ImageWrapper = styled.div`
-  width: 3rem;
+  width: 4rem;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   border: 2px solid ${({ theme }) => theme.colors.gray};
@@ -40,4 +40,8 @@ export const ChipWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+`;
+
+export const FollowerCount = styled.div`
+  font-size: 0.95rem;
 `;

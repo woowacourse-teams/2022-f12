@@ -17,17 +17,17 @@ const animationByBorderType = (type: 'default' | 'selected' | 'selectedAnimation
 const cardSize = {
   s: {
     width: '170px',
-    height: '230px',
+    height: '235px',
     titleFontSize: '0.9rem',
-    titleHeight: '1.89em',
+    titleHeight: '1.8rem',
     buttonFontSize: '0.5rem',
     borderColor: '${({ theme }) => theme.colors.white}',
   },
   l: {
     width: '230px',
-    height: '300px',
+    height: '305px',
     titleFontSize: '1rem',
-    titleHeight: '2.1rem',
+    titleHeight: '2rem',
     buttonFontSize: '0.8rem',
     borderColor: '${({ theme }) => theme.colors.white}',
   },
@@ -97,6 +97,7 @@ export const ProductTitle = styled.p<{ size: 's' | 'l' }>`
   ${({ size }) => `
     font-size: ${cardSize[size].titleFontSize};
     `};
+  height: 100%;
   overflow: hidden;
   margin-bottom: 0.3rem;
 `;

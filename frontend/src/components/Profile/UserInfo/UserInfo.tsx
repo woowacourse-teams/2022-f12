@@ -27,6 +27,7 @@ function UserInfo({ userData }: Props) {
             </S.GitHubId>
             {`의 데스크 셋업`}
           </S.UserNameWrapper>
+          <S.FollowerCount>0명이 팔로우함</S.FollowerCount>
         </S.InfoWrapper>
       </S.Container>
     </>
