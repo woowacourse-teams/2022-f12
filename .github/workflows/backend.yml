@@ -70,14 +70,26 @@ jobs:
           do
             METRIC=$(echo $data | jq -r '.metric')
             VALUE=$(echo $data | jq -r '.value')
-            BEST_VALUE=$(echo $data | jq -r '.bestValue')
             echo "::set-output name=${METRIC}_value::${VALUE}"
-            if [ $BEST_VALUE == true ]; then
-              echo "::set-output name=${METRIC}_best_value::✅"
+          done
+
+      - name: get report results
+        id: report_results
+        run: |
+          RESPONSE=$(curl -X GET -G '${{ env.SONARQUBE_AUTH_URL }}/api/qualitygates/project_status' \
+          -d projectKey=F12 \
+          | jq '.projectStatus.conditions')
+          echo "$RESPONSE" | jq -c '.[] | .' | while read -r data;
+          do
+            STATUS=$(echo $data | jq -r '.status')
+            METRIC_KEY=$(echo $data | jq -r '.metricKey')
+            if [ $STATUS == "OK" ]; then
+              echo "::set-output name=${METRIC_KEY}::✅"
             else
-              echo "::set-output name=${METRIC}_best_value::❌"                 
+              echo "::set-output name=${METRIC_KEY}::❌"                 
             fi
           done
+
       - name: comment Sonarqube URL
         uses: actions/github-script@v4
         with:
@@ -90,15 +102,16 @@ jobs:
               body: `## 🚧 Analysis Results
             ${ SONARQUBE_PROJECT_KEY }-${ PR_NUMBER }
             
-            Bugs :    ${{ steps.analysis_results.outputs.bugs_value }}    ${{ steps.analysis_results.outputs.bugs_best_value }}
-            Vulnerabilities :    ${{ steps.analysis_results.outputs.vulnerabilities_value }}    ${{ steps.analysis_results.outputs.vulnerabilities_best_value }} 
-            Security Hotspots :    ${{ steps.analysis_results.outputs.security_hotspots_value }}    ${{ steps.analysis_results.outputs.security_hotspots_best_value }} 
-            Code Smells :    ${{ steps.analysis_results.outputs.code_smells_value }}    ${{ steps.analysis_results.outputs.code_smells_best_value }} 
-            Coverage :    ${{ steps.analysis_results.outputs.coverage_value }}    ${{ steps.analysis_results.outputs.coverage_best_value }} 
-            Tests :    ${{ steps.analysis_results.outputs.tests_value }}    ${{ steps.analysis_results.outputs.tests_best_value }} 
-            Test Success Density :    ${{ steps.analysis_results.outputs.test_success_density_value }}    ${{ steps.analysis_results.outputs.test_success_density_best_value }} 
-            Test Failures :    ${{ steps.analysis_results.outputs.test_failures_value }}    ${{ steps.analysis_results.outputs.test_failures_best_value }}             
-            Duplicated Lines Density :    ${{ steps.analysis_results.outputs.duplicated_lines_density_value }}    ${{ steps.analysis_results.outputs.duplicated_lines_density_best_value }}
-            
+            Bugs :    ${{ steps.analysis_results.outputs.bugs_value }}    ${{ steps.report_results.outputs.new_reliability_rating }}
+            Vulnerabilities :    ${{ steps.analysis_results.outputs.vulnerabilities_value }}    ${{ steps.report_results.outputs.new_security_rating }} 
+            Security Hotspots :    ${{ steps.analysis_results.outputs.security_hotspots_value }}    ${{ steps.report_results.outputs.new_security_hotspots_reviewed }} 
+            Code Smells :    ${{ steps.analysis_results.outputs.code_smells_value }}    ${{ steps.report_results.outputs.new_maintainability_rating }} 
+            Duplicated Lines Density :    ${{ steps.analysis_results.outputs.duplicated_lines_density_value }}    ${{ steps.report_results.outputs.new_duplicated_lines_density }}
+            Test Coverage :    ${{ steps.analysis_results.outputs.coverage_value }}    ${{ steps.report_results.outputs.new_coverage }}             
+            Tests :    ${{ steps.analysis_results.outputs.tests_value }} 
+            Test Success Density :    ${{ steps.analysis_results.outputs.test_success_density_value }} 
+            Test Failures :    ${{ steps.analysis_results.outputs.test_failures_value }}             
+        
+      
             [분석 결과 확인하기](${SONARQUBE_URL})`
             })
