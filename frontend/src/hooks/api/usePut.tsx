@@ -11,7 +11,7 @@ import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
 
 type Props = {
   url: string;
-  headers: null | AxiosRequestHeaders;
+  headers?: AxiosRequestHeaders;
 };
 
 function usePut<T>({ url, headers }: Props): (input: T, id: number) => Promise<void> {
@@ -27,9 +27,11 @@ function usePut<T>({ url, headers }: Props): (input: T, id: number) => Promise<v
       return;
     }
 
+    const { token } = userData;
+
     try {
       await axiosInstance.put(`${url}/${id}`, body, {
-        headers,
+        headers: { ...headers, Authorization: `Bearer ${token}` },
       });
     } catch (error) {
       const requestBodyString = Object.entries(body).reduce<string>(

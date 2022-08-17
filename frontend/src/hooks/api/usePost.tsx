@@ -11,7 +11,7 @@ import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
 
 type Props = {
   url: string;
-  headers: null | AxiosRequestHeaders;
+  headers?: AxiosRequestHeaders;
 };
 
 function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
@@ -27,9 +27,11 @@ function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
       return;
     }
 
+    const { token } = userData;
+
     try {
       await axiosInstance.post(url, body, {
-        headers,
+        headers: { ...headers, Authorization: `Bearer ${token}` },
       });
     } catch (error) {
       const requestBodyString = Object.entries(body).reduce<string>(
@@ -38,7 +40,7 @@ function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
       );
       await handleError(
         error as Error,
-        `body: ${requestBodyString},\n    token: ${userData.token}`
+        `body: ${requestBodyString},\n    token: ${token}`
       );
     }
   };
