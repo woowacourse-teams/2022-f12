@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.woowacourse.f12.support.GitHubProfileFixtures.*;
-import static com.woowacourse.f12.support.MemberFixtures.*;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.*;
+import static com.woowacourse.f12.support.fixture.MemberFixtures.*;
 
 @RestController
 public class FakeGitHubApiController {

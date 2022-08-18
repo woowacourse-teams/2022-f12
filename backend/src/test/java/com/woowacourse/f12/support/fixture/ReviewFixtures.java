@@ -1,4 +1,4 @@
-package com.woowacourse.f12.support;
+package com.woowacourse.f12.support.fixture;
 
 import com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil;
 import com.woowacourse.f12.domain.member.Member;

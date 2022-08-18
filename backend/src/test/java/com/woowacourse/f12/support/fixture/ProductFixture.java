@@ -1,4 +1,4 @@
-package com.woowacourse.f12.support;
+package com.woowacourse.f12.support.fixture;
 
 import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static com.woowacourse.f12.domain.product.Category.MONITOR;

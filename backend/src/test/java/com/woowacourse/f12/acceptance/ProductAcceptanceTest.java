@@ -22,10 +22,10 @@ import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.ë¡œê
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.*;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.*;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
-import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
-import static com.woowacourse.f12.support.GitHubProfileFixtures.MINCHO_GITHUB;
-import static com.woowacourse.f12.support.ProductFixture.*;
-import static com.woowacourse.f12.support.ReviewFixtures.*;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.MINCHO_GITHUB;
+import static com.woowacourse.f12.support.fixture.ProductFixture.*;
+import static com.woowacourse.f12.support.fixture.ReviewFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

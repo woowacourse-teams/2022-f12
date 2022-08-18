@@ -1,12 +1,12 @@
 package com.woowacourse.f12.presentation.review;
 
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
-import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
-import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
-import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
+import static com.woowacourse.f12.support.fixture.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixtures.MINCHO;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.fixture.ReviewFixtures.REVIEW_RATING_1;
+import static com.woowacourse.f12.support.fixture.ReviewFixtures.REVIEW_RATING_4;
+import static com.woowacourse.f12.support.fixture.ReviewFixtures.REVIEW_RATING_5;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -58,20 +58,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
-import static com.woowacourse.f12.support.ReviewFixtures.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
 class ReviewControllerTest extends PresentationTest {

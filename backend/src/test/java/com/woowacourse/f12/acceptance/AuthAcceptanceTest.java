@@ -1,7 +1,7 @@
 package com.woowacourse.f12.acceptance;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
-import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.CORINNE_GITHUB;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

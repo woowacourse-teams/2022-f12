@@ -1,11 +1,11 @@
 package com.woowacourse.f12.application.auth;
 
-import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.CORINNE_GITHUB;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
-import com.woowacourse.f12.support.MemberFixtures;
+import com.woowacourse.f12.support.fixture.MemberFixtures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

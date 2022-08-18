@@ -19,9 +19,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.ProductFixture.*;
-import static com.woowacourse.f12.support.ReviewFixtures.*;
+import static com.woowacourse.f12.support.fixture.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.fixture.ProductFixture.*;
+import static com.woowacourse.f12.support.fixture.ReviewFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

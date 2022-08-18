@@ -13,8 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE_UPDATED;
+import static com.woowacourse.f12.support.fixture.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixtures.CORINNE_UPDATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;

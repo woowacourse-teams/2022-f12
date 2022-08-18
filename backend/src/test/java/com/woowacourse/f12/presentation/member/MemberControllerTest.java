@@ -37,9 +37,9 @@ import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
-import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.fixture.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;

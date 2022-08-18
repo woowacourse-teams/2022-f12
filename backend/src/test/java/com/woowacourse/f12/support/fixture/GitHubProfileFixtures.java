@@ -1,4 +1,4 @@
-package com.woowacourse.f12.support;
+package com.woowacourse.f12.support.fixture;
 
 public enum GitHubProfileFixtures {
 

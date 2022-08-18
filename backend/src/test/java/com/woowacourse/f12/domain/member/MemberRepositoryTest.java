@@ -20,7 +20,7 @@ import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
 import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
-import static com.woowacourse.f12.support.MemberFixtures.*;
+import static com.woowacourse.f12.support.fixture.MemberFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
