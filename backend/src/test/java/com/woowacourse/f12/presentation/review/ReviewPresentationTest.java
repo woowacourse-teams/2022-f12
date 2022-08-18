@@ -459,7 +459,7 @@ class ReviewPresentationTest extends PresentationTest {
                         document("reviews-by-product-page-get")
                 );
 
-        verify(reviewService).findPageByProductId(PRODUCT_ID, null,
+        verify(reviewService).findPageByProductId(product.getId(), null,
                 PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
     }
 
@@ -494,7 +494,7 @@ class ReviewPresentationTest extends PresentationTest {
                         document("reviews-by-product-page-get")
                 );
 
-        verify(reviewService).findPageByProductId(PRODUCT_ID, corinne.getId(),
+        verify(reviewService).findPageByProductId(product.getId(), corinne.getId(),
                 PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
     }
 

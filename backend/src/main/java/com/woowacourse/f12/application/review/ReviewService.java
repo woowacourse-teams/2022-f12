@@ -20,6 +20,7 @@ import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
+import java.util.Objects;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -89,6 +90,9 @@ public class ReviewService {
                                                             final Pageable pageable) {
         validateKeyboardExists(productId);
         final Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
+        if (Objects.isNull(memberId)) {
+            return ReviewWithAuthorPageResponse.from(page);
+        }
         return ReviewWithAuthorPageResponse.of(page, memberId);
     }
 

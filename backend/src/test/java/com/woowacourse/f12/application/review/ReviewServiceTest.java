@@ -232,7 +232,7 @@ class ReviewServiceTest {
     void 로그인_하지_않은_경우_특정_제품에_대한_리뷰_목록을_조회한다() {
         // given
         Long productId = 1L;
-        Product product = KEYBOARD_1.생성();
+        Product product = KEYBOARD_1.생성(productId);
         Member member = CORINNE.생성(1L);
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
         Review review = REVIEW_RATING_5.작성(1L, product, member);
@@ -260,7 +260,7 @@ class ReviewServiceTest {
     }
 
     @Test
-    void 로그인한_경우_특정_제품에_대한_리뷰_목록을_조회한다() {
+    void 로그인_안한_경우_특정_제품에_대한_리뷰_목록을_조회한다() {
         // given
         Long productId = 1L;
         Product product = KEYBOARD_1.생성();

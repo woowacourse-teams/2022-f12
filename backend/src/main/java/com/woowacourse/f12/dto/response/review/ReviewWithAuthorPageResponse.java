@@ -24,4 +24,12 @@ public class ReviewWithAuthorPageResponse {
                 .collect(Collectors.toList());
         return new ReviewWithAuthorPageResponse(slice.hasNext(), reviews);
     }
+
+    public static ReviewWithAuthorPageResponse from(final Slice<Review> slice) {
+        final List<ReviewWithAuthorResponse> reviews = slice.getContent()
+                .stream()
+                .map(ReviewWithAuthorResponse::from)
+                .collect(Collectors.toList());
+        return new ReviewWithAuthorPageResponse(slice.hasNext(), reviews);
+    }
 }

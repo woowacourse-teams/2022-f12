@@ -37,4 +37,12 @@ public class ReviewWithAuthorResponse {
                 review.getContent(),
                 review.getRating(), review.getCreatedAt().toString(), author.isSameId(memberId));
     }
+
+    public static ReviewWithAuthorResponse from(final Review review) {
+        final Member author = review.getMember();
+        final ReviewAuthorResponse authorResponse = ReviewAuthorResponse.from(author);
+        return new ReviewWithAuthorResponse(review.getId(), authorResponse, review.getProduct().getId(),
+                review.getContent(),
+                review.getRating(), review.getCreatedAt().toString(), false);
+    }
 }
