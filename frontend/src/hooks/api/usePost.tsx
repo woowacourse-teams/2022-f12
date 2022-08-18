@@ -34,14 +34,16 @@ function usePost<T>({ url, headers }: Props): (input?: T) => Promise<void> {
         headers: { ...headers, Authorization: `Bearer ${token}` },
       });
     } catch (error) {
-      const requestBodyString = Object.entries(body).reduce<string>(
-        (string, [key, value]) => `${string}\n${key}: ${value as string}`,
-        ''
-      );
+      // body가 없는 POST가 존재하는 경우 오류 발생으로 임시 생략
+
+      // const requestBodyString = Object.entries(body).reduce<string>(
+      //   (string, [key, value]) => `${string}\n${key}: ${value as string}`,
+      //   ''
+      // );
 
       await handleError(
-        error as Error,
-        `body: ${requestBodyString},\n    token: ${token}`
+        error as Error
+        // `body: ${requestBodyString},\n    token: ${token}`
       );
     }
   };
