@@ -1,5 +1,28 @@
 package com.woowacourse.f12.acceptance;
 
+import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.MID_LEVEL_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.FRONTEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.MOBILE_CONSTANT;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.MINCHO_GITHUB;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.fixture.ProductFixture.MOUSE_1;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_3;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_4;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
@@ -10,24 +33,10 @@ import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.presentation.product.CategoryConstant;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
-import java.util.Map;
-
-import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.*;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.*;
-import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.CORINNE_GITHUB;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.MINCHO_GITHUB;
-import static com.woowacourse.f12.support.fixture.ProductFixture.*;
-import static com.woowacourse.f12.support.fixture.ReviewFixtures.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ProductAcceptanceTest extends AcceptanceTest {
 

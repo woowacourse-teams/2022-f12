@@ -5,10 +5,10 @@ import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.fixture.ProductFixture.MOUSE_1;
-import static com.woowacourse.f12.support.fixture.ReviewFixtures.REVIEW_RATING_1;
-import static com.woowacourse.f12.support.fixture.ReviewFixtures.REVIEW_RATING_2;
-import static com.woowacourse.f12.support.fixture.ReviewFixtures.REVIEW_RATING_4;
-import static com.woowacourse.f12.support.fixture.ReviewFixtures.REVIEW_RATING_5;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_1;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_2;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_4;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

@@ -1,8 +1,8 @@
 package com.woowacourse.f12.support;
 
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.CORINNE_GITHUB;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.MINCHO_GITHUB;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.OHZZI_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.MINCHO_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.OHZZI_GITHUB;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
 import static com.woowacourse.f12.support.fixture.MemberFixture.OHZZI;

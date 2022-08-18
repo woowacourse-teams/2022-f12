@@ -9,7 +9,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalDateTime;
 
-public enum ReviewFixtures {
+public enum ReviewFixture {
 
     REVIEW_RATING_1("리뷰 내용", 1),
     REVIEW_RATING_2("리뷰 내용", 2),
@@ -21,7 +21,7 @@ public enum ReviewFixtures {
     private final String content;
     private final int rating;
 
-    ReviewFixtures(final String content, final int rating) {
+    ReviewFixture(final String content, final int rating) {
         this.content = content;
         this.rating = rating;
     }

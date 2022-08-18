@@ -5,9 +5,9 @@ import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
 import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.CORINNE_GITHUB;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.MINCHO_GITHUB;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.OHZZI_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.MINCHO_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.OHZZI_GITHUB;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;

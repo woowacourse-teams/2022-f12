@@ -6,11 +6,11 @@ import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로�
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.CORINNE_GITHUB;
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.fixture.ReviewFixtures.REVIEW_RATING_5;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

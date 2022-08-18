@@ -1,9 +1,9 @@
 package com.woowacourse.f12.support.fixture;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.CORINNE_GITHUB;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.MINCHO_GITHUB;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.OHZZI_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.MINCHO_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.OHZZI_GITHUB;
 
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 

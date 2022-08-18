@@ -1,6 +1,6 @@
 package com.woowacourse.f12.application.auth;
 
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.CORINNE_GITHUB;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woowacourse.f12.domain.member.Member;
