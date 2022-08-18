@@ -69,4 +69,12 @@ public class MemberController {
         return ResponseEntity.noContent()
                 .build();
     }
+
+    @GetMapping("/me/followees")
+    @LoginRequired
+    public ResponseEntity<MemberPageResponse> searchFollowees(@VerifiedMember final Long loggedInId,
+                                                              @ModelAttribute final MemberSearchRequest memberSearchRequest,
+                                                              final Pageable pageable) {
+        return ResponseEntity.ok(memberService.findFolloweesByConditions(loggedInId, memberSearchRequest, pageable));
+    }
 }

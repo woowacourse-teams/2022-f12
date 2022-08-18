@@ -582,4 +582,39 @@ class MemberControllerTest extends PresentationTest {
 
         verify(memberService).unfollow(followerId, followeeId);
     }
+
+    @Test
+    void 팔로잉하는_회원_목록_조회_성공() throws Exception {
+        // given
+        Long loggedInId = 1L;
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+
+        MemberPageResponse memberPageResponse = MemberPageResponse.fromFollowees(new SliceImpl<>(List.of(CORINNE.생성(2L)), pageable, false));
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(loggedInId.toString());
+        given(memberService.findFolloweesByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable)))
+                .willReturn(memberPageResponse);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/me/followees?page=0&size=10")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("search-followees"))
+                .andDo(print());
+
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(memberService).findFolloweesByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable))
+        );
+    }
 }
