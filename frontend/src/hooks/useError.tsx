@@ -10,7 +10,6 @@ function useError() {
   const handleError = async (error: Error, additionalMessage?: string) => {
     if (!(error instanceof Error)) {
       await showAlert(API_ERROR_CODE_EXCEPTION_MESSAGES.UNKNOWN);
-      console.log(error);
       throw new Error('API 요청에서 오류 발생');
     }
 

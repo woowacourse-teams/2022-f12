@@ -30,7 +30,7 @@ function useInventory({ memberId }: Props): Return {
     isError,
   } = useGetOne<InventoryResponse>({
     url: memberId
-      ? ENDPOINTS.OTHER_INVENTORY_PRODUCTS(memberId)
+      ? ENDPOINTS.OTHER_INVENTORY_PRODUCTS(Number(memberId))
       : ENDPOINTS.INVENTORY_PRODUCTS,
     headers: { Authorization: `Bearer ${userData?.token}` },
   });

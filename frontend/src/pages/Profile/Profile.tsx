@@ -13,12 +13,14 @@ import UserInfo from '@/components/Profile/UserInfo/UserInfo';
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 
 import useGetOne from '@/hooks/api/useGetOne';
+import useAuth from '@/hooks/useAuth';
 import useInventory from '@/hooks/useInventory';
 
 import { ENDPOINTS } from '@/constants/api';
 
 function Profile() {
   const userData = useContext(UserDataContext);
+  const { isLoggedIn } = useAuth();
   const { memberId } = useParams();
 
   const isOwnProfile = !memberId;
@@ -36,7 +38,7 @@ function Profile() {
     isError: isUserInfoError,
   } = useGetOne<Member>({
     url: isOwnProfile ? ENDPOINTS.ME : `${ENDPOINTS.MEMBERS}/${memberId}`,
-    headers: { Authorization: `Bearer ${userData?.token}` },
+    headers: isLoggedIn && { Authorization: `Bearer ${userData?.token}` },
   });
 
   const inventoryList = items?.reduce((acc: Record<string, InventoryProduct[]>, curr) => {

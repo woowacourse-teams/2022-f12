@@ -24,7 +24,7 @@ function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
   const postData = async (body: T) => {
     if (!userData || !userData.token) {
       await showAlert(VALIDATION_ERROR_MESSAGES.LOGIN_REQUIRED);
-      return;
+      throw new Error(VALIDATION_ERROR_MESSAGES.LOGIN_REQUIRED);
     }
 
     const { token } = userData;
@@ -38,6 +38,7 @@ function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
         (string, [key, value]) => `${string}\n${key}: ${value as string}`,
         ''
       );
+
       await handleError(
         error as Error,
         `body: ${requestBodyString},\n    token: ${token}`

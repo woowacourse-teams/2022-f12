@@ -23,7 +23,7 @@ function useFollowing(memberId: number): Return {
       await postFollow(memberId);
       await showAlert('팔로우 완료!');
     } catch {
-      return;
+      throw new Error('팔로우 실패');
     }
   };
 
@@ -31,7 +31,8 @@ function useFollowing(memberId: number): Return {
     try {
       await deleteFollow(memberId);
       await showAlert('팔로우를 취소합니다.');
-    } catch {
+    } catch (e) {
+      throw new Error('팔로우 취소 실패');
       return;
     }
   };
