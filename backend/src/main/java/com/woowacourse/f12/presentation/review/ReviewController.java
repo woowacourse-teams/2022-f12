@@ -43,8 +43,10 @@ public class ReviewController {
 
     @GetMapping("/products/{productId}/reviews")
     public ResponseEntity<ReviewWithAuthorPageResponse> showPageByProductId(@PathVariable final Long productId,
+                                                                            @VerifiedMember Long memberId,
                                                                             final Pageable pageable) {
-        final ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, pageable);
+        final ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, memberId,
+                pageable);
         return ResponseEntity.ok(reviewPageResponse);
     }
 

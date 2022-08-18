@@ -2,6 +2,7 @@ package com.woowacourse.f12.presentation.auth;
 
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.exception.unauthorized.TokenInvalidException;
+import java.util.Objects;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,9 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
                                   final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         final String authorizationHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        if (Objects.isNull(authorizationHeader)) {
+            return null;
+        }
         final String payload = jwtProvider.getPayload(authorizationHeader);
         try {
             return Long.parseLong(payload);
