@@ -32,6 +32,7 @@ export const LeftSection = styled.div`
 `;
 
 export const RightSection = styled.div`
+  position: relative;
   width: 80%;
 `;
 
@@ -57,7 +58,7 @@ export const UserInfoWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   margin-bottom: 0.9rem;
-  gap: 0.4rem;
+  gap: 0.1rem;
 `;
 
 export const UserNameWrapper = styled.div`
@@ -69,7 +70,7 @@ export const UserNameWrapper = styled.div`
 export const UserCareer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.2rem;
+  margin-top: 0.4rem;
 `;
 
 export const UserName = styled.span``;
@@ -135,4 +136,14 @@ export const ProductTitle = styled.p`
 export const ProductImageWrapper = styled.div`
   width: 80px;
   height: 80px;
+`;
+
+export const FollowerCountWrapper = styled.div`
+  font-size: 0.7rem;
+`;
+
+export const FollowingButtonWrapper = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
 `;

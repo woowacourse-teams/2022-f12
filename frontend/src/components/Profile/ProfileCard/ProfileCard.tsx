@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Chip from '@/components/common/Chip/Chip';
+import WishButton from '@/components/common/WishButton/WishButton';
 
 import * as S from '@/components/Profile/ProfileCard/ProfileCard.style';
 
@@ -34,6 +35,8 @@ type Props = {
   careerLevel: string;
   jobType: string;
   profileProducts: ProfileProduct[];
+  followerCount: number;
+  following: boolean;
   index?: number;
 };
 
@@ -44,6 +47,8 @@ function ProfileCard({
   careerLevel,
   jobType,
   profileProducts,
+  followerCount,
+  following,
   index = 0,
 }: Props) {
   const [positionX, setPositionX] = useState(0);
@@ -109,11 +114,15 @@ function ProfileCard({
               <GithubIcon />
             </S.LinkWrapper>
           </S.UserNameWrapper>
+          <S.FollowerCountWrapper>{followerCount}명이 팔로우함</S.FollowerCountWrapper>
           <S.UserCareer>
             <Chip size="s">{JOB_TYPES[jobType]}</Chip>
             <Chip size="s">{CAREER_LEVELS[careerLevel]}</Chip>
           </S.UserCareer>
         </S.UserInfoWrapper>
+        <S.FollowingButtonWrapper>
+          <WishButton added={following} />
+        </S.FollowingButtonWrapper>
         <S.InventoryWrapper>
           <S.LeftButton onClick={handleLeftButtonClick}>
             <PrevSign />
@@ -122,7 +131,7 @@ function ProfileCard({
             <S.InventoryList positionX={positionX}>
               {representativeEquipments.map((equipment, index) => {
                 return (
-                  <S.InventoryItem key={gitHubId + String(index)}>
+                  <S.InventoryItem key={index}>
                     <S.ProductImageWrapper>
                       {equipment.id ? (
                         <Link to={`${ROUTES.PRODUCT}/${equipment.id as string}`}>
