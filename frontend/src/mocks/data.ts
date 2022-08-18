@@ -5,6 +5,8 @@ export const myUserData: Member = {
   imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
   careerLevel: 'senior',
   jobType: 'backend',
+  followerCount: 30,
+  following: false,
 };
 
 export const otherUserData: Member = {
@@ -14,6 +16,8 @@ export const otherUserData: Member = {
   imageUrl: 'https://avatars.githubusercontent.com/u/87690744?v=4',
   careerLevel: 'junior',
   jobType: 'backend',
+  followerCount: 20,
+  following: false,
 };
 
 export const members: ProfileSearchResult[] = [
@@ -24,6 +28,8 @@ export const members: ProfileSearchResult[] = [
     imageUrl: 'https://avatars.githubusercontent.com/u/110340823?v=4',
     careerLevel: 'none',
     jobType: 'frontend',
+    followerCount: 20,
+    following: false,
     profileProducts: [],
   },
   {
@@ -33,6 +39,8 @@ export const members: ProfileSearchResult[] = [
     imageUrl: 'https://avatars.githubusercontent.com/u/43166681?v=4',
     careerLevel: 'none',
     jobType: 'frontend',
+    followerCount: 20,
+    following: false,
     profileProducts: [],
   },
   {
@@ -42,6 +50,8 @@ export const members: ProfileSearchResult[] = [
     imageUrl: 'https://avatars.githubusercontent.com/u/87690744?v=4',
     careerLevel: 'junior',
     jobType: 'backend',
+    followerCount: 20,
+    following: true,
     profileProducts: [
       {
         id: 12,
@@ -78,6 +88,8 @@ export const members: ProfileSearchResult[] = [
     imageUrl: 'https://avatars.githubusercontent.com/u/66253212?v=4',
     careerLevel: 'none',
     jobType: 'backend',
+    followerCount: 20,
+    following: true,
     profileProducts: [
       {
         id: 179,
@@ -97,6 +109,8 @@ export const members: ProfileSearchResult[] = [
     imageUrl: 'https://avatars.githubusercontent.com/u/78459713?v=4',
     careerLevel: 'none',
     jobType: 'backend',
+    followerCount: 20,
+    following: false,
     profileProducts: [],
   },
   {
@@ -106,6 +120,8 @@ export const members: ProfileSearchResult[] = [
     imageUrl: 'https://avatars.githubusercontent.com/u/64275588?v=4',
     careerLevel: 'junior',
     jobType: 'frontend',
+    followerCount: 20,
+    following: false,
     profileProducts: [
       {
         id: 142,
