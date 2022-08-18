@@ -295,7 +295,7 @@ class MemberControllerTest extends PresentationTest {
                 KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
 
-        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+        MemberPageResponse memberPageResponse = MemberPageResponse.fromNotFollowees(
                 new SliceImpl<>(List.of(member), pageable, false));
         given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
@@ -372,7 +372,7 @@ class MemberControllerTest extends PresentationTest {
                 KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
 
-        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+        MemberPageResponse memberPageResponse = MemberPageResponse.fromNotFollowees(
                 new SliceImpl<>(List.of(member), pageable, false));
         given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);

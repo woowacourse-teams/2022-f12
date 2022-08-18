@@ -22,12 +22,20 @@ public class MemberPageResponse {
         this.items = items;
     }
 
-    public static MemberPageResponse from(final Slice<Member> slice) {
-        final List<MemberWithProfileProductResponse> memberResponses = slice.getContent()
+    public static MemberPageResponse fromNotFollowees(final Slice<Member> followeesSlice) {
+        final List<MemberWithProfileProductResponse> memberResponses = followeesSlice.getContent()
                 .stream()
                 .map(member -> MemberWithProfileProductResponse.of(member, false))
                 .collect(Collectors.toList());
-        return new MemberPageResponse(slice.hasNext(), memberResponses);
+        return new MemberPageResponse(followeesSlice.hasNext(), memberResponses);
+    }
+
+    public static MemberPageResponse fromFollowees(final Slice<Member> followeesSlice) {
+        final List<MemberWithProfileProductResponse> memberResponses = followeesSlice.getContent()
+                .stream()
+                .map(member -> MemberWithProfileProductResponse.of(member, true))
+                .collect(Collectors.toList());
+        return new MemberPageResponse(followeesSlice.hasNext(), memberResponses);
     }
 
     public static MemberPageResponse of(final Slice<Member> slice, List<Following> followings) {

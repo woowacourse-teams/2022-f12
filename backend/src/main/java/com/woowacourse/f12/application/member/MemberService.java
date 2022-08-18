@@ -75,7 +75,7 @@ public class MemberService {
         final Slice<Member> slice = memberRepository.findBySearchConditions(memberSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
         if (isNotLoggedIn(loggedInId)) {
-            return MemberPageResponse.from(slice);
+            return MemberPageResponse.fromNotFollowees(slice);
         }
         final List<Following> followings = followingRepository.findByFollowerIdAndFolloweeIdIn(loggedInId, extractMemberIds(slice.getContent()));
         return MemberPageResponse.of(slice, followings);
@@ -130,5 +130,14 @@ public class MemberService {
         if (followingRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId)) {
             throw new AlreadyFollowingException();
         }
+    }
+
+    public MemberPageResponse findFolloweesByConditions(final Long loggedInId, final MemberSearchRequest memberSearchRequest,
+                                                        final Pageable pageable) {
+        final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
+        final JobType jobType = parseJobType(memberSearchRequest);
+        final Slice<Member> slice = memberRepository.findFolloweesBySearchConditions(loggedInId, memberSearchRequest.getQuery(),
+                careerLevel, jobType, pageable);
+        return MemberPageResponse.fromFollowees(slice);
     }
 }
