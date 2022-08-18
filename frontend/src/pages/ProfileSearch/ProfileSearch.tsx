@@ -34,7 +34,7 @@ function ProfileSearch({ type = 'default' }: Props) {
 
   const commonParams = {
     query: searchInput,
-    filter: { careerLevel, jobType },
+    filter: { careerLevel, jobType, sort: 'followerCount,desc' },
     size: String(PROFILE_SEARCH_SIZE),
   };
 
