@@ -1,4 +1,8 @@
+import { useContext } from 'react';
+
 import * as S from '@/components/Profile/UserInfo/UserInfo.style';
+
+import { UserDataContext } from '@/contexts/LoginContextProvider';
 
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 
@@ -9,6 +13,8 @@ type Props = {
 
 function UserInfo({ userData, isOwnProfile }: Props) {
   const { imageUrl, gitHubId, jobType, careerLevel, followerCount } = userData;
+  const loginUserData = useContext(UserDataContext);
+  const loginUserGitHubId = loginUserData && loginUserData.member.gitHubId;
 
   return (
     <>
@@ -32,7 +38,9 @@ function UserInfo({ userData, isOwnProfile }: Props) {
           <S.FollowerCount>{followerCount}명이 팔로우함</S.FollowerCount>
         </S.InfoWrapper>
       </S.Container>
-      {!isOwnProfile && <S.FollowButton>팔로우</S.FollowButton>}
+      {!isOwnProfile && loginUserGitHubId !== gitHubId && (
+        <S.FollowButton>팔로우</S.FollowButton>
+      )}
     </>
   );
 }

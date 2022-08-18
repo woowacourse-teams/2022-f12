@@ -124,9 +124,9 @@ const getToken = (req, res, ctx) => {
   const response = {
     member: {
       id: 1,
-      gitHubId: '사용자2',
+      gitHubId: 'yangdongjue5510',
       imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
-      name: 'F12개발자',
+      name: '양동주',
     },
     registerCompleted: false,
     token: 'iJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjU4MTQ4Mzg1LCJleHAiOjE2NTgxNTE',
