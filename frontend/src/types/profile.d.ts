@@ -21,6 +21,8 @@ declare type Member = {
   name: string;
   careerLevel: CareerLevel;
   jobType: JobType;
+  followerCount: number;
+  following: boolean;
 };
 
 declare type InventoryProduct = {
