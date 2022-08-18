@@ -4,7 +4,7 @@ public enum GitHubProfileFixtures {
 
     CORINNE_GITHUB("corinne-code", "corinne-token"),
     MINCHO_GITHUB("mincho-code", "mincho-token"),
-    ;
+    OHZZI_GITHUB("ohzzi-code", "ohzzi-token");
 
     private final String code;
     private final String token;

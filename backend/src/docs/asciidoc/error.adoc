@@ -18,6 +18,9 @@
 |40041|CATEGORY_DUPLICATED_PROFILE_PRODUCT|대표 장비 등록 요청에 중복된 카테고리가 존재함.
 |40042|EMPTY_PROFILE_PRODUCT|대표 장비 등록 요청 시 선택한 장비가 없음.
 |40043|INVALID_PROFILE_PRODUCT_UPDATE|본인의 인벤토리에 포함되지 않은 인벤토리 제품을 대표 장비로 등록하려 함.
+|40050|SELF_FOLLOW|자기 자신을 팔로우하려고 함.
+|40051|ALREADY_FOLLOWING|이미 팔로우하고 있는 회원을 팔로우하려고 함.
+|40052|NOT_FOLLOWING|팔로우하고 있지 않음.
 |40100|NOT_EXIST_TOKEN|토큰이 존재하지 않음.
 |40101|EXPIRED_TOKEN|토큰이 만료됨.
 |40102|INVALID_TOKEN|토큰이 유효한 형식이 아님.

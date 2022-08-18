@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.Formula;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -50,12 +51,14 @@ public class Member {
     @Embedded
     private InventoryProducts inventoryProducts = new InventoryProducts();
 
+    @Formula("(SELECT COUNT(1) FROM following f WHERE f.followee_id = id)")
+    private int followerCount;
+
     protected Member() {
     }
 
-    private Member(final Long id, final String gitHubId, final String name, final String imageUrl,
-                   final CareerLevel careerLevel, final JobType jobType,
-                   final InventoryProducts inventoryProducts) {
+    private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final CareerLevel careerLevel,
+                   final JobType jobType, final InventoryProducts inventoryProducts, final int followerCount) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
@@ -63,6 +66,7 @@ public class Member {
         this.careerLevel = careerLevel;
         this.jobType = jobType;
         this.inventoryProducts = inventoryProducts;
+        this.followerCount = followerCount;
     }
 
     public void update(final Member updateMember) {

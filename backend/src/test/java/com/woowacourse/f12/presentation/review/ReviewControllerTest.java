@@ -35,19 +35,12 @@ import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageRes
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
-import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
-import com.woowacourse.f12.exception.badrequest.BlankContentException;
-import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
-import com.woowacourse.f12.exception.badrequest.InvalidRatingValueException;
-import com.woowacourse.f12.exception.badrequest.RegisterNotCompletedException;
+import com.woowacourse.f12.exception.badrequest.*;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -61,8 +54,27 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.ReviewFixtures.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @WebMvcTest(ReviewController.class)
-class ReviewPresentationTest extends PresentationTest {
+class ReviewControllerTest extends PresentationTest {
 
     private static final long PRODUCT_ID = 1L;
 
@@ -77,7 +89,7 @@ class ReviewPresentationTest extends PresentationTest {
     @MockBean
     private JwtProvider jwtProvider;
 
-    public ReviewPresentationTest() {
+    public ReviewControllerTest() {
         this.objectMapper = new ObjectMapper();
     }
 

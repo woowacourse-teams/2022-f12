@@ -6,4 +6,7 @@ import org.springframework.data.domain.Slice;
 public interface MemberRepositoryCustom {
 
     Slice<Member> findBySearchConditions(String keyword, CareerLevel careerLevel, JobType jobType, Pageable pageable);
+
+    Slice<Member> findFolloweesBySearchConditions(Long loggedInId, String keyword, CareerLevel careerLevel, JobType jobType,
+                                                  Pageable pageable);
 }
