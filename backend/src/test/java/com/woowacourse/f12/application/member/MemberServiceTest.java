@@ -61,7 +61,7 @@ class MemberServiceTest {
                 .willReturn(Optional.of(CORINNE.생성(1L)));
 
         // when
-        MemberResponse memberResponse = memberService.findById(1L, null);
+        MemberResponse memberResponse = memberService.find(1L, null);
 
         // then
         assertAll(
@@ -84,7 +84,7 @@ class MemberServiceTest {
                 .willReturn(false);
 
         // when
-        MemberResponse actual = memberService.findById(targetId, loggedInId);
+        MemberResponse actual = memberService.find(targetId, loggedInId);
 
         // then
         assertAll(
@@ -103,7 +103,7 @@ class MemberServiceTest {
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> memberService.findById(1L, null))
+                () -> assertThatThrownBy(() -> memberService.find(1L, null))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
                 () -> verify(memberRepository).findById(1L)
         );
@@ -117,7 +117,7 @@ class MemberServiceTest {
                 .willReturn(Optional.of(member));
 
         // when
-        MemberResponse memberResponse = memberService.findById(1L, null);
+        MemberResponse memberResponse = memberService.find(1L, null);
         // then
         assertAll(
                 () -> assertThat(memberResponse).usingRecursiveComparison()
@@ -158,7 +158,7 @@ class MemberServiceTest {
                 () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(MemberWithProfileProductResponse.from(member, false))
+                        .containsOnly(MemberWithProfileProductResponse.of(member, false))
         );
     }
 
@@ -189,7 +189,7 @@ class MemberServiceTest {
                 () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(MemberWithProfileProductResponse.from(member, true))
+                        .containsOnly(MemberWithProfileProductResponse.of(member, true))
         );
     }
 

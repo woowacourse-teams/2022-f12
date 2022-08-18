@@ -26,27 +26,36 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MemberService {
 
+    private static final boolean NOT_LOGGED_IN_FOLLOWING_STATE = false;
+
     private final MemberRepository memberRepository;
     private final FollowingRepository followingRepository;
 
-    public MemberService(MemberRepository memberRepository, FollowingRepository followingRepository) {
+    public MemberService(final MemberRepository memberRepository, final FollowingRepository followingRepository) {
         this.memberRepository = memberRepository;
         this.followingRepository = followingRepository;
     }
 
-    public LoggedInMemberResponse findByLoggedInId(final Long loggedInId) {
+    public LoggedInMemberResponse findLoggedInMember(final Long loggedInId) {
         final Member member = findMember(loggedInId);
         return LoggedInMemberResponse.from(member);
     }
 
-    public MemberResponse findById(final Long targetId, final Long loggedInId) {
+    public MemberResponse find(final Long targetId, @Nullable final Long loggedInId) {
         final Member member = findMember(targetId);
+        if (isNotLoggedIn(loggedInId)) {
+            return MemberResponse.from(member, NOT_LOGGED_IN_FOLLOWING_STATE);
+        }
         final boolean following = isFollowing(loggedInId, targetId);
         return MemberResponse.from(member, following);
     }
 
-    private boolean isFollowing(@Nullable final Long followerId, final Long followeeId) {
-        return Objects.nonNull(followerId) && followingRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId);
+    private boolean isNotLoggedIn(final Long loggedInId) {
+        return Objects.isNull(loggedInId);
+    }
+
+    private boolean isFollowing(final Long followerId, final Long followeeId) {
+        return followingRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId);
     }
 
     @Transactional
@@ -65,14 +74,11 @@ public class MemberService {
         final JobType jobType = parseJobType(memberSearchRequest);
         final Slice<Member> slice = memberRepository.findBySearchConditions(memberSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
-        if (loggedInId == null) {
+        if (isNotLoggedIn(loggedInId)) {
             return MemberPageResponse.from(slice);
         }
-        final List<Following> followings = followingRepository.findByFollowerIdAndFolloweeIdIn(loggedInId, slice.getContent()
-                .stream()
-                .map(Member::getId)
-                .collect(Collectors.toList()));
-        return MemberPageResponse.from(slice, followings);
+        final List<Following> followings = followingRepository.findByFollowerIdAndFolloweeIdIn(loggedInId, extractMemberIds(slice.getContent()));
+        return MemberPageResponse.of(slice, followings);
     }
 
     private JobType parseJobType(final MemberSearchRequest memberSearchRequest) {
@@ -89,6 +95,12 @@ public class MemberService {
             return null;
         }
         return careerLevelConstant.toCareerLevel();
+    }
+
+    private List<Long> extractMemberIds(final List<Member> members) {
+        return members.stream()
+                .map(Member::getId)
+                .collect(Collectors.toList());
     }
 
     public void follow(final Long followerId, final Long followeeId) {

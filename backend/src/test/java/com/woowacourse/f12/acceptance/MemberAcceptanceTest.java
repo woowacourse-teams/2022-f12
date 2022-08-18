@@ -235,7 +235,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
         Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
+        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
                 member, false);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -270,7 +270,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
         Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
+        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
                 member, false);
 
         assertAll(
@@ -308,7 +308,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
         Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
+        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
                 member, false);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -348,7 +348,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
         Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
+        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
                 member, false);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -388,8 +388,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         Member mincho = MINCHO.추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
         Member corrine = CORINNE.추가정보를_입력하여_생성(thirdLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        MemberWithProfileProductResponse minchoResponse = MemberWithProfileProductResponse.from(mincho, true);
-        MemberWithProfileProductResponse corinneResponse = MemberWithProfileProductResponse.from(corrine, false);
+        MemberWithProfileProductResponse minchoResponse = MemberWithProfileProductResponse.of(mincho, true);
+        MemberWithProfileProductResponse corinneResponse = MemberWithProfileProductResponse.of(corrine, false);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),

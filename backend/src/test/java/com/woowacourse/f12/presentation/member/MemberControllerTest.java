@@ -72,7 +72,7 @@ class MemberControllerTest extends PresentationTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(memberService.findByLoggedInId(1L))
+        given(memberService.findLoggedInMember(1L))
                 .willReturn(LoggedInMemberResponse.from(CORINNE.생성(1L)));
 
         // when
@@ -89,7 +89,7 @@ class MemberControllerTest extends PresentationTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(memberService).findByLoggedInId(1L)
+                () -> verify(memberService).findLoggedInMember(1L)
         );
     }
 
@@ -97,7 +97,7 @@ class MemberControllerTest extends PresentationTest {
     void 비로그인_상태에서_회원정보를_조회_성공() throws Exception {
         // given
         Long memberId = 1L;
-        given(memberService.findById(memberId, null))
+        given(memberService.find(memberId, null))
                 .willReturn(MemberResponse.from(CORINNE.생성(memberId), false));
 
         // when
@@ -110,14 +110,14 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(document("members-get-by-memberId"))
                 .andDo(print());
 
-        verify(memberService).findById(1L, null);
+        verify(memberService).find(1L, null);
     }
 
     @Test
     void 비로그인_상태에서_회원정보를_조회_실패_등록되지_않은_회원일_경우() throws Exception {
         // given
         Long memberId = 1L;
-        given(memberService.findById(memberId, null))
+        given(memberService.find(memberId, null))
                 .willThrow(new MemberNotFoundException());
 
         // when
@@ -129,7 +129,7 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isNotFound())
                 .andDo(print());
 
-        verify(memberService).findById(1L, null);
+        verify(memberService).find(1L, null);
     }
 
     @Test
@@ -140,7 +140,7 @@ class MemberControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(loggedInId.toString());
-        given(memberService.findById(targetId, loggedInId))
+        given(memberService.find(targetId, loggedInId))
                 .willReturn(MemberResponse.from(CORINNE.생성(targetId), false));
 
         // when
@@ -155,7 +155,7 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(print());
         assertAll(
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(memberService).findById(targetId, loggedInId)
+                () -> verify(memberService).find(targetId, loggedInId)
         );
     }
 
@@ -326,7 +326,7 @@ class MemberControllerTest extends PresentationTest {
                 .followerId(loggedInId)
                 .followeeId(member.getId())
                 .build();
-        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+        MemberPageResponse memberPageResponse = MemberPageResponse.of(
                 new SliceImpl<>(List.of(member), pageable, false), List.of(following));
         String authorizationHeader = "Bearer Token";
 

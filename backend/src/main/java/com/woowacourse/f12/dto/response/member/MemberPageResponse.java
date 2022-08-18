@@ -25,15 +25,15 @@ public class MemberPageResponse {
     public static MemberPageResponse from(final Slice<Member> slice) {
         final List<MemberWithProfileProductResponse> memberResponses = slice.getContent()
                 .stream()
-                .map(member -> MemberWithProfileProductResponse.from(member, false))
+                .map(member -> MemberWithProfileProductResponse.of(member, false))
                 .collect(Collectors.toList());
         return new MemberPageResponse(slice.hasNext(), memberResponses);
     }
 
-    public static MemberPageResponse from(final Slice<Member> slice, List<Following> followings) {
+    public static MemberPageResponse of(final Slice<Member> slice, List<Following> followings) {
         final List<MemberWithProfileProductResponse> memberResponses = slice.getContent()
                 .stream()
-                .map(member -> MemberWithProfileProductResponse.from(member, isFollowing(followings, member)))
+                .map(member -> MemberWithProfileProductResponse.of(member, isFollowing(followings, member)))
                 .collect(Collectors.toList());
         return new MemberPageResponse(slice.hasNext(), memberResponses);
     }
