@@ -1,9 +1,10 @@
+import { PROFILE_SEARCH_SIZE } from '@/pages/ProfileSearch/ProfileSearch';
+
 import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
 import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlaceholder';
 
 import ProfileCard from '@/components/Profile/ProfileCard/ProfileCard';
 import * as S from '@/components/Profile/ProfileSearchResult/ProfileSearchResult.style';
-import { PROFILE_SEARCH_SIZE } from '@/pages/ProfileSearch/ProfileSearch';
 
 type Props = Omit<DataFetchStatus, 'isReady'> & {
   data: ProfileSearchResult[];
@@ -17,7 +18,19 @@ function ProfileSearchResult({
   isError,
 }: Props) {
   const profileSearchDataList = profileSearchData.map(
-    ({ id, gitHubId, imageUrl, careerLevel, jobType, profileProducts }, index) => {
+    (
+      {
+        id,
+        gitHubId,
+        imageUrl,
+        careerLevel,
+        jobType,
+        profileProducts,
+        followerCount,
+        following,
+      },
+      index
+    ) => {
       return (
         <S.CardWrapper key={id}>
           <ProfileCard
@@ -27,6 +40,8 @@ function ProfileSearchResult({
             careerLevel={careerLevel}
             jobType={jobType}
             profileProducts={profileProducts}
+            followerCount={followerCount}
+            following={following}
             index={index % PROFILE_SEARCH_SIZE}
           />
         </S.CardWrapper>

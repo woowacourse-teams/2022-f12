@@ -17,6 +17,14 @@ public class ReviewWithAuthorPageResponse {
         this.items = items;
     }
 
+    public static ReviewWithAuthorPageResponse of(final Slice<Review> slice, final Long memberId) {
+        final List<ReviewWithAuthorResponse> reviews = slice.getContent()
+                .stream()
+                .map(review -> ReviewWithAuthorResponse.of(review, memberId))
+                .collect(Collectors.toList());
+        return new ReviewWithAuthorPageResponse(slice.hasNext(), reviews);
+    }
+
     public static ReviewWithAuthorPageResponse from(final Slice<Review> slice) {
         final List<ReviewWithAuthorResponse> reviews = slice.getContent()
                 .stream()

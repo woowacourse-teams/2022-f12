@@ -1,26 +1,11 @@
 package com.woowacourse.f12.acceptance;
 
-import com.woowacourse.f12.domain.product.Product;
-import com.woowacourse.f12.domain.product.ProductRepository;
-import com.woowacourse.f12.dto.request.member.MemberRequest;
-import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.ExceptionResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
-import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.dto.response.product.ProductResponse;
-import com.woowacourse.f12.dto.response.review.*;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.*;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PUT_요청을_보낸다;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
 import static com.woowacourse.f12.support.GitHubProfileFixtures.CORINNE_GITHUB;
@@ -32,6 +17,29 @@ import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+
+import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.domain.product.ProductRepository;
+import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.request.review.ReviewRequest;
+import com.woowacourse.f12.dto.response.ExceptionResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
+import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
+import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
+import com.woowacourse.f12.dto.response.product.ProductResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithAuthorResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
+import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 class ReviewAcceptanceTest extends AcceptanceTest {
 
@@ -77,7 +85,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 특정_제품_리뷰_목록을_최신순으로_조회한다() {
+    void 로그인_안한_상태로_특정_제품_리뷰_목록을_최신순으로_조회한다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
@@ -101,12 +109,15 @@ class ReviewAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(reviewPageResponse.getItems())
                         .extracting("id")
                         .containsExactly(reviewId),
+                () -> assertThat(reviewPageResponse.getItems())
+                        .extracting("authorMatch")
+                        .containsExactly(false),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue()
         );
     }
 
     @Test
-    void 특정_제품_리뷰_목록을_평점순으로_조회한다() {
+    void 로그인_안한_상태로_특정_제품_리뷰_목록을_평점순으로_조회한다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
@@ -128,7 +139,40 @@ class ReviewAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(reviewPageResponse.getItems())
                         .extracting("id")
                         .containsExactly(reviewId),
+                () -> assertThat(reviewPageResponse.getItems())
+                        .extracting("authorMatch")
+                        .containsExactly(false),
                 () -> assertThat(reviewPageResponse.isHasNext()).isTrue()
+        );
+    }
+
+    @Test
+    void 내가_작성한_리뷰가_포함된_리뷰목록을_조회한다() {
+        // given
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
+
+        String corinneToken = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", corinneToken, memberRequest);
+        Long corinneReviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product.getId(), corinneToken));
+
+        String minchoToken = 로그인을_한다(MINCHO_GITHUB.getCode()).getToken();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", minchoToken, memberRequest);
+        Long minchoReviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), minchoToken));
+
+        // when
+        String url = "/api/v1/products/" + product.getId() + "/reviews?size=2&page=0&sort=rating,desc";
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다(url, corinneToken);
+
+        // then
+        ReviewWithAuthorPageResponse reviewPageResponse = response.as(ReviewWithAuthorPageResponse.class);
+        ReviewWithAuthorResponse corinneResponse = 리뷰_아이디에_해당하는_리뷰와_회원정보를_찾는다(reviewPageResponse,
+                corinneReviewId);
+        ReviewWithAuthorResponse minchoResponse = 리뷰_아이디에_해당하는_리뷰와_회원정보를_찾는다(reviewPageResponse, minchoReviewId);
+
+        assertAll(
+                () -> assertThat(corinneResponse.isAuthorMatch()).isTrue(),
+                () -> assertThat(minchoResponse.isAuthorMatch()).isFalse()
         );
     }
 
@@ -201,7 +245,8 @@ class ReviewAcceptanceTest extends AcceptanceTest {
                 "/api/v1/reviews?page=0&size=2&sort=createdAt,desc")
                 .as(ReviewWithAuthorAndProductPageResponse.class)
                 .getItems();
-        List<InventoryProductResponse> inventoryProducts = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/inventoryProducts", token)
+        List<InventoryProductResponse> inventoryProducts = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/inventoryProducts",
+                token)
                 .as(InventoryProductsResponse.class)
                 .getItems();
 
@@ -314,7 +359,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Long Location_헤더에서_id값을_꺼낸다(final ExtractableResponse<Response> reviewCreateResponse) {
+    private Long Location_헤더에서_id값을_꺼낸다(ExtractableResponse<Response> reviewCreateResponse) {
         return Long.parseLong(reviewCreateResponse
                 .header("Location")
                 .split("/")[4]);
@@ -322,5 +367,13 @@ class ReviewAcceptanceTest extends AcceptanceTest {
 
     private Product 제품을_저장한다(Product product) {
         return productRepository.save(product);
+    }
+
+    private ReviewWithAuthorResponse 리뷰_아이디에_해당하는_리뷰와_회원정보를_찾는다(ReviewWithAuthorPageResponse reviewPageResponse,
+                                                                Long reviewId) {
+        return reviewPageResponse.getItems().stream()
+                .filter(it -> it.getId().equals(reviewId))
+                .findFirst()
+                .get();
     }
 }

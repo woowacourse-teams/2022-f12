@@ -2,6 +2,7 @@ package com.woowacourse.f12.presentation.auth;
 
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.exception.unauthorized.TokenInvalidException;
+import java.util.Objects;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;

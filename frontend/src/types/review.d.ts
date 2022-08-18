@@ -13,3 +13,11 @@ declare type ReviewInput = {
   content: string;
   rating: number;
 };
+
+declare type InventoryReview = {
+  id: number;
+  product: Product;
+  content: string;
+  rating: number;
+  createdAt: string;
+};

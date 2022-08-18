@@ -1,5 +1,6 @@
-import useGetMany from '@/hooks/api/useGetMany';
 import { AxiosRequestHeaders } from 'axios';
+
+import useGetMany from '@/hooks/api/useGetMany';
 
 type Props = {
   url: string;

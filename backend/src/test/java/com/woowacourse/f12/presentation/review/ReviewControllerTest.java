@@ -1,5 +1,30 @@
 package com.woowacourse.f12.presentation.review;
 
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
+import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.review.ReviewService;
@@ -427,12 +452,12 @@ class ReviewControllerTest extends PresentationTest {
         Product product = KEYBOARD_1.생성(1L);
         Member corinne = CORINNE.생성(1L);
         Member mincho = MINCHO.생성(2L);
-        ReviewWithAuthorPageResponse reviewWithAuthorPageResponse = ReviewWithAuthorPageResponse.from(
+        ReviewWithAuthorPageResponse reviewWithAuthorPageResponse = ReviewWithAuthorPageResponse.of(
                 new SliceImpl<>(
                         List.of(REVIEW_RATING_5.작성(1L, product, corinne), REVIEW_RATING_4.작성(2L, product, mincho)),
-                        pageable, false));
+                        pageable, false), null);
 
-        given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
+        given(reviewService.findPageByProductId(anyLong(), nullable(Long.class), any(Pageable.class)))
                 .willReturn(reviewWithAuthorPageResponse);
 
         // when
@@ -446,7 +471,42 @@ class ReviewControllerTest extends PresentationTest {
                         document("reviews-by-product-page-get")
                 );
 
-        verify(reviewService).findPageByProductId(PRODUCT_ID,
+        verify(reviewService).findPageByProductId(product.getId(), null,
+                PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
+    }
+
+    @Test
+    void 로그인한_상태로_특정_상품의_리뷰_페이지_조회() throws Exception {
+        // given
+        String authorizationHeader = "Bearer Token";
+        PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+        Product product = KEYBOARD_1.생성(1L);
+        Member corinne = CORINNE.생성(1L);
+        Member mincho = MINCHO.생성(2L);
+        ReviewWithAuthorPageResponse reviewWithAuthorPageResponse = ReviewWithAuthorPageResponse.of(
+                new SliceImpl<>(
+                        List.of(REVIEW_RATING_5.작성(1L, product, corinne), REVIEW_RATING_4.작성(2L, product, mincho)),
+                        pageable, false), corinne.getId());
+
+        given(reviewService.findPageByProductId(anyLong(), eq(corinne.getId()), any(Pageable.class)))
+                .willReturn(reviewWithAuthorPageResponse);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn("1");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/products/1/reviews?page=0&size=10&sort=createdAt,desc")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("reviews-by-product-page-get")
+                );
+
+        verify(reviewService).findPageByProductId(product.getId(), corinne.getId(),
                 PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
     }
 
@@ -456,7 +516,7 @@ class ReviewControllerTest extends PresentationTest {
         PageRequest pageable = PageRequest.of(0, 150,
                 Sort.by("rating", "id").descending());
 
-        given(reviewService.findPageByProductId(anyLong(), any(Pageable.class)))
+        given(reviewService.findPageByProductId(anyLong(), nullable(Long.class), any(Pageable.class)))
                 .willThrow(new ProductNotFoundException());
 
         // when
@@ -467,7 +527,7 @@ class ReviewControllerTest extends PresentationTest {
         resultActions.andExpect(status().isNotFound())
                 .andDo(print());
 
-        verify(reviewService).findPageByProductId(0L, pageable);
+        verify(reviewService).findPageByProductId(0L, null, pageable);
     }
 
     @Test
