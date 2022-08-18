@@ -6,6 +6,7 @@ import Chip from '@/components/common/Chip/Chip';
 
 import * as S from '@/components/Profile/ProfileCard/ProfileCard.style';
 
+import useAuth from '@/hooks/useAuth';
 import useFollowing from '@/hooks/useFollowing';
 
 import TITLE from '@/constants/header';
@@ -54,6 +55,7 @@ function ProfileCard({
 }: Props) {
   const [positionX, setPositionX] = useState(0);
   const [followed, setFollowed] = useState(following);
+  const { isLoggedIn } = useAuth();
 
   const { followUser, unfollowUser } = useFollowing(id);
 
@@ -74,14 +76,18 @@ function ProfileCard({
   };
 
   const toggleFollow = async () => {
-    if (followed) {
-      await unfollowUser();
+    try {
+      if (followed) {
+        await unfollowUser();
+        setFollowed((prev) => !prev);
+        return;
+      }
+
+      await followUser();
       setFollowed((prev) => !prev);
+    } catch {
       return;
     }
-
-    await followUser();
-    setFollowed((prev) => !prev);
   };
 
   const keyboard = profileProducts.find((product) => product.category === 'keyboard') || {
@@ -135,11 +141,13 @@ function ProfileCard({
             <Chip size="s">{CAREER_LEVELS[careerLevel]}</Chip>
           </S.UserCareer>
         </S.UserInfoWrapper>
-        <S.FollowingButtonWrapper>
-          <S.FollowingButton followed={followed} onClick={toggleFollow}>
-            {followed ? '팔로잉' : '팔로우'}
-          </S.FollowingButton>
-        </S.FollowingButtonWrapper>
+        {isLoggedIn && (
+          <S.FollowingButtonWrapper>
+            <S.FollowingButton followed={followed} onClick={toggleFollow}>
+              {followed ? '팔로잉' : '팔로우'}
+            </S.FollowingButton>
+          </S.FollowingButtonWrapper>
+        )}
         <S.InventoryWrapper>
           <S.LeftButton onClick={handleLeftButtonClick}>
             <PrevSign />
