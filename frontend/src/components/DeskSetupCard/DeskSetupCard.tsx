@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 import * as S from '@/components/DeskSetupCard/DeskSetupCard.style';
 
-import useGetOne from '@/hooks/api/useGetOne';
+import useGet from '@/hooks/api/useGet';
 import useModal from '@/hooks/useModal';
 
 import { ENDPOINTS } from '@/constants/api';
@@ -17,12 +17,13 @@ type Props = {
 function DeskSetupCard({ size, item, borderType }: Props) {
   const { showReview } = useModal();
 
-  const { data: review } = useGetOne<InventoryReview>({
-    url: `${ENDPOINTS.REVIEW_BY_INVENTORY_PRODUCT_ID(String(item.id))}`,
+  const fetchData = useGet<InventoryReview>({
+    url: `${ENDPOINTS.REVIEW_BY_INVENTORY_PRODUCT_ID(item.id)}`,
   });
 
   const handleReviewButtonClick = async () => {
     try {
+      const review = await fetchData({});
       await showReview(review.content, review.rating, review.createdAt);
     } catch {
       return;

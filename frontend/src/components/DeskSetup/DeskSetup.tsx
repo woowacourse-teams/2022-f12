@@ -11,8 +11,8 @@ function DeskSetup({ inventoryList }: Props) {
     .filter(({ selected }) => selected);
 
   const selectedItemsByCategory = Object.values(selectedItems).reduce(
-    (products, { product }) => {
-      return { ...products, [product.category]: { product } };
+    (products, { id, product }) => {
+      return { ...products, [product.category]: { id, product } };
     },
     {}
   );
