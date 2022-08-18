@@ -1,10 +1,12 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import * as S from '@/components/Profile/UserInfo/UserInfo.style';
 
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 
 import useAuth from '@/hooks/useAuth';
+import useFollowing from '@/hooks/useFollowing';
 
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 
@@ -14,11 +16,31 @@ type Props = {
 };
 
 function UserInfo({ userData, isOwnProfile }: Props) {
-  const { imageUrl, gitHubId, jobType, careerLevel, followerCount } = userData;
+  const { imageUrl, gitHubId, jobType, careerLevel, followerCount, following } = userData;
   const { isLoggedIn } = useAuth();
+
   const loginUserData = useContext(UserDataContext);
   const loginUserGitHubId = loginUserData && loginUserData.member.gitHubId;
   const otherProfilePage = !isOwnProfile && loginUserGitHubId !== gitHubId;
+
+  const { memberId } = useParams();
+  const [followed, setFollowed] = useState(following);
+  const { followUser, unfollowUser } = useFollowing(Number(memberId));
+
+  const toggleFollow = async () => {
+    try {
+      if (followed) {
+        await unfollowUser();
+        setFollowed((prev) => !prev);
+        return;
+      }
+
+      await followUser();
+      setFollowed((prev) => !prev);
+    } catch {
+      return;
+    }
+  };
 
   return (
     <>
@@ -42,7 +64,11 @@ function UserInfo({ userData, isOwnProfile }: Props) {
           <S.FollowerCount>{followerCount}명이 팔로우함</S.FollowerCount>
         </S.InfoWrapper>
       </S.Container>
-      {isLoggedIn && otherProfilePage && <S.FollowButton>팔로우</S.FollowButton>}
+      {isLoggedIn && otherProfilePage && (
+        <S.FollowButton followed={followed} onClick={toggleFollow}>
+          {followed ? '팔로잉' : '팔로우'}
+        </S.FollowButton>
+      )}
     </>
   );
 }
