@@ -33,7 +33,6 @@ function useFollowing(memberId: number): Return {
       await showAlert('팔로우를 취소합니다.');
     } catch (e) {
       throw new Error('팔로우 취소 실패');
-      return;
     }
   };
 

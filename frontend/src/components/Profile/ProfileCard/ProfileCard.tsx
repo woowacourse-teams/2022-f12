@@ -49,12 +49,13 @@ function ProfileCard({
   careerLevel,
   jobType,
   profileProducts,
-  followerCount,
+  followerCount: initialFollowerCount,
   following,
   index = 0,
 }: Props) {
   const [positionX, setPositionX] = useState(0);
   const [followed, setFollowed] = useState(following);
+  const [followerCount, setFollowerCount] = useState(initialFollowerCount);
   const { isLoggedIn } = useAuth();
 
   const { followUser, unfollowUser } = useFollowing(id);
@@ -80,11 +81,13 @@ function ProfileCard({
       if (followed) {
         await unfollowUser();
         setFollowed((prev) => !prev);
+        setFollowerCount((prev) => prev - 1);
         return;
       }
 
       await followUser();
       setFollowed((prev) => !prev);
+      setFollowerCount((prev) => prev + 1);
     } catch {
       return;
     }

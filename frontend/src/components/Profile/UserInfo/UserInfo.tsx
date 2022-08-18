@@ -16,7 +16,14 @@ type Props = {
 };
 
 function UserInfo({ userData, isOwnProfile }: Props) {
-  const { imageUrl, gitHubId, jobType, careerLevel, followerCount, following } = userData;
+  const {
+    imageUrl,
+    gitHubId,
+    jobType,
+    careerLevel,
+    followerCount: initialFollowerCount,
+    following,
+  } = userData;
   const { isLoggedIn } = useAuth();
 
   const loginUserData = useContext(UserDataContext);
@@ -25,6 +32,7 @@ function UserInfo({ userData, isOwnProfile }: Props) {
 
   const { memberId } = useParams();
   const [followed, setFollowed] = useState(following);
+  const [followerCount, setFollowerCount] = useState(initialFollowerCount);
   const { followUser, unfollowUser } = useFollowing(Number(memberId));
 
   const toggleFollow = async () => {
@@ -32,11 +40,13 @@ function UserInfo({ userData, isOwnProfile }: Props) {
       if (followed) {
         await unfollowUser();
         setFollowed((prev) => !prev);
+        setFollowerCount((prev) => prev - 1);
         return;
       }
 
       await followUser();
       setFollowed((prev) => !prev);
+      setFollowerCount((prev) => prev + 1);
     } catch {
       return;
     }
