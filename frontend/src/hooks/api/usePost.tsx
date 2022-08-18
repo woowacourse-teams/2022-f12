@@ -14,7 +14,7 @@ type Props = {
   headers?: AxiosRequestHeaders;
 };
 
-function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
+function usePost<T>({ url, headers }: Props): (input?: T) => Promise<void> {
   const userData = useContext(UserDataContext);
 
   const { axiosInstance } = useAxios();

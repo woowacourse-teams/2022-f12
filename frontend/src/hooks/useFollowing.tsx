@@ -20,7 +20,7 @@ function useFollowing(memberId: number): Return {
 
   const followUser = async () => {
     try {
-      await postFollow(memberId);
+      await postFollow();
       await showAlert('팔로우 완료!');
     } catch {
       throw new Error('팔로우 실패');
