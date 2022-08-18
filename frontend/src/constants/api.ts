@@ -15,4 +15,5 @@ export const ENDPOINTS = {
   OTHER_INVENTORY_PRODUCTS: (id: string) => `/members/${id}/inventoryProducts`,
   MEMBERS: '/members',
   ME: '/members/me',
+  MY_FOLLOWING: '/members/me/followees',
 } as const;

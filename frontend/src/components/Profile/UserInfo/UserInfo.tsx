@@ -1,40 +1,39 @@
-import Chip from '@/components/common/Chip/Chip';
-
 import * as S from '@/components/Profile/UserInfo/UserInfo.style';
 
-import { GITHUB_URL } from '@/constants/link';
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
-
-import GithubIcon from '@/assets/github.svg';
 
 type Props = {
   userData: Member;
+  isOwnProfile: boolean;
 };
 
-function UserInfo({ userData }: Props) {
+function UserInfo({ userData, isOwnProfile }: Props) {
   const { imageUrl, gitHubId, jobType, careerLevel } = userData;
+
   return (
-    <S.Container>
-      <S.ImageWrapper>
-        <S.ProfileImage src={imageUrl} alt="" />
-      </S.ImageWrapper>
-      <S.UserNameWrapper>
-        <S.Username>{`@${gitHubId}`}</S.Username>
-        <S.GithubLink
-          href={`${GITHUB_URL}${gitHubId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <GithubIcon />
-        </S.GithubLink>
-      </S.UserNameWrapper>
-      {
-        <S.ChipWrapper>
-          <Chip size="l">{JOB_TYPES[jobType]}</Chip>
-          <Chip size="l">{CAREER_LEVELS[careerLevel]}</Chip>
-        </S.ChipWrapper>
-      }
-    </S.Container>
+    <>
+      <S.Container>
+        <S.ImageWrapper>
+          <S.ProfileImage src={imageUrl} alt="" />
+        </S.ImageWrapper>
+        <S.InfoWrapper>
+          {`${CAREER_LEVELS[careerLevel]}, `}
+          {`${JOB_TYPES[jobType]} 개발자`}
+          <S.UserNameWrapper>
+            <S.GitHubId
+              href={`https://www.github.com/${gitHubId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {`@${gitHubId}`}
+            </S.GitHubId>
+            {`의 데스크 셋업`}
+          </S.UserNameWrapper>
+          <S.FollowerCount>0명이 팔로우함</S.FollowerCount>
+        </S.InfoWrapper>
+      </S.Container>
+      {!isOwnProfile && <S.FollowButton>팔로우</S.FollowButton>}
+    </>
   );
 }
 

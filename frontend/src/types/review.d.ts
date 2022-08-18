@@ -6,6 +6,7 @@ declare type Review = {
   content: string;
   rating: number;
   createdAt: string;
+  authorMatch: boolean;
 };
 
 declare type ReviewInput = {

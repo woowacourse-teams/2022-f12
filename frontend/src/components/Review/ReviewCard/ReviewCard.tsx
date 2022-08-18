@@ -9,9 +9,9 @@ import * as S from '@/components/Review/ReviewCard/ReviewCard.style';
 import useAuth from '@/hooks/useAuth';
 
 import ROUTES from '@/constants/routes';
+import useAnimation from '@/hooks/useAnimation';
 
 type Props = {
-  loginUserGithubId: Member['gitHubId'];
   reviewId: Review['id'];
   reviewData: Omit<Review, 'id'>;
   handleDelete?: (id: number) => void;
@@ -21,13 +21,12 @@ type Props = {
 
 function ReviewCard({
   reviewId,
-  loginUserGithubId,
   handleDelete,
   handleEdit,
   reviewData,
   index = 0,
 }: Props) {
-  const { product, rating, content, author, createdAt } = reviewData;
+  const { product, rating, content, author, createdAt, authorMatch = false } = reviewData;
   const { isLoggedIn } = useAuth();
 
   const [isEditSheetOpen, toggleEditSheetOpen] = useReducer((isSheetOpen: boolean) => {
@@ -35,6 +34,9 @@ function ReviewCard({
 
     return !isSheetOpen;
   }, false);
+
+  const [shouldSheetRender, handleSheetUnmount, sheetAnimationTrigger] =
+    useAnimation(isEditSheetOpen);
 
   const createAtDate = new Date(createdAt);
   const formattedDate = `${createAtDate.getFullYear()}년 ${
@@ -65,11 +67,15 @@ function ReviewCard({
             <S.ProfileLink to={`${ROUTES.PROFILE}/${author.id}`}>
               <UserNameTag imageUrl={author.imageUrl} username={author.gitHubId} />
             </S.ProfileLink>
-            {!product && loginUserGithubId === author.gitHubId && (
-              <>
-                <S.EditButton onClick={handleEditClick}>수정</S.EditButton>
-                <S.DeleteButton onClick={handleDeleteClick}>삭제</S.DeleteButton>
-              </>
+            {!product && authorMatch && (
+              <S.ReviewModifyButtonWrapper>
+                <S.ReviewModifyButton onClick={handleEditClick}>
+                  수정
+                </S.ReviewModifyButton>
+                <S.ReviewModifyButton onClick={handleDeleteClick}>
+                  삭제
+                </S.ReviewModifyButton>
+              </S.ReviewModifyButtonWrapper>
             )}
           </S.UserWrapper>
           <Rating type="정수" rating={rating} />
@@ -77,7 +83,7 @@ function ReviewCard({
         <S.CreatedAt>{formattedDate}</S.CreatedAt>
         <S.Content>{content}</S.Content>
       </S.ReviewArea>
-      {isEditSheetOpen && (
+      {shouldSheetRender && (
         <ReviewBottomSheet
           handleClose={toggleEditSheetOpen}
           handleEdit={handleEdit}
@@ -85,6 +91,8 @@ function ReviewCard({
           id={reviewId}
           rating={rating}
           content={content}
+          handleUnmount={handleSheetUnmount}
+          animationTrigger={sheetAnimationTrigger}
         />
       )}
     </S.Container>

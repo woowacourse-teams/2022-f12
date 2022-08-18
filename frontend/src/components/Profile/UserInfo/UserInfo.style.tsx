@@ -2,22 +2,28 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  width: max-content;
+  gap: 0.6rem;
 `;
 
 export const ImageWrapper = styled.div`
-  width: 30%;
+  width: 4rem;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   border: 2px solid ${({ theme }) => theme.colors.gray};
   overflow: hidden;
 `;
 
+export const InfoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  font-size: 1.1rem;
+  gap: 0.4rem;
+`;
+
 export const UserNameWrapper = styled.div`
   display: flex;
-  gap: 0.7rem;
 `;
 
 export const ProfileImage = styled.img`
@@ -25,8 +31,9 @@ export const ProfileImage = styled.img`
   object-fit: cover;
 `;
 
-export const Username = styled.p`
-  font-size: 1.5rem;
+export const GitHubId = styled.a`
+  text-decoration: underline;
+  font-weight: 600;
 `;
 
 export const ChipWrapper = styled.div`
@@ -35,4 +42,13 @@ export const ChipWrapper = styled.div`
   gap: 1rem;
 `;
 
-export const GithubLink = styled.a``;
+export const FollowerCount = styled.div`
+  font-size: 0.95rem;
+`;
+
+export const FollowButton = styled.button`
+  padding: 0.4rem 1.4rem;
+  background-color: ${({ theme }) => theme.colors.primary};
+  border-radius: 0.4rem;
+  box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
+`;

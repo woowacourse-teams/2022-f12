@@ -1,10 +1,12 @@
 import useGetMany from '@/hooks/api/useGetMany';
+import { AxiosRequestHeaders } from 'axios';
 
 type Props = {
   url: string;
   query: string;
   filter: Record<string, string>;
   size: string;
+  headers?: AxiosRequestHeaders;
 };
 
 type Return<T> = DataFetchStatus & {
@@ -13,7 +15,7 @@ type Return<T> = DataFetchStatus & {
   refetch: () => void;
 };
 
-function useSearch<T>({ url, query, filter, size }: Props): Return<T> {
+function useSearch<T>({ url, query, filter, size, headers }: Props): Return<T> {
   const params = { query, ...filter, size };
   const {
     data: result,
@@ -25,6 +27,7 @@ function useSearch<T>({ url, query, filter, size }: Props): Return<T> {
   } = useGetMany<T>({
     url,
     params,
+    headers,
   });
 
   return { result, refetch, getNextPage, isLoading, isReady, isError };
