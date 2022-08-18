@@ -79,13 +79,13 @@ function InventoryProductList({
               <S.Container>
                 {items.map((item) => (
                   <S.PseudoButton
-                    key={item?.product?.id}
+                    key={item?.product.id}
                     onClick={() => {
                       handleSelect(category, item.id);
                     }}
                   >
                     <DeskSetupCard
-                      key={item?.product?.id}
+                      key={item?.product.id}
                       item={item}
                       borderType={
                         selectedState[category] === item.id
@@ -93,6 +93,7 @@ function InventoryProductList({
                           : 'default'
                       }
                       size={'s'}
+                      isEditMode={isEditMode}
                     />
                   </S.PseudoButton>
                 ))}
@@ -106,7 +107,7 @@ function InventoryProductList({
             <S.Container>
               {items.map((item) => (
                 <DeskSetupCard
-                  key={item?.product?.id}
+                  key={item?.product.id}
                   item={item}
                   borderType={
                     selectedState[category] === item.id ? 'selected' : 'default'

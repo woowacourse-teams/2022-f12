@@ -1,4 +1,5 @@
-import styled, { DefaultTheme } from 'styled-components';
+import { Link } from 'react-router-dom';
+import styled, { css, DefaultTheme } from 'styled-components';
 
 const borderByType = (
   theme: DefaultTheme,
@@ -38,6 +39,7 @@ const cardSize = {
 export const Container = styled.div<{
   size: 's' | 'l';
   borderType: 'default' | 'selected' | 'selectedAnimation';
+  isEditMode: boolean;
 }>`
   display: flex;
   flex-direction: column;
@@ -75,6 +77,21 @@ export const Container = styled.div<{
       box-shadow: 0 0 4px purple;
     }
   }
+
+  position: relative;
+
+  ${({ isEditMode }) =>
+    isEditMode &&
+    css`
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    `}
 `;
 
 export const ImageWrapper = styled.div<{ size: 's' | 'l' }>`
@@ -118,3 +135,5 @@ export const ReviewOpenButton = styled.button<{ size: 's' | 'l' }>`
   `}
   color: ${({ theme }) => theme.colors.black};
 `;
+
+export const CustomLink = styled(Link)``;
