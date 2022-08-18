@@ -617,6 +617,23 @@ export const InventoryProducts: { items: InventoryProduct[] } = {
   ],
 };
 
+export const InventoryReview = {
+  id: 1,
+  product: {
+    id: 1,
+    name: '키보드1',
+    imageUrl:
+      'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
+    reviewCount: 2,
+    rating: 2,
+    category: 'keyboard',
+  },
+  content:
+    '리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다리뷰입니다',
+  rating: 4,
+  createdAt: '2022-08-18T14:39:29.686202',
+};
+
 export const reviewsWithProduct: Review[] = [
   {
     id: 1,

@@ -4,6 +4,7 @@ import { BASE_URL, ENDPOINTS } from '@/constants/api';
 
 import {
   InventoryProducts,
+  InventoryReview,
   members,
   myUserData,
   otherUserData,
@@ -199,6 +200,10 @@ const getOtherMemberInventory = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(InventoryProducts), ctx.delay());
 };
 
+const getInventoryReview = (req, res, ctx) => {
+  return res(ctx.status(200), ctx.json(InventoryReview), ctx.delay());
+};
+
 export const handlers = [
   rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
 
@@ -225,6 +230,10 @@ export const handlers = [
   ),
   rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`, getReviewsByProductId),
   rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS}`, getReviews),
+  rest.get(
+    `${BASE_URL}${ENDPOINTS.REVIEW_BY_INVENTORY_PRODUCT_ID(':id')}`,
+    getInventoryReview
+  ),
   rest.put(`${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`, updateReviewByReviewId),
   rest.delete(
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
