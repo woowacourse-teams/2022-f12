@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import * as S from '@/components/common/Masonry/Masonry.style';
 
-type Props = { columnCount: number; children: React.ReactNode };
+type Props = { columnCount: number };
 
-function Masonry({ columnCount, children }: Props) {
+function Masonry({ columnCount, children }: PropsWithChildren<Props>) {
   const childrenArray = React.Children.toArray(children);
 
   const childrenComponents = childrenArray.reduce<React.ReactNode[][]>(

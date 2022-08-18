@@ -1,4 +1,5 @@
 import * as S from '@/components/common/SearchBar/SearchBar.style';
+
 import SearchImage from '@/assets/search.svg';
 
 type Props = {
@@ -7,14 +8,15 @@ type Props = {
 };
 
 function SearchBar({ searchInput, setSearchInput }: Props) {
-  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (!(e.target instanceof HTMLInputElement)) return;
-    setSearchInput(e.target.value);
+  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = ({ target }) => {
+    if (!(target instanceof HTMLInputElement)) return;
+    const newValue = target.value === '' ? null : target.value;
+    setSearchInput(newValue);
   };
 
   return (
     <S.Container>
-      <S.Input type="text" value={searchInput} onChange={handleInputChange} />
+      <S.Input type="text" value={searchInput || ''} onChange={handleInputChange} />
       <S.Button>
         <SearchImage />
       </S.Button>

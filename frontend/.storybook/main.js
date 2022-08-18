@@ -1,4 +1,5 @@
 const { resolve } = require('path');
+const { DefinePlugin } = require('webpack');
 
 module.exports = {
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
@@ -21,7 +22,12 @@ module.exports = {
       '@': resolve(__dirname, '../src/'),
     };
     config.resolve.alias = Object.assign(config.resolve.alias, alias);
-
+    config.plugins.push(
+      new DefinePlugin({
+        __API_URL__: JSON.stringify('https://dev.f12.app/api/v1'),
+        __GITHUB_CLIENT_ID__: JSON.stringify('404072c5857d705db2d9'),
+      })
+    );
     return config;
   },
   framework: '@storybook/react',

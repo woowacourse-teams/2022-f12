@@ -1,5 +1,6 @@
-import * as S from '@/components/common/FloatingButton/FloatingButton.style';
 import { PropsWithChildren } from 'react';
+
+import * as S from '@/components/common/FloatingButton/FloatingButton.style';
 
 type Props = {
   clickHandler: () => void;

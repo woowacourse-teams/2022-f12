@@ -15,3 +15,8 @@ export const SearchWrapper = styled.div`
   align-items: center;
   gap: 0.8rem;
 `;
+
+export const SearchFilterWrapper = styled.div`
+  display: flex;
+  gap: 1em;
+`;

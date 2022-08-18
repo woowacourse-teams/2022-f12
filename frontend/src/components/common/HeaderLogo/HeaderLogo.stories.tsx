@@ -1,9 +1,10 @@
-import HeaderLogo from '@/components/common/HeaderLogo/HeaderLogo';
 import { ComponentStory } from '@storybook/react';
+
+import HeaderLogo from '@/components/common/HeaderLogo/HeaderLogo';
 
 export default {
   component: HeaderLogo,
-  title: 'Components/Header',
+  title: 'Components/Common/Header',
 };
 
 const Template: ComponentStory<typeof HeaderLogo> = () => <HeaderLogo />;

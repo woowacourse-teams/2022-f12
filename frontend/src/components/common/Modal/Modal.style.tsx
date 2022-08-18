@@ -12,9 +12,10 @@ export const Container = styled.section<{ scrollOffset: number }>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 2;
 `;
 
-export const Backdrop = styled.div`
+export const Backdrop = styled.div<{ animationTrigger: boolean }>`
   width: 100%;
   height: 100%;
 
@@ -26,9 +27,11 @@ export const Backdrop = styled.div`
   background-color: #00000033;
 
   height: 100%;
+  transition: 200ms;
+  ${({ animationTrigger }) => !animationTrigger && 'opacity: 0'};
 `;
 
-export const Content = styled.section`
+export const Content = styled.section<{ animationTrigger: boolean }>`
   width: 30rem;
   min-height: 10rem;
   padding: 1.5rem;
@@ -47,13 +50,22 @@ export const Content = styled.section`
 
   filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.25));
   background-color: ${({ theme }) => theme.colors.white};
+
+  transition: 200ms;
+  ${({ animationTrigger }) =>
+    !animationTrigger && 'transform: translateY(1rem); opacity: 0'};
 `;
 
 export const Title = styled.h1`
   font-size: 1.5rem;
 `;
 
-export const Body = styled.div``;
+export const Body = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  word-break: break-all;
+`;
 
 export const ButtonContainer = styled.div`
   display: flex;

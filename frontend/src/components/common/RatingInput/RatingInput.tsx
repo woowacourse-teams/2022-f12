@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 
-import Heart from '@/assets/heart.svg';
-
 import * as S from '@/components/common/RatingInput/RatingInput.style';
+
 import theme from '@/style/theme';
+
+import Heart from '@/assets/heart.svg';
 
 type Props = {
   rating: null | number;
@@ -43,10 +44,7 @@ function RatingInput({ rating = null, setRating }: Props) {
             {ratingIndex > (hoverRating ?? rating) ? (
               <Heart stroke={theme.colors.primaryDark} />
             ) : (
-              <Heart
-                stroke={theme.colors.primaryDark}
-                fill={theme.colors.primary}
-              />
+              <Heart stroke={theme.colors.primaryDark} fill={theme.colors.primary} />
             )}
           </S.EmptyButton>
         );

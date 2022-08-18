@@ -1,16 +1,20 @@
 import { AxiosRequestHeaders } from 'axios';
 import { useContext } from 'react';
+
 import { UserDataContext } from '@/contexts/LoginContextProvider';
+
 import useAxios from '@/hooks/api/useAxios';
-import useModal from '@/hooks/useModal';
 import useError from '@/hooks/useError';
+import useModal from '@/hooks/useModal';
+
+import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
 
 type Props = {
   url: string;
-  headers: null | AxiosRequestHeaders;
+  headers?: AxiosRequestHeaders;
 };
 
-function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
+function usePost<T>({ url, headers }: Props): (input?: T) => Promise<void> {
   const userData = useContext(UserDataContext);
 
   const { axiosInstance } = useAxios();
@@ -19,22 +23,27 @@ function usePost<T>({ url, headers }: Props): (input: T) => Promise<void> {
 
   const postData = async (body: T) => {
     if (!userData || !userData.token) {
-      showAlert('로그인이 필요합니다.');
-      return;
+      await showAlert(VALIDATION_ERROR_MESSAGES.LOGIN_REQUIRED);
+      throw new Error(VALIDATION_ERROR_MESSAGES.LOGIN_REQUIRED);
     }
+
+    const { token } = userData;
 
     try {
       await axiosInstance.post(url, body, {
-        headers,
+        headers: { ...headers, Authorization: `Bearer ${token}` },
       });
     } catch (error) {
-      const requestBodyString = Object.entries(body).reduce<string>(
-        (string, [key, value]) => `${string}\n${key}: ${value as string}`,
-        ''
-      );
-      handleError(
-        error as Error,
-        `body: ${requestBodyString},\n    token: ${userData.token}`
+      // body가 없는 POST가 존재하는 경우 오류 발생으로 임시 생략
+
+      // const requestBodyString = Object.entries(body).reduce<string>(
+      //   (string, [key, value]) => `${string}\n${key}: ${value as string}`,
+      //   ''
+      // );
+
+      await handleError(
+        error as Error
+        // `body: ${requestBodyString},\n    token: ${token}`
       );
     }
   };

@@ -1,22 +1,17 @@
 package com.woowacourse.f12.domain.inventoryproduct;
 
 import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.domain.product.Product;
-import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.persistence.*;
+import java.util.Objects;
+
 @Entity
 @Table(name = "inventory_product")
+@Builder
 @Getter
 public class InventoryProduct {
 
@@ -27,18 +22,17 @@ public class InventoryProduct {
     @Column(name = "selected")
     private boolean selected;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
-    private Product product;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     protected InventoryProduct() {
     }
 
-    @Builder
     private InventoryProduct(final Long id, final boolean selected, final Member member, final Product product) {
         this.id = id;
         this.selected = selected;
@@ -46,8 +40,8 @@ public class InventoryProduct {
         this.product = product;
     }
 
-    public void updateSelected(boolean selected) {
-        this.selected = selected;
+    public boolean isSameCategory(final Category category) {
+        return product.isSameCategory(category);
     }
 
     @Override
@@ -59,7 +53,7 @@ public class InventoryProduct {
             return false;
         }
         final InventoryProduct that = (InventoryProduct) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(id, that.getId());
     }
 
     @Override

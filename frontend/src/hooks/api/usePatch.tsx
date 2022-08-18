@@ -1,11 +1,10 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
+import { useContext } from 'react';
+
+import { SetUserDataContext, UserDataContext } from '@/contexts/LoginContextProvider';
+
 import useAxios from '@/hooks/api/useAxios';
 import useError from '@/hooks/useError';
-import { useContext } from 'react';
-import {
-  SetUserDataContext,
-  UserDataContext,
-} from '@/contexts/LoginContextProvider';
 
 type Props = {
   url: string;
@@ -38,7 +37,7 @@ function usePatch<T>({
         (string, [key, value]) => `${string}\n${key}: ${value as string}`,
         ''
       );
-      handleError(
+      await handleError(
         error as Error,
         `data: ${requestBodyString},\n    token: ${headers.Authorization.toString()}`
       );

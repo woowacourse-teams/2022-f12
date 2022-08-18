@@ -4,23 +4,15 @@ type Props = {
   fontSize: number;
   value: string;
   children: React.ReactNode;
-  careerLevelFilter?: string;
-  jobTypeFilter?: string;
+  filter?: string;
   handleClick: (e) => void;
 };
 
-function ChipFilter({
-  fontSize,
-  value,
-  children,
-  careerLevelFilter,
-  jobTypeFilter,
-  handleClick,
-}: Props) {
+function ChipFilter({ fontSize, value, children, filter, handleClick }: Props) {
   return (
     <S.Button
       fontSize={fontSize}
-      clicked={careerLevelFilter === value || jobTypeFilter === value}
+      clicked={filter === value}
       value={value}
       onClick={handleClick}
     >

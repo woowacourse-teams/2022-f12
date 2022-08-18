@@ -1,22 +1,18 @@
 package com.woowacourse.f12.application.inventoryproduct;
 
-import static com.woowacourse.f12.domain.product.Category.SOFTWARE;
-
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
-import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
-import com.woowacourse.f12.exception.internalserver.SqlUpdateException;
-import com.woowacourse.f12.exception.badrequest.NotUpdatableException;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileProductUpdateException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -36,34 +32,15 @@ public class InventoryProductService {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
         final List<Long> selectedInventoryProductIds = profileProductRequest.getSelectedInventoryProductIds();
-        validateProfileProducts(selectedInventoryProductIds);
+        validateUpdatable(member, selectedInventoryProductIds);
         cancelProfileProducts(member);
         registerProfileProducts(member, selectedInventoryProductIds);
     }
 
-    private void validateProfileProducts(final List<Long> selectedInventoryProductIds) {
-        final List<InventoryProduct> inventoryProducts = inventoryProductRepository.findAllById(
-                selectedInventoryProductIds);
-        validateNotContainsSoftware(inventoryProducts);
-        validateCategoryNotDuplicated(inventoryProducts);
-    }
-
-    private void validateNotContainsSoftware(final List<InventoryProduct> inventoryProducts) {
-        final boolean hasSoftware = inventoryProducts.stream()
-                .map(it -> it.getProduct().getCategory())
-                .anyMatch(it -> it.equals(SOFTWARE));
-        if (hasSoftware) {
-            throw new InvalidProfileProductCategoryException();
-        }
-    }
-
-    private void validateCategoryNotDuplicated(final List<InventoryProduct> inventoryProducts) {
-        final long distinctCount = inventoryProducts.stream()
-                .map(it -> it.getProduct().getCategory())
-                .distinct()
-                .count();
-        if (distinctCount != inventoryProducts.size()) {
-            throw new DuplicatedProfileProductCategoryException();
+    private void validateUpdatable(final Member member, final List<Long> selectedInventoryProductIds) {
+        final InventoryProducts selectedInventoryProducts = new InventoryProducts(inventoryProductRepository.findAllById(selectedInventoryProductIds));
+        if (!member.contains(selectedInventoryProducts)) {
+            throw new InvalidProfileProductUpdateException();
         }
     }
 
@@ -72,11 +49,7 @@ public class InventoryProductService {
     }
 
     private void registerProfileProducts(final Member member, final List<Long> selectedInventoryProductIds) {
-        final int updatedCount = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
-                selectedInventoryProductIds, true);
-        if (updatedCount != selectedInventoryProductIds.size()) {
-            throw new NotUpdatableException();
-        }
+        inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member, selectedInventoryProductIds, true);
     }
 
     public InventoryProductsResponse findByMemberId(final Long memberId) {

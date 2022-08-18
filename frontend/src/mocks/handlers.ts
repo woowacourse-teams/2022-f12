@@ -1,14 +1,19 @@
 import { rest } from 'msw';
+
 import { BASE_URL, ENDPOINTS } from '@/constants/api';
+
 import {
   InventoryProducts,
-  myData,
+  InventoryReview,
+  members,
+  myUserData,
+  otherUserData,
   products,
   reviewsWithOutProduct,
   reviewsWithProduct,
 } from '@/mocks/data';
 
-// 상품 목록 조회
+// 제품 목록 조회
 const getKeyboards = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
@@ -22,19 +27,16 @@ const getKeyboards = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
-// 상품 상세 조회
+// 제품 상세 조회
 const getKeyboard = (req, res, ctx) => {
   const { id } = req.params;
 
-  const response = products.find(
-    ({ id: productId }) => productId === Number(id)
-  );
+  const response = products.find(({ id: productId }) => productId === Number(id));
 
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
-// 상품 사용자 통계 조회
-// 상품 상세 조회
+// 제품 사용자 통계 조회
 const getStatistics = (req, res, ctx) => {
   const response = {
     careerLevel: {
@@ -68,7 +70,7 @@ const getReviews = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
-// 상품 별 리뷰 목록 조회
+// 제품 별 리뷰 목록 조회
 const getReviewsByProductId = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
@@ -122,9 +124,9 @@ const getToken = (req, res, ctx) => {
   const response = {
     member: {
       id: 1,
-      gitHubId: '사용자2',
+      gitHubId: 'yangdongjue5510',
       imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
-      name: 'F12개발자',
+      name: '양동주',
     },
     registerCompleted: false,
     token: 'iJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjU4MTQ4Mzg1LCJleHAiOjE2NTgxNTE',
@@ -146,11 +148,8 @@ const patchInventoryProducts = (req, res, ctx) => {
   if (token === undefined) {
     return res(ctx.status(401));
   }
-  const { selectedInventoryProductId, unselectedInventoryProductId } = req.body;
-  if (
-    selectedInventoryProductId === undefined &&
-    unselectedInventoryProductId === undefined
-  ) {
+  const { selectedInventoryProductIds } = req.body;
+  if (selectedInventoryProductIds === undefined) {
     return res(ctx.status(400));
   }
   return res(ctx.status(200));
@@ -161,7 +160,7 @@ const getMyInfo = (req, res, ctx) => {
   if (token === undefined) {
     return res(ctx.status(401));
   }
-  return res(ctx.status(200), ctx.json(myData), ctx.delay());
+  return res(ctx.status(200), ctx.json(myUserData), ctx.delay());
 };
 
 // 추가 정보 입력
@@ -174,37 +173,89 @@ const submitAdditionalInfo = (req, res, ctx) => {
 };
 
 const getOtherMemberInfo = (req, res, ctx) => {
-  return res(ctx.json({ ...myData, jobType: null, careerLevel: null }));
+  return res(ctx.json(otherUserData));
+};
+
+const searchMember = (req, res, ctx) => {
+  const page = Number(req.url.searchParams.get('page'));
+  const size = Number(req.url.searchParams.get('size'));
+
+  const startIndex = page * size;
+  const endIndex = (page + 1) * size;
+
+  const response = {
+    hasNext: page < 2,
+    items: members.slice(startIndex, endIndex),
+  };
+
+  return res(ctx.json(response));
+};
+
+const getOtherMemberInventory = (req, res, ctx) => {
+  const token = req.headers.get('Authorization');
+  if (token === undefined) {
+    return res(ctx.status(401));
+  }
+
+  return res(ctx.status(200), ctx.json(InventoryProducts), ctx.delay());
+};
+
+const getInventoryReview = (req, res, ctx) => {
+  return res(ctx.status(200), ctx.json(InventoryReview), ctx.delay());
+};
+
+const followUser = (req, res, ctx) => {
+  const token = req.headers.get('Authorization');
+  if (token === undefined) {
+    return res(ctx.status(401));
+  }
+  return res(ctx.status(204), ctx.json(), ctx.delay());
+};
+
+const unfollowUser = (req, res, ctx) => {
+  const token = req.headers.get('Authorization');
+  if (token === undefined) {
+    return res(ctx.status(401));
+  }
+  return res(ctx.status(204), ctx.json(), ctx.delay());
 };
 
 export const handlers = [
-  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
-  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
-  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}/statistics`, getStatistics),
-  rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS}`, getReviews),
+  rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
+
+  rest.get(`${BASE_URL}${ENDPOINTS.ME}`, getMyInfo),
+  rest.patch(`${BASE_URL}${ENDPOINTS.ME}`, submitAdditionalInfo),
+  // 아래 핸들러 순서 유의미 => getOtherMemberInfo보다 아래에 위치하면 요청 matching에서 오류 발생
+  rest.get(`${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`, getInventoryProducts),
+  rest.patch(`${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`, patchInventoryProducts),
+
+  rest.get(`${BASE_URL}${ENDPOINTS.MEMBERS}`, searchMember),
+  rest.get(`${BASE_URL}${ENDPOINTS.MEMBERS}/:memberId`, getOtherMemberInfo),
   rest.get(
-    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
-    getReviewsByProductId
+    `${BASE_URL}${ENDPOINTS.MEMBERS}/:memberId/inventoryProducts`,
+    getOtherMemberInventory
   ),
+
+  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
+  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
+  rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}/statistics`, getStatistics),
+
   rest.post(
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`,
     postReviewByProductId
   ),
-  rest.put(
-    `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
-    updateReviewByReviewId
+  rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(':id')}`, getReviewsByProductId),
+  rest.get(`${BASE_URL}${ENDPOINTS.REVIEWS}`, getReviews),
+  rest.get(
+    `${BASE_URL}${ENDPOINTS.REVIEW_BY_INVENTORY_PRODUCT_ID(':id')}`,
+    getInventoryReview
   ),
+  rest.put(`${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`, updateReviewByReviewId),
   rest.delete(
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
     deleteReviewByReviewId
   ),
-  rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
-  rest.get(`${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`, getInventoryProducts),
-  rest.patch(
-    `${BASE_URL}${ENDPOINTS.INVENTORY_PRODUCTS}`,
-    patchInventoryProducts
-  ),
-  rest.get(`${BASE_URL}${ENDPOINTS.ME}`, getMyInfo),
-  rest.patch(`${BASE_URL}${ENDPOINTS.ME}`, submitAdditionalInfo),
-  rest.get(`${BASE_URL}${ENDPOINTS.MEMBERS}/:memberId`, getOtherMemberInfo),
+  rest.get(`${BASE_URL}${ENDPOINTS.MY_FOLLOWING}`, searchMember),
+  rest.post(`${BASE_URL}${ENDPOINTS.FOLLOWING(':id')}`, followUser),
+  rest.delete(`${BASE_URL}${ENDPOINTS.FOLLOWING(':id')}`, unfollowUser),
 ];

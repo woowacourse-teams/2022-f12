@@ -20,11 +20,10 @@ public class ReviewWithProductPageResponse {
         this.items = items;
     }
 
-    public static ReviewWithProductPageResponse from(final Slice<Review> reviews) {
-        List<ReviewWithProductResponse> items = reviews.getContent()
-                .stream()
+    public static ReviewWithProductPageResponse from(final Slice<Review> page) {
+        final List<ReviewWithProductResponse> items = page.getContent().stream()
                 .map(ReviewWithProductResponse::from)
                 .collect(Collectors.toList());
-        return new ReviewWithProductPageResponse(reviews.hasNext(), items);
+        return new ReviewWithProductPageResponse(page.hasNext(), items);
     }
 }

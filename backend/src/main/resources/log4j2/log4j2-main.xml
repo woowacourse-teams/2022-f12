@@ -3,7 +3,7 @@
     <Properties>
         <Property name="log">logs/log/log</Property>
         <Property name="db-log">logs/db/db</Property>
-        <Property name="log-pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %t %class{36}.%M L:%L %m%n</Property>
+        <Property name="log-pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %m%n</Property>
         <Property name="file-pattern">%d{yyyy-MM-dd}-%i.log.gz</Property>
     </Properties>
     <Appenders>
@@ -33,25 +33,28 @@
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
-
+        <Async name="AsyncFileAppender">
+            <AppenderRef ref="FileAppender"/>
+        </Async>
+        <Async name="AsyncDbAppender">
+            <AppenderRef ref="DbAppender"/>
+        </Async>
     </Appenders>
     <Loggers>
-        <AsyncLogger name="com.woowacourse.f12" level="info" additivity="false" includeLocation="true">
-            <AppenderRef ref="FileAppender"/>
-        </AsyncLogger>
-        <AsyncLogger name="com.springframework" level="info" additivity="false" includeLocation="true">
-            <AppenderRef ref="FileAppender"/>
-        </AsyncLogger>
-        <AsyncLogger name="org.hibernate.SQL" level="debug" additivity="false" includeLocation="true">
-            <AppenderRef ref="DbAppender"/>
-        </AsyncLogger>
-        <AsyncLogger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace" additivity="false"
-                     includeLocation="true">
-
-            <AppenderRef ref="DbAppender"/>
-        </AsyncLogger>
+        <Logger name="com.woowacourse.f12" level="info" additivity="false">
+            <AppenderRef ref="AsyncFileAppender"/>
+        </Logger>
+        <Logger name="com.springframework" level="info" additivity="false">
+            <AppenderRef ref="AsyncFileAppender"/>
+        </Logger>
+        <Logger name="org.hibernate.SQL" level="debug" additivity="false">
+            <AppenderRef ref="AsyncDbAppender"/>
+        </Logger>
+        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace" additivity="false">
+            <AppenderRef ref="AsyncDbAppender"/>
+        </Logger>
         <Root level="error">
-            <AppenderRef ref="FileAppender"/>
+            <AppenderRef ref="AsyncFileAppender"/>
         </Root>
     </Loggers>
 </Configuration>

@@ -1,9 +1,17 @@
-import CustomLink from '@/components/common/CustomLink/CustomLink';
-import ProductListSection from '@/components/ProductListSection/ProductListSection';
-import ReviewListSection from '@/components/ReviewListSection/ReviewListSection';
-import ROUTES from '@/constants/routes';
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
+
+import ProductListSection from '@/components/Product/ProductListSection/ProductListSection';
+import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListSection';
+
 import useProducts from '@/hooks/useProducts';
 import useReviews from '@/hooks/useReviews';
+
+import TITLE from '@/constants/header';
+
+const HOME_PRODUCT_SIZE = 4;
+const HOME_REVIEW_SIZE = 6;
 
 function Home() {
   const {
@@ -12,7 +20,7 @@ function Home() {
     isLoading: isProductLoading,
     isReady: isProductReady,
   } = useProducts({
-    size: '4',
+    size: String(HOME_PRODUCT_SIZE),
     sort: 'rating,desc',
   });
   const {
@@ -21,30 +29,40 @@ function Home() {
     isLoading: isReviewLoading,
     isReady: isReviewReady,
     isError: isReviewError,
-  } = useReviews({ size: '6' });
-
-  const moreProductsLink = (
-    <CustomLink to={ROUTES.PRODUCTS}>+더보기</CustomLink>
-  );
+  } = useReviews({ size: String(HOME_REVIEW_SIZE) });
 
   return (
     <>
-      <ProductListSection
-        title={'인기 있는 상품'}
-        data={products}
-        isLoading={isProductLoading}
+      <SectionHeader title={TITLE.POPULAR_PRODUCT} />
+      <AsyncWrapper
+        fallback={<Loading />}
         isReady={isProductReady}
         isError={isProductError}
-        addOn={moreProductsLink}
-      />
-      <ReviewListSection
-        columns={2}
-        data={reviews}
-        getNextPage={getNextPage}
-        isLoading={isReviewLoading}
+      >
+        <ProductListSection
+          title={TITLE.POPULAR_PRODUCT}
+          data={products}
+          isLoading={isProductLoading}
+          isError={isProductError}
+          pageSize={HOME_PRODUCT_SIZE}
+        />
+      </AsyncWrapper>
+
+      <SectionHeader title={TITLE.RECENT_REVIEW} />
+      <AsyncWrapper
+        fallback={<Loading />}
         isReady={isReviewReady}
         isError={isReviewError}
-      />
+      >
+        <ReviewListSection
+          columns={2}
+          data={reviews}
+          getNextPage={getNextPage}
+          isLoading={isReviewLoading}
+          isError={isReviewError}
+          pageSize={HOME_REVIEW_SIZE}
+        />
+      </AsyncWrapper>
     </>
   );
 }

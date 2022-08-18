@@ -25,6 +25,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "review")
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 @Getter
 public class Review {
 
@@ -57,7 +58,6 @@ public class Review {
     protected Review() {
     }
 
-    @Builder
     private Review(final Long id, final String content, final int rating, final Product product, final Member member,
                    final LocalDateTime createdAt) {
         validateContent(content);
@@ -99,11 +99,11 @@ public class Review {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Review)) {
             return false;
         }
         final Review review = (Review) o;
-        return Objects.equals(id, review.id);
+        return Objects.equals(id, review.getId());
     }
 
     @Override

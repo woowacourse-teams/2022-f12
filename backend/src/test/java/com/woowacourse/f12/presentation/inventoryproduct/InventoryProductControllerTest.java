@@ -1,20 +1,5 @@
 package com.woowacourse.f12.presentation.inventoryproduct;
 
-import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.inventoryproduct.InventoryProductService;
@@ -25,8 +10,7 @@ import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsRespon
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
-import com.woowacourse.f12.support.MemberFixtures;
-import java.util.List;
+import com.woowacourse.f12.presentation.PresentationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,9 +18,27 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.List;
+
+import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(InventoryProductController.class)
-class InventoryProductControllerTest {
+class InventoryProductControllerTest extends PresentationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -61,16 +63,20 @@ class InventoryProductControllerTest {
         willDoNothing().given(inventoryProductService).updateProfileProducts(1L, profileProductRequest);
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(profileProductRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(profileProductRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("inventoryProducts-update")
+                );
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -91,16 +97,17 @@ class InventoryProductControllerTest {
                 .updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(profileProductRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isNotFound())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(profileProductRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -117,16 +124,17 @@ class InventoryProductControllerTest {
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(null);
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(profileProductRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(profileProductRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider, times(0)).getPayload(authorizationHeader),
@@ -148,16 +156,17 @@ class InventoryProductControllerTest {
                 .given(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(profileProductRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(profileProductRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -178,16 +187,17 @@ class InventoryProductControllerTest {
                 .given(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
 
         // when
-        mockMvc.perform(
-                        patch("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .content(objectMapper.writeValueAsString(profileProductRequest))
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .content(objectMapper.writeValueAsString(profileProductRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
 
         // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -199,7 +209,7 @@ class InventoryProductControllerTest {
     void 멤버_id_로_조회한다() throws Exception {
         // given
         Long memberId = 1L;
-        Member member = MemberFixtures.CORINNE.생성(memberId);
+        Member member = CORINNE.생성(memberId);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성(1L));
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -210,15 +220,16 @@ class InventoryProductControllerTest {
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/members/inventoryProducts")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-
-                )
-                .andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/inventoryProducts")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("inventoryProducts-get-own"));
+
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
@@ -230,19 +241,21 @@ class InventoryProductControllerTest {
     void 다른_멤버_id_로_조회한다() throws Exception {
         // given
         Long memberId = 1L;
-        Member member = MemberFixtures.CORINNE.생성(memberId);
+        Member member = CORINNE.생성(memberId);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성(1L));
         given(inventoryProductService.findByMemberId(memberId))
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
 
         // when
-        mockMvc.perform(
-                        get("/api/v1/members/" + memberId + "/inventoryProducts")
-                )
-                .andExpect(status().isOk())
-                .andDo(print());
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/" + memberId + "/inventoryProducts")
+        );
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("inventoryProducts-get-by-memberId"));
+
         assertAll(
                 () -> verify(inventoryProductService).findByMemberId(memberId)
         );

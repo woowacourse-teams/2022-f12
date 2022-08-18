@@ -1,11 +1,7 @@
 describe('비회원 사용자 기본 플로우', () => {
   beforeEach(() => {
-    cy.intercept({ method: 'GET', url: '**/api/v1/products*' }).as(
-      'productsRequest'
-    );
-    cy.intercept({ method: 'GET', url: '**/api/v1/reviews*' }).as(
-      'reviewsRequest'
-    );
+    cy.intercept({ method: 'GET', url: '**/api/v1/products*' }).as('productsRequest');
+    cy.intercept({ method: 'GET', url: '**/api/v1/reviews*' }).as('reviewsRequest');
 
     cy.visit('');
   });
@@ -15,10 +11,10 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.visit('');
     });
 
-    it('홈 페이지에 접속하면 상품을 조회할 수 있다.', () => {
+    it('홈 페이지에 접속하면 제품을 조회할 수 있다.', () => {
       cy.wait('@productsRequest');
 
-      cy.findByRole('region', { name: /상품/ })
+      cy.findByRole('region', { name: /제품/ })
         .findAllByRole('article')
         .should('be.visible');
     });
@@ -48,81 +44,74 @@ describe('비회원 사용자 기본 플로우', () => {
       });
     });
 
-    it('카테고리에서 전체 상품을 클릭하면 전체 상품 리스트를 조회할 수 있다.', () => {
-      cy.findByRole('button', { name: '카테고리' }).click();
-      cy.findByRole('link', { name: '전체 상품' }).click();
-      cy.findByRole('region', { name: '모든 상품 목록' })
-        .findAllByRole('article')
-        .should('be.visible');
-    });
-    it('카테고리에서 키보드를 클릭하면 전체 키보드 상품 리스트를 조회할 수 있다.', () => {
+    it('카테고리에서 키보드를 클릭하면 전체 키보드 제품 리스트를 조회할 수 있다.', () => {
       cy.findByRole('button', { name: '카테고리' }).click();
       cy.findByRole('link', { name: '키보드' }).click();
 
       cy.wait('@productsRequest');
 
-      cy.findByRole('region', { name: '모든 키보드 목록' })
+      cy.findByRole('region', { name: /키보드/ })
         .findAllByRole('article')
         .should('be.visible');
     });
 
-    it('카테고리에서 마우스를 클릭하면 전체 마우스 상품 리스트를 조회할 수 있다.', () => {
+    it('카테고리에서 마우스를 클릭하면 전체 마우스 제품 리스트를 조회할 수 있다.', () => {
       cy.findByRole('button', { name: '카테고리' }).click();
       cy.findByRole('link', { name: '마우스' }).click();
 
       cy.wait('@productsRequest');
 
-      cy.findByRole('region', { name: '모든 마우스 목록' })
+      cy.findByRole('region', { name: /마우스/ })
         .findAllByRole('article')
         .should('be.visible');
     });
 
-    it('카테고리에서 모니터를 클릭하면 전체 모니터 상품 리스트를 조회할 수 있다.', () => {
+    it('카테고리에서 모니터를 클릭하면 전체 모니터 제품 리스트를 조회할 수 있다.', () => {
       cy.findByRole('button', { name: '카테고리' }).click();
       cy.findByRole('link', { name: '모니터' }).click();
 
       cy.wait('@productsRequest');
 
-      cy.findByRole('region', { name: '모든 모니터 목록' })
+      cy.findByRole('region', { name: /모니터/ })
         .findAllByRole('article')
         .should('be.visible');
     });
 
-    it('카테고리에서 거치대를 클릭하면 전체 거치대 상품 리스트를 조회할 수 있다.', () => {
+    it('카테고리에서 거치대를 클릭하면 전체 거치대 제품 리스트를 조회할 수 있다.', () => {
       cy.findByRole('button', { name: '카테고리' }).click();
       cy.findByRole('link', { name: '거치대' }).click();
 
       cy.wait('@productsRequest');
 
-      cy.findByRole('region', { name: '모든 거치대 목록' })
+      cy.findByRole('region', { name: /거치대/ })
         .findAllByRole('article')
         .should('be.visible');
     });
 
-    it('카테고리에서 소프트웨어를 클릭하면 전체 소프트웨어 상품 리스트를 조회할 수 있다.', () => {
+    it('카테고리에서 소프트웨어를 클릭하면 전체 소프트웨어 제품 리스트를 조회할 수 있다.', () => {
       cy.findByRole('button', { name: '카테고리' }).click();
       cy.findByRole('link', { name: '소프트웨어' }).click();
 
       cy.wait('@productsRequest');
-      cy.findByRole('region', { name: '모든 소프트웨어 목록' })
+      cy.findByRole('region', { name: /소프트웨어/ })
         .findAllByRole('article')
         .should('be.visible');
     });
 
-    it('상품 상세 페이지에 진입하면, 상품 사진과 리뷰와 통계정보를 볼 수 있다.', () => {
+    it('제품 상세 페이지에 진입하면, 제품 사진과 리뷰와 통계정보를 볼 수 있다.', () => {
       cy.wait('@productsRequest');
 
-      cy.findByRole('region', { name: '인기 있는 상품' })
+      cy.findByRole('region', { name: '인기 있는 제품' })
         .findAllByRole('article')
         .findByRole('img')
         .click();
 
-      // 후기는 없는 상품이 있을 수도 있기 때문에 삭제하거나 빈 데이터 이미지 표시 필요
+      // 후기는 없는 제품이 있을 수도 있기 때문에 삭제하거나 빈 데이터 이미지 표시 필요
       // cy.findByRole('region', { name: '최근 후기' })
       //   .findAllByRole('article')
       //   .should('be.visible');
 
-      cy.findByRole('img', { name: '상품 이미지' }).should('be.visible');
+      cy.findByRole('img', { name: '제품 이미지' }).should('be.visible');
 
       cy.findByRole('region', { name: '통계 정보' })
         .scrollIntoView()

@@ -1,10 +1,9 @@
-import Loading from '@/components/common/Loading/Loading';
 import { PropsWithChildren, useEffect, useMemo, useRef } from 'react';
 
-type Props = {
+import Loading from '@/components/common/Loading/Loading';
+
+type Props = Omit<DataFetchStatus, 'isReady'> & {
   handleContentLoad: () => void;
-  isLoading: boolean;
-  isError: boolean;
 };
 
 function InfiniteScroll({

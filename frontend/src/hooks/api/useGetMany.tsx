@@ -1,7 +1,8 @@
+import logError from '@/utils/logError';
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
+
 import useAxios from '@/hooks/api/useAxios';
-import logError from '@/utils/logError';
 import useModal from '@/hooks/useModal';
 
 type SearchParams = Record<string, string>;
@@ -20,11 +21,8 @@ type Data<T> = {
   items: T[];
 };
 
-type Return<T> = {
+type Return<T> = DataFetchStatus & {
   data: T[];
-  isLoading: boolean;
-  isReady: boolean;
-  isError: boolean;
   getNextPage: () => void;
   refetch: () => void;
 };
@@ -81,8 +79,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
 
     fetchData()
       .then(({ hasNext, items }) => {
-        !!items &&
-          setData((prevData) => (prevData ? [...prevData, ...items] : items));
+        !!items && setData((prevData) => (prevData ? [...prevData, ...items] : items));
         return hasNext;
       })
       .then((hasNext) => {
@@ -92,9 +89,9 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
           setHasNextPage(false);
         }
       })
-      .catch((error: Error) => {
+      .catch(async (error: Error) => {
         logError(error, getErrorStateMessage());
-        showAlert('사용자에게 표시할 오류 메시지');
+        await showAlert(error.message);
       });
   }, [nextPageTrigger, refetchTrigger]);
 

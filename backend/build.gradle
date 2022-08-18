@@ -3,6 +3,12 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'org.sonarqube' version '3.3'
+    id 'jacoco'
+}
+
+jacoco {
+    toolVersion = "0.8.7"
 }
 
 group = 'com.woowacourse'
@@ -26,7 +32,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-    implementation 'com.lmax:disruptor:3.4.2'
+    implementation 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3'
 
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
@@ -70,6 +76,7 @@ task copySubmodule(type: Copy) {
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 asciidoctor {
@@ -86,6 +93,29 @@ task copyDocument(type: Copy) {
     dependsOn asciidoctor
     from file("${asciidoctor.outputDir}")
     into file("build/resources/main/static")
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.enabled false
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.sources", "src"
+        property "sonar.language", "java"
+        property "sonar.profile", "Sonar way"
+        property "sonar.java.binaries", "${buildDir}/classes"
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.profile", "Sonar way"
+        property "sonar.test.inclusions", "**/*Test.java"
+        property "sonar.coverage.exclusions", "**/*F12Application*,**/*Request*,**/*Response*,**/*Exception*,**/*Fake*,**/*Fixture*,**/test/**/*Util*,**/RestDocsConfig*"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+    }
 }
 
 bootJar {

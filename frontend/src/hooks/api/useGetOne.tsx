@@ -1,7 +1,8 @@
+import logError from '@/utils/logError';
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
+
 import useAxios from '@/hooks/api/useAxios';
-import logError from '@/utils/logError';
 import useModal from '@/hooks/useModal';
 
 type Props = {
@@ -9,11 +10,9 @@ type Props = {
   headers?: null | AxiosRequestHeaders;
 };
 
-type Return<T> = {
+type Return<T> = Omit<DataFetchStatus, 'isLoading'> & {
   data: T;
   refetch: () => void;
-  isReady: boolean;
-  isError: boolean;
 };
 
 function useGetOne<T>({ url, headers }: Props): Return<T> {
@@ -42,9 +41,9 @@ function useGetOne<T>({ url, headers }: Props): Return<T> {
       .then((data) => {
         !!data && setData(data);
       })
-      .catch((error: Error) => {
+      .catch(async (error: Error) => {
         logError(error, getErrorStateMessage());
-        showAlert('사용자에게 표시할 오류 메시지');
+        await showAlert(error.message);
       });
   }, [refetchTrigger]);
 

@@ -1,14 +1,13 @@
-import BarGraph from '@/components/common/BarGraph/BarGraph';
 import { ComponentStory } from '@storybook/react';
+
+import BarGraph from '@/components/common/BarGraph/BarGraph';
 
 export default {
   component: BarGraph,
-  title: 'Components/BarGraph',
+  title: 'Components/Common/BarGraph',
 };
 
-const Template: ComponentStory<typeof BarGraph> = (args) => (
-  <BarGraph {...args} />
-);
+const Template: ComponentStory<typeof BarGraph> = (args) => <BarGraph {...args} />;
 
 const statistics = {
   careerLevel: {

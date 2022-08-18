@@ -1,12 +1,11 @@
 package com.woowacourse.f12.domain.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.product.Product;
-import java.util.ArrayList;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -14,16 +13,16 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
-import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Formula;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "member")
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 @Getter
 public class Member {
 
@@ -48,17 +47,18 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private JobType jobType;
 
-    @BatchSize(size = 150)
-    @OneToMany(mappedBy = "member")
-    private List<InventoryProduct> inventoryProducts = new ArrayList<>();
+    @Builder.Default
+    @Embedded
+    private InventoryProducts inventoryProducts = new InventoryProducts();
+
+    @Formula("(SELECT COUNT(1) FROM following f WHERE f.followee_id = id)")
+    private int followerCount;
 
     protected Member() {
     }
 
-    @Builder
-    private Member(final Long id, final String gitHubId, final String name, final String imageUrl,
-                   final CareerLevel careerLevel, final JobType jobType,
-                   final List<InventoryProduct> inventoryProducts) {
+    private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final CareerLevel careerLevel,
+                   final JobType jobType, final InventoryProducts inventoryProducts, final int followerCount) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
@@ -66,29 +66,54 @@ public class Member {
         this.careerLevel = careerLevel;
         this.jobType = jobType;
         this.inventoryProducts = inventoryProducts;
+        this.followerCount = followerCount;
     }
 
-    public void updateName(final String name) {
-        this.name = name;
+    public void update(final Member updateMember) {
+        updateName(updateMember.name);
+        updateImageUrl(updateMember.imageUrl);
+        updateCareerLevel(updateMember.careerLevel);
+        updateJobType(updateMember.jobType);
     }
 
-    public void updateCareerLevel(final CareerLevel careerLevel) {
-        this.careerLevel = careerLevel;
+    private void updateName(final String name) {
+        if (Objects.nonNull(name)) {
+            this.name = name;
+        }
     }
 
-    public void updateJobType(final JobType jobType) {
-        this.jobType = jobType;
+    private void updateImageUrl(String imageUrl) {
+        if (Objects.nonNull(imageUrl)) {
+            this.imageUrl = imageUrl;
+        }
+    }
+
+    private void updateCareerLevel(final CareerLevel careerLevel) {
+        if (Objects.nonNull(careerLevel)) {
+            this.careerLevel = careerLevel;
+        }
+    }
+
+    private void updateJobType(final JobType jobType) {
+        if (Objects.nonNull(jobType)) {
+            this.jobType = jobType;
+        }
     }
 
     public boolean isRegisterCompleted() {
         return Objects.nonNull(this.careerLevel) && Objects.nonNull(this.jobType);
     }
 
-    public List<Product> getProfileProducts() {
-        return this.inventoryProducts.stream()
-                .filter(InventoryProduct::isSelected)
-                .map(InventoryProduct::getProduct)
-                .collect(Collectors.toList());
+    public List<InventoryProduct> getProfileProduct() {
+        return this.inventoryProducts.getProfileProducts();
+    }
+
+    public boolean contains(final InventoryProducts inventoryProducts) {
+        return this.inventoryProducts.contains(inventoryProducts);
+    }
+
+    public boolean isSameId(final Long id) {
+        return Objects.equals(id, this.id);
     }
 
     @Override

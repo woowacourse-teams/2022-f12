@@ -1,10 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
-import ProductListSection from '@/components/ProductListSection/ProductListSection';
+import * as S from '@/pages/Products/Products.style';
+
+import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import Loading from '@/components/common/Loading/Loading';
+import SearchBar from '@/components/common/SearchBar/SearchBar';
+import SearchFilter from '@/components/common/SearchFilter/SearchFilter';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import Select from '@/components/common/Select/Select';
-import useProducts from '@/hooks/useProducts';
-import { useLocation, useSearchParams } from 'react-router-dom';
-import { CATEGORY } from '@/components/common/CategoryNav/CategoryNav';
+
+import ProductListSection from '@/components/Product/ProductListSection/ProductListSection';
+
+import useSearch from '@/hooks/useSearch';
+import useUrlSyncState from '@/hooks/useUrlSyncState';
+
+import { ENDPOINTS } from '@/constants/api';
+import TITLE from '@/constants/header';
+import { CATEGORIES } from '@/constants/product';
+import SEARCH_PARAMS from '@/constants/searchParams';
 
 type Option = { value: string; text: string };
 
@@ -21,45 +34,61 @@ const options: ProductSortOption[] = [
   { value: 'reviewCount,desc', text: '리뷰 많은 순' },
 ];
 
-const PopularSort = options[0];
 const DefaultSort = options[1];
 
+const PRODUCT_SEARCH_SIZE = 12;
+
 function Products() {
-  const location = useLocation();
-  const [sort, setSort] = useState<Sort>(
-    location.hash === '#popular' ? PopularSort.value : DefaultSort.value
-  );
-  const [searchParams] = useSearchParams();
-  const category = searchParams.get('category');
-  const { products, getNextPage, isLoading, isReady, isError } = useProducts({
-    size: '12',
-    sort,
-    category,
+  const [keyword, setKeyword] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
+  const [category, setCategory] = useUrlSyncState(SEARCH_PARAMS.CATEGORY);
+  const [sort, setSort] = useUrlSyncState(SEARCH_PARAMS.SORT, DefaultSort.value);
+
+  const {
+    result: products,
+    getNextPage,
+    isLoading,
+    isReady,
+    isError,
+  } = useSearch<Product>({
+    url: ENDPOINTS.PRODUCTS,
+    size: String(PRODUCT_SEARCH_SIZE),
+    query: keyword,
+    filter: {
+      category,
+      sort,
+    },
   });
 
-  const categoryTitle = CATEGORY[category as keyof typeof CATEGORY] || '상품';
-
-  const title =
-    location.hash === '#popular'
-      ? '인기 상품 목록'
-      : `모든 ${categoryTitle} 목록`;
-
-  useEffect(() => {
-    setSort(
-      location.hash === '#popular' ? PopularSort.value : DefaultSort.value
-    );
-  }, [location.hash]);
+  const title = useMemo(
+    () => (category in CATEGORIES ? CATEGORIES[category as Category] : TITLE.ALL_PRODUCT),
+    [category]
+  );
 
   return (
-    <ProductListSection
-      title={title}
-      data={!!products && products}
-      getNextPage={getNextPage}
-      addOn={<Select value={sort} setValue={setSort} options={options} />}
-      isLoading={isLoading}
-      isReady={isReady}
-      isError={isError}
-    />
+    <>
+      <S.SearchBarWrapper>
+        <SearchBar searchInput={keyword} setSearchInput={setKeyword} />
+        <SearchFilter
+          title={'카테고리'}
+          value={category}
+          setValue={setCategory}
+          options={CATEGORIES}
+        />
+      </S.SearchBarWrapper>
+      <SectionHeader title={title}>
+        <Select value={sort} setValue={setSort} options={options} />
+      </SectionHeader>
+      <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
+        <ProductListSection
+          title={title}
+          data={products}
+          getNextPage={getNextPage}
+          isLoading={isLoading}
+          isError={isError}
+          pageSize={PRODUCT_SEARCH_SIZE}
+        />
+      </AsyncWrapper>
+    </>
   );
 }
 

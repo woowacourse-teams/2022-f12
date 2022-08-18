@@ -1,11 +1,24 @@
 [[Product]]
 == Product API
 
-=== 제품 단일 상품 조회
+=== 제품 단일 제품 조회
+
+==== 발생 가능 에러
+
+- 40420
 
 operation::products-get[snippets='http-request,http-response']
 
 === 제품 목록 페이지 조회
+
+==== 발생 가능 에러
+
+- 40000, 40001
+
+==== 검색 조건
+
+- 제품 이름을 query로 하여 검색
+- 없을 경우 모든 제품 조회
 
 ==== category 조건
 
@@ -25,5 +38,9 @@ operation::products-get[snippets='http-request,http-response']
 operation::products-page-get[snippets='http-request,http-response']
 
 === 특정 제품의 사용자 통계를 조회
+
+==== 발생 가능 에러
+
+- 40420
 
 operation::products-member-statistics-get[snippets='http-request,http-response']

@@ -1,5 +1,6 @@
-import useSessionStorage from '@/hooks/useSessionStorage';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
+
+import useSessionStorage from '@/hooks/useSessionStorage';
 
 const initialState: UserData = {
   member: {
@@ -20,8 +21,7 @@ export const SetUserDataContext = createContext<React.Dispatch<
 export const LogoutContext = createContext<() => void | null>(null);
 
 function LoginContextProvider({ children }: PropsWithChildren) {
-  const [userData, setUserData, removeUserData] =
-    useSessionStorage<UserData>('userData');
+  const [userData, setUserData, removeUserData] = useSessionStorage<UserData>('userData');
   const checkLoginStatus = () => userData && !!userData.token;
 
   const [isLoggedIn, setLoggedIn] = useState<boolean>(checkLoginStatus());
@@ -39,9 +39,7 @@ function LoginContextProvider({ children }: PropsWithChildren) {
     <IsLoggedInContext.Provider value={isLoggedIn}>
       <UserDataContext.Provider value={userData}>
         <SetUserDataContext.Provider value={setUserData}>
-          <LogoutContext.Provider value={handleLogout}>
-            {children}
-          </LogoutContext.Provider>
+          <LogoutContext.Provider value={handleLogout}>{children}</LogoutContext.Provider>
         </SetUserDataContext.Provider>
       </UserDataContext.Provider>
     </IsLoggedInContext.Provider>
