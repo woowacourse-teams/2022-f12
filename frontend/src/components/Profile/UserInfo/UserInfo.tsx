@@ -4,6 +4,8 @@ import * as S from '@/components/Profile/UserInfo/UserInfo.style';
 
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 
+import useAuth from '@/hooks/useAuth';
+
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 
 type Props = {
@@ -13,8 +15,10 @@ type Props = {
 
 function UserInfo({ userData, isOwnProfile }: Props) {
   const { imageUrl, gitHubId, jobType, careerLevel, followerCount } = userData;
+  const { isLoggedIn } = useAuth();
   const loginUserData = useContext(UserDataContext);
   const loginUserGitHubId = loginUserData && loginUserData.member.gitHubId;
+  const otherProfilePage = !isOwnProfile && loginUserGitHubId !== gitHubId;
 
   return (
     <>
@@ -38,9 +42,7 @@ function UserInfo({ userData, isOwnProfile }: Props) {
           <S.FollowerCount>{followerCount}명이 팔로우함</S.FollowerCount>
         </S.InfoWrapper>
       </S.Container>
-      {!isOwnProfile && loginUserGitHubId !== gitHubId && (
-        <S.FollowButton>팔로우</S.FollowButton>
-      )}
+      {isLoggedIn && otherProfilePage && <S.FollowButton>팔로우</S.FollowButton>}
     </>
   );
 }
