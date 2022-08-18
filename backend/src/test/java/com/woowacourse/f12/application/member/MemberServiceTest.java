@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +62,7 @@ class MemberServiceTest {
                 .willReturn(Optional.of(CORINNE.생성(1L)));
 
         // when
-        MemberResponse memberResponse = memberService.findById(1L, null);
+        MemberResponse memberResponse = memberService.find(1L, null);
 
         // then
         assertAll(
@@ -84,7 +85,7 @@ class MemberServiceTest {
                 .willReturn(false);
 
         // when
-        MemberResponse actual = memberService.findById(targetId, loggedInId);
+        MemberResponse actual = memberService.find(targetId, loggedInId);
 
         // then
         assertAll(
@@ -103,7 +104,7 @@ class MemberServiceTest {
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> memberService.findById(1L, null))
+                () -> assertThatThrownBy(() -> memberService.find(1L, null))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
                 () -> verify(memberRepository).findById(1L)
         );
@@ -117,7 +118,7 @@ class MemberServiceTest {
                 .willReturn(Optional.of(member));
 
         // when
-        MemberResponse memberResponse = memberService.findById(1L, null);
+        MemberResponse memberResponse = memberService.find(1L, null);
         // then
         assertAll(
                 () -> assertThat(memberResponse).usingRecursiveComparison()
@@ -158,7 +159,7 @@ class MemberServiceTest {
                 () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(MemberWithProfileProductResponse.from(member, false))
+                        .containsOnly(MemberWithProfileProductResponse.of(member, false))
         );
     }
 
@@ -189,7 +190,7 @@ class MemberServiceTest {
                 () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
-                        .containsOnly(MemberWithProfileProductResponse.from(member, true))
+                        .containsOnly(MemberWithProfileProductResponse.of(member, true))
         );
     }
 
@@ -390,6 +391,28 @@ class MemberServiceTest {
                 () -> verify(memberRepository).existsById(followeeId),
                 () -> verify(followingRepository).findByFollowerIdAndFolloweeId(followerId, followeeId),
                 () -> verify(followingRepository, times(0)).delete(following)
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원을_조회한다() {
+        // given
+        Long loggedInId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        Member member = CORINNE.생성(2L);
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+
+        given(memberRepository.findFolloweesBySearchConditions(loggedInId, null, null, null, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+
+        // when
+        MemberPageResponse memberPageResponse = memberService.findFolloweesByConditions(loggedInId, memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.of(member, true))
         );
     }
 }

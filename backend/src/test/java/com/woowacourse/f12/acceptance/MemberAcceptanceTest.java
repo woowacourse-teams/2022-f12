@@ -235,7 +235,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
         Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
+        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
                 member, false);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -270,7 +270,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
         Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
+        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
                 member, false);
 
         assertAll(
@@ -308,7 +308,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
         Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
+        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
                 member, false);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -348,7 +348,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
         Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.from(
+        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
                 member, false);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -388,8 +388,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
         Member mincho = MINCHO.추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
         Member corrine = CORINNE.추가정보를_입력하여_생성(thirdLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        MemberWithProfileProductResponse minchoResponse = MemberWithProfileProductResponse.from(mincho, true);
-        MemberWithProfileProductResponse corinneResponse = MemberWithProfileProductResponse.from(corrine, false);
+        MemberWithProfileProductResponse minchoResponse = MemberWithProfileProductResponse.of(mincho, true);
+        MemberWithProfileProductResponse corinneResponse = MemberWithProfileProductResponse.of(corrine, false);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -469,6 +469,78 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 팔로우하는_회원의_목록을_조회한다() {
+        // given
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+
+        LoginResponse followerLoginResponse = 로그인을_한다(OHZZI_GITHUB.getCode());
+        String token = followerLoginResponse.getToken();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+
+        LoginResponse followeeLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", followeeLoginResponse.getToken(), memberRequest);
+
+        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + followeeLoginResponse.getMember().getId() + "/following", token);
+
+        LoginResponse notFolloweeLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", notFolloweeLoginResponse.getToken(), memberRequest);
+
+        Member mincho = MINCHO.추가정보를_입력하여_생성(followeeLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse followeeResponse = MemberWithProfileProductResponse.of(mincho, true);
+
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followees?page=0&size=1", token);
+
+        // then
+        MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems())
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("profileProducts", "followerCount")
+                        .hasSize(1)
+                        .containsExactly(followeeResponse)
+        );
+    }
+
+    @Test
+    void 팔로우하는_회원의_목록을_검색하여_조회한다() {
+        // given
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+
+        LoginResponse followerLoginResponse = 로그인을_한다(OHZZI_GITHUB.getCode());
+        String token = followerLoginResponse.getToken();
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+
+        LoginResponse searchedFolloweeResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", searchedFolloweeResponse.getToken(), memberRequest);
+        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + searchedFolloweeResponse.getMember().getId() + "/following", token);
+
+        LoginResponse notSearchedFolloweeResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", notSearchedFolloweeResponse.getToken(), memberRequest);
+        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + notSearchedFolloweeResponse.getMember().getId() + "/following", token);
+
+        Member mincho = MINCHO.추가정보를_입력하여_생성(searchedFolloweeResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse followeeResponse = MemberWithProfileProductResponse.of(mincho, true);
+
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followees?page=0&size=1&query=js&careerLevel=senior&jobType=backend", token);
+
+        // then
+        MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems())
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("profileProducts", "followerCount")
+                        .hasSize(1)
+                        .containsExactly(followeeResponse)
+        );
     }
 
     private Product 제품을_저장한다(Product product) {

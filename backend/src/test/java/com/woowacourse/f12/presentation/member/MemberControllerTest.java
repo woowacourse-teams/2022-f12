@@ -72,7 +72,7 @@ class MemberControllerTest extends PresentationTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
-        given(memberService.findByLoggedInId(1L))
+        given(memberService.findLoggedInMember(1L))
                 .willReturn(LoggedInMemberResponse.from(CORINNE.생성(1L)));
 
         // when
@@ -89,7 +89,7 @@ class MemberControllerTest extends PresentationTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(memberService).findByLoggedInId(1L)
+                () -> verify(memberService).findLoggedInMember(1L)
         );
     }
 
@@ -97,7 +97,7 @@ class MemberControllerTest extends PresentationTest {
     void 비로그인_상태에서_회원정보를_조회_성공() throws Exception {
         // given
         Long memberId = 1L;
-        given(memberService.findById(memberId, null))
+        given(memberService.find(memberId, null))
                 .willReturn(MemberResponse.from(CORINNE.생성(memberId), false));
 
         // when
@@ -110,14 +110,14 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(document("members-get-by-memberId"))
                 .andDo(print());
 
-        verify(memberService).findById(1L, null);
+        verify(memberService).find(1L, null);
     }
 
     @Test
     void 비로그인_상태에서_회원정보를_조회_실패_등록되지_않은_회원일_경우() throws Exception {
         // given
         Long memberId = 1L;
-        given(memberService.findById(memberId, null))
+        given(memberService.find(memberId, null))
                 .willThrow(new MemberNotFoundException());
 
         // when
@@ -129,7 +129,7 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isNotFound())
                 .andDo(print());
 
-        verify(memberService).findById(1L, null);
+        verify(memberService).find(1L, null);
     }
 
     @Test
@@ -140,7 +140,7 @@ class MemberControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(loggedInId.toString());
-        given(memberService.findById(targetId, loggedInId))
+        given(memberService.find(targetId, loggedInId))
                 .willReturn(MemberResponse.from(CORINNE.생성(targetId), false));
 
         // when
@@ -155,7 +155,7 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(print());
         assertAll(
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(memberService).findById(targetId, loggedInId)
+                () -> verify(memberService).find(targetId, loggedInId)
         );
     }
 
@@ -295,7 +295,7 @@ class MemberControllerTest extends PresentationTest {
                 KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
 
-        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+        MemberPageResponse memberPageResponse = MemberPageResponse.fromNotFollowees(
                 new SliceImpl<>(List.of(member), pageable, false));
         given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
@@ -326,7 +326,7 @@ class MemberControllerTest extends PresentationTest {
                 .followerId(loggedInId)
                 .followeeId(member.getId())
                 .build();
-        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+        MemberPageResponse memberPageResponse = MemberPageResponse.of(
                 new SliceImpl<>(List.of(member), pageable, false), List.of(following));
         String authorizationHeader = "Bearer Token";
 
@@ -372,7 +372,7 @@ class MemberControllerTest extends PresentationTest {
                 KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
 
-        MemberPageResponse memberPageResponse = MemberPageResponse.from(
+        MemberPageResponse memberPageResponse = MemberPageResponse.fromNotFollowees(
                 new SliceImpl<>(List.of(member), pageable, false));
         given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
@@ -581,5 +581,40 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(print());
 
         verify(memberService).unfollow(followerId, followeeId);
+    }
+
+    @Test
+    void 팔로잉하는_회원_목록_조회_성공() throws Exception {
+        // given
+        Long loggedInId = 1L;
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+
+        MemberPageResponse memberPageResponse = MemberPageResponse.fromFollowees(new SliceImpl<>(List.of(CORINNE.생성(2L)), pageable, false));
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(loggedInId.toString());
+        given(memberService.findFolloweesByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable)))
+                .willReturn(memberPageResponse);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/members/me/followees?page=0&size=10")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("search-followees"))
+                .andDo(print());
+
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(memberService).findFolloweesByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable))
+        );
     }
 }

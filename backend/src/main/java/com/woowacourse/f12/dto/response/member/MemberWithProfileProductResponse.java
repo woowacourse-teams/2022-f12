@@ -40,7 +40,7 @@ public class MemberWithProfileProductResponse {
         this.following = following;
     }
 
-    public static MemberWithProfileProductResponse from(final Member member, final boolean following) {
+    public static MemberWithProfileProductResponse of(final Member member, final boolean following) {
         final List<ProductResponse> profileProducts = member.getProfileProduct()
                 .stream()
                 .map(InventoryProduct::getProduct)
