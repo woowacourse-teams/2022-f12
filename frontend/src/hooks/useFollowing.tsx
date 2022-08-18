@@ -1,28 +1,41 @@
-import useDelete from './api/useDelete';
-import usePost from './api/usePost';
-import useSessionStorage from './useSessionStorage';
+import useDelete from '@/hooks/api/useDelete';
+import usePost from '@/hooks/api/usePost';
+import useModal from '@/hooks/useModal';
 
 import { ENDPOINTS } from '@/constants/api';
 
-type Props = {
-  memberId: string;
+type Return = {
+  followUser: () => Promise<void>;
+  unfollowUser: () => Promise<void>;
 };
 
-function useFollowing({ memberId }: Props) {
-  const [data] = useSessionStorage<UserData>('userData');
+function useFollowing(memberId: number): Return {
+  const { showAlert } = useModal();
 
-  const hasToken = data && data.token !== undefined;
-
-  const followUser = usePost({
+  const postFollow = usePost({
     url: `${ENDPOINTS.FOLLOWING(memberId)}`,
-    headers: hasToken ? { Authorization: `Bearer ${data.token}` } : null,
   });
 
-  const unFollowUser = useDelete({
-    url: `${ENDPOINTS.FOLLOWING(memberId)}`,
-    headers: hasToken ? { Authorization: `Bearer ${data.token}` } : null,
-  });
+  const deleteFollow = useDelete({ url: ENDPOINTS.FOLLOWING });
 
-  return { followUser, unFollowUser };
+  const followUser = async () => {
+    try {
+      await postFollow(memberId);
+      await showAlert('팔로우 완료!');
+    } catch {
+      return;
+    }
+  };
+
+  const unfollowUser = async () => {
+    try {
+      await deleteFollow(memberId);
+      await showAlert('팔로우를 취소합니다.');
+    } catch {
+      return;
+    }
+  };
+
+  return { followUser, unfollowUser };
 }
 export default useFollowing;

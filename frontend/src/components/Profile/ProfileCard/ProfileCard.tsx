@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Chip from '@/components/common/Chip/Chip';
-import WishButton from '@/components/common/WishButton/WishButton';
 
 import * as S from '@/components/Profile/ProfileCard/ProfileCard.style';
+
+import useFollowing from '@/hooks/useFollowing';
 
 import TITLE from '@/constants/header';
 import { GITHUB_URL } from '@/constants/link';
@@ -52,6 +53,9 @@ function ProfileCard({
   index = 0,
 }: Props) {
   const [positionX, setPositionX] = useState(0);
+  const [followed, setFollowed] = useState(following);
+
+  const { followUser, unfollowUser } = useFollowing(id);
 
   const handleLeftButtonClick = () => {
     if (positionX === 0) {
@@ -67,6 +71,17 @@ function ProfileCard({
       return;
     }
     setPositionX(positionX + DISTANCE_DIFFERENCE * -1);
+  };
+
+  const toggleFollow = async () => {
+    if (followed) {
+      await unfollowUser();
+      setFollowed((prev) => !prev);
+      return;
+    }
+
+    await followUser();
+    setFollowed((prev) => !prev);
   };
 
   const keyboard = profileProducts.find((product) => product.category === 'keyboard') || {
@@ -121,7 +136,9 @@ function ProfileCard({
           </S.UserCareer>
         </S.UserInfoWrapper>
         <S.FollowingButtonWrapper>
-          <WishButton added={following} />
+          <S.FollowingButton followed={followed} onClick={toggleFollow}>
+            {followed ? '팔로잉' : '팔로우'}
+          </S.FollowingButton>
         </S.FollowingButtonWrapper>
         <S.InventoryWrapper>
           <S.LeftButton onClick={handleLeftButtonClick}>

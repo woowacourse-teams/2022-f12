@@ -70,6 +70,7 @@ export const UserNameWrapper = styled.div`
 export const UserCareer = styled.div`
   display: flex;
   align-items: center;
+  gap: 0.2rem;
   margin-top: 0.4rem;
 `;
 
@@ -146,4 +147,17 @@ export const FollowingButtonWrapper = styled.div`
   position: absolute;
   right: 0;
   top: 0;
+`;
+
+export const FollowingButton = styled.button<{ followed: boolean }>`
+  width: max-content;
+  height: max-content;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 0.25rem;
+  box-shadow: 2px 2px 6px ${({ theme }) => theme.colors.secondary};
+  transition: linear 0.3s;
+
+  background-color: ${({ theme, followed }) =>
+    followed ? theme.colors.secondary : theme.colors.primary};
 `;

@@ -204,6 +204,22 @@ const getInventoryReview = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(InventoryReview), ctx.delay());
 };
 
+const followUser = (req, res, ctx) => {
+  const token = req.headers.get('Authorization');
+  if (token === undefined) {
+    return res(ctx.status(401));
+  }
+  return res(ctx.status(204), ctx.json(), ctx.delay());
+};
+
+const unfollowUser = (req, res, ctx) => {
+  const token = req.headers.get('Authorization');
+  if (token === undefined) {
+    return res(ctx.status(401));
+  }
+  return res(ctx.status(204), ctx.json(), ctx.delay());
+};
+
 export const handlers = [
   rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
 
@@ -239,6 +255,7 @@ export const handlers = [
     `${BASE_URL}${ENDPOINTS.REVIEWS_BY_REVIEW_ID(':id')}`,
     deleteReviewByReviewId
   ),
-
   rest.get(`${BASE_URL}${ENDPOINTS.MY_FOLLOWING}`, searchMember),
+  rest.post(`${BASE_URL}${ENDPOINTS.FOLLOWING(':id')}`, followUser),
+  rest.delete(`${BASE_URL}${ENDPOINTS.FOLLOWING(':id')}`, unfollowUser),
 ];

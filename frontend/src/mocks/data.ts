@@ -29,7 +29,7 @@ export const members: ProfileSearchResult[] = [
     careerLevel: 'none',
     jobType: 'frontend',
     followerCount: 20,
-    following: false,
+    following: true,
     profileProducts: [],
   },
   {
