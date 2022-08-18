@@ -8,7 +8,7 @@ type Props = {
 };
 
 function UserInfo({ userData, isOwnProfile }: Props) {
-  const { imageUrl, gitHubId, jobType, careerLevel } = userData;
+  const { imageUrl, gitHubId, jobType, careerLevel, followerCount } = userData;
 
   return (
     <>
@@ -29,7 +29,7 @@ function UserInfo({ userData, isOwnProfile }: Props) {
             </S.GitHubId>
             {`의 데스크 셋업`}
           </S.UserNameWrapper>
-          <S.FollowerCount>0명이 팔로우함</S.FollowerCount>
+          <S.FollowerCount>{followerCount}명이 팔로우함</S.FollowerCount>
         </S.InfoWrapper>
       </S.Container>
       {!isOwnProfile && <S.FollowButton>팔로우</S.FollowButton>}
