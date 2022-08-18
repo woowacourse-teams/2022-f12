@@ -2,8 +2,8 @@ package com.woowacourse.f12.application.review;
 
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.fixture.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.fixture.MemberFixtures.NOT_ADDITIONAL_INFO;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.NOT_ADDITIONAL_INFO;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.fixture.ReviewFixtures.REVIEW_RATING_1;

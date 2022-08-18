@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
-import com.woowacourse.f12.support.fixture.MemberFixtures;
+import com.woowacourse.f12.support.fixture.MemberFixture;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +29,7 @@ class GitHubOauthClientTest {
     @Test
     void GitHub에_프로필을_요청한다() {
         // given
-        Member corinne = MemberFixtures.CORINNE.생성();
+        Member corinne = MemberFixture.CORINNE.생성();
         String accessToken = CORINNE_GITHUB.getToken();
         GitHubProfileResponse expected = new GitHubProfileResponse(corinne.getGitHubId(), corinne.getName(),
                 corinne.getImageUrl());

@@ -1,7 +1,7 @@
 package com.woowacourse.f12.presentation.review;
 
-import static com.woowacourse.f12.support.fixture.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.fixture.MemberFixtures.MINCHO;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.fixture.ReviewFixtures.REVIEW_RATING_1;
@@ -35,12 +35,19 @@ import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageRes
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
-import com.woowacourse.f12.exception.badrequest.*;
+import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
+import com.woowacourse.f12.exception.badrequest.BlankContentException;
+import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
+import com.woowacourse.f12.exception.badrequest.InvalidRatingValueException;
+import com.woowacourse.f12.exception.badrequest.RegisterNotCompletedException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -53,15 +60,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.verify;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @WebMvcTest(ReviewController.class)
 class ReviewControllerTest extends PresentationTest {

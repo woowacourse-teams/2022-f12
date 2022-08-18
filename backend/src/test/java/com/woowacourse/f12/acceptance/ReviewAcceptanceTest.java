@@ -10,7 +10,7 @@ import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
 import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.CORINNE_GITHUB;
 import static com.woowacourse.f12.support.fixture.GitHubProfileFixtures.MINCHO_GITHUB;
-import static com.woowacourse.f12.support.fixture.MemberFixtures.MINCHO;
+import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.fixture.ReviewFixtures.REVIEW_RATING_4;
