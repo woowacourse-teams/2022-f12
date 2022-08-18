@@ -41,6 +41,7 @@ function ProfileSearch({ type = 'default' }: Props) {
   const defaultParams = {
     ...commonParams,
     url: ENDPOINTS.MEMBERS,
+    headers: hasToken ? { Authorization: `Bearer ${userData.token}` } : null,
   };
 
   const followingPageParams = {
