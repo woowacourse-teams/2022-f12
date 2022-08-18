@@ -103,6 +103,7 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void follow(final Long followerId, final Long followeeId) {
         validateFollowingMembersExist(followerId, followeeId);
         validateNotFollowing(followerId, followeeId);
@@ -119,6 +120,7 @@ public class MemberService {
         }
     }
 
+    @Transactional
     public void unfollow(final Long followerId, final Long followeeId) {
         validateFollowingMembersExist(followerId, followeeId);
         final Following following = followingRepository.findByFollowerIdAndFolloweeId(followerId, followeeId)
