@@ -10,7 +10,7 @@ import useModal from '@/hooks/useModal';
 import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
 
 type Props = {
-  url: string;
+  url: (reviewId: number) => string;
   headers?: AxiosRequestHeaders;
 };
 
@@ -29,7 +29,7 @@ function useDelete({ url, headers }: Props): (id: number) => Promise<void> {
     const { token } = userData;
 
     try {
-      await axiosInstance.delete(`${url}/${id}`, {
+      await axiosInstance.delete(url(id), {
         headers: { ...headers, Authorization: `Bearer ${token}` },
       });
     } catch (error) {

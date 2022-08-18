@@ -76,7 +76,7 @@ function useReviews({ size, productId, handleRefetchOnSuccess }: Props): Return 
     url: `${ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId)}`,
   });
 
-  const deleteReview = useDelete({ url: `${ENDPOINTS.REVIEWS}` });
+  const deleteReview = useDelete({ url: ENDPOINTS.REVIEWS_BY_REVIEW_ID });
 
   const putReview = usePut<ReviewInput>({ url: `${ENDPOINTS.REVIEWS}` });
 

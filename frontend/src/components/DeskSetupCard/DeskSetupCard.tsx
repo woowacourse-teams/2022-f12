@@ -1,9 +1,12 @@
+import { Link } from 'react-router-dom';
+
 import * as S from '@/components/DeskSetupCard/DeskSetupCard.style';
 
 import useGetOne from '@/hooks/api/useGetOne';
 import useModal from '@/hooks/useModal';
 
 import { ENDPOINTS } from '@/constants/api';
+import ROUTES from '@/constants/routes';
 
 type Props = {
   item: InventoryProduct;
@@ -28,12 +31,14 @@ function DeskSetupCard({ size, item, borderType }: Props) {
 
   return (
     <S.Container size={size} borderType={borderType}>
-      <S.ImageWrapper size={size}>
-        <S.ProductImage src={item?.product?.imageUrl} />
-      </S.ImageWrapper>
-      <S.ProductTitleWrapper size={size}>
-        <S.ProductTitle size={size}>{item?.product?.name}</S.ProductTitle>
-      </S.ProductTitleWrapper>
+      <Link to={`${ROUTES.PRODUCT}/${item?.product.id}`}>
+        <S.ImageWrapper size={size}>
+          <S.ProductImage src={item?.product.imageUrl} />
+        </S.ImageWrapper>
+        <S.ProductTitleWrapper size={size}>
+          <S.ProductTitle size={size}>{item?.product.name}</S.ProductTitle>
+        </S.ProductTitleWrapper>
+      </Link>
       <S.ReviewOpenButton size={size} onClick={handleReviewButtonClick}>
         리뷰 보기
       </S.ReviewOpenButton>

@@ -1,20 +1,22 @@
+import { useEffect } from 'react';
+
 import * as S from '@/pages/ProfileSearch/ProfileSearch.style';
 
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
 import SearchBar from '@/components/common/SearchBar/SearchBar';
 import SearchFilter from '@/components/common/SearchFilter/SearchFilter';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
 import ProfileSearchResult from '@/components/Profile/ProfileSearchResult/ProfileSearchResult';
 
 import useSearch from '@/hooks/useSearch';
+import useSessionStorage from '@/hooks/useSessionStorage';
 import useUrlSyncState from '@/hooks/useUrlSyncState';
 
 import { ENDPOINTS } from '@/constants/api';
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 import SEARCH_PARAMS from '@/constants/searchParams';
-import useSessionStorage from '@/hooks/useSessionStorage';
-import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
 export const PROFILE_SEARCH_SIZE = 4;
 
@@ -50,12 +52,18 @@ function ProfileSearch({ type = 'default' }: Props) {
   const {
     result: profiles,
     getNextPage,
+    refetch,
     isError,
     isLoading,
     isReady,
   } = useSearch<ProfileSearchResult>(
     type === 'default' ? defaultParams : followingPageParams
   );
+
+  useEffect(() => {
+    if (!isReady) return;
+    refetch();
+  }, [type]);
 
   return (
     <>

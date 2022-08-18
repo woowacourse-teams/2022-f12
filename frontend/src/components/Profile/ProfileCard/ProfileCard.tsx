@@ -6,6 +6,8 @@ import Chip from '@/components/common/Chip/Chip';
 
 import * as S from '@/components/Profile/ProfileCard/ProfileCard.style';
 
+import useFollowing from '@/hooks/useFollowing';
+
 import TITLE from '@/constants/header';
 import { GITHUB_URL } from '@/constants/link';
 import LOTTIE_FILES from '@/constants/lottieFiles';
@@ -34,6 +36,8 @@ type Props = {
   careerLevel: string;
   jobType: string;
   profileProducts: ProfileProduct[];
+  followerCount: number;
+  following: boolean;
   index?: number;
 };
 
@@ -44,9 +48,14 @@ function ProfileCard({
   careerLevel,
   jobType,
   profileProducts,
+  followerCount,
+  following,
   index = 0,
 }: Props) {
   const [positionX, setPositionX] = useState(0);
+  const [followed, setFollowed] = useState(following);
+
+  const { followUser, unfollowUser } = useFollowing(id);
 
   const handleLeftButtonClick = () => {
     if (positionX === 0) {
@@ -62,6 +71,17 @@ function ProfileCard({
       return;
     }
     setPositionX(positionX + DISTANCE_DIFFERENCE * -1);
+  };
+
+  const toggleFollow = async () => {
+    if (followed) {
+      await unfollowUser();
+      setFollowed((prev) => !prev);
+      return;
+    }
+
+    await followUser();
+    setFollowed((prev) => !prev);
   };
 
   const keyboard = profileProducts.find((product) => product.category === 'keyboard') || {
@@ -109,11 +129,17 @@ function ProfileCard({
               <GithubIcon />
             </S.LinkWrapper>
           </S.UserNameWrapper>
+          <S.FollowerCountWrapper>{followerCount}명이 팔로우함</S.FollowerCountWrapper>
           <S.UserCareer>
             <Chip size="s">{JOB_TYPES[jobType]}</Chip>
             <Chip size="s">{CAREER_LEVELS[careerLevel]}</Chip>
           </S.UserCareer>
         </S.UserInfoWrapper>
+        <S.FollowingButtonWrapper>
+          <S.FollowingButton followed={followed} onClick={toggleFollow}>
+            {followed ? '팔로잉' : '팔로우'}
+          </S.FollowingButton>
+        </S.FollowingButtonWrapper>
         <S.InventoryWrapper>
           <S.LeftButton onClick={handleLeftButtonClick}>
             <PrevSign />
@@ -122,7 +148,7 @@ function ProfileCard({
             <S.InventoryList positionX={positionX}>
               {representativeEquipments.map((equipment, index) => {
                 return (
-                  <S.InventoryItem key={gitHubId + String(index)}>
+                  <S.InventoryItem key={index}>
                     <S.ProductImageWrapper>
                       {equipment.id ? (
                         <Link to={`${ROUTES.PRODUCT}/${equipment.id as string}`}>
