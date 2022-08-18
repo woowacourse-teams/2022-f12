@@ -32,7 +32,7 @@ import org.springframework.http.HttpStatus;
 class MemberAcceptanceTest extends AcceptanceTest {
 
     @Test
-    void 로그인_된_상태에서_내_회원정보를_업데이트한다() {
+    void 로그인_하고_내_회원정보를_업데이트한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
         LoginResponse loginResponse = CORINNE.로그인을_한다();
@@ -55,7 +55,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_된_상태에서_내_회원정보를_조회한다() {
+    void 로그인_하고_내_회원정보를_조회한다() {
         // given
         LoginResponse loginResponse = CORINNE.로그인을_한다();
         String loginToken = loginResponse.getToken();
@@ -78,7 +78,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_된_상태에서_추가정보가_입력되지_않았을떄_내_회원정보를_조회한다() {
+    void 로그인_하고_추가정보가_입력되지_않고_내_회원정보를_조회한다() {
         // given
         LoginResponse loginResponse = CORINNE.로그인을_한다();
 
@@ -96,7 +96,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 비로그인_상태에서_회원정보를_조회한다() {
+    void 로그인_하지_않고_회원정보를_조회한다() {
         // given
         LoginResponse loginResponse = CORINNE.로그인을_한다();
 
@@ -126,7 +126,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_상태에서_팔로우한_회원의_정보를_조회한다() {
+    void 로그인_하고_팔로우한_회원의_정보를_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -162,7 +162,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_상태에서_팔로우하지_않은_회원의_정보를_조회한다() {
+    void 로그인_하고_팔로우하지_않은_회원의_정보를_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -197,7 +197,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 비회원이_회원목록을_키워드와_옵션을_입력하지않고_조회한다() {
+    void 로그인_하지_않고_회원목록을_키워드와_옵션을_입력하지않고_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -232,7 +232,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 비회원이_회원목록을_키워드와_옵션을_입력하지않고_조회할때_추가정보가_입력되지않은_회원은_포함되지_않는다() {
+    void 로그인_하지_않고_회원목록을_키워드와_옵션을_입력하지않고_조회할때_추가정보가_입력되지않은_회원은_포함되지_않는다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -261,7 +261,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 비회원이_회원목록을_옵션으로_검색하여_조회한다() {
+    void 로그인_하지_않고_회원목록을_옵션으로_검색하여_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -294,7 +294,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 비회원이_회원목록을_키워드와_옵션으로_검색하여_조회한다() {
+    void 로그인_하지_않고_회원목록을_키워드와_옵션으로_검색하여_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -324,7 +324,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 회원이_회원목록을_검색한다() {
+    void 로그인_하고_회원목록을_검색한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -391,7 +391,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 다른_회원을_팔로우한다() {
+    void 로그인_하고_다른_회원을_팔로우한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -412,7 +412,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 팔로우한_회원을_언팔로우한다() {
+    void 로그인_하고_팔로우한_회원을_언팔로우한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -435,7 +435,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 팔로우하는_회원의_목록을_조회한다() {
+    void 로그인_하고_팔로우하는_회원의_목록을_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -473,7 +473,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 팔로우하는_회원의_목록을_검색하여_조회한다() {
+    void 로그인_하고_팔로우하는_회원의_목록을_검색하여_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
