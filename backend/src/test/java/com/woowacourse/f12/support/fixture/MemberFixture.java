@@ -1,6 +1,5 @@
 package com.woowacourse.f12.support.fixture;
 
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
 import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
@@ -15,7 +14,6 @@ import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import java.util.List;
 
 public enum MemberFixture {
@@ -97,21 +95,5 @@ public enum MemberFixture {
                 .careerLevel(careerLevel)
                 .jobType(jobType)
                 .build();
-    }
-
-    public LoginResponse 로그인을_한다() {
-        return GET_요청을_보낸다("/api/v1/login?code=" + gitHubLoginCode)
-                .as(LoginResponse.class);
-    }
-
-    public AuthorizedAction 로그인을_하고() {
-        String token = GET_요청을_보낸다("/api/v1/login?code=" + gitHubLoginCode)
-                .as(LoginResponse.class)
-                .getToken();
-        return new AuthorizedAction(token);
-    }
-
-    public AuthorizedAction 로그인한_상태로(final String token) {
-        return new AuthorizedAction(token);
     }
 }

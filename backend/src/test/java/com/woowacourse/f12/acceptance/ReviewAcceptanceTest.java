@@ -1,20 +1,18 @@
 package com.woowacourse.f12.acceptance;
 
-import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PUT_요청을_보낸다;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.CORINNE_GITHUB;
-import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.MINCHO_GITHUB;
-import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.MINCHO;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
+import static com.woowacourse.f12.support.fixture.action.UnAuthorizedAction.로그인하지_않고;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -50,12 +48,14 @@ class ReviewAcceptanceTest extends AcceptanceTest {
     void 키보드가_저장되어있고_키보드에_대한_리뷰를_작성한다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+
+        String loginToken = CORINNE.로그인을_한다().getToken();
+        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         // when
-        ExtractableResponse<Response> response = REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
+        ExtractableResponse<Response> response = CORINNE.로그인한_상태로(loginToken)
+                .리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
         // then
         assertAll(
@@ -65,16 +65,18 @@ class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 같은_회원이_같은_제품에_리뷰를_중복해서_작성하면_예외가_발생한다() {
+    void 같은_회원이_같은_제품에_리뷰를_중복해서_작성할_수_없다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
-        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
+
+        String loginToken = CORINNE.로그인을_한다().getToken();
+        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
         // when
-        ExtractableResponse<Response> response = REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
+        ExtractableResponse<Response> response = CORINNE.로그인한_상태로(loginToken)
+                .리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
         // then
         assertAll(
@@ -90,13 +92,14 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
-        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
+        String token = CORINNE.로그인을_한다().getToken();
+        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
-        String token2 = 로그인을_한다(MINCHO_GITHUB.getCode()).getToken();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token2, memberRequest);
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token2));
+        String token2 = MINCHO.로그인을_한다().getToken();
+        MINCHO.로그인한_상태로(token2).추가정보를_입력한다(memberRequest);
+        Long expectedReviewId = Location_헤더에서_id값을_꺼낸다(
+                MINCHO.로그인한_상태로(token2).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
 
         // when
         String url = "/api/v1/products/" + product.getId() + "/reviews?size=1&page=0&sort=createdAt,desc";
@@ -108,7 +111,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(reviewPageResponse.getItems())
                         .extracting("id")
-                        .containsExactly(reviewId),
+                        .containsExactly(expectedReviewId),
                 () -> assertThat(reviewPageResponse.getItems())
                         .extracting("authorMatch")
                         .containsExactly(false),
@@ -120,13 +123,16 @@ class ReviewAcceptanceTest extends AcceptanceTest {
     void 로그인_안한_상태로_특정_제품_리뷰_목록을_평점순으로_조회한다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
-        REVIEW_RATING_4.작성_요청을_보낸다(product.getId(), token);
-        String token2 = 로그인을_한다(MINCHO_GITHUB.getCode()).getToken();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token2, memberRequest);
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token2));
+
+        String token = CORINNE.로그인을_한다().getToken();
+        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_4);
+
+        String token2 = MINCHO.로그인을_한다().getToken();
+        MINCHO.로그인한_상태로(token2).추가정보를_입력한다(memberRequest);
+        Long expectedReviewId = Location_헤더에서_id값을_꺼낸다(
+                MINCHO.로그인한_상태로(token2).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
 
         // when
         String url = "/api/v1/products/" + product.getId() + "/reviews?size=1&page=0&sort=rating,desc";
@@ -138,7 +144,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(reviewPageResponse.getItems())
                         .extracting("id")
-                        .containsExactly(reviewId),
+                        .containsExactly(expectedReviewId),
                 () -> assertThat(reviewPageResponse.getItems())
                         .extracting("authorMatch")
                         .containsExactly(false),
@@ -150,15 +156,17 @@ class ReviewAcceptanceTest extends AcceptanceTest {
     void 내가_작성한_리뷰가_포함된_리뷰목록을_조회한다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-
-        String corinneToken = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", corinneToken, memberRequest);
-        Long corinneReviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product.getId(), corinneToken));
 
-        String minchoToken = 로그인을_한다(MINCHO_GITHUB.getCode()).getToken();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", minchoToken, memberRequest);
-        Long minchoReviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), minchoToken));
+        String corinneToken = CORINNE.로그인을_한다().getToken();
+        CORINNE.로그인한_상태로(corinneToken).추가정보를_입력한다(memberRequest);
+        Long corinneReviewId = Location_헤더에서_id값을_꺼낸다(
+                CORINNE.로그인한_상태로(corinneToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_4));
+
+        String minchoToken = MINCHO.로그인을_한다().getToken();
+        MINCHO.로그인한_상태로(minchoToken).추가정보를_입력한다(memberRequest);
+        Long minchoReviewId = Location_헤더에서_id값을_꺼낸다(
+                MINCHO.로그인한_상태로(minchoToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_4));
 
         // when
         String url = "/api/v1/products/" + product.getId() + "/reviews?size=2&page=0&sort=rating,desc";
@@ -181,15 +189,18 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
-        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
-        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token));
-        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product2.getId(), token));
+
+        String loginToken = CORINNE.로그인을_한다().getToken();
+        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+
+        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(
+                CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4));
+        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(
+                CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product2.getId(), REVIEW_RATING_4));
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다(
-                "/api/v1/reviews?page=0&size=2&sort=createdAt,desc");
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/reviews?page=0&size=2&sort=createdAt,desc");
 
         // then
         ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = response.as(
@@ -207,25 +218,27 @@ class ReviewAcceptanceTest extends AcceptanceTest {
     void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰를_수정한다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token));
-        ReviewRequest requestBody = new ReviewRequest("수정된 내용", 4);
+
+        String loginToken = CORINNE.로그인을_한다().getToken();
+        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_PUT_요청을_보낸다("/api/v1/reviews/" + reviewId, token,
+        ReviewRequest requestBody = new ReviewRequest("수정된 내용", 4);
+        ExtractableResponse<Response> response = 로그인된_상태로_PUT_요청을_보낸다("/api/v1/reviews/" + reviewId, loginToken,
                 requestBody);
-        ReviewWithAuthorAndProductResponse review = GET_요청을_보낸다("/api/v1/reviews?page=0&size=2&sort=createdAt,desc")
-                .as(ReviewWithAuthorAndProductPageResponse.class)
-                .getItems()
-                .get(0);
 
         // then
+        ReviewWithAuthorAndProductResponse updatedReview = 로그인하지_않고().리뷰_목록_페이지를_조회한다(0, 2, "createdAt")
+                .as(ReviewWithAuthorAndProductPageResponse.class)
+                .getItems().get(0);
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
-                () -> assertThat(review.getContent()).isEqualTo(requestBody.getContent()),
-                () -> assertThat(review.getRating()).isEqualTo(requestBody.getRating())
+                () -> assertThat(updatedReview.getContent()).isEqualTo(requestBody.getContent()),
+                () -> assertThat(updatedReview.getRating()).isEqualTo(requestBody.getRating())
         );
     }
 
@@ -233,24 +246,24 @@ class ReviewAcceptanceTest extends AcceptanceTest {
     void 로그인한_회원이_리뷰_작성자와_일치하면_리뷰를_삭제하고_인벤토리_장비도_삭제한다() {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        String token = 로그인을_한다(CORINNE_GITHUB.getCode()).getToken();
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token));
+
+        String loginToken = CORINNE.로그인을_한다().getToken();
+        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다(
-                "/api/v1/reviews/" + reviewId, token);
-        List<ReviewWithAuthorAndProductResponse> reviews = GET_요청을_보낸다(
-                "/api/v1/reviews?page=0&size=2&sort=createdAt,desc")
+        ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다("/api/v1/reviews/" + reviewId, loginToken);
+
+        // then
+        List<ReviewWithAuthorAndProductResponse> reviews = 로그인하지_않고().리뷰_목록_페이지를_조회한다(0, 2, "createdAt")
                 .as(ReviewWithAuthorAndProductPageResponse.class)
                 .getItems();
-        List<InventoryProductResponse> inventoryProducts = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/inventoryProducts",
-                token)
+        List<InventoryProductResponse> inventoryProducts = CORINNE.로그인한_상태로(loginToken).자신의_인벤토리를_조회한다()
                 .as(InventoryProductsResponse.class)
                 .getItems();
 
-        // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
                 () -> assertThat(reviews).isEmpty(),
@@ -259,16 +272,18 @@ class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 다른_회원의_아이디로_리뷰_목록을_최신순으로_조회한다() {
+    void 작성한_리뷰_목록을_다른_회원이나_로그인하지_않고_최신순으로_조회한다() {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
-        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String token = loginResponse.getToken();
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
-        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token));
-        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product2.getId(), token));
+
+        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        String token = loginResponse.getToken();
+        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+
+        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(CORINNE.로그인한_상태로(token).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4));
+        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(CORINNE.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_4));
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -277,6 +292,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         // then
         ReviewWithProductPageResponse reviewWithProductPageResponse = response.as(ReviewWithProductPageResponse.class);
         List<ReviewWithProductResponse> reviewWithProductResponses = reviewWithProductPageResponse.getItems();
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(reviewWithProductPageResponse.isHasNext()).isFalse(),
@@ -291,24 +307,28 @@ class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 내_리뷰_목록을_최신순으로_조회한다() {
+    void 내가_작성한_리뷰_목록을_최신순으로_조회한다() {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
-        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String token = loginResponse.getToken();
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
-        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product1.getId(), token));
-        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(REVIEW_RATING_4.작성_요청을_보낸다(product2.getId(), token));
+
+        String loginToken = CORINNE.로그인을_한다().getToken();
+        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+
+        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(
+                CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4));
+        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(
+                CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product2.getId(), REVIEW_RATING_4));
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다(
-                "/api/v1/members/me/reviews?page=0&size=2&sort=createdAt,desc", token);
+                "/api/v1/members/me/reviews?page=0&size=2&sort=createdAt,desc", loginToken);
 
         // then
         ReviewWithProductPageResponse reviewWithProductPageResponse = response.as(ReviewWithProductPageResponse.class);
         List<ReviewWithProductResponse> reviewWithProductResponses = reviewWithProductPageResponse.getItems();
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(reviewWithProductPageResponse.isHasNext()).isFalse(),
@@ -325,18 +345,15 @@ class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     void 인벤토리_아이디로_리뷰를_조회한다() {
         // given
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        Product keyboard = 제품을_저장한다(KEYBOARD_1.생성());
 
-        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        String token = firstLoginResponse.getToken();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        String token = MINCHO.로그인을_한다().getToken();
+        MINCHO.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
 
-        ExtractableResponse<Response> reviewSaveResponse = REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(reviewSaveResponse);
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(MINCHO.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
 
-        ExtractableResponse<Response> inventoryProductResponse = 로그인된_상태로_GET_요청을_보낸다(
-                "/api/v1/members/inventoryProducts", token);
+        ExtractableResponse<Response> inventoryProductResponse = MINCHO.로그인한_상태로(token).자신의_인벤토리를_조회한다();
         Long inventoryProductId = inventoryProductResponse.as(InventoryProductsResponse.class)
                 .getItems()
                 .get(0)
@@ -348,14 +365,16 @@ class ReviewAcceptanceTest extends AcceptanceTest {
 
         // then
         ReviewWithProductResponse reviewResponse = response.as(ReviewWithProductResponse.class);
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(reviewResponse.getProduct()).usingRecursiveComparison()
                         .ignoringFields("rating", "reviewCount")
-                        .isEqualTo(ProductResponse.from(keyboard)),
+                        .isEqualTo(ProductResponse.from(product)),
                 () -> assertThat(reviewResponse).usingRecursiveComparison()
                         .ignoringFields("product", "createdAt")
-                        .isEqualTo(ReviewWithProductResponse.from(REVIEW_RATING_5.작성(reviewId, keyboard, MINCHO.생성())))
+                        .isEqualTo(ReviewWithProductResponse.from(
+                                REVIEW_RATING_5.작성(reviewId, product, MINCHO.객체를().생성())))
         );
     }
 

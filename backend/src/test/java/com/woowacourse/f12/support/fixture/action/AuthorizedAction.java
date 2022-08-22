@@ -1,10 +1,11 @@
-package com.woowacourse.f12.support.fixture;
+package com.woowacourse.f12.support.fixture.action;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다;
 
 import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.support.fixture.ReviewFixture;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
@@ -26,5 +27,13 @@ public class AuthorizedAction {
 
     public ExtractableResponse<Response> 팔로우한다(final Long targetId) {
         return 로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + targetId + "/following", token);
+    }
+
+    public ExtractableResponse<Response> 리뷰를_작성한다(final Long productId, final ReviewFixture reviewFixture) {
+        return reviewFixture.작성_요청을_보낸다(productId, token);
+    }
+
+    public ExtractableResponse<Response> 자신의_인벤토리를_조회한다() {
+        return 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/inventoryProducts", token);
     }
 }

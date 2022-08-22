@@ -6,6 +6,7 @@ import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.MINCHO_GI
 import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.OHZZI_GITHUB;
 
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
+import com.woowacourse.f12.support.fixture.action.AuthorizedAction;
 
 public enum AcceptanceFixture {
 
