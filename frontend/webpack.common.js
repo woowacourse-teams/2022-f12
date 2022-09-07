@@ -5,7 +5,8 @@ module.exports = {
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'main.[fullhash].js',
+    filename: '[name].[contenthash].bundle.js',
+    chunkFilename: '[name].[contenthash].chunk.bundle.js',
     clean: true,
     publicPath: '/',
   },
@@ -53,6 +54,22 @@ module.exports = {
     extensions: ['.js', '.ts', '.jsx', '.tsx'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
+    },
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom|react-router)[\\/]/,
+          name: 'react',
+          chunks: 'all',
+        },
+        lottieReact: {
+          test: /[\\/]node_modules[\\/](lottie-web|@lottiefiles)[\\/]/,
+          name: 'lottie-react',
+          chunks: 'all',
+        },
+      },
     },
   },
 };
