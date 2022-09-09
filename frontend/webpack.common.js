@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require('path');
 
 module.exports = {
@@ -31,7 +32,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|jpe?g|gif|ico)$/,
+        test: /\.(png|jpe?g|gif|ico|webp)$/,
         type: 'asset/resource',
         generator: {
           filename: 'images/[hash][ext][query]',
@@ -49,6 +50,7 @@ module.exports = {
       template: path.resolve(__dirname, './public/index.html'),
       favicon: path.resolve(__dirname, './public/favicon.ico'),
     }),
+    new BundleAnalyzerPlugin(),
   ],
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx'],
@@ -62,11 +64,6 @@ module.exports = {
         react: {
           test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom|react-router)[\\/]/,
           name: 'react',
-          chunks: 'all',
-        },
-        lottieReact: {
-          test: /[\\/]node_modules[\\/](lottie-web|@lottiefiles)[\\/]/,
-          name: 'lottie-react',
           chunks: 'all',
         },
       },
