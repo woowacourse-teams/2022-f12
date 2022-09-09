@@ -1,22 +1,21 @@
-import { Player } from '@lottiefiles/react-lottie-player';
 import { useNavigate } from 'react-router-dom';
 
 import * as S from '@/pages/NotFound/NotFound.style';
 
-import LOTTIE_FILES from '@/constants/lottieFiles';
 import ROUTES from '@/constants/routes';
+
+import notFoundGif from '@/assets/404.gif';
+import notFoundWebP from '@/assets/404.webp';
 
 function NotFound() {
   const navigate = useNavigate();
 
   return (
     <S.Container>
-      <Player
-        autoplay
-        loop
-        src={LOTTIE_FILES.NOT_FOUND}
-        style={{ height: '300px', width: '300px' }}
-      />
+      <picture style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <source srcSet={notFoundWebP} type="image/webP" />
+        <img src={notFoundGif} alt="" width={300} />
+      </picture>
       <S.Description style={{ width: '100%', textAlign: 'center' }}>
         존재하지 않는 페이지입니다!
       </S.Description>

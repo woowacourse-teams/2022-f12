@@ -1,4 +1,3 @@
-import { Player } from '@lottiefiles/react-lottie-player';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -11,10 +10,10 @@ import useFollowing from '@/hooks/useFollowing';
 
 import TITLE from '@/constants/header';
 import { GITHUB_URL } from '@/constants/link';
-import LOTTIE_FILES from '@/constants/lottieFiles';
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 import ROUTES from '@/constants/routes';
 
+import Empty from '@/assets/empty.svg';
 import GithubIcon from '@/assets/github.svg';
 import NextSign from '@/assets/nextSign.svg';
 import PrevSign from '@/assets/prevSign.svg';
@@ -166,11 +165,7 @@ function ProfileCard({
                           <S.ProductImage src={equipment.imageUrl as string} />
                         </Link>
                       ) : (
-                        <Player
-                          loop
-                          src={LOTTIE_FILES.EMPTY_BOX}
-                          style={{ height: '80px', width: '80px' }}
-                        />
+                        <Empty />
                       )}
                       <S.ProductTitle>
                         {equipment.id ? (
