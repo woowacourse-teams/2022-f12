@@ -44,10 +44,10 @@ public class MemberService {
     public MemberResponse find(final Long targetId, @Nullable final Long loggedInId) {
         final Member member = findMember(targetId);
         if (isNotLoggedIn(loggedInId)) {
-            return MemberResponse.from(member, NOT_LOGGED_IN_FOLLOWING_STATE);
+            return MemberResponse.of(member, NOT_LOGGED_IN_FOLLOWING_STATE);
         }
         final boolean following = isFollowing(loggedInId, targetId);
-        return MemberResponse.from(member, following);
+        return MemberResponse.of(member, following);
     }
 
     private boolean isNotLoggedIn(final Long loggedInId) {

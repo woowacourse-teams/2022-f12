@@ -64,7 +64,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(memberGetResponse.as(MemberResponse.class)).usingRecursiveComparison()
                         .comparingOnlyFields("careerLevel", "jobType")
-                        .isEqualTo(MemberResponse.from(member, false)),
+                        .isEqualTo(MemberResponse.of(member, false)),
                 () -> assertThat(memberUpdatedResponse.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }
@@ -87,7 +87,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 
@@ -106,7 +106,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 
@@ -135,7 +135,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 
@@ -172,7 +172,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, true))
+                        .isEqualTo(MemberResponse.of(expectedMember, true))
         );
     }
 
@@ -207,7 +207,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 

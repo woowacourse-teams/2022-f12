@@ -43,9 +43,13 @@ public class Following {
     }
 
     private void validateNotSelfFollow(final Long followerId, final Long followingId) {
-        if (followerId.equals(followingId)) {
+        if (validateBothNotNull(followerId, followingId) && followerId.equals(followingId)) {
             throw new SelfFollowException();
         }
+    }
+
+    private boolean validateBothNotNull(final Long followerId, final Long followingId) {
+        return Objects.nonNull(followerId) && Objects.nonNull(followingId);
     }
 
     public boolean isFollowing(final Long memberId) {

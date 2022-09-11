@@ -98,7 +98,7 @@ class MemberControllerTest extends PresentationTest {
         // given
         Long memberId = 1L;
         given(memberService.find(memberId, null))
-                .willReturn(MemberResponse.from(CORINNE.생성(memberId), false));
+                .willReturn(MemberResponse.of(CORINNE.생성(memberId), false));
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -141,7 +141,7 @@ class MemberControllerTest extends PresentationTest {
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(loggedInId.toString());
         given(memberService.find(targetId, loggedInId))
-                .willReturn(MemberResponse.from(CORINNE.생성(targetId), false));
+                .willReturn(MemberResponse.of(CORINNE.생성(targetId), false));
 
         // when
         ResultActions resultActions = mockMvc.perform(

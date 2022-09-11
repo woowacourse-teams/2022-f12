@@ -67,7 +67,7 @@ class MemberServiceTest {
         // then
         assertAll(
                 () -> assertThat(memberResponse).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(CORINNE.생성(1L), false)),
+                        .isEqualTo(MemberResponse.of(CORINNE.생성(1L), false)),
                 () -> verify(memberRepository).findById(1L)
         );
     }
@@ -90,7 +90,7 @@ class MemberServiceTest {
         // then
         assertAll(
                 () -> assertThat(actual).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(corinne, false)),
+                        .isEqualTo(MemberResponse.of(corinne, false)),
                 () -> verify(memberRepository).findById(targetId),
                 () -> verify(followingRepository).existsByFollowerIdAndFollowingId(loggedInId, targetId)
         );
@@ -122,7 +122,7 @@ class MemberServiceTest {
         // then
         assertAll(
                 () -> assertThat(memberResponse).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(member, false)),
+                        .isEqualTo(MemberResponse.of(member, false)),
                 () -> verify(memberRepository).findById(1L)
         );
     }
