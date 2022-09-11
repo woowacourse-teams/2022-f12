@@ -22,10 +22,10 @@ public class MemberPageResponse {
         this.items = items;
     }
 
-    public static MemberPageResponse ofByFollowingCondition(final Slice<Member> members, final boolean defaultFollowingCondition) {
+    public static MemberPageResponse ofByFollowingCondition(final Slice<Member> members, final boolean followingCondition) {
         final List<MemberWithProfileProductResponse> memberResponses = members.getContent()
                 .stream()
-                .map(member -> MemberWithProfileProductResponse.of(member, defaultFollowingCondition))
+                .map(member -> MemberWithProfileProductResponse.of(member, followingCondition))
                 .collect(Collectors.toList());
         return new MemberPageResponse(members.hasNext(), memberResponses);
     }
