@@ -20,8 +20,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     public Slice<Member> findBySearchConditions(final String keyword, final CareerLevel careerLevel,
                                                 final JobType jobType,
                                                 final Pageable pageable) {
-        final JPAQuery<Member> jpaQuery = jpaQueryFactory.select(member)
-                .from(member)
+        final JPAQuery<Member> jpaQuery = jpaQueryFactory.selectFrom(member)
                 .where(
                         toContainsExpression(member.gitHubId, keyword),
                         toEqExpression(member.careerLevel, careerLevel),
@@ -38,8 +37,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     public Slice<Member> findFollowingsBySearchConditions(final Long loggedInId, final String keyword, final CareerLevel careerLevel,
                                                           final JobType jobType, final Pageable pageable) {
-        final JPAQuery<Member> jpaQuery = jpaQueryFactory.select(member)
-                .from(member)
+        final JPAQuery<Member> jpaQuery = jpaQueryFactory.selectFrom(member)
                 .join(following)
                 .on(member.id.eq(following.followingId))
                 .where(

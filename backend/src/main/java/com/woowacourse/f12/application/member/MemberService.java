@@ -75,7 +75,7 @@ public class MemberService {
         final Slice<Member> slice = memberRepository.findBySearchConditions(memberSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
         if (isNotLoggedIn(loggedInId)) {
-            return MemberPageResponse.fromNotFollowings(slice);
+            return MemberPageResponse.ofByFollowingCondition(slice, false);
         }
         final List<Following> followings = followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId, extractMemberIds(slice.getContent()));
         return MemberPageResponse.of(slice, followings);
@@ -140,6 +140,6 @@ public class MemberService {
         final JobType jobType = parseJobType(memberSearchRequest);
         final Slice<Member> slice = memberRepository.findFollowingsBySearchConditions(loggedInId, memberSearchRequest.getQuery(),
                 careerLevel, jobType, pageable);
-        return MemberPageResponse.fromFollowings(slice);
+        return MemberPageResponse.ofByFollowingCondition(slice, true);
     }
 }

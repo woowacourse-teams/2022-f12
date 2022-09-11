@@ -48,6 +48,10 @@ public class Following {
         }
     }
 
+    public boolean isFollowing(final Long memberId) {
+        return followingId.equals(memberId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

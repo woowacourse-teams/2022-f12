@@ -295,8 +295,9 @@ class MemberControllerTest extends PresentationTest {
                 KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
 
-        MemberPageResponse memberPageResponse = MemberPageResponse.fromNotFollowings(
-                new SliceImpl<>(List.of(member), pageable, false));
+        MemberPageResponse memberPageResponse =
+                MemberPageResponse.ofByFollowingCondition(new SliceImpl<>(List.of(member), pageable, false),
+                false);
         given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
 
@@ -372,8 +373,9 @@ class MemberControllerTest extends PresentationTest {
                 KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
 
-        MemberPageResponse memberPageResponse = MemberPageResponse.fromNotFollowings(
-                new SliceImpl<>(List.of(member), pageable, false));
+        MemberPageResponse memberPageResponse =
+                MemberPageResponse.ofByFollowingCondition(new SliceImpl<>(List.of(member), pageable, false),
+                        false);
         given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
 
@@ -590,7 +592,9 @@ class MemberControllerTest extends PresentationTest {
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
 
-        MemberPageResponse memberPageResponse = MemberPageResponse.fromFollowings(new SliceImpl<>(List.of(CORINNE.생성(2L)), pageable, false));
+        MemberPageResponse memberPageResponse =
+                MemberPageResponse.ofByFollowingCondition(new SliceImpl<>(List.of(CORINNE.생성(2L)), pageable, false),
+                false);
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
