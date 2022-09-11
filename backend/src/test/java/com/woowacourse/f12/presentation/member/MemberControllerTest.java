@@ -151,8 +151,8 @@ class MemberControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("members-get-by-memberId-when-logged-in"))
                 .andDo(print());
+
         assertAll(
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(memberService).find(targetId, loggedInId)
@@ -344,7 +344,6 @@ class MemberControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("members-search-when-logged-in"))
                 .andDo(print());
 
         verify(memberService).findByContains(eq(loggedInId), refEq(memberSearchRequest), refEq(pageable));
