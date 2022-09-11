@@ -120,18 +120,22 @@ public class MemberService {
         }
     }
 
-    @Transactional
-    public void unfollow(final Long followerId, final Long followingId) {
-        validateFollowingMembersExist(followerId, followingId);
-        final Following following = followingRepository.findByFollowerIdAndFollowingId(followerId, followingId)
-                .orElseThrow(NotFollowingException::new);
-        followingRepository.delete(following);
-    }
-
     private void validateNotFollowing(final Long followerId, final Long followingId) {
         if (followingRepository.existsByFollowerIdAndFollowingId(followerId, followingId)) {
             throw new AlreadyFollowingException();
         }
+    }
+
+    @Transactional
+    public void unfollow(final Long followerId, final Long followingId) {
+        validateFollowingMembersExist(followerId, followingId);
+        final Following following = findFollowingRelation(followerId, followingId);
+        followingRepository.delete(following);
+    }
+
+    private Following findFollowingRelation(final Long followerId, final Long followingId) {
+        return followingRepository.findByFollowerIdAndFollowingId(followerId, followingId)
+                .orElseThrow(NotFollowingException::new);
     }
 
     public MemberPageResponse findFollowingsByConditions(final Long loggedInId, final MemberSearchRequest memberSearchRequest,

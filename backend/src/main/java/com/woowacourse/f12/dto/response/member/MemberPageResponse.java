@@ -30,7 +30,7 @@ public class MemberPageResponse {
         return new MemberPageResponse(members.hasNext(), memberResponses);
     }
 
-    public static MemberPageResponse of(final Slice<Member> members, List<Following> followingRelations) {
+    public static MemberPageResponse of(final Slice<Member> members, final List<Following> followingRelations) {
         final List<MemberWithProfileProductResponse> memberResponses = members.getContent()
                 .stream()
                 .map(member -> MemberWithProfileProductResponse.of(member, isFollowing(followingRelations, member)))
