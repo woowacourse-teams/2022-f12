@@ -64,7 +64,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(memberGetResponse.as(MemberResponse.class)).usingRecursiveComparison()
                         .comparingOnlyFields("careerLevel", "jobType")
-                        .isEqualTo(MemberResponse.from(member, false)),
+                        .isEqualTo(MemberResponse.of(member, false)),
                 () -> assertThat(memberUpdatedResponse.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }
@@ -87,7 +87,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 
@@ -106,7 +106,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 
@@ -135,7 +135,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 
@@ -172,7 +172,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, true))
+                        .isEqualTo(MemberResponse.of(expectedMember, true))
         );
     }
 
@@ -207,7 +207,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 
@@ -480,19 +480,19 @@ class MemberAcceptanceTest extends AcceptanceTest {
         String token = followerLoginResponse.getToken();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
 
-        LoginResponse followeeLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", followeeLoginResponse.getToken(), memberRequest);
+        LoginResponse followingLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", followingLoginResponse.getToken(), memberRequest);
 
-        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + followeeLoginResponse.getMember().getId() + "/following", token);
+        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + followingLoginResponse.getMember().getId() + "/following", token);
 
-        LoginResponse notFolloweeLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", notFolloweeLoginResponse.getToken(), memberRequest);
+        LoginResponse notFollowingLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", notFollowingLoginResponse.getToken(), memberRequest);
 
-        Member mincho = MINCHO.추가정보를_입력하여_생성(followeeLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        MemberWithProfileProductResponse followeeResponse = MemberWithProfileProductResponse.of(mincho, true);
+        Member mincho = MINCHO.추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(mincho, true);
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followees?page=0&size=1", token);
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followings?page=0&size=1", token);
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
@@ -503,7 +503,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(memberPageResponse.getItems())
                         .usingRecursiveFieldByFieldElementComparatorIgnoringFields("profileProducts", "followerCount")
                         .hasSize(1)
-                        .containsExactly(followeeResponse)
+                        .containsExactly(followingResponse)
         );
     }
 
@@ -516,19 +516,19 @@ class MemberAcceptanceTest extends AcceptanceTest {
         String token = followerLoginResponse.getToken();
         로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
 
-        LoginResponse searchedFolloweeResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", searchedFolloweeResponse.getToken(), memberRequest);
-        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + searchedFolloweeResponse.getMember().getId() + "/following", token);
+        LoginResponse searchedFollowingResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", searchedFollowingResponse.getToken(), memberRequest);
+        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + searchedFollowingResponse.getMember().getId() + "/following", token);
 
-        LoginResponse notSearchedFolloweeResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", notSearchedFolloweeResponse.getToken(), memberRequest);
-        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + notSearchedFolloweeResponse.getMember().getId() + "/following", token);
+        LoginResponse notSearchedFollowingResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
+        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", notSearchedFollowingResponse.getToken(), memberRequest);
+        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + notSearchedFollowingResponse.getMember().getId() + "/following", token);
 
-        Member mincho = MINCHO.추가정보를_입력하여_생성(searchedFolloweeResponse.getMember().getId(), SENIOR, BACKEND);
-        MemberWithProfileProductResponse followeeResponse = MemberWithProfileProductResponse.of(mincho, true);
+        Member mincho = MINCHO.추가정보를_입력하여_생성(searchedFollowingResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(mincho, true);
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followees?page=0&size=1&query=js&careerLevel=senior&jobType=backend", token);
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followings?page=0&size=1&query=js&careerLevel=senior&jobType=backend", token);
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
@@ -539,7 +539,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(memberPageResponse.getItems())
                         .usingRecursiveFieldByFieldElementComparatorIgnoringFields("profileProducts", "followerCount")
                         .hasSize(1)
-                        .containsExactly(followeeResponse)
+                        .containsExactly(followingResponse)
         );
     }
 
