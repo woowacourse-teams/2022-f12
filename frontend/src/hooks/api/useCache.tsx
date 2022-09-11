@@ -11,6 +11,7 @@ type getWithCacheParams = {
   axiosInstance: AxiosInstance;
   url: string;
   config?: AxiosRequestConfig;
+  maxAge: number;
 };
 
 function useCache() {
@@ -18,7 +19,12 @@ function useCache() {
   const addCache = useContext(AddCacheContext);
   const removeCache = useContext(RemoveCacheContext);
 
-  const getWithCache = async ({ axiosInstance, url, config }: getWithCacheParams) => {
+  const getWithCache = async ({
+    axiosInstance,
+    url,
+    config,
+    maxAge,
+  }: getWithCacheParams) => {
     const searchParams = new URLSearchParams(config.params as Record<string, string>);
     const completeUrl = `${url}${searchParams.toString()}`;
 
@@ -29,7 +35,7 @@ function useCache() {
     }
 
     const response = await axiosInstance.get(url, config);
-    addCache(completeUrl, response);
+    addCache(completeUrl, response, maxAge);
 
     return response;
   };

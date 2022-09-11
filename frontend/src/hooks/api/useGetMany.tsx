@@ -6,6 +6,8 @@ import useAxios from '@/hooks/api/useAxios';
 import useCache from '@/hooks/api/useCache';
 import useModal from '@/hooks/useModal';
 
+import { CACHE_TIME } from '@/constants/cache';
+
 type SearchParams = Record<string, string>;
 
 type GetManyParams = SearchParams & { size: string };
@@ -69,6 +71,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
           ...params,
         },
       },
+      maxAge: CACHE_TIME.THREE_MINS,
     })) as AxiosResponse<Data<T>>;
 
     setDataFromResponse(items);
