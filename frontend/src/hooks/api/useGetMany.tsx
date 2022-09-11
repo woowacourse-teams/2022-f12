@@ -3,6 +3,7 @@ import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
 
 import useAxios from '@/hooks/api/useAxios';
+import useCache from '@/hooks/api/useCache';
 import useModal from '@/hooks/useModal';
 
 type SearchParams = Record<string, string>;
@@ -38,20 +39,40 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
 
   const { axiosInstance, isLoading, isError } = useAxios();
   const { showAlert } = useModal();
+  const { getWithCache, removeCache } = useCache();
+
+  const searchParams = new URLSearchParams(params);
+
+  const setDataFromResponse = (items: T[]) => {
+    !!items && setData((prevData) => (prevData ? [...prevData, ...items] : items));
+  };
+
+  const setNextPageData = (hasNext: boolean) => {
+    if (hasNext) {
+      setPage((prevPage) => prevPage + 1);
+    } else {
+      setHasNextPage(false);
+    }
+  };
 
   const fetchData = async () => {
     const {
       data: { hasNext, items },
-    }: AxiosResponse<Data<T>> = await axiosInstance.get(url, {
-      data: body,
-      headers,
-      params: {
-        page,
-        ...params,
+    } = (await getWithCache({
+      axiosInstance,
+      url,
+      config: {
+        data: body,
+        headers,
+        params: {
+          page,
+          ...params,
+        },
       },
-    });
+    })) as AxiosResponse<Data<T>>;
 
-    return { hasNext, items };
+    setDataFromResponse(items);
+    setNextPageData(hasNext);
   };
 
   const getNextPage = () => {
@@ -63,6 +84,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
     setPage(0);
     setHasNextPage(true);
     setData(null);
+    removeCache(`${url}${searchParams.toString()}`);
   };
 
   const getCurrentParamString = () =>
@@ -77,25 +99,11 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
   useEffect(() => {
     if (!hasNextPage || isLoading) return;
 
-    fetchData()
-      .then(({ hasNext, items }) => {
-        !!items && setData((prevData) => (prevData ? [...prevData, ...items] : items));
-        return hasNext;
-      })
-      .then((hasNext) => {
-        if (hasNext) {
-          setPage((prevPage) => prevPage + 1);
-        } else {
-          setHasNextPage(false);
-        }
-      })
-      .catch(async (error: Error) => {
-        logError(error, getErrorStateMessage());
-        await showAlert(error.message);
-      });
+    fetchData().catch(async (error: Error) => {
+      logError(error, getErrorStateMessage());
+      await showAlert(error.message);
+    });
   }, [nextPageTrigger, refetchTrigger]);
-
-  const searchParams = new URLSearchParams(params);
 
   useEffect(() => {
     if (!data) return; // 최초 렌더링 시 refetch 방지 임시 조치
