@@ -24,8 +24,8 @@ public class Following {
     @Column(name = "follower_id", nullable = false)
     private Long followerId;
 
-    @Column(name = "followee_id", nullable = false)
-    private Long followeeId;
+    @Column(name = "following_id", nullable = false)
+    private Long followingId;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -34,16 +34,16 @@ public class Following {
     protected Following() {
     }
 
-    private Following(final Long id, final Long followerId, final Long followeeId, final LocalDateTime createdAt) {
-        validateNotSelfFollow(followerId, followeeId);
+    private Following(final Long id, final Long followerId, final Long followingId, final LocalDateTime createdAt) {
+        validateNotSelfFollow(followerId, followingId);
         this.id = id;
         this.followerId = followerId;
-        this.followeeId = followeeId;
+        this.followingId = followingId;
         this.createdAt = createdAt;
     }
 
-    private void validateNotSelfFollow(final Long followerId, final Long followeeId) {
-        if (followerId.equals(followeeId)) {
+    private void validateNotSelfFollow(final Long followerId, final Long followingId) {
+        if (followerId.equals(followingId)) {
             throw new SelfFollowException();
         }
     }

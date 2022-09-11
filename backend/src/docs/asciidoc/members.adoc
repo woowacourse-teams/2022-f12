@@ -146,4 +146,4 @@ operation::unfollow[snippets='http-request,http-response']
 
 - 40100, 40101, 40102
 
-operation::search-followees[snippets='http-request,http-response']
+operation::search-followings[snippets='http-request,http-response']

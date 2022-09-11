@@ -295,7 +295,7 @@ class MemberControllerTest extends PresentationTest {
                 KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
 
-        MemberPageResponse memberPageResponse = MemberPageResponse.fromNotFollowees(
+        MemberPageResponse memberPageResponse = MemberPageResponse.fromNotFollowings(
                 new SliceImpl<>(List.of(member), pageable, false));
         given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
@@ -324,7 +324,7 @@ class MemberControllerTest extends PresentationTest {
         Long loggedInId = 2L;
         Following following = Following.builder()
                 .followerId(loggedInId)
-                .followeeId(member.getId())
+                .followingId(member.getId())
                 .build();
         MemberPageResponse memberPageResponse = MemberPageResponse.of(
                 new SliceImpl<>(List.of(member), pageable, false), List.of(following));
@@ -372,7 +372,7 @@ class MemberControllerTest extends PresentationTest {
                 KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
 
-        MemberPageResponse memberPageResponse = MemberPageResponse.fromNotFollowees(
+        MemberPageResponse memberPageResponse = MemberPageResponse.fromNotFollowings(
                 new SliceImpl<>(List.of(member), pageable, false));
         given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
@@ -393,7 +393,7 @@ class MemberControllerTest extends PresentationTest {
     void 팔로우_성공() throws Exception {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -403,7 +403,7 @@ class MemberControllerTest extends PresentationTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/members/" + followeeId + "/following")
+                post("/api/v1/members/" + followingId + "/following")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
         );
 
@@ -412,14 +412,14 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(document("follow"))
                 .andDo(print());
 
-        verify(memberService).follow(followerId, followeeId);
+        verify(memberService).follow(followerId, followingId);
     }
 
     @Test
     void 팔로우_실패_자기_자신을_팔로우() throws Exception {
         // given
         Long followerId = 1L;
-        Long followeeId = 1L;
+        Long followingId = 1L;
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -428,11 +428,11 @@ class MemberControllerTest extends PresentationTest {
                 .willReturn(followerId.toString());
         willThrow(new SelfFollowException())
                 .given(memberService)
-                .follow(followerId, followeeId);
+                .follow(followerId, followingId);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/members/" + followeeId + "/following")
+                post("/api/v1/members/" + followingId + "/following")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
         );
 
@@ -440,14 +440,14 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(memberService).follow(followerId, followeeId);
+        verify(memberService).follow(followerId, followingId);
     }
 
     @Test
     void 팔로우_실패_팔로워_또는_팔로이가_없음() throws Exception {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -456,11 +456,11 @@ class MemberControllerTest extends PresentationTest {
                 .willReturn(followerId.toString());
         willThrow(new MemberNotFoundException())
                 .given(memberService)
-                .follow(followerId, followeeId);
+                .follow(followerId, followingId);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/members/" + followeeId + "/following")
+                post("/api/v1/members/" + followingId + "/following")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
         );
 
@@ -468,14 +468,14 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isNotFound())
                 .andDo(print());
 
-        verify(memberService).follow(followerId, followeeId);
+        verify(memberService).follow(followerId, followingId);
     }
 
     @Test
     void 팔로우_실패_이미_팔로우_상태임() throws Exception {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -484,11 +484,11 @@ class MemberControllerTest extends PresentationTest {
                 .willReturn(followerId.toString());
         willThrow(new AlreadyFollowingException())
                 .given(memberService)
-                .follow(followerId, followeeId);
+                .follow(followerId, followingId);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/members/" + followeeId + "/following")
+                post("/api/v1/members/" + followingId + "/following")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
         );
 
@@ -496,14 +496,14 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(memberService).follow(followerId, followeeId);
+        verify(memberService).follow(followerId, followingId);
     }
 
     @Test
     void 언팔로우_성공() throws Exception {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -511,11 +511,11 @@ class MemberControllerTest extends PresentationTest {
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(followerId.toString());
         willDoNothing().given(memberService)
-                .unfollow(followerId, followeeId);
+                .unfollow(followerId, followingId);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                delete("/api/v1/members/" + followeeId + "/following")
+                delete("/api/v1/members/" + followingId + "/following")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
         );
 
@@ -524,14 +524,14 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(document("unfollow"))
                 .andDo(print());
 
-        verify(memberService).unfollow(followerId, followeeId);
+        verify(memberService).unfollow(followerId, followingId);
     }
 
     @Test
     void 언팔로우_실패_팔로워_또는_팔로이가_없음() throws Exception {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -540,11 +540,11 @@ class MemberControllerTest extends PresentationTest {
                 .willReturn(followerId.toString());
         willThrow(new MemberNotFoundException())
                 .given(memberService)
-                .unfollow(followerId, followeeId);
+                .unfollow(followerId, followingId);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                delete("/api/v1/members/" + followeeId + "/following")
+                delete("/api/v1/members/" + followingId + "/following")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
         );
 
@@ -552,14 +552,14 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isNotFound())
                 .andDo(print());
 
-        verify(memberService).unfollow(followerId, followeeId);
+        verify(memberService).unfollow(followerId, followingId);
     }
 
     @Test
     void 언팔로우_실패_팔로우_상태가_아님() throws Exception {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -568,11 +568,11 @@ class MemberControllerTest extends PresentationTest {
                 .willReturn(followerId.toString());
         willThrow(new NotFollowingException())
                 .given(memberService)
-                .unfollow(followerId, followeeId);
+                .unfollow(followerId, followingId);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                delete("/api/v1/members/" + followeeId + "/following")
+                delete("/api/v1/members/" + followingId + "/following")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
         );
 
@@ -580,7 +580,7 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(memberService).unfollow(followerId, followeeId);
+        verify(memberService).unfollow(followerId, followingId);
     }
 
     @Test
@@ -590,31 +590,31 @@ class MemberControllerTest extends PresentationTest {
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
 
-        MemberPageResponse memberPageResponse = MemberPageResponse.fromFollowees(new SliceImpl<>(List.of(CORINNE.생성(2L)), pageable, false));
+        MemberPageResponse memberPageResponse = MemberPageResponse.fromFollowings(new SliceImpl<>(List.of(CORINNE.생성(2L)), pageable, false));
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(loggedInId.toString());
-        given(memberService.findFolloweesByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable)))
+        given(memberService.findFollowingsByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable)))
                 .willReturn(memberPageResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/members/me/followees?page=0&size=10")
+                get("/api/v1/members/me/followings?page=0&size=10")
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
         );
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("search-followees"))
+                .andDo(document("search-followings"))
                 .andDo(print());
 
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(memberService).findFolloweesByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable))
+                () -> verify(memberService).findFollowingsByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable))
         );
     }
 }

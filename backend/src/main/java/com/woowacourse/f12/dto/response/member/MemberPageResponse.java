@@ -22,20 +22,20 @@ public class MemberPageResponse {
         this.items = items;
     }
 
-    public static MemberPageResponse fromNotFollowees(final Slice<Member> followeesSlice) {
-        final List<MemberWithProfileProductResponse> memberResponses = followeesSlice.getContent()
+    public static MemberPageResponse fromNotFollowings(final Slice<Member> followings) {
+        final List<MemberWithProfileProductResponse> memberResponses = followings.getContent()
                 .stream()
                 .map(member -> MemberWithProfileProductResponse.of(member, false))
                 .collect(Collectors.toList());
-        return new MemberPageResponse(followeesSlice.hasNext(), memberResponses);
+        return new MemberPageResponse(followings.hasNext(), memberResponses);
     }
 
-    public static MemberPageResponse fromFollowees(final Slice<Member> followeesSlice) {
-        final List<MemberWithProfileProductResponse> memberResponses = followeesSlice.getContent()
+    public static MemberPageResponse fromFollowings(final Slice<Member> followings) {
+        final List<MemberWithProfileProductResponse> memberResponses = followings.getContent()
                 .stream()
                 .map(member -> MemberWithProfileProductResponse.of(member, true))
                 .collect(Collectors.toList());
-        return new MemberPageResponse(followeesSlice.hasNext(), memberResponses);
+        return new MemberPageResponse(followings.hasNext(), memberResponses);
     }
 
     public static MemberPageResponse of(final Slice<Member> slice, List<Following> followings) {
@@ -48,6 +48,6 @@ public class MemberPageResponse {
 
     private static boolean isFollowing(final List<Following> followings, final Member member) {
         return followings.stream()
-                .anyMatch(it -> it.getFolloweeId().equals(member.getId()));
+                .anyMatch(it -> it.getFollowingId().equals(member.getId()));
     }
 }
