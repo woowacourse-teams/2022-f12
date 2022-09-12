@@ -3,7 +3,10 @@ import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
 
 import useAxios from '@/hooks/api/useAxios';
+import useCache from '@/hooks/api/useCache';
 import useModal from '@/hooks/useModal';
+
+import { CACHE_TIME } from '@/constants/cache';
 
 type Props = {
   url: string;
@@ -20,16 +23,23 @@ function useGetOne<T>({ url, headers }: Props): Return<T> {
   const [refetchTrigger, setRefetchTrigger] = useState(0);
   const { axiosInstance, isLoading, isError } = useAxios();
   const { showAlert } = useModal();
+  const { getWithCache, removeCache } = useCache();
 
   const fetchData = async () => {
-    const { data }: AxiosResponse<T> = await axiosInstance.get(url, {
-      headers,
-    });
+    const { data }: AxiosResponse<T> = (await getWithCache({
+      axiosInstance,
+      url,
+      config: {
+        headers,
+      },
+      maxAge: CACHE_TIME.THREE_MINS,
+    })) as AxiosResponse<T>;
 
     return data;
   };
   const refetch = () => {
     setRefetchTrigger((prevValue) => prevValue + 1);
+    removeCache(url);
   };
 
   const getErrorStateMessage = () => {

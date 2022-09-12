@@ -1,3 +1,4 @@
+import LazyImage from '@/components/common/LazyImage/LazyImage';
 import Rating from '@/components/common/Rating/Rating';
 import ReviewCount from '@/components/common/ReviewCount/ReviewCount';
 
@@ -11,7 +12,7 @@ function ProductCard({ imageUrl, name, rating, reviewCount, index = 0 }: Props) 
   return (
     <S.Container aria-label={name} index={index}>
       <S.ImageWrapper>
-        <S.Image src={imageUrl} />
+        <LazyImage src={imageUrl} />
       </S.ImageWrapper>
       <S.Name>{name}</S.Name>
       <S.BottomWrapper>

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-import F12Load from '@/assets/F12LOAD.gif';
+import loadingGif from '@/assets/loading.gif';
+import loadingWebp from '@/assets/loading.webp';
 
 const Container = styled.section`
   width: 100%;
@@ -17,7 +18,10 @@ const Container = styled.section`
 function Loading() {
   return (
     <Container aria-label={'loading-indicator'}>
-      <img src={F12Load} alt="" />
+      <picture>
+        <source srcSet={loadingWebp} type="image/webP" />
+        <img src={loadingGif} alt="" />
+      </picture>
     </Container>
   );
 }

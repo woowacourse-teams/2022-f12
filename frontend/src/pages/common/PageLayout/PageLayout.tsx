@@ -1,10 +1,10 @@
+import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
 import * as S from '@/pages/common/PageLayout/PageLayout.style';
 
 import HeaderLogo from '@/components/common/HeaderLogo/HeaderLogo';
 import HeaderNav from '@/components/common/HeaderNav/HeaderNav';
-import { useEffect } from 'react';
 
 function PageLayout() {
   const location = useLocation();
@@ -20,9 +20,11 @@ function PageLayout() {
     <>
       <HeaderLogo />
       <HeaderNav />
-      <S.Main>
-        <Outlet />
-      </S.Main>
+      <Suspense>
+        <S.Main>
+          <Outlet />
+        </S.Main>
+      </Suspense>
     </>
   );
 }
