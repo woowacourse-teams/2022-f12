@@ -10,7 +10,6 @@ type Props = {
 
 function LazyImage({ src }: Props) {
   const { imageSrc, imageRef } = useLazyImage({ src });
-  console.log(imageSrc);
   return <S.Image ref={imageRef} src={imageSrc} loading="lazy" />;
 }
 export default memo(LazyImage);
