@@ -8,6 +8,7 @@
 |40001|INVALID_PAGING_PARAM|URL의 페이징 조건이 유효하지 않음.
 |40002|INVALID_LOGIN_CODE|올바르지 않은 GitHub code로 로그인.
 |40003|INVALID_REQUEST_BODY_TYPE|HTTP Request body의 값의 타입이 올바르지 않음.
+|40004|INVALID_URL_LENGTH|HTTP Request URL의 길이가 1000자를 넘음.
 |40010|INVALID_MEMBER_INFO_VALUE|회원 정보로 유효하지 않은 값이 입력됨.
 |40011|EMPTY_MEMBER_INFO_VALUE|회원 정보 값을 입력하지 않고 요청을 보냄.
 |40030|INVALID_REVIEW_RATING|리뷰의 별점이 1~5 사이의 정수가 아님.
