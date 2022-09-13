@@ -1,5 +1,6 @@
 package com.woowacourse.f12.domain.member;
 
+import static com.woowacourse.f12.domain.member.Role.ADMIN;
 import static com.woowacourse.f12.domain.member.Role.USER;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
@@ -123,6 +124,10 @@ public class Member {
 
     public boolean isSameId(final Long id) {
         return Objects.equals(id, this.id);
+    }
+
+    public boolean isAdmin() {
+        return this.role == ADMIN;
     }
 
     @Override

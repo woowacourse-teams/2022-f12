@@ -1,5 +1,6 @@
 package com.woowacourse.f12.application.auth;
 
+import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 public class JwtProvider {
 
     private static final String TOKEN_TYPE = "Bearer";
+    private static final String PAYLOAD_DELIMITER = ";";
 
     private final AuthTokenExtractor authTokenExtractor;
     private final Key secretKey;
@@ -36,6 +38,19 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .setSubject(id.toString())
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String createToken(final Long id, final Role role) {
+        final Date now = new Date();
+        final Date validity = new Date(now.getTime() + validityInMilliseconds);
+        final String payload = String.format("%s%s%s", id, PAYLOAD_DELIMITER, role);
+
+        return Jwts.builder()
+                .setSubject(payload)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
