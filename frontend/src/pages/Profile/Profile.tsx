@@ -80,7 +80,7 @@ function Profile() {
           <InventoryProductList
             inventoryList={inventoryList}
             editable={isOwnProfile}
-            submitHandler={refetchInventoryProducts}
+            refetchInventoryProducts={refetchInventoryProducts}
             updateProfileProduct={updateProfileProduct}
           />
         </AsyncWrapper>
