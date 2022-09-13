@@ -1,6 +1,6 @@
 package com.woowacourse.f12.presentation;
 
-import com.woowacourse.f12.exception.badrequest.InvalidUrlLengthException;
+import com.woowacourse.f12.exception.UriTooLongException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class UriLengthCheckInterceptor implements HandlerInterceptor {
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
                              final Object handler) {
         if (isUriOverMaximumLength(request)) {
-            throw new InvalidUrlLengthException();
+            throw new UriTooLongException(URI_MAXIMUM_LENGTH);
         }
         return true;
     }
@@ -26,11 +26,11 @@ public class UriLengthCheckInterceptor implements HandlerInterceptor {
     }
 
     private String createUriWithQueryString(final HttpServletRequest request) {
-        final StringBuffer requestURL = request.getRequestURL();
+        final String requestURL = request.getRequestURI();
         final String queryString = request.getQueryString();
         if (queryString == null) {
-            return requestURL.toString();
+            return requestURL;
         }
-        return requestURL.append(QUERY_STRING_DELIMITER).append(queryString).toString();
+        return requestURL + QUERY_STRING_DELIMITER + queryString;
     }
 }
