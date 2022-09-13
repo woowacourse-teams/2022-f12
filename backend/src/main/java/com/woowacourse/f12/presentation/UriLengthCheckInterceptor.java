@@ -26,11 +26,11 @@ public class UriLengthCheckInterceptor implements HandlerInterceptor {
     }
 
     private String createUriWithQueryString(final HttpServletRequest request) {
-        final StringBuffer requestURL = request.getRequestURL();
+        final String requestURL = request.getRequestURI();
         final String queryString = request.getQueryString();
         if (queryString == null) {
-            return requestURL.toString();
+            return requestURL;
         }
-        return requestURL.append(QUERY_STRING_DELIMITER).append(queryString).toString();
+        return requestURL + QUERY_STRING_DELIMITER + queryString;
     }
 }
