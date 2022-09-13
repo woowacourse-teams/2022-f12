@@ -16,7 +16,7 @@ public class UriLengthCheckInterceptor implements HandlerInterceptor {
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
                              final Object handler) {
         if (isUriOverMaximumLength(request)) {
-            throw new InvalidUrlLengthException();
+            throw new InvalidUrlLengthException(URI_MAXIMUM_LENGTH);
         }
         return true;
     }
