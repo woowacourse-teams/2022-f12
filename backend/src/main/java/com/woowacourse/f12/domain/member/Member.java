@@ -1,5 +1,7 @@
 package com.woowacourse.f12.domain.member;
 
+import static com.woowacourse.f12.domain.member.Role.USER;
+
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
 import java.util.List;
@@ -48,6 +50,11 @@ public class Member {
     private JobType jobType;
 
     @Builder.Default
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role = USER;
+
+    @Builder.Default
     @Embedded
     private InventoryProducts inventoryProducts = new InventoryProducts();
 
@@ -57,14 +64,16 @@ public class Member {
     protected Member() {
     }
 
-    private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final CareerLevel careerLevel,
-                   final JobType jobType, final InventoryProducts inventoryProducts, final int followerCount) {
+    private Member(final Long id, final String gitHubId, final String name, final String imageUrl,
+                   final CareerLevel careerLevel, final JobType jobType,
+                   final Role role, final InventoryProducts inventoryProducts, final int followerCount) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
+        this.role = role;
         this.inventoryProducts = inventoryProducts;
         this.followerCount = followerCount;
     }
