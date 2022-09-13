@@ -49,7 +49,7 @@ public class Following {
     }
 
     private boolean validateBothNotNull(final Long followerId, final Long followingId) {
-        return Objects.nonNull(followerId) && Objects.nonNull(followingId);
+        return followerId != null && followingId != null;
     }
 
     public boolean isFollowing(final Long memberId) {
