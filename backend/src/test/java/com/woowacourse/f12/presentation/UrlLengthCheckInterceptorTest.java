@@ -35,8 +35,8 @@ class UrlLengthCheckInterceptorTest extends PresentationTest {
         // when, then
         mockMvc.perform(
                         get(uriPrefix + tooLongQuery + uriSuffix))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorCode").value(ErrorCode.INVALID_URL_LENGTH.getValue()))
+                .andExpect(status().isUriTooLong())
+                .andExpect(jsonPath("$.errorCode").value(ErrorCode.URI_TOO_LONG.getValue()))
                 .andDo(print());
 
         // then

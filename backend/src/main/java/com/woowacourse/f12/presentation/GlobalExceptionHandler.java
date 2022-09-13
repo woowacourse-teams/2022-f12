@@ -6,6 +6,7 @@ import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
 
 import com.woowacourse.f12.dto.response.ExceptionResponse;
 import com.woowacourse.f12.exception.CustomException;
+import com.woowacourse.f12.exception.UriTooLongException;
 import com.woowacourse.f12.exception.badrequest.InvalidValueException;
 import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
 import com.woowacourse.f12.exception.internalserver.ExternalServerException;
@@ -82,6 +83,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ExternalServerException.class, InternalServerException.class})
     public ResponseEntity<ExceptionResponse> handleInternalException(final CustomException e) {
         return ResponseEntity.internalServerError().body(ExceptionResponse.from(e));
+    }
+
+    @ExceptionHandler(UriTooLongException.class)
+    public ResponseEntity<ExceptionResponse> handleUriTooLongException(final CustomException e) {
+        return ResponseEntity.status(HttpStatus.URI_TOO_LONG).body(ExceptionResponse.from(e));
     }
 
     @ExceptionHandler(Exception.class)
