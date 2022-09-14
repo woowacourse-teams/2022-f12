@@ -9,21 +9,17 @@
 
 operation::members-get-own[snippets='http-request,http-response']
 
-=== 비로그인 상태로 회원 정보 조회
+=== 회원 정보 조회
+
+==== 부가 조건
+- 로그인 시 회원 정보를 조회하려면 헤더에 토큰 정보가 필요
+`Authorization: Bearer Token`
 
 ==== 발생 가능 에러
 
 - 40410
 
 operation::members-get-by-memberId[snippets='http-request,http-response']
-
-=== 로그인 상태로 회원 정보 조회
-
-==== 발생 가능 에러
-
-- 40410
-
-operation::members-get-by-memberId-when-logged-in[snippets='http-request,http-response']
 
 === 로그인된 상태로 나의 회원 정보 수정
 
@@ -33,7 +29,7 @@ operation::members-get-by-memberId-when-logged-in[snippets='http-request,http-re
 
 operation::members-update[snippets='http-request,http-response']
 
-=== 비로그인 상태로 회원 검색
+=== 회원 검색
 
 ==== 검색 조건
 
@@ -59,45 +55,16 @@ operation::members-update[snippets='http-request,http-response']
 
 - `followerCount,desc`(팔로워 수 순)
 - 없을 경우 등록 순서
+
+==== 부가 조건
+- 로그인 시 회원 정보를 조회하려면 헤더에 토큰 정보가 필요
+`Authorization: Bearer Token`
 
 ==== 발생 가능 에러
 
 - 40000, 40001
 
 operation::members-search[snippets='http-request,http-response']
-
-=== 로그인 상태로 회원 검색
-
-==== 검색 조건
-
-- GitHub ID를 query로 하여 검색
-- 없을 경우 모든 회원 조회
-
-==== careerLevel 조건
-
-- `none` (경력 없음)
-- `junior` (0~2년차)
-- `midlevel` (3~5년차)
-- `senior` (6년차 이상)
-- 없을 경우 모든 회원 조회
-
-==== jobType 조건
-
-- `backend` (백엔드)
-- `frontend` (프론트엔드)
-- `mobile` (모바일)
-- `etc` (기타)
-
-==== sort 조건
-
-- `followerCount,desc`(팔로워 수 순)
-- 없을 경우 등록 순서
-
-==== 발생 가능 에러
-
-- 40000, 40001
-
-operation::members-search-when-logged-in[snippets='http-request,http-response']
 
 === 다른 회원 팔로우
 
@@ -146,4 +113,4 @@ operation::unfollow[snippets='http-request,http-response']
 
 - 40100, 40101, 40102
 
-operation::search-followees[snippets='http-request,http-response']
+operation::search-followings[snippets='http-request,http-response']
