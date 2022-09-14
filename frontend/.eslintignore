@@ -1,2 +1,3 @@
 webpack.*.js
 mocks
+*.config.*
