@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import LazyImage from '@/components/common/LazyImage/LazyImage';
 import Rating from '@/components/common/Rating/Rating';
 import ReviewCount from '@/components/common/ReviewCount/ReviewCount';
@@ -23,4 +25,4 @@ function ProductCard({ imageUrl, name, rating, reviewCount, index = 0 }: Props) 
   );
 }
 
-export default ProductCard;
+export default memo(ProductCard);
