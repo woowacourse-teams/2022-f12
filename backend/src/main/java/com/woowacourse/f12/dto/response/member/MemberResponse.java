@@ -33,7 +33,7 @@ public class MemberResponse {
         this.following = following;
     }
 
-    public static MemberResponse from(final Member member, final boolean following) {
+    public static MemberResponse of(final Member member, final boolean following) {
         return new MemberResponse(member.getId(), member.getGitHubId(), member.getName(), member.getImageUrl(),
                 CareerLevelConstant.from(member.getCareerLevel()), JobTypeConstant.from(member.getJobType()),
                 member.getFollowerCount(), following);

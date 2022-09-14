@@ -71,8 +71,8 @@ public class MemberController {
     @PostMapping("/{memberId}/following")
     @LoginRequired
     public ResponseEntity<Void> follow(@VerifiedMember final LoginPayload loginPayload,
-                                       @PathVariable("memberId") final Long followeeId) {
-        memberService.follow(loginPayload.getId(), followeeId);
+                                       @PathVariable("memberId") final Long followingId) {
+        memberService.follow(loginPayload.getId(), followingId);
         return ResponseEntity.noContent()
                 .build();
     }
@@ -80,20 +80,20 @@ public class MemberController {
     @DeleteMapping("/{memberId}/following")
     @LoginRequired
     public ResponseEntity<Void> unfollow(@VerifiedMember final LoginPayload loginPayload,
-                                         @PathVariable("memberId") final Long followeeId) {
-        memberService.unfollow(loginPayload.getId(), followeeId);
+                                         @PathVariable("memberId") final Long followingId) {
+        memberService.unfollow(loginPayload.getId(), followingId);
         return ResponseEntity.noContent()
                 .build();
     }
 
-    @GetMapping("/me/followees")
+    @GetMapping("/me/followings")
     @LoginRequired
     public ResponseEntity<MemberPageResponse> searchFollowees(
             @VerifiedMember final LoginPayload loginPayload,
             @ModelAttribute final MemberSearchRequest memberSearchRequest,
             final Pageable pageable) {
         return ResponseEntity.ok(
-                memberService.findFolloweesByConditions(loginPayload.getId(), memberSearchRequest, pageable));
+                memberService.findFollowingsByConditions(loginPayload.getId(), memberSearchRequest, pageable));
     }
 
     private Long getNullableId(final LoginPayload loginPayload) {
