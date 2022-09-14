@@ -17,6 +17,6 @@ export const ENDPOINTS = {
     `/inventoryProducts/${id}/reviews`,
   MEMBERS: '/members',
   ME: '/members/me',
-  MY_FOLLOWING: '/members/me/followees',
+  MY_FOLLOWING: '/members/me/followings',
   FOLLOWING: (id: number | ':id') => `/members/${id}/following`,
 } as const;
