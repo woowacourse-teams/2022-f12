@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Link } from 'react-router-dom';
 
 import Chip from '@/components/common/Chip/Chip';
@@ -194,4 +194,4 @@ function ProfileCard({
   );
 }
 
-export default ProfileCard;
+export default memo(ProfileCard);
