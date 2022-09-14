@@ -26,7 +26,7 @@ import java.util.Map;
 import static com.woowacourse.f12.domain.member.CareerLevel.*;
 import static com.woowacourse.f12.domain.member.JobType.*;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;

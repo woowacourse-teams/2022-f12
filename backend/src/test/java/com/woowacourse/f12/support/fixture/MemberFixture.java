@@ -1,4 +1,12 @@
-package com.woowacourse.f12.support;
+package com.woowacourse.f12.support.fixture;
+
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.MINCHO_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.OHZZI_GITHUB;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
@@ -6,30 +14,27 @@ import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
-
 import java.util.List;
 
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
+public enum MemberFixture {
 
-public enum MemberFixtures {
+    CORINNE(CORINNE_GITHUB.getCode(), "hamcheeseburger", "유현지", "corinne_url", SENIOR, BACKEND),
+    MINCHO(MINCHO_GITHUB.getCode(), "jswith", "홍영민", "mincho_url", JUNIOR, FRONTEND),
+    OHZZI(OHZZI_GITHUB.getCode(), "Ohzzi", "오지훈", "Ohzzi_url", JUNIOR, BACKEND),
+    CORINNE_UPDATED(CORINNE_GITHUB.getCode(), "hamcheeseburger", "괴물개발자", "corinne_url", SENIOR, BACKEND),
+    NOT_ADDITIONAL_INFO(null, "invalid", "invalid", "invalid", null, null);
 
-    CORINNE("hamcheeseburger", "유현지", "corinne_url", SENIOR, BACKEND),
-    MINCHO("jswith", "홍영민", "mincho_url", JUNIOR, FRONTEND),
-    OHZZI("Ohzzi", "오지훈", "Ohzzi_url", JUNIOR, BACKEND),
-    CORINNE_UPDATED("hamcheeseburger", "괴물개발자", "corinne_url", SENIOR, BACKEND),
-    NOT_ADDITIONAL_INFO("invalid", "invalid", "invalid", null, null);
-
+    private final String gitHubLoginCode;
     private final String gitHubId;
     private final String name;
     private final String imageUrl;
     private final CareerLevel careerLevel;
     private final JobType jobType;
 
-    MemberFixtures(final String gitHubId, final String name, final String imageUrl, final CareerLevel careerLevel,
-                   final JobType jobType) {
+    MemberFixture(final String gitHubLoginCode, final String gitHubId, final String name, final String imageUrl,
+                  final CareerLevel careerLevel,
+                  final JobType jobType) {
+        this.gitHubLoginCode = gitHubLoginCode;
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
@@ -65,6 +70,15 @@ public enum MemberFixtures {
                 .careerLevel(this.careerLevel)
                 .jobType(this.jobType)
                 .inventoryProducts(new InventoryProducts(List.of(inventoryProducts)))
+                .build();
+    }
+
+    public Member 추가정보_없이_생성(final Long id) {
+        return Member.builder()
+                .id(id)
+                .gitHubId(this.gitHubId)
+                .name(this.name)
+                .imageUrl(this.imageUrl)
                 .build();
     }
 

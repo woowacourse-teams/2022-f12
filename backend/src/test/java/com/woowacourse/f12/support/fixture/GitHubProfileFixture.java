@@ -1,6 +1,6 @@
-package com.woowacourse.f12.support;
+package com.woowacourse.f12.support.fixture;
 
-public enum GitHubProfileFixtures {
+public enum GitHubProfileFixture {
 
     CORINNE_GITHUB("corinne-code", "corinne-token"),
     MINCHO_GITHUB("mincho-code", "mincho-token"),
@@ -9,7 +9,7 @@ public enum GitHubProfileFixtures {
     private final String code;
     private final String token;
 
-    GitHubProfileFixtures(final String code, final String token) {
+    GitHubProfileFixture(final String code, final String token) {
         this.code = code;
         this.token = token;
     }
