@@ -4,10 +4,12 @@ import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로�
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다;
 
+import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.support.fixture.ReviewFixture;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 
 public class AuthorizedAction {
 
@@ -35,5 +37,11 @@ public class AuthorizedAction {
 
     public ExtractableResponse<Response> 자신의_인벤토리를_조회한다() {
         return 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/inventoryProducts", token);
+    }
+
+    public ExtractableResponse<Response> 대표장비를_등록한다(final List<Long> inventoryProductIds) {
+        return 로그인된_상태로_PATCH_요청을_보낸다(
+                "api/v1/members/inventoryProducts", token,
+                new ProfileProductRequest(inventoryProductIds));
     }
 }
