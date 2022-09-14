@@ -1,7 +1,6 @@
 package com.woowacourse.f12.presentation.auth;
 
 import com.woowacourse.f12.application.auth.JwtProvider;
-import com.woowacourse.f12.exception.unauthorized.TokenInvalidException;
 import java.util.Objects;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -10,8 +9,6 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.util.Objects;
 
 @Component
 public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
@@ -35,10 +32,6 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
             return null;
         }
         final String payload = jwtProvider.getPayload(authorizationHeader);
-        try {
-            return Long.parseLong(payload);
-        } catch (NumberFormatException e) {
-            throw new TokenInvalidException();
-        }
+        return LoginPayload.from(payload);
     }
 }

@@ -1,24 +1,24 @@
 package com.woowacourse.f12.application.auth;
 
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.response.member.MemberResponse;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
+import static com.woowacourse.f12.domain.member.Role.USER;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE_UPDATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
+import com.woowacourse.f12.dto.response.member.MemberResponse;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -51,7 +51,7 @@ class AuthServiceTest {
                 .willReturn(Optional.empty());
         given(memberRepository.save(gitHubProfile.toMember()))
                 .willReturn(member);
-        given(jwtProvider.createToken(member.getId()))
+        given(jwtProvider.createToken(member.getId(), member.getRole()))
                 .willReturn(applicationToken);
 
         // when
@@ -66,7 +66,7 @@ class AuthServiceTest {
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
                 () -> verify(memberRepository).save(gitHubProfile.toMember()),
-                () -> verify(jwtProvider).createToken(1L)
+                () -> verify(jwtProvider).createToken(1L, USER)
         );
     }
 
@@ -84,7 +84,7 @@ class AuthServiceTest {
                 .willReturn(gitHubProfile);
         given(memberRepository.findByGitHubId(gitHubProfile.getGitHubId()))
                 .willReturn(Optional.of(member));
-        given(jwtProvider.createToken(member.getId()))
+        given(jwtProvider.createToken(member.getId(), member.getRole()))
                 .willReturn(applicationToken);
 
         // when
@@ -98,7 +98,7 @@ class AuthServiceTest {
                 () -> verify(gitHubOauthClient).getAccessToken(code),
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
-                () -> verify(jwtProvider).createToken(1L)
+                () -> verify(jwtProvider).createToken(1L, USER)
         );
     }
 }

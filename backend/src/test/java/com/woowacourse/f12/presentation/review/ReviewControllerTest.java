@@ -35,12 +35,19 @@ import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageRes
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
-import com.woowacourse.f12.exception.badrequest.*;
+import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
+import com.woowacourse.f12.exception.badrequest.BlankContentException;
+import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
+import com.woowacourse.f12.exception.badrequest.InvalidRatingValueException;
+import com.woowacourse.f12.exception.badrequest.RegisterNotCompletedException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -53,25 +60,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
-import static com.woowacourse.f12.support.ReviewFixtures.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
 class ReviewControllerTest extends PresentationTest {
@@ -101,7 +89,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willReturn(1L);
 
@@ -136,7 +124,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
@@ -169,7 +157,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
@@ -200,7 +188,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
@@ -233,7 +221,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidContentLengthException(1000));
 
@@ -265,7 +253,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidRatingValueException());
 
@@ -297,7 +285,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new ProductNotFoundException());
 
@@ -328,7 +316,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new MemberNotFoundException());
 
@@ -359,7 +347,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new RegisterNotCompletedException());
 
@@ -390,7 +378,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new AlreadyWrittenReviewException());
 
@@ -491,7 +479,7 @@ class ReviewControllerTest extends PresentationTest {
         given(reviewService.findPageByProductId(anyLong(), eq(corinne.getId()), any(Pageable.class)))
                 .willReturn(reviewWithAuthorPageResponse);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -536,11 +524,12 @@ class ReviewControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         Long reviewId = 1L;
         Long memberId = 1L;
+        String payload = memberId + ";USER";
         ReviewRequest updateRequest = new ReviewRequest("수정된 내용", 4);
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(payload);
         willDoNothing().given(reviewService)
                 .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
 
@@ -570,11 +559,12 @@ class ReviewControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         Long reviewId = 1L;
         Long memberId = 1L;
+        String payload = memberId + ";USER";
         ReviewRequest updateRequest = new ReviewRequest("수정된 내용", 4);
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(payload);
         willThrow(new MemberNotFoundException()).given(reviewService)
                 .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
 
@@ -603,11 +593,12 @@ class ReviewControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         Long reviewId = 1L;
         Long memberId = 1L;
+        String payload = memberId + ";USER";
         ReviewRequest updateRequest = new ReviewRequest("수정된 내용", 4);
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(payload);
         willThrow(new ReviewNotFoundException()).given(reviewService)
                 .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
 
@@ -636,11 +627,12 @@ class ReviewControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         Long reviewId = 1L;
         Long memberId = 1L;
+        String payload = memberId + ";USER";
         ReviewRequest updateRequest = new ReviewRequest("수정된 내용", 4);
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(payload);
         willThrow(new NotAuthorException()).given(reviewService)
                 .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
 
@@ -669,10 +661,11 @@ class ReviewControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         Long reviewId = 1L;
         Long memberId = 1L;
+        String payload = memberId + ";USER";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(payload);
         willDoNothing().given(reviewService)
                 .delete(reviewId, memberId);
 
@@ -700,10 +693,11 @@ class ReviewControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         Long reviewId = 1L;
         Long memberId = 1L;
+        String payload = memberId + ";USER";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(payload);
         willThrow(new MemberNotFoundException()).given(reviewService)
                 .delete(reviewId, memberId);
 
@@ -730,10 +724,11 @@ class ReviewControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         Long reviewId = 1L;
         Long memberId = 1L;
+        String payload = memberId + ";USER";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(payload);
         willThrow(new ReviewNotFoundException()).given(reviewService)
                 .delete(reviewId, memberId);
 
@@ -760,10 +755,11 @@ class ReviewControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         Long reviewId = 1L;
         Long memberId = 1L;
+        String payload = memberId + ";USER";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(payload);
         willThrow(new NotAuthorException()).given(reviewService)
                 .delete(reviewId, memberId);
 
@@ -817,7 +813,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(reviewService.findPageByMemberId(anyLong(), any(Pageable.class)))
                 .willReturn(ReviewWithProductPageResponse.from(
                         new SliceImpl<>(List.of(

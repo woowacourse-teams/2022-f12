@@ -32,18 +32,6 @@ public class JwtProvider {
         this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    public String createToken(final Long id) {
-        final Date now = new Date();
-        final Date validity = new Date(now.getTime() + validityInMilliseconds);
-
-        return Jwts.builder()
-                .setSubject(id.toString())
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
     public String createToken(final Long id, final Role role) {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);

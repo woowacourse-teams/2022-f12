@@ -1,5 +1,30 @@
 package com.woowacourse.f12.presentation.member;
 
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
+import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.member.MemberService;
@@ -16,6 +41,9 @@ import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.badrequest.SelfFollowException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,27 +56,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
-import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
 class MemberControllerTest extends PresentationTest {
@@ -71,7 +78,7 @@ class MemberControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         given(memberService.findLoggedInMember(1L))
                 .willReturn(LoggedInMemberResponse.from(CORINNE.생성(1L)));
 
@@ -137,9 +144,10 @@ class MemberControllerTest extends PresentationTest {
         // given
         Long targetId = 1L;
         Long loggedInId = 2L;
+        String payload = loggedInId + ";USER";
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(loggedInId.toString());
+                .willReturn(payload);
         given(memberService.find(targetId, loggedInId))
                 .willReturn(MemberResponse.from(CORINNE.생성(targetId), false));
 
@@ -167,7 +175,7 @@ class MemberControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         willDoNothing().given(memberService).updateMember(1L, memberRequest);
 
         // when
@@ -201,7 +209,7 @@ class MemberControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         willDoNothing().given(memberService).updateMember(eq(1L), any(MemberRequest.class));
 
         // when
@@ -234,7 +242,7 @@ class MemberControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         willDoNothing().given(memberService).updateMember(eq(1L), any(MemberRequest.class));
 
         // when
@@ -264,7 +272,7 @@ class MemberControllerTest extends PresentationTest {
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn("1;USER");
         willDoNothing().given(memberService).updateMember(1L, memberRequest);
 
         // when
@@ -322,6 +330,7 @@ class MemberControllerTest extends PresentationTest {
                 KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
         Long loggedInId = 2L;
+        String payload = loggedInId + ";USER";
         Following following = Following.builder()
                 .followerId(loggedInId)
                 .followeeId(member.getId())
@@ -331,7 +340,7 @@ class MemberControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
 
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(loggedInId.toString());
+                .willReturn(payload);
         given(memberService.findByContains(eq(loggedInId), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
 
@@ -360,7 +369,8 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(memberService, times(0)).findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class));
+        verify(memberService, times(0)).findByContains(isNull(), any(MemberSearchRequest.class),
+                any(PageRequest.class));
     }
 
     @Test
@@ -394,12 +404,13 @@ class MemberControllerTest extends PresentationTest {
         // given
         Long followerId = 1L;
         Long followeeId = 2L;
+        String payload = followerId + ";USER";
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(followerId.toString());
+                .willReturn(payload);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -420,12 +431,13 @@ class MemberControllerTest extends PresentationTest {
         // given
         Long followerId = 1L;
         Long followeeId = 1L;
+        String payload = followerId + ";USER";
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(followerId.toString());
+                .willReturn(payload);
         willThrow(new SelfFollowException())
                 .given(memberService)
                 .follow(followerId, followeeId);
@@ -448,12 +460,13 @@ class MemberControllerTest extends PresentationTest {
         // given
         Long followerId = 1L;
         Long followeeId = 2L;
+        String payload = followerId + ";USER";
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(followerId.toString());
+                .willReturn(payload);
         willThrow(new MemberNotFoundException())
                 .given(memberService)
                 .follow(followerId, followeeId);
@@ -476,12 +489,13 @@ class MemberControllerTest extends PresentationTest {
         // given
         Long followerId = 1L;
         Long followeeId = 2L;
+        String payload = followerId + ";USER";
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(followerId.toString());
+                .willReturn(payload);
         willThrow(new AlreadyFollowingException())
                 .given(memberService)
                 .follow(followerId, followeeId);
@@ -504,12 +518,13 @@ class MemberControllerTest extends PresentationTest {
         // given
         Long followerId = 1L;
         Long followeeId = 2L;
+        String payload = followerId + ";USER";
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(followerId.toString());
+                .willReturn(payload);
         willDoNothing().given(memberService)
                 .unfollow(followerId, followeeId);
 
@@ -532,12 +547,13 @@ class MemberControllerTest extends PresentationTest {
         // given
         Long followerId = 1L;
         Long followeeId = 2L;
+        String payload = followerId + ";USER";
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(followerId.toString());
+                .willReturn(payload);
         willThrow(new MemberNotFoundException())
                 .given(memberService)
                 .unfollow(followerId, followeeId);
@@ -560,12 +576,13 @@ class MemberControllerTest extends PresentationTest {
         // given
         Long followerId = 1L;
         Long followeeId = 2L;
+        String payload = followerId + ";USER";
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(followerId.toString());
+                .willReturn(payload);
         willThrow(new NotFollowingException())
                 .given(memberService)
                 .unfollow(followerId, followeeId);
@@ -587,16 +604,18 @@ class MemberControllerTest extends PresentationTest {
     void 팔로잉하는_회원_목록_조회_성공() throws Exception {
         // given
         Long loggedInId = 1L;
+        String payload = loggedInId + ";USER";
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
 
-        MemberPageResponse memberPageResponse = MemberPageResponse.fromFollowees(new SliceImpl<>(List.of(CORINNE.생성(2L)), pageable, false));
+        MemberPageResponse memberPageResponse = MemberPageResponse.fromFollowees(
+                new SliceImpl<>(List.of(CORINNE.생성(2L)), pageable, false));
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(loggedInId.toString());
+                .willReturn(payload);
         given(memberService.findFolloweesByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable)))
                 .willReturn(memberPageResponse);
 
@@ -614,7 +633,8 @@ class MemberControllerTest extends PresentationTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(memberService).findFolloweesByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable))
+                () -> verify(memberService).findFolloweesByConditions(eq(loggedInId), refEq(memberSearchRequest),
+                        eq(pageable))
         );
     }
 }

@@ -26,7 +26,7 @@ public class AuthService {
     public LoginResponse login(final String code) {
         final GitHubProfileResponse gitHubProfileResponse = getGitHubProfileResponse(code);
         final Member member = addOrUpdateMember(gitHubProfileResponse);
-        final String applicationAccessToken = jwtProvider.createToken(member.getId());
+        final String applicationAccessToken = jwtProvider.createToken(member.getId(), member.getRole());
         return LoginResponse.of(applicationAccessToken, member);
     }
 
