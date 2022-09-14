@@ -13,6 +13,7 @@ const config: Config = {
     __API_URL__: 'mock/api/url',
     __GITHUB_CLIENT_ID__: 'mock/api/url',
   },
+  setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],
 
   moduleDirectories: ['node_modules', '<rootDir>/'],
 };
