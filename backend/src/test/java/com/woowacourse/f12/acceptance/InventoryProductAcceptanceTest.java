@@ -132,9 +132,10 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         CORINNE.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_5);
 
         Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
-        InventoryProduct profileInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product1, member);
+        InventoryProduct selectedInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product1, member);
         InventoryProduct unselectedInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product2, member);
-        CORINNE.로그인한_상태로(token).대표장비를_등록한다(List.of(profileInventoryProduct.getId()));
+        CORINNE.로그인한_상태로(token).대표장비를_등록한다(List.of(selectedInventoryProduct.getId()));
+        InventoryProduct profileInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product1, member);
 
         // when
         ExtractableResponse<Response> profileProductResponse = 로그인된_상태로_GET_요청을_보낸다(
@@ -163,9 +164,10 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         CORINNE.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_5);
 
         Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
-        InventoryProduct profileInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product1, member);
+        InventoryProduct selectedInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product1, member);
         InventoryProduct unselectedInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product2, member);
-        CORINNE.로그인한_상태로(token).대표장비를_등록한다(List.of(profileInventoryProduct.getId()));
+        CORINNE.로그인한_상태로(token).대표장비를_등록한다(List.of(selectedInventoryProduct.getId()));
+        InventoryProduct profileInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product1, member);
 
         // when
         ExtractableResponse<Response> profileProductResponse = GET_요청을_보낸다(
