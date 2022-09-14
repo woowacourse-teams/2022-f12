@@ -47,7 +47,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(corinne, mincho));
         followingRepository.save(Following.builder()
                 .followerId(corinne.getId())
-                .followeeId(mincho.getId())
+                .followingId(mincho.getId())
                 .build());
         entityManager.clear();
 
@@ -116,7 +116,8 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, null,
+                PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -154,7 +155,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(corinne, mincho, ohzzi));
         followingRepository.save(Following.builder()
                 .followerId(corinne.getId())
-                .followeeId(mincho.getId())
+                .followingId(mincho.getId())
                 .build());
         entityManager.clear();
 
@@ -169,9 +170,8 @@ class MemberRepositoryTest {
                 .build();
 
         // when
-        Slice<Member> slice = memberRepository.findFolloweesBySearchConditions(corinne.getId(), "jswith", JUNIOR,
-                FRONTEND,
-                PageRequest.of(0, 1, Sort.by("id").descending()));
+        Slice<Member> slice = memberRepository.findFollowingsBySearchConditions(corinne.getId(), "jswith", JUNIOR,
+                FRONTEND, PageRequest.of(0, 1, Sort.by("id").descending()));
 
         // then
         assertAll(

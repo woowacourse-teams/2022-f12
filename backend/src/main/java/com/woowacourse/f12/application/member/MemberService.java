@@ -44,18 +44,18 @@ public class MemberService {
     public MemberResponse find(final Long targetId, @Nullable final Long loggedInId) {
         final Member member = findMember(targetId);
         if (isNotLoggedIn(loggedInId)) {
-            return MemberResponse.from(member, NOT_LOGGED_IN_FOLLOWING_STATE);
+            return MemberResponse.of(member, NOT_LOGGED_IN_FOLLOWING_STATE);
         }
         final boolean following = isFollowing(loggedInId, targetId);
-        return MemberResponse.from(member, following);
+        return MemberResponse.of(member, following);
     }
 
     private boolean isNotLoggedIn(final Long loggedInId) {
         return Objects.isNull(loggedInId);
     }
 
-    private boolean isFollowing(final Long followerId, final Long followeeId) {
-        return followingRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId);
+    private boolean isFollowing(final Long followerId, final Long followingId) {
+        return followingRepository.existsByFollowerIdAndFollowingId(followerId, followingId);
     }
 
     @Transactional
@@ -75,9 +75,9 @@ public class MemberService {
         final Slice<Member> slice = memberRepository.findBySearchConditions(memberSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
         if (isNotLoggedIn(loggedInId)) {
-            return MemberPageResponse.fromNotFollowees(slice);
+            return MemberPageResponse.ofByFollowingCondition(slice, false);
         }
-        final List<Following> followings = followingRepository.findByFollowerIdAndFolloweeIdIn(loggedInId, extractMemberIds(slice.getContent()));
+        final List<Following> followings = followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId, extractMemberIds(slice.getContent()));
         return MemberPageResponse.of(slice, followings);
     }
 
@@ -104,42 +104,46 @@ public class MemberService {
     }
 
     @Transactional
-    public void follow(final Long followerId, final Long followeeId) {
-        validateFollowingMembersExist(followerId, followeeId);
-        validateNotFollowing(followerId, followeeId);
+    public void follow(final Long followerId, final Long followingId) {
+        validateFollowingMembersExist(followerId, followingId);
+        validateNotFollowing(followerId, followingId);
         final Following following = Following.builder()
                 .followerId(followerId)
-                .followeeId(followeeId)
+                .followingId(followingId)
                 .build();
         followingRepository.save(following);
     }
 
-    private void validateFollowingMembersExist(final Long followerId, final Long followeeId) {
-        if (!memberRepository.existsById(followerId) || !memberRepository.existsById(followeeId)) {
+    private void validateFollowingMembersExist(final Long followerId, final Long followingId) {
+        if (!memberRepository.existsById(followerId) || !memberRepository.existsById(followingId)) {
             throw new MemberNotFoundException();
         }
     }
 
-    @Transactional
-    public void unfollow(final Long followerId, final Long followeeId) {
-        validateFollowingMembersExist(followerId, followeeId);
-        final Following following = followingRepository.findByFollowerIdAndFolloweeId(followerId, followeeId)
-                .orElseThrow(NotFollowingException::new);
-        followingRepository.delete(following);
-    }
-
-    private void validateNotFollowing(final Long followerId, final Long followeeId) {
-        if (followingRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId)) {
+    private void validateNotFollowing(final Long followerId, final Long followingId) {
+        if (followingRepository.existsByFollowerIdAndFollowingId(followerId, followingId)) {
             throw new AlreadyFollowingException();
         }
     }
 
-    public MemberPageResponse findFolloweesByConditions(final Long loggedInId, final MemberSearchRequest memberSearchRequest,
-                                                        final Pageable pageable) {
+    @Transactional
+    public void unfollow(final Long followerId, final Long followingId) {
+        validateFollowingMembersExist(followerId, followingId);
+        final Following following = findFollowingRelation(followerId, followingId);
+        followingRepository.delete(following);
+    }
+
+    private Following findFollowingRelation(final Long followerId, final Long followingId) {
+        return followingRepository.findByFollowerIdAndFollowingId(followerId, followingId)
+                .orElseThrow(NotFollowingException::new);
+    }
+
+    public MemberPageResponse findFollowingsByConditions(final Long loggedInId, final MemberSearchRequest memberSearchRequest,
+                                                         final Pageable pageable) {
         final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
         final JobType jobType = parseJobType(memberSearchRequest);
-        final Slice<Member> slice = memberRepository.findFolloweesBySearchConditions(loggedInId, memberSearchRequest.getQuery(),
+        final Slice<Member> slice = memberRepository.findFollowingsBySearchConditions(loggedInId, memberSearchRequest.getQuery(),
                 careerLevel, jobType, pageable);
-        return MemberPageResponse.fromFollowees(slice);
+        return MemberPageResponse.ofByFollowingCondition(slice, true);
     }
 }

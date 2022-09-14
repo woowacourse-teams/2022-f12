@@ -47,10 +47,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         Member expectedMember = CORINNE.객체를().추가정보를_입력하여_생성(loginResponse.getMember().getId(), JUNIOR, BACKEND);
 
         assertAll(
-                () -> assertThat(memberUpdatedResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(memberGetResponse.as(MemberResponse.class))
-                        .usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                () -> assertThat(memberGetResponse.as(MemberResponse.class)).usingRecursiveComparison()
+                        .isEqualTo(MemberResponse.of(expectedMember, false)),
+                () -> assertThat(memberUpdatedResponse.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }
 
@@ -73,7 +72,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 
@@ -91,7 +90,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 
@@ -121,7 +120,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 
@@ -157,7 +156,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, true))
+                        .isEqualTo(MemberResponse.of(expectedMember, true))
         );
     }
 
@@ -192,7 +191,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(expectedMember, false))
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
         );
     }
 
@@ -439,28 +438,28 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse followeeLoginResponse = OHZZI.로그인을_한다();
-        Long followeeId = followeeLoginResponse.getMember().getId();
-        OHZZI.로그인한_상태로(followeeLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse followingLoginResponse = OHZZI.로그인을_한다();
+        Long followingId = followingLoginResponse.getMember().getId();
+        OHZZI.로그인한_상태로(followingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse notFolloweeLoginResponse = MINCHO.로그인을_한다();
-        MINCHO.로그인한_상태로(notFolloweeLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse notFollowingLoginResponse = MINCHO.로그인을_한다();
+        MINCHO.로그인한_상태로(notFollowingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         LoginResponse loginResponse = CORINNE.로그인을_한다();
         String loginToken = loginResponse.getToken();
         CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        CORINNE.로그인한_상태로(loginToken).팔로우한다(followeeId);
+        CORINNE.로그인한_상태로(loginToken).팔로우한다(followingId);
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followees?page=0&size=1",
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followings?page=0&size=1",
                 loginToken);
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member followee = OHZZI.객체를().추가정보를_입력하여_생성(followeeLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        MemberWithProfileProductResponse followeeResponse = MemberWithProfileProductResponse.of(followee, true);
+        Member following = OHZZI.객체를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(following, true);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -468,7 +467,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(memberPageResponse.getItems())
                         .usingRecursiveFieldByFieldElementComparatorIgnoringFields("followerCount")
                         .hasSize(1)
-                        .containsExactly(followeeResponse)
+                        .containsExactly(followingResponse)
         );
     }
 
@@ -477,28 +476,28 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse followeeLoginResponse = OHZZI.로그인을_한다();
-        Long followeeId = followeeLoginResponse.getMember().getId();
-        OHZZI.로그인한_상태로(followeeLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse followingLoginResponse = OHZZI.로그인을_한다();
+        Long followingId = followingLoginResponse.getMember().getId();
+        OHZZI.로그인한_상태로(followingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse notFolloweeLoginResponse = MINCHO.로그인을_한다();
-        MINCHO.로그인한_상태로(notFolloweeLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse notFollowingLoginResponse = MINCHO.로그인을_한다();
+        MINCHO.로그인한_상태로(notFollowingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         LoginResponse loginResponse = CORINNE.로그인을_한다();
         String loginToken = loginResponse.getToken();
         CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        CORINNE.로그인한_상태로(loginToken).팔로우한다(followeeId);
+        CORINNE.로그인한_상태로(loginToken).팔로우한다(followingId);
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다(
-                "/api/v1/members/me/followees?page=0&size=1&query=O&careerLevel=senior&jobType=backend", loginToken);
+                "/api/v1/members/me/followings?page=0&size=1&query=O&careerLevel=senior&jobType=backend", loginToken);
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member followee = OHZZI.객체를().추가정보를_입력하여_생성(followeeLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        MemberWithProfileProductResponse followeeResponse = MemberWithProfileProductResponse.of(followee, true);
+        Member following = OHZZI.객체를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(following, true);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -506,7 +505,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(memberPageResponse.getItems())
                         .usingRecursiveFieldByFieldElementComparatorIgnoringFields("followerCount")
                         .hasSize(1)
-                        .containsExactly(followeeResponse)
+                        .containsExactly(followingResponse)
         );
     }
 }

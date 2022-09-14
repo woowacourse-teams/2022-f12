@@ -1,16 +1,13 @@
-import { Player } from '@lottiefiles/react-lottie-player';
-
-import LOTTIE_FILES from '@/constants/lottieFiles';
+import errorGif from '@/assets/error.gif';
+import errorWebp from '@/assets/error.webp';
 
 function ErrorPlaceholder() {
   return (
     <>
-      <Player
-        autoplay
-        loop
-        src={LOTTIE_FILES.ERROR}
-        style={{ height: '200px', width: '200px' }}
-      />
+      <picture>
+        <source srcSet={errorWebp} type="image/webP" />
+        <img src={errorGif} alt="" width="150" />
+      </picture>
       <div style={{ width: '100%', textAlign: 'center' }}>오류가 발생했어요..</div>
     </>
   );

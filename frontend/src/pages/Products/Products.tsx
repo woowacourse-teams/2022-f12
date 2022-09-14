@@ -11,6 +11,7 @@ import Select from '@/components/common/Select/Select';
 
 import ProductListSection from '@/components/Product/ProductListSection/ProductListSection';
 
+import useDebounce from '@/hooks/useDebouce';
 import useSearch from '@/hooks/useSearch';
 import useUrlSyncState from '@/hooks/useUrlSyncState';
 
@@ -42,6 +43,7 @@ function Products() {
   const [keyword, setKeyword] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
   const [category, setCategory] = useUrlSyncState(SEARCH_PARAMS.CATEGORY);
   const [sort, setSort] = useUrlSyncState(SEARCH_PARAMS.SORT, DefaultSort.value);
+  const debouncedKeyword = useDebounce<string>(keyword, 300);
 
   const {
     result: products,
@@ -52,7 +54,7 @@ function Products() {
   } = useSearch<Product>({
     url: ENDPOINTS.PRODUCTS,
     size: String(PRODUCT_SEARCH_SIZE),
-    query: keyword,
+    query: debouncedKeyword,
     filter: {
       category,
       sort,

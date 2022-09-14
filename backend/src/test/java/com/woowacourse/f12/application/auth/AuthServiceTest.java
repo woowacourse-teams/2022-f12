@@ -60,7 +60,7 @@ class AuthServiceTest {
         assertAll(
                 () -> assertThat(loginResponse.getToken()).isEqualTo(applicationToken),
                 () -> assertThat(loginResponse.getMember()).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(member, false)),
+                        .isEqualTo(MemberResponse.of(member, false)),
                 () -> verify(gitHubOauthClient).getAccessToken(code),
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
@@ -93,7 +93,7 @@ class AuthServiceTest {
         assertAll(
                 () -> assertThat(loginResponse.getToken()).isEqualTo(applicationToken),
                 () -> assertThat(loginResponse.getMember()).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(member, false)),
+                        .isEqualTo(MemberResponse.of(member, false)),
                 () -> verify(gitHubOauthClient).getAccessToken(code),
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),

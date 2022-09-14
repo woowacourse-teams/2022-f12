@@ -10,6 +10,7 @@ import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
 import ProfileSearchResult from '@/components/Profile/ProfileSearchResult/ProfileSearchResult';
 
+import useDebounce from '@/hooks/useDebouce';
 import useSearch from '@/hooks/useSearch';
 import useSessionStorage from '@/hooks/useSessionStorage';
 import useUrlSyncState from '@/hooks/useUrlSyncState';
@@ -28,12 +29,13 @@ function ProfileSearch({ type = 'default' }: Props) {
   const [careerLevel, setCareerLevel] = useUrlSyncState(SEARCH_PARAMS.CAREER_LEVEL);
   const [jobType, setJobType] = useUrlSyncState(SEARCH_PARAMS.JOB_TYPE);
   const [searchInput, setSearchInput] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
+  const debouncedSearchInput = useDebounce<string>(searchInput, 300);
 
   const [userData] = useSessionStorage<UserData>('userData');
   const hasToken = userData && userData.token !== undefined;
 
   const commonParams = {
-    query: searchInput,
+    query: debouncedSearchInput,
     filter: { careerLevel, jobType, sort: 'followerCount,desc' },
     size: String(PROFILE_SEARCH_SIZE),
   };

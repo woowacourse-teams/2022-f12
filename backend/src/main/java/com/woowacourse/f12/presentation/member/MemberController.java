@@ -56,25 +56,25 @@ public class MemberController {
 
     @PostMapping("/{memberId}/following")
     @LoginRequired
-    public ResponseEntity<Void> follow(@VerifiedMember final Long followerId, @PathVariable("memberId") final Long followeeId) {
-        memberService.follow(followerId, followeeId);
+    public ResponseEntity<Void> follow(@VerifiedMember final Long followerId, @PathVariable("memberId") final Long followingId) {
+        memberService.follow(followerId, followingId);
         return ResponseEntity.noContent()
                 .build();
     }
 
     @DeleteMapping("/{memberId}/following")
     @LoginRequired
-    public ResponseEntity<Void> unfollow(@VerifiedMember final Long followerId, @PathVariable("memberId") final Long followeeId) {
-        memberService.unfollow(followerId, followeeId);
+    public ResponseEntity<Void> unfollow(@VerifiedMember final Long followerId, @PathVariable("memberId") final Long followingId) {
+        memberService.unfollow(followerId, followingId);
         return ResponseEntity.noContent()
                 .build();
     }
 
-    @GetMapping("/me/followees")
+    @GetMapping("/me/followings")
     @LoginRequired
-    public ResponseEntity<MemberPageResponse> searchFollowees(@VerifiedMember final Long loggedInId,
-                                                              @ModelAttribute final MemberSearchRequest memberSearchRequest,
-                                                              final Pageable pageable) {
-        return ResponseEntity.ok(memberService.findFolloweesByConditions(loggedInId, memberSearchRequest, pageable));
+    public ResponseEntity<MemberPageResponse> searchFollowings(@VerifiedMember final Long loggedInId,
+                                                               @ModelAttribute final MemberSearchRequest memberSearchRequest,
+                                                               final Pageable pageable) {
+        return ResponseEntity.ok(memberService.findFollowingsByConditions(loggedInId, memberSearchRequest, pageable));
     }
 }
