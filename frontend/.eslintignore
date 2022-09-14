@@ -1,2 +1,4 @@
 webpack.*.js
 mocks
+*.config.*
+jest-setup.ts

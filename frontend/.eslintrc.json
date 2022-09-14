@@ -9,7 +9,7 @@
   "parserOptions": {
     "project": ["./tsconfig.json"]
   },
-  "plugins": ["@typescript-eslint", "prettier", "cypress"],
+  "plugins": ["@typescript-eslint", "prettier", "cypress", "testing-library", "jest-dom"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -18,7 +18,9 @@
     "plugin:react/jsx-runtime",
     "plugin:react-hooks/recommended",
     "prettier",
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
+    "plugin:testing-library/react",
+    "plugin:jest-dom/recommended"
   ],
   "rules": {
     "react-hooks/exhaustive-deps": 0,
