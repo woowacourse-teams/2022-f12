@@ -305,7 +305,7 @@ class MemberControllerTest extends PresentationTest {
 
         MemberPageResponse memberPageResponse =
                 MemberPageResponse.ofByFollowingCondition(new SliceImpl<>(List.of(member), pageable, false),
-                false);
+                        false);
         given(memberService.findByContains(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
                 .willReturn(memberPageResponse);
 
@@ -611,7 +611,7 @@ class MemberControllerTest extends PresentationTest {
 
         MemberPageResponse memberPageResponse =
                 MemberPageResponse.ofByFollowingCondition(new SliceImpl<>(List.of(CORINNE.생성(2L)), pageable, false),
-                false);
+                        false);
 
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.validateToken(authorizationHeader))
@@ -635,7 +635,8 @@ class MemberControllerTest extends PresentationTest {
         assertAll(
                 () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(memberService).findFollowingsByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable))
+                () -> verify(memberService).findFollowingsByConditions(eq(loggedInId), refEq(memberSearchRequest),
+                        eq(pageable))
         );
     }
 }
