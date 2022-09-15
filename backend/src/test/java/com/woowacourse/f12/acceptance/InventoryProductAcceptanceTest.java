@@ -196,7 +196,7 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
                 .build();
     }
 
-    private InventoryProduct 인벤토리에_있는_장비를_찾아온다(final Product product, final Member member) {
+    private InventoryProduct 인벤토리에_있는_장비를_찾아온다(Product product, Member member) {
         return inventoryProductRepository.findByMemberAndProduct(member, product).get();
     }
 }
