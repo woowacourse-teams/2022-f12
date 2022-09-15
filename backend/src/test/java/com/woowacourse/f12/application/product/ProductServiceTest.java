@@ -1,5 +1,27 @@
 package com.woowacourse.f12.application.product;
 
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.MID_LEVEL;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.ETC;
+import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.MID_LEVEL_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.FRONTEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.MOBILE_CONSTANT;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.domain.review.CareerLevelCount;
@@ -10,6 +32,9 @@ import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,29 +43,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.MID_LEVEL;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.domain.member.JobType.ETC;
-import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.*;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.*;
-import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {

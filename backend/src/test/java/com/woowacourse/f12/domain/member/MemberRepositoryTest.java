@@ -1,6 +1,20 @@
 package com.woowacourse.f12.domain.member;
 
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
+import static com.woowacourse.f12.support.fixture.MemberFixture.NOT_ADDITIONAL_INFO;
+import static com.woowacourse.f12.support.fixture.MemberFixture.OHZZI;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import com.woowacourse.f12.config.JpaConfig;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -11,18 +25,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
-import static com.woowacourse.f12.support.MemberFixtures.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DataJpaTest
 @Import({JpaConfig.class})
@@ -114,7 +116,8 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, null,
+                PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -167,8 +170,8 @@ class MemberRepositoryTest {
                 .build();
 
         // when
-        Slice<Member> slice = memberRepository.findFollowingsBySearchConditions(corinne.getId(), "jswith", JUNIOR, FRONTEND,
-                PageRequest.of(0, 1, Sort.by("id").descending()));
+        Slice<Member> slice = memberRepository.findFollowingsBySearchConditions(corinne.getId(), "jswith", JUNIOR,
+                FRONTEND, PageRequest.of(0, 1, Sort.by("id").descending()));
 
         // then
         assertAll(

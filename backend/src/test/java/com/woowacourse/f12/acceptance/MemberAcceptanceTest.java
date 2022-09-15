@@ -1,107 +1,73 @@
 package com.woowacourse.f12.acceptance;
 
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.product.Product;
-import com.woowacourse.f12.domain.product.ProductRepository;
-import com.woowacourse.f12.dto.request.member.MemberRequest;
-import com.woowacourse.f12.dto.response.auth.LoginMemberResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.response.member.MemberPageResponse;
-import com.woowacourse.f12.dto.response.member.MemberResponse;
-import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
-import com.woowacourse.f12.dto.response.product.ProductResponse;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-
-import java.util.List;
-
-import static com.woowacourse.f12.acceptance.support.LoginUtil.로그인을_한다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.*;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다;
 import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
 import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.support.GitHubProfileFixtures.*;
-import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.InventoryProductFixtures.대표_장비_업데이트_한다;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.MemberFixtures.MINCHO;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.ProductFixture.MOUSE_1;
-import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_4;
-import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.민초;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.오찌;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.response.auth.LoginMemberResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
+import com.woowacourse.f12.dto.response.member.MemberPageResponse;
+import com.woowacourse.f12.dto.response.member.MemberResponse;
+import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
 class MemberAcceptanceTest extends AcceptanceTest {
 
-    @Autowired
-    private ProductRepository productRepository;
-
     @Test
-    void 로그인_된_상태에서_내_회원정보를_업데이트한다() {
+    void 로그인_하고_내_회원정보를_업데이트한다() {
         // given
-        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String token = loginResponse.getToken();
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
+        LoginResponse loginResponse = 코린.로그인을_한다();
+        String loginToken = loginResponse.getToken();
 
         // when
-        ExtractableResponse<Response> memberUpdatedResponse = 로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token,
+        ExtractableResponse<Response> memberUpdatedResponse = 로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", loginToken,
                 memberRequest);
-        ExtractableResponse<Response> memberGetResponse = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", token);
 
         // then
-        Member member = Member.builder()
-                .careerLevel(JUNIOR)
-                .jobType(BACKEND)
-                .build();
+        ExtractableResponse<Response> memberGetResponse = 코린.로그인한_상태로(loginToken).자신의_프로필을_조회한다();
+        Member expectedMember = 코린.엔티티를().추가정보를_입력하여_생성(loginResponse.getMember().getId(), JUNIOR, BACKEND);
+
         assertAll(
                 () -> assertThat(memberGetResponse.as(MemberResponse.class)).usingRecursiveComparison()
-                        .comparingOnlyFields("careerLevel", "jobType")
-                        .isEqualTo(MemberResponse.of(member, false)),
+                        .isEqualTo(MemberResponse.of(expectedMember, false)),
                 () -> assertThat(memberUpdatedResponse.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
     }
 
     @Test
-    void 로그인_된_상태에서_내_회원정보를_조회한다() {
+    void 로그인_하고_내_회원정보를_조회한다() {
         // given
-        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String token = loginResponse.getToken();
-        LoginMemberResponse loginMemberResponse = loginResponse.getMember();
+        LoginResponse loginResponse = 코린.로그인을_한다();
+        String loginToken = loginResponse.getToken();
 
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
-        Member expectedMember = CORINNE.추가정보를_입력하여_생성(loginMemberResponse.getId(), JUNIOR, BACKEND);
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", token);
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", loginToken);
 
         // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.of(expectedMember, false))
-        );
-    }
-
-    @Test
-    void 로그인_된_상태에서_추가정보가_입력되지_않았을떄_내_회원정보를_조회한다() {
-        // given
-        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String token = loginResponse.getToken();
-
-        // when
-        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", token);
-
-        // then
-        Member expectedMember = 응답을_회원으로_변환한다(loginResponse.getMember());
+        Long loggedInMemberId = loginResponse.getMember().getId();
+        Member expectedMember = 코린.엔티티를().추가정보를_입력하여_생성(loggedInMemberId, JUNIOR, BACKEND);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -111,14 +77,32 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 비로그인_상태에서_회원정보를_조회한다() {
+    void 로그인_하고_추가정보가_입력되지_않고_내_회원정보를_조회한다() {
         // given
-        LoginResponse loginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String token = loginResponse.getToken();
-        LoginMemberResponse loginMemberResponse = loginResponse.getMember();
+        LoginResponse loginResponse = 코린.로그인을_한다();
 
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", loginResponse.getToken());
+
+        // then
+        Member expectedMember = 코린.엔티티를().추가정보_없이_생성(loginResponse.getMember().getId());
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
+                        .isEqualTo(MemberResponse.of(expectedMember, false))
+        );
+    }
+
+    @Test
+    void 로그인_하지_않고_회원정보를_조회한다() {
+        // given
+        LoginResponse loginResponse = 코린.로그인을_한다();
+
+        String loginToken = loginResponse.getToken();
+        LoginMemberResponse loginMemberResponse = loginResponse.getMember();
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members/" + loginMemberResponse.getId());
@@ -132,6 +116,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 .careerLevel(JUNIOR)
                 .jobType(BACKEND)
                 .build();
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(MemberResponse.class)).usingRecursiveComparison()
@@ -140,30 +125,29 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_상태에서_팔로우한_회원의_정보를_조회한다() {
+    void 로그인_하고_팔로우한_회원의_정보를_조회한다() {
         // given
-        LoginResponse firstLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String firstToken = firstLoginResponse.getToken();
-
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstToken, memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        String secondToken = secondLoginResponse.getToken();
-        LoginMemberResponse secondLoginResponseMember = secondLoginResponse.getMember();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", secondToken, memberRequest);
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
+        Long targetId = firstLoginResponse.getMember().getId();
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + secondLoginResponseMember.getId() + "/following", firstToken);
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        String loginToken = secondLoginResponse.getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(loginToken).팔로우한다(targetId);
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/" + secondLoginResponseMember.getId(), firstToken);
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/" + targetId, loginToken);
 
         // then
+        LoginMemberResponse firstLoginResponseMember = firstLoginResponse.getMember();
         Member expectedMember = Member.builder()
-                .id(secondLoginResponseMember.getId())
-                .name(secondLoginResponseMember.getName())
-                .gitHubId(secondLoginResponseMember.getGitHubId())
-                .imageUrl(secondLoginResponseMember.getImageUrl())
+                .id(firstLoginResponseMember.getId())
+                .name(firstLoginResponseMember.getName())
+                .gitHubId(firstLoginResponseMember.getGitHubId())
+                .imageUrl(firstLoginResponseMember.getImageUrl())
                 .careerLevel(JUNIOR)
                 .jobType(BACKEND)
                 .followerCount(1)
@@ -177,28 +161,28 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_상태에서_팔로우하지_않은_회원의_정보를_조회한다() {
+    void 로그인_하고_팔로우하지_않은_회원의_정보를_조회한다() {
         // given
-        LoginResponse firstLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String firstToken = firstLoginResponse.getToken();
-
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstToken, memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        String secondToken = secondLoginResponse.getToken();
-        LoginMemberResponse secondLoginResponseMember = secondLoginResponse.getMember();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", secondToken, memberRequest);
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
+        Long targetId = firstLoginResponse.getMember().getId();
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        String loginToken = secondLoginResponse.getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/" + secondLoginResponseMember.getId(), firstToken);
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/" + targetId, loginToken);
 
         // then
+        LoginMemberResponse firstLoginResponseMember = firstLoginResponse.getMember();
         Member expectedMember = Member.builder()
-                .id(secondLoginResponseMember.getId())
-                .name(secondLoginResponseMember.getName())
-                .gitHubId(secondLoginResponseMember.getGitHubId())
-                .imageUrl(secondLoginResponseMember.getImageUrl())
+                .id(firstLoginResponseMember.getId())
+                .name(firstLoginResponseMember.getName())
+                .gitHubId(firstLoginResponseMember.getGitHubId())
+                .imageUrl(firstLoginResponseMember.getImageUrl())
                 .careerLevel(JUNIOR)
                 .jobType(BACKEND)
                 .followerCount(0)
@@ -212,93 +196,79 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 비회원이_회원정보를_키워드와_옵션을_입력하지않고_조회한다() {
+    void 로그인_하지_않고_회원목록을_키워드와_옵션을_입력하지않고_조회한다() {
         // given
-        Product product = 제품을_저장한다(KEYBOARD_1.생성());
-
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String token = secondLoginResponse.getToken();
-        Long memberId = secondLoginResponse.getMember().getId();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
-
-        // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다(
-                "/api/v1/members?page=0&size=2");
-
-        // then
-        MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
-        Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
-                member, false);
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
-                () -> assertThat(
-                        memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparatorIgnoringFields(
-                                "profileProducts")
-                        .hasSize(2)
-                        .contains(memberWithProfileProductResponse)
-        );
-    }
-
-    @Test
-    void 비회원이_회원정보를_키워드와_옵션을_입력하지않고_조회할때_추가정보가_입력되지않은_회원은_포함되지_않는다() {
-        // given
-        Product product = 제품을_저장한다(KEYBOARD_1.생성());
-
-        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        로그인을_한다(MINCHO_GITHUB.getCode());
-
-        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String token = secondLoginResponse.getToken();
-        Long memberId = secondLoginResponse.getMember().getId();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
-
-        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        코린.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members?page=0&size=2");
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
-        Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
-                member, false);
+
+        Member member1 = 민초.엔티티를().추가정보를_입력하여_생성(firstLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member2 = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
+
+        MemberWithProfileProductResponse expectedMemberResponse1 =
+                MemberWithProfileProductResponse.of(member1, false);
+        MemberWithProfileProductResponse expectedMemberResponse2 =
+                MemberWithProfileProductResponse.of(member2, false);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
-                () -> assertThat(
-                        memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparatorIgnoringFields(
-                                "profileProducts")
-                        .hasSize(1)
-                        .contains(memberWithProfileProductResponse)
+                () -> assertThat(memberPageResponse.getItems())
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields()
+                        .hasSize(2)
+                        .containsExactly(expectedMemberResponse2, expectedMemberResponse1)
         );
     }
 
     @Test
-    void 비회원이_회원정보를_옵션으로_검색하여_조회한다() {
+    void 로그인_하지_않고_회원목록을_키워드와_옵션을_입력하지않고_조회할때_추가정보가_입력되지않은_회원은_포함되지_않는다() {
         // given
-        Product product = 제품을_저장한다(KEYBOARD_1.생성());
-
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String token = secondLoginResponse.getToken();
-        Long memberId = secondLoginResponse.getMember().getId();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        민초.로그인을_한다();
 
-        REVIEW_RATING_5.작성_요청을_보낸다(product.getId(), token);
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        코린.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members?page=0&size=2");
+
+        // then
+        MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
+
+        Member member = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse expectedMemberResponse = MemberWithProfileProductResponse.of(member, false);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems())
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields()
+                        .hasSize(1)
+                        .contains(expectedMemberResponse)
+        );
+    }
+
+    @Test
+    void 로그인_하지_않고_회원목록을_옵션으로_검색하여_조회한다() {
+        // given
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        코린.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -306,39 +276,31 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), product);
-        Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
-                member, false);
+
+        Member member1 = 민초.엔티티를().추가정보를_입력하여_생성(firstLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member2 = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse expectedMemberResponse1 = MemberWithProfileProductResponse.of(member1, false);
+        MemberWithProfileProductResponse expectedMemberResponse2 = MemberWithProfileProductResponse.of(member2, false);
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(
-                        memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparatorIgnoringFields(
-                                "profileProducts")
+                        memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparatorIgnoringFields()
                         .hasSize(2)
-                        .contains(memberWithProfileProductResponse)
+                        .containsExactly(expectedMemberResponse2, expectedMemberResponse1)
         );
     }
 
     @Test
-    void 비회원이_회원정보를_키워드와_옵션으로_검색하여_대표_장비와_함께_조회한다() {
+    void 로그인_하지_않고_회원목록을_키워드와_옵션으로_검색하여_조회한다() {
         // given
-        Product keyboard = 제품을_저장한다(KEYBOARD_1.생성());
-        Product mouse = 제품을_저장한다(MOUSE_1.생성());
-
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        String token = secondLoginResponse.getToken();
-        Long memberId = secondLoginResponse.getMember().getId();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        민초.로그인을_하고().추가정보를_입력한다(memberRequest);
 
-        REVIEW_RATING_5.작성_요청을_보낸다(keyboard.getId(), token);
-        REVIEW_RATING_4.작성_요청을_보낸다(mouse.getId(), token);
-        대표_장비_업데이트_한다(List.of(keyboard), token);
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        코린.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -346,71 +308,67 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, CORINNE.생성(memberId), keyboard);
-        Member member = CORINNE.인벤토리를_추가해서_생성(memberId, inventoryProduct);
-        MemberWithProfileProductResponse memberWithProfileProductResponse = MemberWithProfileProductResponse.of(
-                member, false);
+
+        Member member = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse expectedMemberResponse = MemberWithProfileProductResponse.of(member, false);
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("profileProducts")
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields()
                         .hasSize(1)
-                        .containsOnly(memberWithProfileProductResponse),
-                () -> assertThat(memberPageResponse.getItems().get(0).getProfileProducts())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("reviewCount", "rating")
-                        .hasSize(1)
-                        .containsOnly(ProductResponse.from(keyboard))
+                        .containsOnly(expectedMemberResponse)
         );
     }
 
     @Test
-    void 회원이_회원정보를_검색하여_대표_장비와_함께_조회한다() {
+    void 로그인_하고_한명을_팔로우한_뒤_회원목록을_검색한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = 로그인을_한다(OHZZI_GITHUB.getCode());
-        String token = firstLoginResponse.getToken();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        LoginResponse firstLoginResponse = 오찌.로그인을_한다();
+        오찌.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", secondLoginResponse.getToken(), memberRequest);
+        LoginResponse secondLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse thirdLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", thirdLoginResponse.getToken(), memberRequest);
+        LoginResponse thirdLoginResponse = 코린.로그인을_한다();
+        String loginToken = thirdLoginResponse.getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + secondLoginResponse.getMember().getId() + "/following", token);
+        코린.로그인한_상태로(loginToken).팔로우한다(secondLoginResponse.getMember().getId());
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members?page=0&size=2", token);
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members?page=0&size=2", loginToken);
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
-        Member mincho = MINCHO.추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        Member corrine = CORINNE.추가정보를_입력하여_생성(thirdLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        MemberWithProfileProductResponse minchoResponse = MemberWithProfileProductResponse.of(mincho, true);
-        MemberWithProfileProductResponse corinneResponse = MemberWithProfileProductResponse.of(corrine, false);
+        Member member1 = 민초.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member2 = 코린.엔티티를().추가정보를_입력하여_생성(thirdLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse expectedMemberResponse1 = MemberWithProfileProductResponse.of(member1, true);
+        MemberWithProfileProductResponse expectedMemberResponse2 = MemberWithProfileProductResponse.of(member2, false);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isTrue(),
                 () -> assertThat(memberPageResponse.getItems())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("profileProducts", "followerCount")
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("followerCount")
                         .hasSize(2)
-                        .containsExactly(corinneResponse, minchoResponse)
+                        .containsExactly(expectedMemberResponse2, expectedMemberResponse1)
         );
     }
 
     @Test
-    void 회원정보_목록은_id의_역순으로_조회된다() {
+    void 회원목록은_id의_역순으로_조회된다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", secondLoginResponse.getToken(), memberRequest);
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        코린.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members?page=0&size=2");
@@ -426,133 +384,128 @@ class MemberAcceptanceTest extends AcceptanceTest {
                         .map(MemberWithProfileProductResponse::getId))
                         .usingRecursiveFieldByFieldElementComparatorOnFields("id")
                         .hasSize(2)
-                        .containsExactly(secondLoginResponse.getMember().getId(), firstLoginResponse.getMember().getId())
+                        .containsExactly(secondLoginResponse.getMember().getId(),
+                                firstLoginResponse.getMember().getId())
         );
     }
 
     @Test
-    void 다른_회원을_팔로우한다() {
+    void 로그인_하고_다른_회원을_팔로우한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
+        Long targetId = firstLoginResponse.getMember().getId();
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", secondLoginResponse.getToken(), memberRequest);
-
-        Long targetId = secondLoginResponse.getMember().getId();
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        String loginToken = secondLoginResponse.getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + targetId + "/following", firstLoginResponse.getToken());
+        ExtractableResponse<Response> response = 로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + targetId + "/following",
+                loginToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
-    void 팔로우한_회원을_언팔로우한다() {
+    void 로그인_하고_팔로우한_회원을_언팔로우한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", firstLoginResponse.getToken(), memberRequest);
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
+        Long targetId = firstLoginResponse.getMember().getId();
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", secondLoginResponse.getToken(), memberRequest);
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        String loginToken = secondLoginResponse.getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        Long targetId = secondLoginResponse.getMember().getId();
-        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + targetId + "/following", firstLoginResponse.getToken());
+        코린.로그인한_상태로(loginToken).팔로우한다(targetId);
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다("/api/v1/members/" + targetId + "/following", firstLoginResponse.getToken());
+        ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다("/api/v1/members/" + targetId + "/following",
+                loginToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
-    void 팔로우하는_회원의_목록을_조회한다() {
+    void 로그인_하고_팔로우하는_회원의_목록을_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse followerLoginResponse = 로그인을_한다(OHZZI_GITHUB.getCode());
-        String token = followerLoginResponse.getToken();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        LoginResponse followingLoginResponse = 오찌.로그인을_한다();
+        Long followingId = followingLoginResponse.getMember().getId();
+        오찌.로그인한_상태로(followingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse followingLoginResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", followingLoginResponse.getToken(), memberRequest);
+        LoginResponse notFollowingLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(notFollowingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + followingLoginResponse.getMember().getId() + "/following", token);
+        LoginResponse loginResponse = 코린.로그인을_한다();
+        String loginToken = loginResponse.getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        LoginResponse notFollowingLoginResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", notFollowingLoginResponse.getToken(), memberRequest);
-
-        Member mincho = MINCHO.추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(mincho, true);
+        코린.로그인한_상태로(loginToken).팔로우한다(followingId);
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followings?page=0&size=1", token);
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followings?page=0&size=1",
+                loginToken);
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
+
+        Member following = 오찌.엔티티를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(following, true);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("profileProducts", "followerCount")
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("followerCount")
                         .hasSize(1)
                         .containsExactly(followingResponse)
         );
     }
 
     @Test
-    void 팔로우하는_회원의_목록을_검색하여_조회한다() {
+    void 로그인_하고_팔로우하는_회원의_목록을_검색조건을_설정하여_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse followerLoginResponse = 로그인을_한다(OHZZI_GITHUB.getCode());
-        String token = followerLoginResponse.getToken();
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", token, memberRequest);
+        LoginResponse followingLoginResponse = 오찌.로그인을_한다();
+        Long followingId = followingLoginResponse.getMember().getId();
+        오찌.로그인한_상태로(followingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse searchedFollowingResponse = 로그인을_한다(MINCHO_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", searchedFollowingResponse.getToken(), memberRequest);
-        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + searchedFollowingResponse.getMember().getId() + "/following", token);
+        LoginResponse notFollowingLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(notFollowingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse notSearchedFollowingResponse = 로그인을_한다(CORINNE_GITHUB.getCode());
-        로그인된_상태로_PATCH_요청을_보낸다("/api/v1/members/me", notSearchedFollowingResponse.getToken(), memberRequest);
-        로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + notSearchedFollowingResponse.getMember().getId() + "/following", token);
+        LoginResponse loginResponse = 코린.로그인을_한다();
+        String loginToken = loginResponse.getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        Member mincho = MINCHO.추가정보를_입력하여_생성(searchedFollowingResponse.getMember().getId(), SENIOR, BACKEND);
-        MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(mincho, true);
+        코린.로그인한_상태로(loginToken).팔로우한다(followingId);
 
         // when
-        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followings?page=0&size=1&query=js&careerLevel=senior&jobType=backend", token);
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다(
+                "/api/v1/members/me/followings?page=0&size=1&query=O&careerLevel=senior&jobType=backend", loginToken);
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
+
+        Member following = 오찌.엔티티를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(following, true);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("profileProducts", "followerCount")
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("followerCount")
                         .hasSize(1)
                         .containsExactly(followingResponse)
         );
-    }
-
-    private Product 제품을_저장한다(Product product) {
-        return productRepository.save(product);
-    }
-
-    private Member 응답을_회원으로_변환한다(LoginMemberResponse loginMemberResponse) {
-        return Member.builder()
-                .id(loginMemberResponse.getId())
-                .gitHubId(loginMemberResponse.getGitHubId())
-                .name(loginMemberResponse.getName())
-                .imageUrl(loginMemberResponse.getImageUrl())
-                .build();
     }
 }
