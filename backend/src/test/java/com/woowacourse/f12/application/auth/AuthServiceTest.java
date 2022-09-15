@@ -1,24 +1,23 @@
 package com.woowacourse.f12.application.auth;
 
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.response.member.MemberResponse;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
 import static com.woowacourse.f12.support.MemberFixtures.CORINNE_UPDATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
+import com.woowacourse.f12.dto.response.auth.TokenResponse;
+import com.woowacourse.f12.dto.response.member.MemberResponse;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -35,14 +34,19 @@ class AuthServiceTest {
     @Mock
     private JwtProvider jwtProvider;
 
+    @Mock
+    private RefreshTokenProvider refreshTokenProvider;
+
     @Test
     void 깃허브_코드가_들어왔을때_회원정보가_없으면_새로_저장하고_회원정보와_토큰을_반환한다() {
         // given
         String code = "abcde";
         String accessToken = "accessToken";
-        String applicationToken = "applicationToken";
+        String expectedAccessToken = "applicationToken";
+        String refreshToken = "refreshToken";
         GitHubProfileResponse gitHubProfile = CORINNE.깃허브_프로필();
         Member member = CORINNE.생성(1L);
+
         given(gitHubOauthClient.getAccessToken(code))
                 .willReturn(accessToken);
         given(gitHubOauthClient.getProfile(accessToken))
@@ -52,21 +56,25 @@ class AuthServiceTest {
         given(memberRepository.save(gitHubProfile.toMember()))
                 .willReturn(member);
         given(jwtProvider.createToken(member.getId()))
-                .willReturn(applicationToken);
+                .willReturn(expectedAccessToken);
+        given(refreshTokenProvider.createToken())
+                .willReturn(refreshToken);
 
         // when
-        LoginResponse loginResponse = authService.login(code);
+        TokenResponse tokenResponse = authService.login2(code);
 
         // then
         assertAll(
-                () -> assertThat(loginResponse.getToken()).isEqualTo(applicationToken),
-                () -> assertThat(loginResponse.getMember()).usingRecursiveComparison()
+                () -> assertThat(tokenResponse.getAccessToken()).isEqualTo(expectedAccessToken),
+                () -> assertThat(tokenResponse.getLoginResponse().getMember()).usingRecursiveComparison()
                         .isEqualTo(MemberResponse.of(member, false)),
+                () -> assertThat(tokenResponse.getRefreshToken()).isEqualTo(refreshToken),
                 () -> verify(gitHubOauthClient).getAccessToken(code),
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
                 () -> verify(memberRepository).save(gitHubProfile.toMember()),
-                () -> verify(jwtProvider).createToken(1L)
+                () -> verify(jwtProvider).createToken(1L),
+                () -> verify(refreshTokenProvider).createToken()
         );
     }
 
@@ -76,6 +84,8 @@ class AuthServiceTest {
         String code = "abcde";
         String accessToken = "accessToken";
         String applicationToken = "applicationToken";
+        String refreshToken = "refreshToken";
+
         GitHubProfileResponse gitHubProfile = CORINNE_UPDATED.깃허브_프로필();
         Member member = CORINNE.생성(1L);
         given(gitHubOauthClient.getAccessToken(code))
@@ -86,19 +96,22 @@ class AuthServiceTest {
                 .willReturn(Optional.of(member));
         given(jwtProvider.createToken(member.getId()))
                 .willReturn(applicationToken);
+        given(refreshTokenProvider.createToken())
+                .willReturn(refreshToken);
 
         // when
-        LoginResponse loginResponse = authService.login(code);
+        TokenResponse tokenResponse = authService.login2(code);
 
         // then
         assertAll(
-                () -> assertThat(loginResponse.getToken()).isEqualTo(applicationToken),
-                () -> assertThat(loginResponse.getMember()).usingRecursiveComparison()
+                () -> assertThat(tokenResponse.getAccessToken()).isEqualTo(applicationToken),
+                () -> assertThat(tokenResponse.getLoginResponse().getMember()).usingRecursiveComparison()
                         .isEqualTo(MemberResponse.of(member, false)),
                 () -> verify(gitHubOauthClient).getAccessToken(code),
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
-                () -> verify(jwtProvider).createToken(1L)
+                () -> verify(jwtProvider).createToken(1L),
+                () -> verify(refreshTokenProvider).createToken()
         );
     }
 }
