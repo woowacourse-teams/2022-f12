@@ -11,9 +11,9 @@ import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.CORINNE;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.MINCHO;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.OHZZI;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.민초;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.오찌;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -35,7 +35,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void 로그인_하고_내_회원정보를_업데이트한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
-        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        LoginResponse loginResponse = 코린.로그인을_한다();
         String loginToken = loginResponse.getToken();
 
         // when
@@ -43,8 +43,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 memberRequest);
 
         // then
-        ExtractableResponse<Response> memberGetResponse = CORINNE.로그인한_상태로(loginToken).자신의_프로필을_조회한다();
-        Member expectedMember = CORINNE.객체를().추가정보를_입력하여_생성(loginResponse.getMember().getId(), JUNIOR, BACKEND);
+        ExtractableResponse<Response> memberGetResponse = 코린.로그인한_상태로(loginToken).자신의_프로필을_조회한다();
+        Member expectedMember = 코린.엔티티를().추가정보를_입력하여_생성(loginResponse.getMember().getId(), JUNIOR, BACKEND);
 
         assertAll(
                 () -> assertThat(memberGetResponse.as(MemberResponse.class)).usingRecursiveComparison()
@@ -56,18 +56,18 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인_하고_내_회원정보를_조회한다() {
         // given
-        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        LoginResponse loginResponse = 코린.로그인을_한다();
         String loginToken = loginResponse.getToken();
 
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", loginToken);
 
         // then
         Long loggedInMemberId = loginResponse.getMember().getId();
-        Member expectedMember = CORINNE.객체를().추가정보를_입력하여_생성(loggedInMemberId, JUNIOR, BACKEND);
+        Member expectedMember = 코린.엔티티를().추가정보를_입력하여_생성(loggedInMemberId, JUNIOR, BACKEND);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -79,13 +79,13 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인_하고_추가정보가_입력되지_않고_내_회원정보를_조회한다() {
         // given
-        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        LoginResponse loginResponse = 코린.로그인을_한다();
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me", loginResponse.getToken());
 
         // then
-        Member expectedMember = CORINNE.객체를().추가정보_없이_생성(loginResponse.getMember().getId());
+        Member expectedMember = 코린.엔티티를().추가정보_없이_생성(loginResponse.getMember().getId());
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -97,12 +97,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인_하지_않고_회원정보를_조회한다() {
         // given
-        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        LoginResponse loginResponse = 코린.로그인을_한다();
 
         String loginToken = loginResponse.getToken();
         LoginMemberResponse loginMemberResponse = loginResponse.getMember();
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members/" + loginMemberResponse.getId());
@@ -129,14 +129,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = MINCHO.로그인을_한다();
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
         Long targetId = firstLoginResponse.getMember().getId();
-        MINCHO.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = CORINNE.로그인을_한다();
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
         String loginToken = secondLoginResponse.getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
-        CORINNE.로그인한_상태로(loginToken).팔로우한다(targetId);
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(loginToken).팔로우한다(targetId);
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/" + targetId, loginToken);
@@ -165,13 +165,13 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = MINCHO.로그인을_한다();
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
         Long targetId = firstLoginResponse.getMember().getId();
-        MINCHO.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = CORINNE.로그인을_한다();
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
         String loginToken = secondLoginResponse.getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/" + targetId, loginToken);
@@ -200,11 +200,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = MINCHO.로그인을_한다();
-        MINCHO.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = CORINNE.로그인을_한다();
-        CORINNE.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        코린.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members?page=0&size=2");
@@ -212,8 +212,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member member1 = MINCHO.객체를().추가정보를_입력하여_생성(firstLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        Member member2 = CORINNE.객체를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member1 = 민초.엔티티를().추가정보를_입력하여_생성(firstLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member2 = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
 
         MemberWithProfileProductResponse expectedMemberResponse1 =
                 MemberWithProfileProductResponse.of(member1, false);
@@ -235,10 +235,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        MINCHO.로그인을_한다();
+        민초.로그인을_한다();
 
-        LoginResponse secondLoginResponse = CORINNE.로그인을_한다();
-        CORINNE.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        코린.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members?page=0&size=2");
@@ -246,7 +246,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member member = CORINNE.객체를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
         MemberWithProfileProductResponse expectedMemberResponse = MemberWithProfileProductResponse.of(member, false);
 
         assertAll(
@@ -264,11 +264,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = MINCHO.로그인을_한다();
-        MINCHO.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = CORINNE.로그인을_한다();
-        CORINNE.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        코린.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -277,8 +277,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member member1 = MINCHO.객체를().추가정보를_입력하여_생성(firstLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        Member member2 = CORINNE.객체를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member1 = 민초.엔티티를().추가정보를_입력하여_생성(firstLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member2 = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
         MemberWithProfileProductResponse expectedMemberResponse1 = MemberWithProfileProductResponse.of(member1, false);
         MemberWithProfileProductResponse expectedMemberResponse2 = MemberWithProfileProductResponse.of(member2, false);
 
@@ -297,10 +297,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        MINCHO.로그인을_하고().추가정보를_입력한다(memberRequest);
+        민초.로그인을_하고().추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = CORINNE.로그인을_한다();
-        CORINNE.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        코린.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -309,7 +309,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member member = CORINNE.객체를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
         MemberWithProfileProductResponse expectedMemberResponse = MemberWithProfileProductResponse.of(member, false);
 
         assertAll(
@@ -327,25 +327,25 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = OHZZI.로그인을_한다();
-        OHZZI.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse firstLoginResponse = 오찌.로그인을_한다();
+        오찌.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = MINCHO.로그인을_한다();
-        MINCHO.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse secondLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse thirdLoginResponse = CORINNE.로그인을_한다();
+        LoginResponse thirdLoginResponse = 코린.로그인을_한다();
         String loginToken = thirdLoginResponse.getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        CORINNE.로그인한_상태로(loginToken).팔로우한다(secondLoginResponse.getMember().getId());
+        코린.로그인한_상태로(loginToken).팔로우한다(secondLoginResponse.getMember().getId());
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members?page=0&size=2", loginToken);
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
-        Member member1 = MINCHO.객체를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        Member member2 = CORINNE.객체를().추가정보를_입력하여_생성(thirdLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member1 = 민초.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member2 = 코린.엔티티를().추가정보를_입력하여_생성(thirdLoginResponse.getMember().getId(), SENIOR, BACKEND);
         MemberWithProfileProductResponse expectedMemberResponse1 = MemberWithProfileProductResponse.of(member1, true);
         MemberWithProfileProductResponse expectedMemberResponse2 = MemberWithProfileProductResponse.of(member2, false);
 
@@ -364,11 +364,11 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = MINCHO.로그인을_한다();
-        MINCHO.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = CORINNE.로그인을_한다();
-        CORINNE.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
+        코린.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members?page=0&size=2");
@@ -394,13 +394,13 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = MINCHO.로그인을_한다();
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
         Long targetId = firstLoginResponse.getMember().getId();
-        MINCHO.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = CORINNE.로그인을_한다();
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
         String loginToken = secondLoginResponse.getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_POST_요청을_보낸다("/api/v1/members/" + targetId + "/following",
@@ -415,15 +415,15 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse firstLoginResponse = MINCHO.로그인을_한다();
+        LoginResponse firstLoginResponse = 민초.로그인을_한다();
         Long targetId = firstLoginResponse.getMember().getId();
-        MINCHO.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        민초.로그인한_상태로(firstLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse secondLoginResponse = CORINNE.로그인을_한다();
+        LoginResponse secondLoginResponse = 코린.로그인을_한다();
         String loginToken = secondLoginResponse.getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        CORINNE.로그인한_상태로(loginToken).팔로우한다(targetId);
+        코린.로그인한_상태로(loginToken).팔로우한다(targetId);
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다("/api/v1/members/" + targetId + "/following",
@@ -438,18 +438,18 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse followingLoginResponse = OHZZI.로그인을_한다();
+        LoginResponse followingLoginResponse = 오찌.로그인을_한다();
         Long followingId = followingLoginResponse.getMember().getId();
-        OHZZI.로그인한_상태로(followingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        오찌.로그인한_상태로(followingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse notFollowingLoginResponse = MINCHO.로그인을_한다();
-        MINCHO.로그인한_상태로(notFollowingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse notFollowingLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(notFollowingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        LoginResponse loginResponse = 코린.로그인을_한다();
         String loginToken = loginResponse.getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        CORINNE.로그인한_상태로(loginToken).팔로우한다(followingId);
+        코린.로그인한_상태로(loginToken).팔로우한다(followingId);
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다("/api/v1/members/me/followings?page=0&size=1",
@@ -458,7 +458,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member following = OHZZI.객체를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member following = 오찌.엔티티를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
         MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(following, true);
 
         assertAll(
@@ -476,18 +476,18 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse followingLoginResponse = OHZZI.로그인을_한다();
+        LoginResponse followingLoginResponse = 오찌.로그인을_한다();
         Long followingId = followingLoginResponse.getMember().getId();
-        OHZZI.로그인한_상태로(followingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        오찌.로그인한_상태로(followingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse notFollowingLoginResponse = MINCHO.로그인을_한다();
-        MINCHO.로그인한_상태로(notFollowingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        LoginResponse notFollowingLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(notFollowingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        LoginResponse loginResponse = 코린.로그인을_한다();
         String loginToken = loginResponse.getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        CORINNE.로그인한_상태로(loginToken).팔로우한다(followingId);
+        코린.로그인한_상태로(loginToken).팔로우한다(followingId);
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다(
@@ -496,7 +496,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member following = OHZZI.객체를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member following = 오찌.엔티티를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
         MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(following, true);
 
         assertAll(

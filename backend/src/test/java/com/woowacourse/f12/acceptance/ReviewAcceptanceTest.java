@@ -6,8 +6,8 @@ import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로�
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PUT_요청을_보낸다;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.CORINNE;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.MINCHO;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.민초;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_4;
@@ -50,11 +50,11 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String loginToken = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        String loginToken = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         // when
-        ExtractableResponse<Response> response = CORINNE.로그인한_상태로(loginToken)
+        ExtractableResponse<Response> response = 코린.로그인한_상태로(loginToken)
                 .리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
         // then
@@ -70,12 +70,12 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String loginToken = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
-        CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
+        String loginToken = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(loginToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
         // when
-        ExtractableResponse<Response> response = CORINNE.로그인한_상태로(loginToken)
+        ExtractableResponse<Response> response = 코린.로그인한_상태로(loginToken)
                 .리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
         // then
@@ -92,14 +92,14 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String token = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
+        String token = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
-        String token2 = MINCHO.로그인을_한다().getToken();
-        MINCHO.로그인한_상태로(token2).추가정보를_입력한다(memberRequest);
+        String token2 = 민초.로그인을_한다().getToken();
+        민초.로그인한_상태로(token2).추가정보를_입력한다(memberRequest);
         Long expectedReviewId = Location_헤더에서_id값을_꺼낸다(
-                MINCHO.로그인한_상태로(token2).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
+                민초.로그인한_상태로(token2).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
 
         // when
         String url = "/api/v1/products/" + product.getId() + "/reviews?size=1&page=0&sort=createdAt,desc";
@@ -125,14 +125,14 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String token = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_4);
+        String token = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_4);
 
-        String token2 = MINCHO.로그인을_한다().getToken();
-        MINCHO.로그인한_상태로(token2).추가정보를_입력한다(memberRequest);
+        String token2 = 민초.로그인을_한다().getToken();
+        민초.로그인한_상태로(token2).추가정보를_입력한다(memberRequest);
         Long expectedReviewId = Location_헤더에서_id값을_꺼낸다(
-                MINCHO.로그인한_상태로(token2).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
+                민초.로그인한_상태로(token2).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
 
         // when
         String url = "/api/v1/products/" + product.getId() + "/reviews?size=1&page=0&sort=rating,desc";
@@ -158,15 +158,15 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String corinneToken = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(corinneToken).추가정보를_입력한다(memberRequest);
+        String corinneToken = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(corinneToken).추가정보를_입력한다(memberRequest);
         Long corinneReviewId = Location_헤더에서_id값을_꺼낸다(
-                CORINNE.로그인한_상태로(corinneToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_4));
+                코린.로그인한_상태로(corinneToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_4));
 
-        String minchoToken = MINCHO.로그인을_한다().getToken();
-        MINCHO.로그인한_상태로(minchoToken).추가정보를_입력한다(memberRequest);
+        String minchoToken = 민초.로그인을_한다().getToken();
+        민초.로그인한_상태로(minchoToken).추가정보를_입력한다(memberRequest);
         Long minchoReviewId = Location_헤더에서_id값을_꺼낸다(
-                MINCHO.로그인한_상태로(minchoToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_4));
+                민초.로그인한_상태로(minchoToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_4));
 
         // when
         String url = "/api/v1/products/" + product.getId() + "/reviews?size=2&page=0&sort=rating,desc";
@@ -191,13 +191,13 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String loginToken = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        String loginToken = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         Long reviewId1 = Location_헤더에서_id값을_꺼낸다(
-                CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4));
+                코린.로그인한_상태로(loginToken).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4));
         Long reviewId2 = Location_헤더에서_id값을_꺼낸다(
-                CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product2.getId(), REVIEW_RATING_4));
+                코린.로그인한_상태로(loginToken).리뷰를_작성한다(product2.getId(), REVIEW_RATING_4));
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/reviews?page=0&size=2&sort=createdAt,desc");
@@ -220,10 +220,10 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String loginToken = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        String loginToken = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(코린.로그인한_상태로(loginToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
 
         // when
         ReviewRequest requestBody = new ReviewRequest("수정된 내용", 4);
@@ -248,10 +248,10 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String loginToken = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        String loginToken = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(코린.로그인한_상태로(loginToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다("/api/v1/reviews/" + reviewId, loginToken);
@@ -260,7 +260,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         List<ReviewWithAuthorAndProductResponse> reviews = 로그인하지_않고().리뷰_목록_페이지를_조회한다(0, 2, "createdAt")
                 .as(ReviewWithAuthorAndProductPageResponse.class)
                 .getItems();
-        List<InventoryProductResponse> inventoryProducts = CORINNE.로그인한_상태로(loginToken).자신의_인벤토리를_조회한다()
+        List<InventoryProductResponse> inventoryProducts = 코린.로그인한_상태로(loginToken).자신의_인벤토리를_조회한다()
                 .as(InventoryProductsResponse.class)
                 .getItems();
 
@@ -278,12 +278,12 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        LoginResponse loginResponse = 코린.로그인을_한다();
         String token = loginResponse.getToken();
-        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
 
-        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(CORINNE.로그인한_상태로(token).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4));
-        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(CORINNE.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_4));
+        Long reviewId1 = Location_헤더에서_id값을_꺼낸다(코린.로그인한_상태로(token).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4));
+        Long reviewId2 = Location_헤더에서_id값을_꺼낸다(코린.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_4));
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -313,13 +313,13 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String loginToken = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+        String loginToken = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
 
         Long reviewId1 = Location_헤더에서_id값을_꺼낸다(
-                CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4));
+                코린.로그인한_상태로(loginToken).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4));
         Long reviewId2 = Location_헤더에서_id값을_꺼낸다(
-                CORINNE.로그인한_상태로(loginToken).리뷰를_작성한다(product2.getId(), REVIEW_RATING_4));
+                코린.로그인한_상태로(loginToken).리뷰를_작성한다(product2.getId(), REVIEW_RATING_4));
 
         // when
         ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다(
@@ -348,12 +348,12 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String token = MINCHO.로그인을_한다().getToken();
-        MINCHO.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        String token = 민초.로그인을_한다().getToken();
+        민초.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
 
-        Long reviewId = Location_헤더에서_id값을_꺼낸다(MINCHO.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
+        Long reviewId = Location_헤더에서_id값을_꺼낸다(민초.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_5));
 
-        ExtractableResponse<Response> inventoryProductResponse = MINCHO.로그인한_상태로(token).자신의_인벤토리를_조회한다();
+        ExtractableResponse<Response> inventoryProductResponse = 민초.로그인한_상태로(token).자신의_인벤토리를_조회한다();
         Long inventoryProductId = inventoryProductResponse.as(InventoryProductsResponse.class)
                 .getItems()
                 .get(0)
@@ -374,7 +374,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(reviewResponse).usingRecursiveComparison()
                         .ignoringFields("product", "createdAt")
                         .isEqualTo(ReviewWithProductResponse.from(
-                                REVIEW_RATING_5.작성(reviewId, product, MINCHO.객체를().생성())))
+                                REVIEW_RATING_5.작성(reviewId, product, 민초.엔티티를().생성())))
         );
     }
 

@@ -10,8 +10,8 @@ import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTA
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.FRONTEND_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.MOBILE_CONSTANT;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.CORINNE;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.MINCHO;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.민초;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.fixture.ProductFixture.MOUSE_1;
@@ -105,14 +105,14 @@ class ProductAcceptanceTest extends AcceptanceTest {
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        String corinneToken = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(corinneToken).추가정보를_입력한다(memberRequest);
-        String minchoToken = MINCHO.로그인을_한다().getToken();
-        MINCHO.로그인한_상태로(minchoToken).추가정보를_입력한다(memberRequest);
+        String corinneToken = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(corinneToken).추가정보를_입력한다(memberRequest);
+        String minchoToken = 민초.로그인을_한다().getToken();
+        민초.로그인한_상태로(minchoToken).추가정보를_입력한다(memberRequest);
 
-        CORINNE.로그인한_상태로(corinneToken).리뷰를_작성한다(product1.getId(), REVIEW_RATING_5);
-        MINCHO.로그인한_상태로(minchoToken).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4);
-        MINCHO.로그인한_상태로(minchoToken).리뷰를_작성한다(product2.getId(), REVIEW_RATING_3);
+        코린.로그인한_상태로(corinneToken).리뷰를_작성한다(product1.getId(), REVIEW_RATING_5);
+        민초.로그인한_상태로(minchoToken).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4);
+        민초.로그인한_상태로(minchoToken).리뷰를_작성한다(product2.getId(), REVIEW_RATING_3);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -134,11 +134,11 @@ class ProductAcceptanceTest extends AcceptanceTest {
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        String token = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        String token = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
 
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product1.getId(), REVIEW_RATING_5);
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_3);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product1.getId(), REVIEW_RATING_5);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_3);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -181,11 +181,11 @@ class ProductAcceptanceTest extends AcceptanceTest {
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        String token = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        String token = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
 
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4);
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_5);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_5);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
@@ -207,14 +207,14 @@ class ProductAcceptanceTest extends AcceptanceTest {
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
 
         MemberRequest corinneMemberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        String corinneToken = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(corinneToken).추가정보를_입력한다(corinneMemberRequest);
-        CORINNE.로그인한_상태로(corinneToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
+        String corinneToken = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(corinneToken).추가정보를_입력한다(corinneMemberRequest);
+        코린.로그인한_상태로(corinneToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
         MemberRequest minchoMemberRequest = new MemberRequest(JUNIOR_CONSTANT, FRONTEND_CONSTANT);
-        String minchoToken = MINCHO.로그인을_한다().getToken();
-        MINCHO.로그인한_상태로(minchoToken).추가정보를_입력한다(minchoMemberRequest);
-        MINCHO.로그인한_상태로(minchoToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
+        String minchoToken = 민초.로그인을_한다().getToken();
+        민초.로그인한_상태로(minchoToken).추가정보를_입력한다(minchoMemberRequest);
+        민초.로그인한_상태로(minchoToken).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products/" + product.getId() + "/statistics");
@@ -245,7 +245,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
         // then
         ProductPageResponse productPageResponse = response.as(ProductPageResponse.class);
-        
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(productPageResponse.isHasNext()).isFalse(),

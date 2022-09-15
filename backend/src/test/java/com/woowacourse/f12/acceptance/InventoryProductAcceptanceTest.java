@@ -5,7 +5,7 @@ import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로�
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
@@ -43,9 +43,9 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         // given
         Long productId = 제품을_저장한다(KEYBOARD_1.생성()).getId();
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        String token = CORINNE.로그인을_한다().getToken();
-        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(productId, REVIEW_RATING_5);
+        String token = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(token).리뷰를_작성한다(productId, REVIEW_RATING_5);
 
         // when
         List<InventoryProductResponse> keyboardsInInventory =
@@ -63,10 +63,10 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        LoginResponse loginResponse = 코린.로그인을_한다();
         String token = loginResponse.getToken();
-        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
+        코린.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
         Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
         InventoryProduct savedInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product, member);
@@ -93,14 +93,14 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         // given
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        LoginResponse loginResponse = 코린.로그인을_한다();
         String token = loginResponse.getToken();
-        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
+        코린.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product.getId(), REVIEW_RATING_5);
 
         Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
         InventoryProduct savedInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product, member);
-        CORINNE.로그인한_상태로(token).대표장비를_등록한다(List.of(savedInventoryProduct.getId()));
+        코린.로그인한_상태로(token).대표장비를_등록한다(List.of(savedInventoryProduct.getId()));
 
         // when
         ExtractableResponse<Response> profileProductResponse = 로그인된_상태로_PATCH_요청을_보낸다(
@@ -125,16 +125,16 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        LoginResponse loginResponse = 코린.로그인을_한다();
         String token = loginResponse.getToken();
-        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product1.getId(), REVIEW_RATING_5);
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_5);
+        코린.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product1.getId(), REVIEW_RATING_5);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_5);
 
         Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
         InventoryProduct selectedInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product1, member);
         InventoryProduct unselectedInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product2, member);
-        CORINNE.로그인한_상태로(token).대표장비를_등록한다(List.of(selectedInventoryProduct.getId()));
+        코린.로그인한_상태로(token).대표장비를_등록한다(List.of(selectedInventoryProduct.getId()));
         InventoryProduct profileInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product1, member);
 
         // when
@@ -157,16 +157,16 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-        LoginResponse loginResponse = CORINNE.로그인을_한다();
+        LoginResponse loginResponse = 코린.로그인을_한다();
         String token = loginResponse.getToken();
-        CORINNE.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product1.getId(), REVIEW_RATING_5);
-        CORINNE.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_5);
+        코린.로그인한_상태로(token).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product1.getId(), REVIEW_RATING_5);
+        코린.로그인한_상태로(token).리뷰를_작성한다(product2.getId(), REVIEW_RATING_5);
 
         Member member = 응답을_회원으로_변환한다(loginResponse.getMember());
         InventoryProduct selectedInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product1, member);
         InventoryProduct unselectedInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product2, member);
-        CORINNE.로그인한_상태로(token).대표장비를_등록한다(List.of(selectedInventoryProduct.getId()));
+        코린.로그인한_상태로(token).대표장비를_등록한다(List.of(selectedInventoryProduct.getId()));
         InventoryProduct profileInventoryProduct = 인벤토리에_있는_장비를_찾아온다(product1, member);
 
         // when

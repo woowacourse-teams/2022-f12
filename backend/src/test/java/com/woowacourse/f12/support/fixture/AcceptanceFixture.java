@@ -10,9 +10,9 @@ import com.woowacourse.f12.support.fixture.action.AuthorizedAction;
 
 public enum AcceptanceFixture {
 
-    CORINNE(CORINNE_GITHUB.getCode(), MemberFixture.CORINNE),
-    MINCHO(MINCHO_GITHUB.getCode(), MemberFixture.MINCHO),
-    OHZZI(OHZZI_GITHUB.getCode(), MemberFixture.OHZZI);
+    코린(CORINNE_GITHUB.getCode(), MemberFixture.CORINNE),
+    민초(MINCHO_GITHUB.getCode(), MemberFixture.MINCHO),
+    오찌(OHZZI_GITHUB.getCode(), MemberFixture.OHZZI);
 
     private final String gitHubLoginCode;
     private final MemberFixture memberFixture;
@@ -22,7 +22,7 @@ public enum AcceptanceFixture {
         this.memberFixture = memberFixture;
     }
 
-    public MemberFixture 객체를() {
+    public MemberFixture 엔티티를() {
         return memberFixture;
     }
 
