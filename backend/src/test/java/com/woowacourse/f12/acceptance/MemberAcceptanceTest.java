@@ -323,7 +323,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하고_회원목록을_검색한다() {
+    void 로그인_하고_한명을_팔로우한_뒤_회원목록을_검색한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -472,7 +472,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하고_팔로우하는_회원의_목록을_검색하여_조회한다() {
+    void 로그인_하고_팔로우하는_회원의_목록을_검색조건을_설정하여_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
