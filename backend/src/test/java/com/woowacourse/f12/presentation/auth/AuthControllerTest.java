@@ -1,7 +1,18 @@
 package com.woowacourse.f12.presentation.auth;
 
+import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.woowacourse.f12.application.auth.AuthService;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
+import com.woowacourse.f12.dto.response.auth.TokenResponse;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
 import com.woowacourse.f12.exception.internalserver.GitHubServerException;
 import com.woowacourse.f12.presentation.PresentationTest;
@@ -11,14 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.verify;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthController.class)
 class AuthControllerTest extends PresentationTest {
@@ -34,9 +37,12 @@ class AuthControllerTest extends PresentationTest {
         // given
         String code = "code";
         String token = "token";
+        String refreshToken = "refreshTokenValue";
         LoginResponse loginResponse = LoginResponse.of(token, CORINNE.생성(1L));
+        TokenResponse tokenResponse = new TokenResponse(refreshToken, loginResponse);
+
         given(authService.login(code))
-                .willReturn(loginResponse);
+                .willReturn(tokenResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -44,7 +50,9 @@ class AuthControllerTest extends PresentationTest {
         );
 
         // then
-        resultActions.andExpect(status().isOk())
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(header().string("Set-cookie", containsString("refreshToken=" + refreshToken)))
                 .andDo(print())
                 .andDo(
                         document("auth-login")

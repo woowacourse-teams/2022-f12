@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.auth.TokenResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import java.util.Optional;
@@ -61,12 +62,13 @@ class AuthServiceTest {
                 .willReturn(refreshToken);
 
         // when
-        TokenResponse tokenResponse = authService.login2(code);
+        TokenResponse tokenResponse = authService.login(code);
 
         // then
+        LoginResponse loginResponse = tokenResponse.getLoginResponse();
         assertAll(
-                () -> assertThat(tokenResponse.getAccessToken()).isEqualTo(expectedAccessToken),
-                () -> assertThat(tokenResponse.getLoginResponse().getMember()).usingRecursiveComparison()
+                () -> assertThat(loginResponse.getToken()).isEqualTo(expectedAccessToken),
+                () -> assertThat(loginResponse.getMember()).usingRecursiveComparison()
                         .isEqualTo(MemberResponse.of(member, false)),
                 () -> assertThat(tokenResponse.getRefreshToken()).isEqualTo(refreshToken),
                 () -> verify(gitHubOauthClient).getAccessToken(code),
@@ -100,12 +102,14 @@ class AuthServiceTest {
                 .willReturn(refreshToken);
 
         // when
-        TokenResponse tokenResponse = authService.login2(code);
+        TokenResponse tokenResponse = authService.login(code);
 
         // then
+        LoginResponse loginResponse = tokenResponse.getLoginResponse();
+
         assertAll(
-                () -> assertThat(tokenResponse.getAccessToken()).isEqualTo(applicationToken),
-                () -> assertThat(tokenResponse.getLoginResponse().getMember()).usingRecursiveComparison()
+                () -> assertThat(loginResponse.getToken()).isEqualTo(applicationToken),
+                () -> assertThat(loginResponse.getMember()).usingRecursiveComparison()
                         .isEqualTo(MemberResponse.of(member, false)),
                 () -> verify(gitHubOauthClient).getAccessToken(code),
                 () -> verify(gitHubOauthClient).getProfile(accessToken),

@@ -19,9 +19,12 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/login?code=" + CORINNE_GITHUB.getCode());
 
         // then
+        final LoginResponse loginResponse = response.as(LoginResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(LoginResponse.class)).isNotNull()
+                () -> assertThat(loginResponse).isNotNull(),
+                () -> assertThat(loginResponse.getToken()).isNotNull(),
+                () -> assertThat(response.header("Set-cookie")).isNotNull()
         );
     }
 }

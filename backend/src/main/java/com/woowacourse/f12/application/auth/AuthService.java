@@ -26,15 +26,7 @@ public class AuthService {
     }
 
     @Transactional
-    public LoginResponse login(final String code) {
-        final GitHubProfileResponse gitHubProfileResponse = getGitHubProfileResponse(code);
-        final Member member = addOrUpdateMember(gitHubProfileResponse);
-        final String applicationAccessToken = jwtProvider.createToken(member.getId());
-        return LoginResponse.of(applicationAccessToken, member);
-    }
-
-    @Transactional
-    public TokenResponse login2(final String code) {
+    public TokenResponse login(final String code) {
         final GitHubProfileResponse gitHubProfileResponse = getGitHubProfileResponse(code);
         final Member member = addOrUpdateMember(gitHubProfileResponse);
         final String applicationAccessToken = jwtProvider.createToken(member.getId());
