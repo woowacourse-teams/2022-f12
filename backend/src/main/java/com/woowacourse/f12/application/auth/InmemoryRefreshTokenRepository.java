@@ -1,6 +1,7 @@
 package com.woowacourse.f12.application.auth;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
 
@@ -13,5 +14,10 @@ public class InmemoryRefreshTokenRepository implements RefreshTokenRepository {
     public String save(final String token, final RefreshTokenInfo info) {
         tokens.put(token, info);
         return token;
+    }
+
+    @Override
+    public Optional<RefreshTokenInfo> findTokenInfo(final String token) {
+        return Optional.ofNullable(tokens.get(token));
     }
 }
