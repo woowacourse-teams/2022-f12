@@ -8,6 +8,7 @@ import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CO
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.NOT_ADDITIONAL_INFO;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,7 +32,6 @@ import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
 import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import com.woowacourse.f12.support.fixture.MemberFixture;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -114,7 +114,7 @@ class MemberServiceTest {
     @Test
     void 추가_정보가_입력되지_않은_멤버_아이디로_회원정보를_조회한다() {
         // given
-        Member member = MemberFixture.NOT_ADDITIONAL_INFO.생성();
+        Member member = NOT_ADDITIONAL_INFO.생성();
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
 

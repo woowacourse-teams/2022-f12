@@ -42,7 +42,6 @@ import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
-import com.woowacourse.f12.support.fixture.ReviewFixture;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -598,7 +597,7 @@ class ReviewServiceTest {
     @Test
     void 인벤토리_아이디로_리뷰를_조회한다() {
         // given
-        Review review = ReviewFixture.REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L));
+        Review review = REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L));
         given(inventoryProductRepository.findById(any(Long.class)))
                 .willReturn(Optional.of(SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L))));
         given(reviewRepository.findByMemberAndProduct(any(Member.class), any(Product.class)))
