@@ -9,6 +9,7 @@ import Loading from '@/components/common/Loading/Loading';
 import DeskSetup from '@/components/DeskSetup/DeskSetup';
 import InventoryProductList from '@/components/Profile/InventoryProductList/InventoryProductList';
 import UserInfo from '@/components/Profile/UserInfo/UserInfo';
+import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListSection';
 
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 
@@ -26,8 +27,8 @@ function Profile() {
 
   const isOwnProfile = !memberId;
 
-  const tabTitle = ['제품 목록 보기', '리뷰 목록 보기'];
   const [activeTab, setActiveTab] = useState<number>(0);
+  const tabTitle = ['리뷰를 작성한 제품', '작성한 리뷰 목록'];
 
   const {
     items,
@@ -35,6 +36,11 @@ function Profile() {
     isError: isInventoryProductError,
     refetch: refetchInventoryProducts,
     updateProfileProduct,
+    reviews,
+    isReviewLoading,
+    isReviewReady,
+    isReviewError,
+    getNextPage,
   } = useInventory({ memberId });
   const {
     data: userInfo,
@@ -75,7 +81,7 @@ function Profile() {
           <DeskSetup inventoryList={inventoryList} />
         </AsyncWrapper>
       </S.DeskSetupSection>
-      <S.ButtonWrapper>
+      <S.TabButtonWrapper>
         {tabTitle.map((title, index) => {
           return (
             <S.TabButton
@@ -89,20 +95,37 @@ function Profile() {
             </S.TabButton>
           );
         })}
-      </S.ButtonWrapper>
+      </S.TabButtonWrapper>
       <S.InventorySection>
-        <AsyncWrapper
-          fallback={<Loading />}
-          isReady={isInventoryProductsReady}
-          isError={isInventoryProductError}
-        >
-          <InventoryProductList
-            inventoryList={inventoryList}
-            editable={isOwnProfile}
-            refetchInventoryProducts={refetchInventoryProducts}
-            updateProfileProduct={updateProfileProduct}
-          />
-        </AsyncWrapper>
+        {activeTab === 0 ? (
+          <AsyncWrapper
+            fallback={<Loading />}
+            isReady={isInventoryProductsReady}
+            isError={isInventoryProductError}
+          >
+            <InventoryProductList
+              inventoryList={inventoryList}
+              editable={isOwnProfile}
+              refetchInventoryProducts={refetchInventoryProducts}
+              updateProfileProduct={updateProfileProduct}
+            />
+          </AsyncWrapper>
+        ) : (
+          <AsyncWrapper
+            fallback={<Loading />}
+            isReady={isReviewReady}
+            isError={isReviewError}
+          >
+            <ReviewListSection
+              columns={2}
+              data={reviews}
+              getNextPage={getNextPage}
+              isLoading={isReviewLoading}
+              isError={isReviewError}
+              pageSize={4}
+            />
+          </AsyncWrapper>
+        )}
       </S.InventorySection>
     </S.Container>
   );

@@ -1,7 +1,5 @@
 import { Fragment, useState } from 'react';
 
-import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
-
 import DeskSetupCard from '@/components/DeskSetupCard/DeskSetupCard';
 import * as S from '@/components/Profile/InventoryProductList/InventoryProductList.style';
 
@@ -73,7 +71,6 @@ function InventoryProductList({
   return (
     <>
       <S.FlexWrapper>
-        <SectionHeader title={'리뷰를 작성한 제품'} />
         {editable && (
           <S.EditDeskSetupButton onClick={handleEdit}>
             {isEditMode ? '데스크 셋업 변경 완료' : '데스크 셋업 변경하기'}
