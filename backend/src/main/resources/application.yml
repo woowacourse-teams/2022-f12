@@ -6,6 +6,7 @@ spring:
       main:
       release:
       local:
+      performance:
     default: local
   jpa:
     hibernate:
