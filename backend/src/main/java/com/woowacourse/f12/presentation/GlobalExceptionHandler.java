@@ -12,7 +12,11 @@ import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
 import com.woowacourse.f12.exception.internalserver.ExternalServerException;
 import com.woowacourse.f12.exception.internalserver.InternalServerException;
 import com.woowacourse.f12.exception.notfound.NotFoundException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.util.WebUtils;
 
 @Slf4j
 @RestControllerAdvice
@@ -66,6 +71,17 @@ public class GlobalExceptionHandler {
                 .append(System.lineSeparator()));
         return ResponseEntity.badRequest()
                 .body(ExceptionResponse.from(stringBuilder.toString(), INVALID_REQUEST_BODY_TYPE));
+    }
+
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleRefreshTokenNotFoundException(final RefreshTokenNotFoundException e,
+                                                                                 HttpServletRequest request,
+                                                                                 HttpServletResponse response) {
+        final Cookie refreshToken = WebUtils.getCookie(request, "refreshToken");
+        assert refreshToken != null;
+        refreshToken.setMaxAge(0);
+        response.addCookie(refreshToken);
+        return handleUnauthorizedException(e);
     }
 
     @ExceptionHandler(UnauthorizedException.class)

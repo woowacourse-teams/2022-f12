@@ -3,7 +3,7 @@ package com.woowacourse.f12.presentation.inventoryproduct;
 import com.woowacourse.f12.application.inventoryproduct.InventoryProductService;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.presentation.auth.LoginRequired;
+import com.woowacourse.f12.presentation.auth.Login;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class InventoryProductController {
     }
 
     @PatchMapping("/members/inventoryProducts")
-    @LoginRequired
+    @Login
     public ResponseEntity<Void> updateProfileProducts(
             @RequestBody @Valid final ProfileProductRequest profileProductRequest,
             @VerifiedMember final Long memberId) {
@@ -34,7 +34,7 @@ public class InventoryProductController {
     }
 
     @GetMapping("/members/inventoryProducts")
-    @LoginRequired
+    @Login
     public ResponseEntity<InventoryProductsResponse> showMyInventoryProducts(@VerifiedMember final Long memberId) {
         final InventoryProductsResponse inventoryProductsResponse = inventoryProductService.findByMemberId(memberId);
         return ResponseEntity.ok(inventoryProductsResponse);
