@@ -2,10 +2,8 @@ package com.woowacourse.f12.application.auth;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.within;
 
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
@@ -31,7 +29,6 @@ class RefreshTokenInfoTest {
         RefreshTokenInfo tokenInfo = RefreshTokenInfo.createByExpiredDay(1L, -1);
 
         // when, then
-        assertThatThrownBy(tokenInfo::checkExpired)
-                .isExactlyInstanceOf(RefreshTokenExpiredException.class);
+        assertThat(tokenInfo.isExpired()).isTrue();
     }
 }

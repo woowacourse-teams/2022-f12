@@ -19,8 +19,10 @@ import com.woowacourse.f12.application.auth.AuthService;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.auth.TokenResponse;
+import com.woowacourse.f12.exception.ErrorCode;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
 import com.woowacourse.f12.exception.internalserver.GitHubServerException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
 import javax.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
@@ -148,5 +150,26 @@ class AuthControllerTest extends PresentationTest {
                 .andDo(print());
 
         verify(authService, times(0)).issueAccessToken(any());
+    }
+
+    @Test
+    void 만료된_리프레시_토큰으로_액세스_토큰_발급하면_예외_발생() throws Exception {
+        // given
+        given(authService.issueAccessToken(any()))
+                .willThrow(new RefreshTokenNotFoundException());
+        String expiredToken = "expiredToken";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/accessToken")
+                        .cookie(new Cookie("refreshToken", expiredToken))
+        );
+
+        resultActions.andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorCode").value(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getValue()))
+                .andExpect(cookie().maxAge("refreshToken", 0))
+                .andDo(print());
+
+        verify(authService).issueAccessToken(any());
     }
 }

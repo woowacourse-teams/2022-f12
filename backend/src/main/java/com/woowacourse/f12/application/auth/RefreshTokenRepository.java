@@ -7,4 +7,6 @@ public interface RefreshTokenRepository {
     String save(String token, RefreshTokenInfo info);
 
     Optional<RefreshTokenInfo> findTokenInfo(String savedToken);
+
+    void delete(String token);
 }

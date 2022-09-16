@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.verify;
 
 import com.woowacourse.f12.domain.member.Member;
@@ -173,12 +174,18 @@ class AuthServiceTest {
     @Test
     void 만료된_리프레시_토큰으로_액세스_토큰_발급하려할_경우_예외_발생() {
         // given
-        final RefreshTokenInfo expiredRefreshTokenInfo = RefreshTokenInfo.createByExpiredDay(1L, -1);
+        RefreshTokenInfo expiredRefreshTokenInfo = RefreshTokenInfo.createByExpiredDay(1L, -1);
         given(refreshTokenRepository.findTokenInfo(any()))
                 .willReturn(Optional.of(expiredRefreshTokenInfo));
+        String refreshToken = "refreshToken";
+        willDoNothing().given(refreshTokenRepository).delete(refreshToken);
 
         // when, then
-        assertThatThrownBy(() -> authService.issueAccessToken("refreshToken"))
-                .isExactlyInstanceOf(RefreshTokenExpiredException.class);
+        assertAll(
+                () -> assertThatThrownBy(() -> authService.issueAccessToken(refreshToken))
+                        .isExactlyInstanceOf(RefreshTokenExpiredException.class),
+                () -> verify(refreshTokenRepository).delete(refreshToken),
+                () -> verify(refreshTokenRepository).findTokenInfo(any())
+        );
     }
 }

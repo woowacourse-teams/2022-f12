@@ -20,4 +20,9 @@ public class InmemoryRefreshTokenRepository implements RefreshTokenRepository {
     public Optional<RefreshTokenInfo> findTokenInfo(final String token) {
         return Optional.ofNullable(tokens.get(token));
     }
+
+    @Override
+    public void delete(final String token) {
+        tokens.remove(token);
+    }
 }

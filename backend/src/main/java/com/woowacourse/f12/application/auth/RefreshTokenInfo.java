@@ -1,6 +1,5 @@
 package com.woowacourse.f12.application.auth;
 
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -26,6 +25,10 @@ public class RefreshTokenInfo {
         return expiredAt;
     }
 
+    public boolean isExpired() {
+        return expiredAt.isBefore(LocalDateTime.now());
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -41,11 +44,5 @@ public class RefreshTokenInfo {
     @Override
     public int hashCode() {
         return Objects.hash(memberId, expiredAt);
-    }
-
-    public void checkExpired() {
-        if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new RefreshTokenExpiredException();
-        }
     }
 }
