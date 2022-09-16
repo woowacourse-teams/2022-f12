@@ -10,6 +10,8 @@ export const ENDPOINTS = {
   REVIEWS: '/reviews',
   REVIEWS_BY_PRODUCT_ID: (id: number | ':id') => `/products/${id}/reviews`,
   REVIEWS_BY_REVIEW_ID: (id: number | ':id') => `/reviews/${id}`,
+  REVIEWS_BY_MEMBER_ID: (id: number | ':id') => `/members/${id}/reviews`,
+  MY_REVIEWS: '/members/me/reviews',
   LOGIN: '/login',
   INVENTORY_PRODUCTS: '/members/inventoryProducts',
   OTHER_INVENTORY_PRODUCTS: (id: number | ':id') => `/members/${id}/inventoryProducts`,
