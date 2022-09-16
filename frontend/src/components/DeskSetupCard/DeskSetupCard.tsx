@@ -30,7 +30,7 @@ function DeskSetupCard({ size, item, borderType, isEditMode }: Props) {
   };
 
   return (
-    <S.Container size={size} borderType={borderType} isEditMode={isEditMode}>
+    <S.Container index={0} size={size} borderType={borderType} isEditMode={isEditMode}>
       <S.CustomLink to={`${ROUTES.PRODUCT}/${item?.product.id}`}>
         <S.ImageWrapper size={size}>
           <S.ProductImage src={item?.product.imageUrl} />

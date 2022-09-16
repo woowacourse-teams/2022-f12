@@ -37,6 +37,7 @@ const cardSize = {
 };
 
 export const Container = styled.div<{
+  index: number;
   size: 's' | 'l';
   borderType: 'default' | 'selected' | 'selectedAnimation';
   isEditMode: boolean;
@@ -92,6 +93,24 @@ export const Container = styled.div<{
         height: 100%;
       }
     `}
+
+  ${({ index }) => css`
+    animation: fade-in-${index} ${500 + index * 50}ms;
+
+    @keyframes fade-in-${index} {
+      0% {
+        transform: translateY(-10px);
+        scale: 1.1;
+        opacity: 0;
+      }
+
+      ${index * 5}% {
+        transform: translateY(-10px);
+        scale: 1.1;
+        opacity: 0;
+      }
+    }
+  `}
 `;
 
 export const ImageWrapper = styled.div<{ size: 's' | 'l' }>`
