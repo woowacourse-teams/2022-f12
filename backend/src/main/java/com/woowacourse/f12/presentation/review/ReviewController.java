@@ -6,7 +6,7 @@ import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageRes
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
-import com.woowacourse.f12.presentation.auth.LoginRequired;
+import com.woowacourse.f12.presentation.auth.Login;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
 import java.net.URI;
 import javax.validation.Valid;
@@ -32,7 +32,7 @@ public class ReviewController {
     }
 
     @PostMapping("/products/{productId}/reviews")
-    @LoginRequired
+    @Login
     public ResponseEntity<Void> create(@PathVariable final Long productId,
                                        @VerifiedMember final Long memberId,
                                        @Valid @RequestBody final ReviewRequest reviewRequest) {
@@ -42,6 +42,7 @@ public class ReviewController {
     }
 
     @GetMapping("/products/{productId}/reviews")
+    @Login(required = false)
     public ResponseEntity<ReviewWithAuthorPageResponse> showPageByProductId(@PathVariable final Long productId,
                                                                             @VerifiedMember Long memberId,
                                                                             final Pageable pageable) {
@@ -58,7 +59,7 @@ public class ReviewController {
     }
 
     @PutMapping("/reviews/{reviewId}")
-    @LoginRequired
+    @Login
     public ResponseEntity<Void> update(@PathVariable final Long reviewId,
                                        @VerifiedMember final Long memberId,
                                        @Valid @RequestBody final ReviewRequest updateRequest) {
@@ -68,7 +69,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/reviews/{reviewId}")
-    @LoginRequired
+    @Login
     public ResponseEntity<Void> delete(@PathVariable final Long reviewId, @VerifiedMember final Long memberId) {
         reviewService.delete(reviewId, memberId);
         return ResponseEntity.noContent()
@@ -84,7 +85,7 @@ public class ReviewController {
     }
 
     @GetMapping("/members/me/reviews")
-    @LoginRequired
+    @Login
     public ResponseEntity<ReviewWithProductPageResponse> showMyReviewPage(@VerifiedMember final Long memberId,
                                                                           final Pageable pageable) {
         final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPageByMemberId(memberId,

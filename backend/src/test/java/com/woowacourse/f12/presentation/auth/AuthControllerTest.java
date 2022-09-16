@@ -62,7 +62,7 @@ class AuthControllerTest extends PresentationTest {
     }
 
     @Test
-    void 로그인_실패_올바르지_않은_로그인_요청() throws Exception {
+    void 로그인_실패_올바르지_않은_깃허브_코드로_로그인_요청() throws Exception {
         // given
         String code = "code";
         given(authService.login(code))
