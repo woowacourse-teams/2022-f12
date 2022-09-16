@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,6 +64,7 @@ class AuthInterceptorTest extends PresentationTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(reviewRequest))
                 ).andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorCode").value("40101"))
                 .andDo(print());
 
         // then
@@ -87,6 +89,7 @@ class AuthInterceptorTest extends PresentationTest {
                         get("/api/v1/products/" + 1L + "/reviews")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                 ).andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorCode").value("40101"))
                 .andDo(print());
 
         // then

@@ -3,8 +3,10 @@ package com.woowacourse.f12.application.auth;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
+import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.auth.TokenResponse;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotExistException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,17 +14,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AuthService {
 
+    private static final int REFRESH_TOKEN_EXPIRED_DAYS = 14;
     private final GitHubOauthClient gitHubOauthClient;
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
     private final RefreshTokenProvider refreshTokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public AuthService(final GitHubOauthClient gitHubOauthClient, final MemberRepository memberRepository,
-                       final JwtProvider jwtProvider, final RefreshTokenProvider refreshTokenProvider) {
+                       final JwtProvider jwtProvider, final RefreshTokenProvider refreshTokenProvider,
+                       final RefreshTokenRepository refreshTokenRepository) {
         this.gitHubOauthClient = gitHubOauthClient;
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
         this.refreshTokenProvider = refreshTokenProvider;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Transactional
@@ -46,5 +52,17 @@ public class AuthService {
                 .orElseGet(() -> memberRepository.save(requestedMember));
         member.update(requestedMember);
         return member;
+    }
+
+    public IssuedTokensResponse issueAccessToken(final String refreshToken) {
+        final RefreshTokenInfo tokenInfo = refreshTokenRepository.findTokenInfo(refreshToken)
+                .orElseThrow(RefreshTokenNotExistException::new);
+        tokenInfo.checkExpired();
+        final Long memberId = tokenInfo.getMemberId();
+        final String newAccessToken = jwtProvider.createToken(memberId);
+        final String newRefreshToken = refreshTokenProvider.createToken();
+        final RefreshTokenInfo newTokenInfo = RefreshTokenInfo.createByExpiredDay(memberId, REFRESH_TOKEN_EXPIRED_DAYS);
+        refreshTokenRepository.save(newRefreshToken, newTokenInfo);
+        return new IssuedTokensResponse(newAccessToken, newRefreshToken);
     }
 }
