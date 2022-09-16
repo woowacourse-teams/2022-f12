@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import * as S from '@/pages/Profile/Profile.style';
@@ -20,10 +20,14 @@ import { ENDPOINTS } from '@/constants/api';
 
 function Profile() {
   const userData = useContext(UserDataContext);
+
   const { isLoggedIn } = useAuth();
   const { memberId } = useParams();
 
   const isOwnProfile = !memberId;
+
+  const tabTitle = ['제품 목록 보기', '리뷰 목록 보기'];
+  const [activeTab, setActiveTab] = useState<number>(0);
 
   const {
     items,
@@ -71,6 +75,21 @@ function Profile() {
           <DeskSetup inventoryList={inventoryList} />
         </AsyncWrapper>
       </S.DeskSetupSection>
+      <S.ButtonWrapper>
+        {tabTitle.map((title, index) => {
+          return (
+            <S.TabButton
+              key={index}
+              selected={title === tabTitle[activeTab]}
+              onClick={() => {
+                setActiveTab(index);
+              }}
+            >
+              {title}
+            </S.TabButton>
+          );
+        })}
+      </S.ButtonWrapper>
       <S.InventorySection>
         <AsyncWrapper
           fallback={<Loading />}
