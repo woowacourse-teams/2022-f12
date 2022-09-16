@@ -6,7 +6,7 @@ import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.auth.TokenResponse;
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotExistException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +38,7 @@ public class AuthService {
         final String applicationAccessToken = jwtProvider.createToken(member.getId());
         final LoginResponse loginResponse = LoginResponse.of(applicationAccessToken, member);
         final String refreshToken = refreshTokenProvider.createToken();
+        refreshTokenRepository.save(refreshToken, RefreshTokenInfo.createByExpiredDay(member.getId(), 14));
         return new TokenResponse(refreshToken, loginResponse);
     }
 
@@ -56,7 +57,7 @@ public class AuthService {
 
     public IssuedTokensResponse issueAccessToken(final String refreshToken) {
         final RefreshTokenInfo tokenInfo = refreshTokenRepository.findTokenInfo(refreshToken)
-                .orElseThrow(RefreshTokenNotExistException::new);
+                .orElseThrow(RefreshTokenNotFoundException::new);
         tokenInfo.checkExpired();
         final Long memberId = tokenInfo.getMemberId();
         final String newAccessToken = jwtProvider.createToken(memberId);
