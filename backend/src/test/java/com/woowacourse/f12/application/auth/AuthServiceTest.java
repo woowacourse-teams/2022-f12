@@ -145,6 +145,7 @@ class AuthServiceTest {
                 .willReturn(newRefreshToken);
         given(jwtProvider.createToken(1L))
                 .willReturn(newAccessToken);
+        willDoNothing().given(refreshTokenRepository).delete(refreshToken);
 
         // when
         IssuedTokensResponse expect = authService.issueAccessToken(refreshToken);
@@ -156,7 +157,8 @@ class AuthServiceTest {
                 () -> verify(refreshTokenRepository).findTokenInfo(refreshToken),
                 () -> verify(refreshTokenProvider).createToken(),
                 () -> verify(refreshTokenRepository).save(eq(newRefreshToken), any(RefreshTokenInfo.class)),
-                () -> verify(jwtProvider).createToken(1L)
+                () -> verify(jwtProvider).createToken(1L),
+                () -> verify(refreshTokenRepository).delete(refreshToken)
         );
     }
 

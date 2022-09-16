@@ -65,6 +65,7 @@ public class AuthService {
         final String newRefreshToken = refreshTokenProvider.createToken();
         final RefreshTokenInfo newTokenInfo = RefreshTokenInfo.createByExpiredDay(memberId, REFRESH_TOKEN_EXPIRED_DAYS);
         refreshTokenRepository.save(newRefreshToken, newTokenInfo);
+        refreshTokenRepository.delete(refreshToken);
         return new IssuedTokensResponse(newAccessToken, newRefreshToken);
     }
 
