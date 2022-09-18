@@ -31,6 +31,8 @@ function useAxios(): Return {
     setLoading(false);
 
     if (error.response.status === 401) {
+      // TODO: access token 만료 오류 코드 일 시에 retry 하는 작업 추가
+      // 원래 요청 설정은 error.config에 들어가있음
       logout();
     }
 

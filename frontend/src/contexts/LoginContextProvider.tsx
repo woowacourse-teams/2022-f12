@@ -21,6 +21,7 @@ export const SetUserDataContext = createContext<React.Dispatch<
 export const LogoutContext = createContext<() => void | null>(null);
 
 function LoginContextProvider({ children }: PropsWithChildren) {
+  // TODO: 세션에 저장하지 않고 useState의 상태로 변경
   const [userData, setUserData, removeUserData] = useSessionStorage<UserData>('userData');
   const checkLoginStatus = () => userData && !!userData.token;
 
