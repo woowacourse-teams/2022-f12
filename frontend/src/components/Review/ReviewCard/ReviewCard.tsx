@@ -9,6 +9,7 @@ import * as S from '@/components/Review/ReviewCard/ReviewCard.style';
 import useAnimation from '@/hooks/useAnimation';
 import useAuth from '@/hooks/useAuth';
 
+import { GITHUB_IMAGE_SIZE_SEARCH_PARAM } from '@/constants/link';
 import ROUTES from '@/constants/routes';
 
 type Props = {
@@ -68,7 +69,10 @@ function ReviewCard({
           <S.UserWrapper>
             {userNameVisible && (
               <S.ProfileLink to={`${ROUTES.PROFILE}/${author.id}`}>
-                <UserNameTag imageUrl={author.imageUrl} username={author.gitHubId} />
+                <UserNameTag
+                  imageUrl={`${author.imageUrl}${GITHUB_IMAGE_SIZE_SEARCH_PARAM.small}`}
+                  username={author.gitHubId}
+                />
               </S.ProfileLink>
             )}
             {!product && authorMatch && (

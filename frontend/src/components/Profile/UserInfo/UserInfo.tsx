@@ -8,6 +8,7 @@ import { UserDataContext } from '@/contexts/LoginContextProvider';
 import useAuth from '@/hooks/useAuth';
 import useFollowing from '@/hooks/useFollowing';
 
+import { GITHUB_IMAGE_SIZE_SEARCH_PARAM } from '@/constants/link';
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 
 type Props = {
@@ -56,7 +57,10 @@ function UserInfo({ userData, isOwnProfile }: Props) {
     <>
       <S.Container>
         <S.ImageWrapper>
-          <S.ProfileImage src={imageUrl} alt="" />
+          <S.ProfileImage
+            src={`${imageUrl}${GITHUB_IMAGE_SIZE_SEARCH_PARAM.medium}`}
+            alt=""
+          />
         </S.ImageWrapper>
         <S.InfoWrapper>
           {`${CAREER_LEVELS[careerLevel]}, `}
