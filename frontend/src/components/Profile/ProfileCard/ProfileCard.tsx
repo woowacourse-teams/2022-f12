@@ -9,7 +9,7 @@ import useAuth from '@/hooks/useAuth';
 import useFollowing from '@/hooks/useFollowing';
 
 import TITLE from '@/constants/header';
-import { GITHUB_URL } from '@/constants/link';
+import { GITHUB_IMAGE_SIZE_SEARCH_PARAM, GITHUB_URL } from '@/constants/link';
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 import ROUTES from '@/constants/routes';
 
@@ -122,7 +122,7 @@ function ProfileCard({
     <S.Container index={index}>
       <S.LeftSection>
         <S.ProfileImageWrapper>
-          <S.ProfileImage src={imageUrl} />
+          <S.ProfileImage src={`${imageUrl}${GITHUB_IMAGE_SIZE_SEARCH_PARAM.large}`} />
         </S.ProfileImageWrapper>
       </S.LeftSection>
       <S.RightSection>
