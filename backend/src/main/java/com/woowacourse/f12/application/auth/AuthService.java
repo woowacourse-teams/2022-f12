@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private static final int REFRESH_TOKEN_EXPIRED_DAYS = 14;
+
     private final GitHubOauthClient gitHubOauthClient;
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;

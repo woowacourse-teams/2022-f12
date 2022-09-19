@@ -2,7 +2,9 @@ package com.woowacourse.f12.application.auth;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import lombok.Getter;
 
+@Getter
 public class RefreshTokenInfo {
 
     private final Long memberId;
@@ -13,16 +15,8 @@ public class RefreshTokenInfo {
         this.expiredAt = expiredAt;
     }
 
-    public static RefreshTokenInfo createByExpiredDay(final Long memberId, final int days) {
-        return new RefreshTokenInfo(memberId, LocalDateTime.now().plusDays(days));
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public LocalDateTime getExpiredAt() {
-        return expiredAt;
+    public static RefreshTokenInfo createByExpiredDay(final Long memberId, final int validityInDays) {
+        return new RefreshTokenInfo(memberId, LocalDateTime.now().plusDays(validityInDays));
     }
 
     public boolean isExpired() {
