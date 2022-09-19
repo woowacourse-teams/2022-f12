@@ -1,5 +1,32 @@
 package com.woowacourse.f12.application.member;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
+import com.woowacourse.f12.domain.member.Following;
+import com.woowacourse.f12.domain.member.FollowingRepository;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.response.member.MemberPageResponse;
+import com.woowacourse.f12.dto.response.member.MemberResponse;
+import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
+import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
+import com.woowacourse.f12.exception.badrequest.NotFollowingException;
+import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
+
+import java.util.List;
+import java.util.Optional;
+
 import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
@@ -14,35 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.verify;
-import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
-
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.member.Following;
-import com.woowacourse.f12.domain.member.FollowingRepository;
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.dto.request.member.MemberRequest;
-import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
-import com.woowacourse.f12.dto.response.member.MemberPageResponse;
-import com.woowacourse.f12.dto.response.member.MemberResponse;
-import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
-import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
-import com.woowacourse.f12.exception.badrequest.NotFollowingException;
-import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import java.util.List;
-import java.util.Optional;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.SliceImpl;
-import org.springframework.data.domain.Sort;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -52,6 +52,9 @@ class MemberServiceTest {
 
     @Mock
     private FollowingRepository followingRepository;
+
+    @Mock
+    private InventoryProductRepository inventoryProductRepository;
 
     @InjectMocks
     private MemberService memberService;
@@ -150,6 +153,8 @@ class MemberServiceTest {
 
         given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(List.of(inventoryProduct));
 
         // when
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", SENIOR_CONSTANT, BACKEND_CONSTANT);
@@ -179,6 +184,8 @@ class MemberServiceTest {
 
         given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(List.of(inventoryProduct));
         given(followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId, List.of(member.getId())))
                 .willReturn(List.of(following));
 
