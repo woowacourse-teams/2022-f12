@@ -150,7 +150,7 @@ const deleteReviewByReviewId = (req, res, ctx) => {
 };
 
 // 로그인
-const getToken = (req, res, ctx) => {
+const handleLoginRequest = (req, res, ctx) => {
   const response = {
     member: {
       id: 1,
@@ -161,6 +161,23 @@ const getToken = (req, res, ctx) => {
     registerCompleted: false,
     token: 'iJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjU4MTQ4Mzg1LCJleHAiOjE2NTgxNTE',
   };
+
+  document.cookie = 'refreshToken=123; max-age=1209600';
+
+  return res(ctx.status(200), ctx.json(response), ctx.delay());
+};
+
+const getAccessToken = (req, res, ctx) => {
+  const { refreshToken } = req.cookies;
+  if (refreshToken === null) {
+    return res(ctx.status(401));
+  }
+  const response = {
+    accessToken: 'accessToken',
+  };
+
+  document.cookie = 'refreshToken=123; max-age=1209600';
+
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
@@ -251,7 +268,7 @@ const unfollowUser = (req, res, ctx) => {
 };
 
 export const handlers = [
-  rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
+  rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, handleLoginRequest),
 
   rest.get(`${BASE_URL}${ENDPOINTS.ME}`, getMyInfo),
   rest.patch(`${BASE_URL}${ENDPOINTS.ME}`, submitAdditionalInfo),
@@ -290,4 +307,5 @@ export const handlers = [
   rest.get(`${BASE_URL}${ENDPOINTS.MY_FOLLOWING}`, searchMember),
   rest.post(`${BASE_URL}${ENDPOINTS.FOLLOWING(':id')}`, followUser),
   rest.delete(`${BASE_URL}${ENDPOINTS.FOLLOWING(':id')}`, unfollowUser),
+  rest.post(`${BASE_URL}${ENDPOINTS.ISSUE_ACCESS_TOKEN}`, getAccessToken),
 ];

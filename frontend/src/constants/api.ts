@@ -21,4 +21,5 @@ export const ENDPOINTS = {
   ME: '/members/me',
   MY_FOLLOWING: '/members/me/followings',
   FOLLOWING: (id: number | ':id') => `/members/${id}/following`,
+  ISSUE_ACCESS_TOKEN: '/accessToken',
 } as const;
