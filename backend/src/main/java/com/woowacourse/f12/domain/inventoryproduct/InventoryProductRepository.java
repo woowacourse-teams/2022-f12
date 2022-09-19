@@ -11,9 +11,11 @@ import java.util.Optional;
 
 public interface InventoryProductRepository extends JpaRepository<InventoryProduct, Long> {
 
-    List<InventoryProduct> findByMemberId(Long memberId);
+    @Query("select i from InventoryProduct i join fetch i.product where i.member.id = :memberId")
+    List<InventoryProduct> findWithProductByMemberId(Long memberId);
 
-    Optional<InventoryProduct> findByMemberAndProduct(Member member, Product product);
+    @Query("select i from InventoryProduct i join fetch i.product where i.member = :member and i.product = :product")
+    Optional<InventoryProduct> findWithProductByMemberAndProduct(Member member, Product product);
 
     boolean existsByMemberAndProduct(Member member, Product product);
 
@@ -25,4 +27,7 @@ public interface InventoryProductRepository extends JpaRepository<InventoryProdu
     @Query("update InventoryProduct i set i.selected = :selected "
             + "where i.member = :member and i.id in :selectedInventoryProductIds")
     int updateBulkProfileProductByMemberAndIds(Member member, List<Long> selectedInventoryProductIds, boolean selected);
+
+    @Query("select i from InventoryProduct i join fetch i.product where i.member IN :members")
+    List<InventoryProduct> findWithProductByMembers(List<Member> members);
 }
