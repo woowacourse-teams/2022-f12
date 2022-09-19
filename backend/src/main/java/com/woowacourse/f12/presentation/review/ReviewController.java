@@ -12,6 +12,7 @@ import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +45,7 @@ public class ReviewController {
     @GetMapping("/products/{productId}/reviews")
     @Login(required = false)
     public ResponseEntity<ReviewWithAuthorPageResponse> showPageByProductId(@PathVariable final Long productId,
-                                                                            @VerifiedMember Long memberId,
+                                                                            @VerifiedMember @Nullable Long memberId,
                                                                             final Pageable pageable) {
         final ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, memberId,
                 pageable);

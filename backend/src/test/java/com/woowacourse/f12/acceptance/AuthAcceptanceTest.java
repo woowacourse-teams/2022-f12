@@ -39,7 +39,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         // when
         String url = "/api/v1/accessToken";
-        final ExtractableResponse<Response> refreshTokenResponse = RestAssured.given().log().all()
+        ExtractableResponse<Response> refreshTokenResponse = RestAssured.given().log().all()
                 .when()
                 .cookie("refreshToken", refreshToken)
                 .post(url)

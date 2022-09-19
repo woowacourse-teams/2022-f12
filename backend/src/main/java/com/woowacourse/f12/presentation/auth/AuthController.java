@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private static final String REFRESH_TOKEN = "refreshToken";
+
     private final AuthService authService;
 
     public AuthController(final AuthService authService) {

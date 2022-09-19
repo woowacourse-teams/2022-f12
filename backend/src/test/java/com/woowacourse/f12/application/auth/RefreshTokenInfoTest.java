@@ -24,7 +24,7 @@ class RefreshTokenInfoTest {
     }
 
     @Test
-    void 리프레시_토큰_유효기간이_지난_경우_예외가_발생한다() {
+    void 리프레시_토큰_유효기간이_지난_경우를_판별한다() {
         // given
         RefreshTokenInfo tokenInfo = RefreshTokenInfo.createByExpiredDay(1L, -1);
 

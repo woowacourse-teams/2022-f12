@@ -12,7 +12,7 @@ import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
 import com.woowacourse.f12.exception.internalserver.ExternalServerException;
 import com.woowacourse.f12.exception.internalserver.InternalServerException;
 import com.woowacourse.f12.exception.notfound.NotFoundException;
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -73,14 +73,14 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse.from(stringBuilder.toString(), INVALID_REQUEST_BODY_TYPE));
     }
 
-    @ExceptionHandler(RefreshTokenNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleRefreshTokenNotFoundException(final RefreshTokenNotFoundException e,
-                                                                                 HttpServletRequest request,
-                                                                                 HttpServletResponse response) {
-        final Cookie refreshToken = WebUtils.getCookie(request, "refreshToken");
-        assert refreshToken != null;
-        refreshToken.setMaxAge(0);
-        response.addCookie(refreshToken);
+    @ExceptionHandler(RefreshTokenInvalidException.class)
+    public ResponseEntity<ExceptionResponse> handleRefreshTokenNotFoundException(final RefreshTokenInvalidException e,
+                                                                                 final HttpServletRequest request,
+                                                                                 final HttpServletResponse response) {
+        final Cookie cookie = WebUtils.getCookie(request, "refreshToken");
+        assert cookie != null;
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
         return handleUnauthorizedException(e);
     }
 

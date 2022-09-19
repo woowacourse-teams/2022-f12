@@ -22,7 +22,7 @@ import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.ErrorCode;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
 import com.woowacourse.f12.exception.internalserver.GitHubServerException;
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
 import com.woowacourse.f12.presentation.PresentationTest;
 import javax.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
@@ -156,7 +156,7 @@ class AuthControllerTest extends PresentationTest {
     void 만료된_리프레시_토큰으로_액세스_토큰_발급하면_예외_발생() throws Exception {
         // given
         given(authService.issueAccessToken(any()))
-                .willThrow(new RefreshTokenNotFoundException());
+                .willThrow(new RefreshTokenInvalidException());
         String expiredToken = "expiredToken";
 
         // when
