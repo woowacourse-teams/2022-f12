@@ -25,4 +25,7 @@ public interface InventoryProductRepository extends JpaRepository<InventoryProdu
     @Query("update InventoryProduct i set i.selected = :selected "
             + "where i.member = :member and i.id in :selectedInventoryProductIds")
     int updateBulkProfileProductByMemberAndIds(Member member, List<Long> selectedInventoryProductIds, boolean selected);
+
+    @Query("select i from InventoryProduct i join fetch i.product where i.member IN :members")
+    List<InventoryProduct> findWithProductByMembers(List<Member> members);
 }

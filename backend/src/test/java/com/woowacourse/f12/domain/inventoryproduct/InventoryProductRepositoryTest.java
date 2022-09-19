@@ -1,5 +1,18 @@
 package com.woowacourse.f12.domain.inventoryproduct;
 
+import com.woowacourse.f12.config.JpaConfig;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.domain.product.ProductRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+
+import java.util.List;
+import java.util.Optional;
+
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
@@ -7,18 +20,6 @@ import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import com.woowacourse.f12.config.JpaConfig;
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.domain.product.Product;
-import com.woowacourse.f12.domain.product.ProductRepository;
-import java.util.List;
-import java.util.Optional;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 
 @DataJpaTest
 @Import(JpaConfig.class)
@@ -56,8 +57,7 @@ class InventoryProductRepositoryTest {
         // given다
         Member member = 회원을_저장한다(CORINNE.생성());
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(member, product);
-        inventoryProductRepository.save(inventoryProduct);
+        장비를_등록한다(SELECTED_INVENTORY_PRODUCT.생성(member, product));
 
         // when
         boolean actual = inventoryProductRepository.existsByMemberAndProduct(member, product);
@@ -71,8 +71,7 @@ class InventoryProductRepositoryTest {
         // given
         Member member = 회원을_저장한다(CORINNE.생성());
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
-        inventoryProductRepository.save(inventoryProduct);
+        장비를_등록한다(UNSELECTED_INVENTORY_PRODUCT.생성(member, product));
 
         // when
         int actual = inventoryProductRepository.updateBulkProfileProductByMember(member, false);
@@ -86,8 +85,7 @@ class InventoryProductRepositoryTest {
         // given
         Member member = 회원을_저장한다(CORINNE.생성());
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
-        inventoryProductRepository.save(inventoryProduct);
+        InventoryProduct inventoryProduct = 장비를_등록한다(UNSELECTED_INVENTORY_PRODUCT.생성(member, product));
 
         // when
         int actual = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
@@ -102,8 +100,7 @@ class InventoryProductRepositoryTest {
         // given
         Member member = 회원을_저장한다(CORINNE.생성());
         Product product = 제품을_저장한다(KEYBOARD_1.생성());
-        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(member, product);
-        inventoryProductRepository.save(inventoryProduct);
+        장비를_등록한다(UNSELECTED_INVENTORY_PRODUCT.생성(member, product));
 
         // when
         Optional<InventoryProduct> actual = inventoryProductRepository.findByMemberAndProduct(member, product);
@@ -112,11 +109,32 @@ class InventoryProductRepositoryTest {
         assertThat(actual).isPresent();
     }
 
+    @Test
+    void 멤버_목록으로_제품이_포함된_인벤토리를_조회한다() {
+        // given
+        Member corinne = 회원을_저장한다(CORINNE.생성());
+        Member mincho = 회원을_저장한다(MINCHO.생성());
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
+        InventoryProduct inventoryProduct = 장비를_등록한다(UNSELECTED_INVENTORY_PRODUCT.생성(corinne, product));
+
+        // when
+        List<InventoryProduct> actual = inventoryProductRepository.findWithProductByMembers(List.of(corinne, mincho));
+
+        // then
+        assertThat(actual).usingRecursiveFieldByFieldElementComparator()
+                .hasSize(1)
+                .containsExactly(inventoryProduct);
+    }
+
     private Product 제품을_저장한다(Product product) {
         return productRepository.save(product);
     }
 
     private Member 회원을_저장한다(Member member) {
         return memberRepository.save(member);
+    }
+
+    private InventoryProduct 장비를_등록한다(InventoryProduct inventoryProduct) {
+        return inventoryProductRepository.save(inventoryProduct);
     }
 }
