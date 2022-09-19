@@ -476,10 +476,12 @@ class ReviewControllerTest extends PresentationTest {
                         List.of(REVIEW_RATING_5.작성(1L, product, corinne), REVIEW_RATING_4.작성(2L, product, mincho)),
                         pageable, false), corinne.getId());
 
-        given(reviewService.findPageByProductId(anyLong(), eq(corinne.getId()), any(Pageable.class)))
-                .willReturn(reviewWithAuthorPageResponse);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(reviewService.findPageByProductId(anyLong(), eq(corinne.getId()), any(Pageable.class)))
+                .willReturn(reviewWithAuthorPageResponse);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -494,8 +496,12 @@ class ReviewControllerTest extends PresentationTest {
                         document("reviews-by-product-page-get")
                 );
 
-        verify(reviewService).findPageByProductId(product.getId(), corinne.getId(),
-                PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
+        assertAll(
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(reviewService).findPageByProductId(product.getId(), corinne.getId(),
+                        PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()))
+        );
     }
 
     @Test

@@ -30,7 +30,7 @@ public class JwtProvider {
         this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    public String createToken(final Long id) {
+    public String createAccessToken(final Long id) {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
 

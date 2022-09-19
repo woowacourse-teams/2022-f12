@@ -3,7 +3,7 @@ package com.woowacourse.f12.support;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.woowacourse.f12.exception.unauthorized.TokenInvalidException;
+import com.woowacourse.f12.exception.unauthorized.TokenInvalidFormatException;
 import com.woowacourse.f12.exception.unauthorized.TokenNotExistsException;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,7 @@ class AuthTokenExtractorTest {
 
         // when, then
         assertThatThrownBy(() -> authTokenExtractor.extractToken(authorizationHeader, "Bearer"))
-                .isExactlyInstanceOf(TokenInvalidException.class);
+                .isExactlyInstanceOf(TokenInvalidFormatException.class);
     }
 
     @Test
@@ -46,6 +46,6 @@ class AuthTokenExtractorTest {
 
         // when, then
         assertThatThrownBy(() -> authTokenExtractor.extractToken(authorizationHeader, "Bearer"))
-                .isExactlyInstanceOf(TokenInvalidException.class);
+                .isExactlyInstanceOf(TokenInvalidFormatException.class);
     }
 }

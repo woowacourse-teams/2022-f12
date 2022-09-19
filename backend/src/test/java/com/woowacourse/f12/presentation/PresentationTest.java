@@ -13,5 +13,4 @@ import org.springframework.restdocs.RestDocumentationExtension;
 @ExtendWith(RestDocumentationExtension.class)
 @Import({AuthTokenExtractor.class, JwtProvider.class, RestDocsConfig.class, LoggingConfig.class, ApiQueryCounter.class})
 public class PresentationTest {
-
 }

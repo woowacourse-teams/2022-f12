@@ -21,6 +21,8 @@ security:
   jwt:
     secret-key: testfkjasl123jl1kjdklfha2h3eoi1eojqdoiq112lkdldk
     expire-length: 3600000
+  refresh:
+    expire-length: 1209600000
 
 logging:
   config: classpath:log4j2/log4j2-local.xml

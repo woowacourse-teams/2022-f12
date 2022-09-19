@@ -1,5 +1,27 @@
 package com.woowacourse.f12.presentation.product;
 
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.MID_LEVEL;
+import static com.woowacourse.f12.domain.member.CareerLevel.NONE;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.ETC;
+import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
+import static com.woowacourse.f12.domain.member.JobType.MOBILE;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
@@ -9,6 +31,8 @@ import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,23 +43,6 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.List;
-import java.util.Map;
-
-import static com.woowacourse.f12.domain.member.CareerLevel.*;
-import static com.woowacourse.f12.domain.member.JobType.*;
-import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
-import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
 class ProductControllerTest extends PresentationTest {

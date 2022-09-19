@@ -147,6 +147,8 @@ class MemberControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(loggedInId.toString());
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
         given(memberService.find(targetId, loggedInId))
                 .willReturn(MemberResponse.of(CORINNE.생성(targetId), false));
 
@@ -162,6 +164,7 @@ class MemberControllerTest extends PresentationTest {
 
         assertAll(
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
                 () -> verify(memberService).find(targetId, loggedInId)
         );
     }
@@ -338,6 +341,8 @@ class MemberControllerTest extends PresentationTest {
                 new SliceImpl<>(List.of(member), pageable, false), List.of(following));
         String authorizationHeader = "Bearer Token";
 
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(loggedInId.toString());
         given(memberService.findByContains(eq(loggedInId), any(MemberSearchRequest.class), any(PageRequest.class)))
@@ -353,7 +358,11 @@ class MemberControllerTest extends PresentationTest {
         resultActions.andExpect(status().isOk())
                 .andDo(print());
 
-        verify(memberService).findByContains(eq(loggedInId), refEq(memberSearchRequest), refEq(pageable));
+        assertAll(
+                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(authorizationHeader),
+                () -> verify(memberService).findByContains(eq(loggedInId), refEq(memberSearchRequest), refEq(pageable))
+        );
     }
 
     @Test

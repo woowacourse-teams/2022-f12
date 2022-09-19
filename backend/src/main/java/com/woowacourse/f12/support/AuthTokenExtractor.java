@@ -1,6 +1,6 @@
 package com.woowacourse.f12.support;
 
-import com.woowacourse.f12.exception.unauthorized.TokenInvalidException;
+import com.woowacourse.f12.exception.unauthorized.TokenInvalidFormatException;
 import com.woowacourse.f12.exception.unauthorized.TokenNotExistsException;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ public class AuthTokenExtractor {
         }
         final String[] splitHeaders = authorizationHeader.split(" ");
         if (splitHeaders.length != 2 || !splitHeaders[0].equalsIgnoreCase(tokenType)) {
-            throw new TokenInvalidException();
+            throw new TokenInvalidFormatException();
         }
         return splitHeaders[1];
     }

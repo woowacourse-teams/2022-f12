@@ -17,7 +17,7 @@ class JwtProviderTest {
         Long memberId = 1L;
 
         // when
-        String token = jwtProvider.createToken(memberId);
+        String token = jwtProvider.createAccessToken(memberId);
 
         // then
         assertThat(token).isNotNull();
@@ -26,7 +26,7 @@ class JwtProviderTest {
     @Test
     void 토큰이_유효한_경우() {
         // given
-        String token = jwtProvider.createToken(1L);
+        String token = jwtProvider.createAccessToken(1L);
         String authorizationHeader = "Bearer " + token;
 
         // when, then
@@ -39,7 +39,7 @@ class JwtProviderTest {
         JwtProvider jwtProvider = new JwtProvider(new AuthTokenExtractor(),
                 "testadsddersrsfsddsasdfaefasfkk2313123113trssttrs",
                 0);
-        String token = jwtProvider.createToken(1L);
+        String token = jwtProvider.createAccessToken(1L);
         String authorizationHeader = "Bearer " + token;
 
         // when, then
@@ -61,7 +61,7 @@ class JwtProviderTest {
         JwtProvider invalidJwtProvider = new JwtProvider(new AuthTokenExtractor(),
                 "invalidlasndflkslflkasnf12sdfasdfasdfa",
                 10000000);
-        String token = invalidJwtProvider.createToken(1L);
+        String token = invalidJwtProvider.createAccessToken(1L);
         String authorizationHeader = "Bearer " + token;
 
         // when, then
@@ -71,7 +71,7 @@ class JwtProviderTest {
     @Test
     void 토큰의_payload를_복호화한다() {
         // given
-        String token = jwtProvider.createToken(1L);
+        String token = jwtProvider.createAccessToken(1L);
         String authorizationHeader = "Bearer " + token;
 
         // when
