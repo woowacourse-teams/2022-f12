@@ -11,9 +11,10 @@ type Props = {
   size: 's' | 'l';
   borderType: 'default' | 'selected' | 'selectedAnimation';
   isEditMode?: boolean;
+  index?: number;
 };
 
-function DeskSetupCard({ size, item, borderType, isEditMode }: Props) {
+function DeskSetupCard({ size, item, borderType, isEditMode, index = 0 }: Props) {
   const { showReview } = useModal();
 
   const fetchData = useGet<InventoryReview>({
@@ -30,7 +31,12 @@ function DeskSetupCard({ size, item, borderType, isEditMode }: Props) {
   };
 
   return (
-    <S.Container index={0} size={size} borderType={borderType} isEditMode={isEditMode}>
+    <S.Container
+      index={index}
+      size={size}
+      borderType={borderType}
+      isEditMode={isEditMode}
+    >
       <S.CustomLink to={`${ROUTES.PRODUCT}/${item?.product.id}`}>
         <S.ImageWrapper size={size}>
           <S.ProductImage src={item?.product.imageUrl} />
