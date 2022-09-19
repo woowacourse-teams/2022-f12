@@ -22,7 +22,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
                              final Object handler) {
-        if (!(handler instanceof HandlerMethod) || getLogin(handler) == null) {
+        if (!(handler instanceof HandlerMethod) || getLoginAnnotation(handler) == null) {
             return true;
         }
 
@@ -35,13 +35,13 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     private void validateTokenRequired(final Object handler) {
-        Login auth = getLogin(handler);
+        Login auth = getLoginAnnotation(handler);
         if (auth != null && auth.required()) {
             throw new TokenNotExistsException();
         }
     }
 
-    private Login getLogin(final Object handler) {
+    private Login getLoginAnnotation(final Object handler) {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         return handlerMethod.getMethodAnnotation(Login.class);
     }

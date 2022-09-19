@@ -14,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AuthService {
 
-    private static final int REFRESH_TOKEN_EXPIRED_DAYS = 14;
-
     private final GitHubOauthClient gitHubOauthClient;
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
@@ -36,10 +34,11 @@ public class AuthService {
     public LoginResult login(final String code) {
         final GitHubProfileResponse gitHubProfileResponse = getGitHubProfileResponse(code);
         final Member member = addOrUpdateMember(gitHubProfileResponse);
-        final String applicationAccessToken = jwtProvider.createToken(member.getId());
-        final String refreshToken = refreshTokenProvider.createToken();
-        refreshTokenRepository.save(refreshToken, RefreshTokenInfo.createByExpiredDay(member.getId(), 14));
-        return new LoginResult(refreshToken, applicationAccessToken, member);
+        final Long memberId = member.getId();
+        final String applicationAccessToken = jwtProvider.createAccessToken(memberId);
+        final RefreshToken refreshToken = refreshTokenProvider.createToken(memberId);
+        refreshTokenRepository.save(refreshToken);
+        return new LoginResult(refreshToken.getRefreshToken(), applicationAccessToken, member);
     }
 
     private GitHubProfileResponse getGitHubProfileResponse(final String code) {
@@ -55,20 +54,19 @@ public class AuthService {
         return member;
     }
 
-    public IssuedTokensResponse issueAccessToken(final String refreshToken) {
-        final RefreshTokenInfo tokenInfo = refreshTokenRepository.findTokenInfo(refreshToken)
+    public IssuedTokensResponse issueAccessToken(final String refreshTokenValue) {
+        final RefreshToken refreshToken = refreshTokenRepository.findToken(refreshTokenValue)
                 .orElseThrow(RefreshTokenInvalidException::new);
-        checkExpired(refreshToken, tokenInfo);
-        final Long memberId = tokenInfo.getMemberId();
-        final String newAccessToken = jwtProvider.createToken(memberId);
-        final String newRefreshToken = refreshTokenProvider.createToken();
-        final RefreshTokenInfo newTokenInfo = RefreshTokenInfo.createByExpiredDay(memberId, REFRESH_TOKEN_EXPIRED_DAYS);
-        refreshTokenRepository.save(newRefreshToken, newTokenInfo);
-        refreshTokenRepository.delete(refreshToken);
-        return new IssuedTokensResponse(newAccessToken, newRefreshToken);
+        checkExpired(refreshTokenValue, refreshToken);
+        final Long memberId = refreshToken.getMemberId();
+        final String newAccessToken = jwtProvider.createAccessToken(memberId);
+        final RefreshToken newRefreshToken = refreshTokenProvider.createToken(memberId);
+        refreshTokenRepository.save(newRefreshToken);
+        refreshTokenRepository.delete(refreshTokenValue);
+        return IssuedTokensResponse.of(newAccessToken, newRefreshToken);
     }
 
-    private void checkExpired(final String refreshToken, final RefreshTokenInfo tokenInfo) {
+    private void checkExpired(final String refreshToken, final RefreshToken tokenInfo) {
         if (tokenInfo.isExpired()) {
             refreshTokenRepository.delete(refreshToken);
             throw new RefreshTokenExpiredException();

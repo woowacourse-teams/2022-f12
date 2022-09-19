@@ -78,9 +78,10 @@ public class GlobalExceptionHandler {
                                                                                  final HttpServletRequest request,
                                                                                  final HttpServletResponse response) {
         final Cookie cookie = WebUtils.getCookie(request, "refreshToken");
-        assert cookie != null;
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        if (cookie != null) {
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
         return handleUnauthorizedException(e);
     }
 

@@ -5,18 +5,16 @@ import java.util.Objects;
 import lombok.Getter;
 
 @Getter
-public class RefreshTokenInfo {
+public class RefreshToken {
 
+    private final String refreshToken;
     private final Long memberId;
     private final LocalDateTime expiredAt;
 
-    private RefreshTokenInfo(final Long memberId, final LocalDateTime expiredAt) {
+    public RefreshToken(final String refreshToken, final Long memberId, final LocalDateTime expiredAt) {
+        this.refreshToken = refreshToken;
         this.memberId = memberId;
         this.expiredAt = expiredAt;
-    }
-
-    public static RefreshTokenInfo createByExpiredDay(final Long memberId, final int validityInDays) {
-        return new RefreshTokenInfo(memberId, LocalDateTime.now().plusDays(validityInDays));
     }
 
     public boolean isExpired() {
@@ -31,12 +29,13 @@ public class RefreshTokenInfo {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final RefreshTokenInfo that = (RefreshTokenInfo) o;
-        return Objects.equals(memberId, that.memberId) && Objects.equals(expiredAt, that.expiredAt);
+        final RefreshToken that = (RefreshToken) o;
+        return Objects.equals(refreshToken, that.refreshToken) && Objects.equals(memberId,
+                that.memberId) && Objects.equals(expiredAt, that.expiredAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(memberId, expiredAt);
+        return Objects.hash(refreshToken, memberId, expiredAt);
     }
 }

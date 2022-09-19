@@ -2,6 +2,7 @@ package com.woowacourse.f12.application.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,25 +19,25 @@ class InmemoryRefreshTokenRepositoryTest {
     @Test
     void 리프레시_토큰을_저장한다() {
         // given
-        final RefreshTokenInfo refreshTokenInfo = RefreshTokenInfo.createByExpiredDay(1L, 14);
+        RefreshToken refreshToken = new RefreshToken("refreshTokenValue", 1L, LocalDateTime.now().plusWeeks(2));
 
         // when
-        String savedToken = refreshTokenRepository.save("refreshTokenValue", refreshTokenInfo);
+        RefreshToken savedToken = refreshTokenRepository.save(refreshToken);
 
         // then
-        assertThat(savedToken).isEqualTo("refreshTokenValue");
+        assertThat(savedToken.getRefreshToken()).isEqualTo("refreshTokenValue");
     }
 
     @Test
     void 토큰_정보를_찾는다() {
         // given
-        RefreshTokenInfo expected = RefreshTokenInfo.createByExpiredDay(1L, 14);
-        String savedToken = refreshTokenRepository.save("refreshTokenValue", expected);
+        RefreshToken refreshToken = new RefreshToken("refreshTokenValue", 1L, LocalDateTime.now().plusWeeks(2));
+        RefreshToken savedToken = refreshTokenRepository.save(refreshToken);
 
         // when
-        Optional<RefreshTokenInfo> tokenInfo = refreshTokenRepository.findTokenInfo(savedToken);
+        Optional<RefreshToken> actual = refreshTokenRepository.findToken(savedToken.getRefreshToken());
 
         //then
-        assertThat(tokenInfo.get()).isEqualTo(expected);
+        assertThat(actual.get()).isEqualTo(savedToken);
     }
 }

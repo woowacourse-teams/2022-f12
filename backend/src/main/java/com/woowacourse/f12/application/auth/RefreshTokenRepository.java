@@ -4,9 +4,9 @@ import java.util.Optional;
 
 public interface RefreshTokenRepository {
 
-    String save(String token, RefreshTokenInfo info);
+    RefreshToken save(RefreshToken refreshToken);
 
-    Optional<RefreshTokenInfo> findTokenInfo(String savedToken);
+    Optional<RefreshToken> findToken(String savedTokenValue);
 
-    void delete(String token);
+    void delete(String savedTokenValue);
 }

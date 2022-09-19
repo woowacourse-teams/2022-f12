@@ -8,16 +8,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class InmemoryRefreshTokenRepository implements RefreshTokenRepository {
 
-    private final Map<String, RefreshTokenInfo> tokens = new ConcurrentHashMap<>();
+    private final Map<String, RefreshToken> tokens = new ConcurrentHashMap<>();
 
     @Override
-    public String save(final String token, final RefreshTokenInfo info) {
-        tokens.put(token, info);
-        return token;
+    public RefreshToken save(final RefreshToken refreshToken) {
+        tokens.put(refreshToken.getRefreshToken(), refreshToken);
+        return refreshToken;
     }
 
     @Override
-    public Optional<RefreshTokenInfo> findTokenInfo(final String token) {
+    public Optional<RefreshToken> findToken(final String token) {
         return Optional.ofNullable(tokens.get(token));
     }
 
