@@ -54,7 +54,7 @@ public class InventoryProductService {
 
     public InventoryProductsResponse findByMemberId(final Long memberId) {
         validateMember(memberId);
-        final List<InventoryProduct> inventoryProducts = inventoryProductRepository.findByMemberId(memberId);
+        final List<InventoryProduct> inventoryProducts = inventoryProductRepository.findWithProductByMemberId(memberId);
         return InventoryProductsResponse.from(inventoryProducts);
     }
 

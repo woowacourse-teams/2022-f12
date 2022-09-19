@@ -46,7 +46,7 @@ class InventoryProductRepositoryTest {
         inventoryProductRepository.saveAll(List.of(inventoryProduct1, inventoryProduct2));
 
         // when
-        List<InventoryProduct> inventoryProducts = inventoryProductRepository.findByMemberId(me.getId());
+        List<InventoryProduct> inventoryProducts = inventoryProductRepository.findWithProductByMemberId(me.getId());
 
         // then
         assertThat(inventoryProducts).containsOnly(inventoryProduct1);
@@ -103,7 +103,7 @@ class InventoryProductRepositoryTest {
         장비를_등록한다(UNSELECTED_INVENTORY_PRODUCT.생성(member, product));
 
         // when
-        Optional<InventoryProduct> actual = inventoryProductRepository.findByMemberAndProduct(member, product);
+        Optional<InventoryProduct> actual = inventoryProductRepository.findWithProductByMemberAndProduct(member, product);
 
         // then
         assertThat(actual).isPresent();
