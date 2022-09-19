@@ -10,6 +10,7 @@ type Props = Omit<DataFetchStatus, 'isReady'> & {
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
   pageSize?: number;
+  userNameVisible?: boolean;
 };
 
 function ReviewListSection({
@@ -21,6 +22,7 @@ function ReviewListSection({
   isLoading,
   isError,
   pageSize = 10,
+  userNameVisible,
 }: Props) {
   return (
     <S.Container aria-label="최근 후기">
@@ -38,6 +40,7 @@ function ReviewListSection({
               handleDelete={handleDelete}
               handleEdit={handleEdit}
               index={index % pageSize}
+              userNameVisible={userNameVisible}
             />
           ))}
         </S.Wrapper>

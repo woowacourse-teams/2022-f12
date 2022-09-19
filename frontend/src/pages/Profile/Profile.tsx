@@ -123,6 +123,7 @@ function Profile() {
               isLoading={isReviewLoading}
               isError={isReviewError}
               pageSize={4}
+              userNameVisible={false}
             />
           </AsyncWrapper>
         )}
