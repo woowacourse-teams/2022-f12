@@ -4,8 +4,7 @@ import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.response.auth.TokenResponse;
+import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
 import org.springframework.stereotype.Service;
@@ -34,14 +33,13 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenResponse login(final String code) {
+    public LoginResult login(final String code) {
         final GitHubProfileResponse gitHubProfileResponse = getGitHubProfileResponse(code);
         final Member member = addOrUpdateMember(gitHubProfileResponse);
         final String applicationAccessToken = jwtProvider.createToken(member.getId());
-        final LoginResponse loginResponse = LoginResponse.of(applicationAccessToken, member);
         final String refreshToken = refreshTokenProvider.createToken();
         refreshTokenRepository.save(refreshToken, RefreshTokenInfo.createByExpiredDay(member.getId(), 14));
-        return new TokenResponse(refreshToken, loginResponse);
+        return new LoginResult(refreshToken, applicationAccessToken, member);
     }
 
     private GitHubProfileResponse getGitHubProfileResponse(final String code) {

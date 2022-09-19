@@ -4,7 +4,7 @@ import com.woowacourse.f12.application.auth.AuthService;
 import com.woowacourse.f12.dto.response.AccessTokenResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.response.auth.TokenResponse;
+import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotExistException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -29,10 +29,10 @@ public class AuthController {
 
     @GetMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestParam final String code, final HttpServletResponse response) {
-        final TokenResponse tokenResponse = authService.login(code);
-        final String refreshToken = tokenResponse.getRefreshToken();
+        final LoginResult loginResult = authService.login(code);
+        final String refreshToken = loginResult.getRefreshToken();
         setRefreshToken(response, refreshToken);
-        return ResponseEntity.ok(tokenResponse.getLoginResponse());
+        return ResponseEntity.ok(LoginResponse.from(loginResult));
     }
 
     private void setRefreshToken(final HttpServletResponse response, final String refreshToken) {

@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.woowacourse.f12.application.auth.AuthService;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.response.auth.TokenResponse;
+import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.ErrorCode;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
 import com.woowacourse.f12.exception.internalserver.GitHubServerException;
@@ -47,11 +47,11 @@ class AuthControllerTest extends PresentationTest {
         String code = "code";
         String token = "token";
         String refreshToken = "refreshTokenValue";
-        LoginResponse loginResponse = LoginResponse.of(token, CORINNE.생성(1L));
-        TokenResponse tokenResponse = new TokenResponse(refreshToken, loginResponse);
+        LoginResult loginResult = new LoginResult(refreshToken, token, CORINNE.생성(1L));
+        LoginResponse loginResponse = LoginResponse.from(loginResult);
 
         given(authService.login(code))
-                .willReturn(tokenResponse);
+                .willReturn(loginResult);
 
         // when
         ResultActions resultActions = mockMvc.perform(
