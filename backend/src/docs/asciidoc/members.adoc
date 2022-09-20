@@ -78,7 +78,7 @@ operation::follow[snippets='http-request,http-response']
 
 ==== 발생 가능 에러
 
-- 40052, 40410
+- 40052, 40053, 40410
 
 operation::unfollow[snippets='http-request,http-response']
 
