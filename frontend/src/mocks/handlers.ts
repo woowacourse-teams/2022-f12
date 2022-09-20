@@ -13,6 +13,8 @@ import {
   reviewsWithProduct,
 } from '@/mocks/data';
 
+// let errorCall = 0;
+
 // 제품 목록 조회
 const getKeyboards = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
@@ -24,6 +26,7 @@ const getKeyboards = (req, res, ctx) => {
     hasNext: page < 2,
     items: products.slice(startIndex, endIndex),
   };
+
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
@@ -113,6 +116,16 @@ const getReviewsByProductId = (req, res, ctx) => {
     items: reviewsWithOutProduct.slice(startIndex, endIndex),
   };
 
+  // 추후 accessToken 만료 테스트 용 핸들러
+  // const errorResponse = {
+  //   errorCode: 40104,
+  // };
+
+  // if (errorCall === 0) {
+  //   errorCall += 1;
+  //   return res(ctx.status(401), ctx.json(errorResponse), ctx.delay());
+  // }
+
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
@@ -124,6 +137,7 @@ const postReviewByProductId = (req, res, ctx) => {
   if (!userData || !userData.token) {
     return res(ctx.status(403));
   }
+
   return res(ctx.status(201));
 };
 

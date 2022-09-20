@@ -4,18 +4,17 @@ import ProtectedRoute from '@/pages/common/ProtectedRoute/ProtectedRoutes';
 
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 
-import useAuth from '@/hooks/useAuth';
 import useModal from '@/hooks/useModal';
 
 import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
 import ROUTES from '@/constants/routes';
 
 function RegisterCompleteRoute() {
-  const { isLoggedIn } = useAuth();
   const userData = useContext(UserDataContext);
   const { showAlert } = useModal();
 
-  const isRegistered = !isLoggedIn || (isLoggedIn && userData?.registerCompleted);
+  const isRegistered =
+    !userData || userData.registerCompleted === undefined || userData.registerCompleted;
 
   useLayoutEffect(() => {
     (async () => {

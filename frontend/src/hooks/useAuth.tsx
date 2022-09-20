@@ -41,6 +41,10 @@ function useAuth(): Return {
 
   const navigate = useNavigate();
 
+  const isError = (error: unknown): error is Error => {
+    return error instanceof Error;
+  };
+
   const login = async (code: string) => {
     if (!code) {
       await showAlert(FAILURE_MESSAGES.LOGIN_CANCELED);
@@ -80,11 +84,12 @@ function useAuth(): Return {
       const userData: UserData = { member: memberData, token, registerCompleted };
 
       setUserData(userData);
-    } catch (e) {
-      if (e instanceof Error && e.message === FAILURE_MESSAGES.NO_REFRESH_TOKEN) {
+    } catch (error) {
+      if (isError(error) && error.message === FAILURE_MESSAGES.NO_REFRESH_TOKEN) {
+        // 한 경우에만 silent 처리
         return;
       }
-      console.log(e);
+      console.log(error);
     }
   };
   return { login, logout, isLoggedIn, revalidate };

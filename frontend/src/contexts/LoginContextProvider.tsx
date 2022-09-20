@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useEffect, useState } from 'react';
+import { createContext, PropsWithChildren, useEffect, useMemo, useState } from 'react';
 
 const initialState: UserData = {
   member: {
@@ -25,16 +25,17 @@ function LoginContextProvider({ children }: PropsWithChildren) {
   const checkLoginStatus = () => userData && !!userData.token;
 
   const [isLoggedIn, setLoggedIn] = useState<boolean>(checkLoginStatus());
+  // 토큰이 중간에 변경되더라도 존재 여부가 바뀌지 않으면 변경되지 않도록 설정
+  //생략하면 토큰이 변경되면 로그인 상태를 다시 설정
+  const hasToken = useMemo(() => !!userData?.token, [userData]);
 
   const handleLogout = () => {
     setUserData(null);
-    // 로그아웃 시 바로 false로 변경하지 않고 아래 이펙트 훅에 의존하면 상태가 변경되기 전 registeredCompleted 루트 때문에 오류 발생
-    setLoggedIn(false);
   };
 
   useEffect(() => {
     setLoggedIn(checkLoginStatus());
-  }, [userData]);
+  }, [hasToken]);
 
   return (
     <IsLoggedInContext.Provider value={isLoggedIn}>

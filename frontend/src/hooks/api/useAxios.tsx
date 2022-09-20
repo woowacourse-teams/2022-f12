@@ -1,9 +1,9 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { useContext, useState } from 'react';
 
-import { LogoutContext } from '@/contexts/LoginContextProvider';
+import { LogoutContext, SetUserDataContext } from '@/contexts/LoginContextProvider';
 
-import { BASE_URL } from '@/constants/api';
+import { BASE_URL, ENDPOINTS } from '@/constants/api';
 import {
   API_ERROR_CODE_EXCEPTION_MESSAGES,
   API_ERROR_MESSAGES,
@@ -22,11 +22,33 @@ function useAxios(): Return {
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
   const logout = useContext(LogoutContext);
+  const setUserData = useContext(SetUserDataContext);
 
   const axiosInstance = axios.create({ baseURL: BASE_URL });
 
-  const handleAPIError = (error: AxiosError<ErrorResponseBody>) => {
+  const reissueTokenAndRetry = async (error: AxiosError<ErrorResponseBody>) => {
+    const originalConfig = error.config;
+    const {
+      data: { accessToken: token },
+    } = await axios.post<{ accessToken: string }>(
+      `${BASE_URL}${ENDPOINTS.ISSUE_ACCESS_TOKEN}`
+    );
+
+    setUserData((prev) => ({ ...prev, token }));
+
+    return await axiosInstance({
+      ...originalConfig,
+      headers: { ...originalConfig.headers, Authorization: `Bearer ${token}` },
+    });
+  };
+
+  const handleAPIError = async (error: AxiosError<ErrorResponseBody>) => {
     const errorResponseBody = error.response.data;
+
+    // setError보다 먼저 와야 오류 화면이 표시되지 않음
+    if (errorResponseBody.errorCode === 40104) {
+      return await reissueTokenAndRetry(error);
+    }
 
     setError(true);
     setLoading(false);
@@ -40,15 +62,12 @@ function useAxios(): Return {
     }
 
     if (error.response.status === 401) {
-      // TODO: access token 만료 오류 코드 일 시에 retry 하는 작업 추가
-      // 원래 요청 설정은 error.config에 들어가있음
       logout();
     }
 
-    const { errorCode } = errorResponseBody;
-
     throw new Error(
-      API_ERROR_MESSAGES[errorCode] ?? API_ERROR_CODE_EXCEPTION_MESSAGES.UNKNOWN
+      API_ERROR_MESSAGES[errorResponseBody.errorCode] ??
+        API_ERROR_CODE_EXCEPTION_MESSAGES.UNKNOWN
     );
   };
 
