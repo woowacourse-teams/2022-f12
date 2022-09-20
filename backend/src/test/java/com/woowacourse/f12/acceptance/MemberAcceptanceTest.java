@@ -224,7 +224,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields()
+                        .usingRecursiveFieldByFieldElementComparator()
                         .hasSize(2)
                         .containsExactly(expectedMemberResponse2, expectedMemberResponse1)
         );
@@ -253,7 +253,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields()
+                        .usingRecursiveFieldByFieldElementComparator()
                         .hasSize(1)
                         .contains(expectedMemberResponse)
         );
@@ -285,8 +285,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
-                () -> assertThat(
-                        memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparatorIgnoringFields()
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .hasSize(2)
                         .containsExactly(expectedMemberResponse2, expectedMemberResponse1)
         );
@@ -316,7 +315,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields()
+                        .usingRecursiveFieldByFieldElementComparator()
                         .hasSize(1)
                         .containsOnly(expectedMemberResponse)
         );
@@ -344,7 +343,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
-        Member member1 = 민초.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member member1 = 민초.엔티티를().추가정보와_팔로워_카운트를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND, 1);
         Member member2 = 코린.엔티티를().추가정보를_입력하여_생성(thirdLoginResponse.getMember().getId(), SENIOR, BACKEND);
         MemberWithProfileProductResponse expectedMemberResponse1 = MemberWithProfileProductResponse.of(member1, true);
         MemberWithProfileProductResponse expectedMemberResponse2 = MemberWithProfileProductResponse.of(member2, false);
@@ -353,7 +352,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isTrue(),
                 () -> assertThat(memberPageResponse.getItems())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("followerCount")
+                        .usingRecursiveFieldByFieldElementComparator()
                         .hasSize(2)
                         .containsExactly(expectedMemberResponse2, expectedMemberResponse1)
         );
@@ -458,14 +457,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member following = 오찌.엔티티를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member following = 오찌.엔티티를().추가정보와_팔로워_카운트를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND, 1);
         MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(following, true);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("followerCount")
+                        .usingRecursiveFieldByFieldElementComparator()
                         .hasSize(1)
                         .containsExactly(followingResponse)
         );
@@ -496,14 +495,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member following = 오찌.엔티티를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        Member following = 오찌.엔티티를().추가정보와_팔로워_카운트를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND, 1);
         MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(following, true);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("followerCount")
+                        .usingRecursiveFieldByFieldElementComparator()
                         .hasSize(1)
                         .containsExactly(followingResponse)
         );

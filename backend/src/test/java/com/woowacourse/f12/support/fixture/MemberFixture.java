@@ -15,25 +15,27 @@ import java.util.List;
 
 public enum MemberFixture {
 
-    CORINNE("hamcheeseburger", "유현지", "corinne_url", SENIOR, BACKEND),
-    MINCHO("jswith", "홍영민", "mincho_url", JUNIOR, FRONTEND),
-    OHZZI("Ohzzi", "오지훈", "Ohzzi_url", JUNIOR, BACKEND),
-    CORINNE_UPDATED("hamcheeseburger", "괴물개발자", "corinne_url", SENIOR, BACKEND),
-    NOT_ADDITIONAL_INFO("invalid", "invalid", "invalid", null, null);
+    CORINNE("hamcheeseburger", "유현지", "corinne_url", SENIOR, BACKEND, 0),
+    MINCHO("jswith", "홍영민", "mincho_url", JUNIOR, FRONTEND, 0),
+    OHZZI("Ohzzi", "오지훈", "Ohzzi_url", JUNIOR, BACKEND, 0),
+    CORINNE_UPDATED("hamcheeseburger", "괴물개발자", "corinne_url", SENIOR, BACKEND, 0),
+    NOT_ADDITIONAL_INFO("invalid", "invalid", "invalid", null, null, 0);
 
     private final String gitHubId;
     private final String name;
     private final String imageUrl;
     private final CareerLevel careerLevel;
     private final JobType jobType;
+    private final int followerCount;
 
     MemberFixture(final String gitHubId, final String name, final String imageUrl, final CareerLevel careerLevel,
-                  final JobType jobType) {
+                  final JobType jobType, final int followerCount) {
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
+        this.followerCount = followerCount;
     }
 
     public Member 생성() {
@@ -48,6 +50,7 @@ public enum MemberFixture {
                 .imageUrl(this.imageUrl)
                 .careerLevel(this.careerLevel)
                 .jobType(this.jobType)
+                .followerCount(this.followerCount)
                 .build();
     }
 
@@ -63,6 +66,7 @@ public enum MemberFixture {
                 .imageUrl(this.imageUrl)
                 .careerLevel(this.careerLevel)
                 .jobType(this.jobType)
+                .followerCount(this.followerCount)
                 .inventoryProducts(new InventoryProducts(List.of(inventoryProducts)))
                 .build();
     }
@@ -73,6 +77,7 @@ public enum MemberFixture {
                 .gitHubId(this.gitHubId)
                 .name(this.name)
                 .imageUrl(this.imageUrl)
+                .followerCount(this.followerCount)
                 .build();
     }
 
@@ -81,6 +86,10 @@ public enum MemberFixture {
     }
 
     public Member 추가정보를_입력하여_생성(final Long id, final CareerLevel careerLevel, final JobType jobType) {
+        return 추가정보와_팔로워_카운트를_입력하여_생성(id, careerLevel, jobType, this.followerCount);
+    }
+
+    public Member 추가정보와_팔로워_카운트를_입력하여_생성(final Long id, final CareerLevel careerLevel, final JobType jobType, final int followerCount) {
         return Member.builder()
                 .id(id)
                 .gitHubId(this.gitHubId)
@@ -88,6 +97,18 @@ public enum MemberFixture {
                 .imageUrl(this.imageUrl)
                 .careerLevel(careerLevel)
                 .jobType(jobType)
+                .followerCount(followerCount)
+                .build();
+    }
+
+    public Member 팔로워_카운트를_입력하여_생성(final int followerCount) {
+        return Member.builder()
+                .gitHubId(this.gitHubId)
+                .name(this.name)
+                .imageUrl(this.imageUrl)
+                .careerLevel(this.careerLevel)
+                .jobType(this.jobType)
+                .followerCount(followerCount)
                 .build();
     }
 }
