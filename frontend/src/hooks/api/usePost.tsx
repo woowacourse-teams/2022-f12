@@ -44,10 +44,12 @@ function usePost<T, U>({
 
     try {
       const response = await axiosInstance.post<U>(url, body, {
-        headers: {
-          ...headers,
-          Authorization: includeToken && `Bearer ${userData.token}`,
-        },
+        headers: includeToken
+          ? {
+              ...headers,
+              Authorization: `Bearer ${userData.token}`,
+            }
+          : headers,
         withCredentials: true,
       });
 

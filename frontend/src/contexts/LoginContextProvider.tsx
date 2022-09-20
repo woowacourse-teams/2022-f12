@@ -28,6 +28,8 @@ function LoginContextProvider({ children }: PropsWithChildren) {
 
   const handleLogout = () => {
     setUserData(null);
+    // 로그아웃 시 바로 false로 변경하지 않고 아래 이펙트 훅에 의존하면 상태가 변경되기 전 registeredCompleted 루트 때문에 오류 발생
+    setLoggedIn(false);
   };
 
   useEffect(() => {

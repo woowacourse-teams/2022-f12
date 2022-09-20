@@ -37,6 +37,7 @@ function useAuth(): Return {
     url: ENDPOINTS.ISSUE_ACCESS_TOKEN,
   });
   const fetchMyData = useGet<Member>({ url: ENDPOINTS.ME });
+  const requestLogout = useGet({ url: ENDPOINTS.LOGOUT });
 
   const navigate = useNavigate();
 
@@ -57,13 +58,14 @@ function useAuth(): Return {
 
   const logout = async () => {
     const confirmation = await getConfirm(CONFIRM_MESSAGES.LOGOUT);
-    if (confirmation) {
-      try {
-        handleLogout();
-        await showAlert(SUCCESS_MESSAGES.LOGOUT);
-      } catch {
-        await showAlert(FAILURE_MESSAGES.LOGOUT);
-      }
+    if (!confirmation) return;
+
+    try {
+      await requestLogout();
+      handleLogout();
+      await showAlert(SUCCESS_MESSAGES.LOGOUT);
+    } catch {
+      await showAlert(FAILURE_MESSAGES.LOGOUT);
     }
   };
 

@@ -151,35 +151,35 @@ const deleteReviewByReviewId = (req, res, ctx) => {
 
 // 로그인
 const handleLoginRequest = (req, res, ctx) => {
-  const response = {
-    member: {
-      id: 1,
-      gitHubId: 'yangdongjue5510',
-      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
-      name: '양동주',
-    },
-    registerCompleted: false,
-    token: 'iJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjU4MTQ4Mzg1LCJleHAiOjE2NTgxNTE',
-  };
-
-  document.cookie = 'shadowToken=true; max-age=1209600';
-
-  return res(ctx.status(200), ctx.json(response), ctx.delay());
+  return res(
+    ctx.status(200),
+    ctx.json(myUserData),
+    ctx.delay(),
+    ctx.cookie('shadowToken', 'true')
+  );
 };
 
 const getAccessToken = (req, res, ctx) => {
-  console.log(req.cookies);
   const { shadowToken } = req.cookies;
-  if (!shadowToken) {
+
+  if (shadowToken !== 'true') {
     return res(ctx.status(401), ctx.json({ errorCode: 40105 }));
   }
+
   const response = {
     accessToken: 'accessToken',
   };
 
-  document.cookie = 'shadowToken=true; max-age=1209600';
+  return res(
+    ctx.status(200),
+    ctx.json(response),
+    ctx.cookie('shadowToken', 'true'),
+    ctx.delay()
+  );
+};
 
-  return res(ctx.status(200), ctx.json(response), ctx.delay());
+const logout = (req, res, ctx) => {
+  return res(ctx.cookie('shadowToken', 'false'));
 };
 
 const getInventoryProducts = (req, res, ctx) => {
@@ -309,4 +309,5 @@ export const handlers = [
   rest.post(`${BASE_URL}${ENDPOINTS.FOLLOWING(':id')}`, followUser),
   rest.delete(`${BASE_URL}${ENDPOINTS.FOLLOWING(':id')}`, unfollowUser),
   rest.post(`${BASE_URL}${ENDPOINTS.ISSUE_ACCESS_TOKEN}`, getAccessToken),
+  rest.get(`${BASE_URL}${ENDPOINTS.LOGOUT}`, logout),
 ];
