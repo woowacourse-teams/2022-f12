@@ -8,6 +8,7 @@ import {
 } from '@/contexts/LoginContextProvider';
 
 import useGet from '@/hooks/api/useGet';
+import usePost from '@/hooks/api/usePost';
 import useModal from '@/hooks/useModal';
 
 import { ENDPOINTS } from '@/constants/api';
@@ -32,7 +33,7 @@ function useAuth(): Return {
   const { showAlert, getConfirm } = useModal();
 
   const fetchUserData = useGet<UserData>({ url: ENDPOINTS.LOGIN });
-  const fetchAccessToken = useGet<{ accessToken: string }>({
+  const fetchAccessToken = usePost<unknown, { accessToken: string }>({
     url: ENDPOINTS.ISSUE_ACCESS_TOKEN,
   });
   const fetchMyData = useGet<Member>({ url: ENDPOINTS.ME });
@@ -67,15 +68,23 @@ function useAuth(): Return {
   };
 
   const revalidate = async () => {
-    const { accessToken: token } = await fetchAccessToken();
-    const { careerLevel, jobType, ...memberData } = await fetchMyData({ token });
+    try {
+      const response = await fetchAccessToken('', false);
 
-    const registerCompleted = careerLevel !== null && jobType !== null;
-    const userData: UserData = { member: memberData, token, registerCompleted };
+      const { accessToken: token } = response;
+      const { careerLevel, jobType, ...memberData } = await fetchMyData({ token });
 
-    setUserData(userData);
+      const registerCompleted = careerLevel !== null && jobType !== null;
+      const userData: UserData = { member: memberData, token, registerCompleted };
+
+      setUserData(userData);
+    } catch (e) {
+      if (e instanceof Error && e.message === FAILURE_MESSAGES.NO_REFRESH_TOKEN) {
+        return;
+      }
+      console.log(e);
+    }
   };
-
   return { login, logout, isLoggedIn, revalidate };
 }
 

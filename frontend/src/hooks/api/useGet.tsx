@@ -16,11 +16,14 @@ function useGet<T>({ url, headers }: Props): FetchData<T> {
   const { axiosInstance } = useAxios();
   const handleError = useError();
 
-  const fetchData = async ({ params, token }: FetchDataArgs) => {
+  const fetchData = async (args: FetchDataArgs) => {
     try {
       const { data }: AxiosResponse<T> = await axiosInstance.get(url, {
-        headers: token ? { ...headers, Authorization: `Bearer ${token}` } : headers,
-        params,
+        headers:
+          args && args.token
+            ? { ...headers, Authorization: `Bearer ${args.token}` }
+            : headers,
+        params: args && args.params && args.params,
       });
       return data;
     } catch (error) {

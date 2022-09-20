@@ -162,21 +162,22 @@ const handleLoginRequest = (req, res, ctx) => {
     token: 'iJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjU4MTQ4Mzg1LCJleHAiOjE2NTgxNTE',
   };
 
-  document.cookie = 'refreshToken=123; max-age=1209600';
+  document.cookie = 'shadowToken=true; max-age=1209600';
 
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
 const getAccessToken = (req, res, ctx) => {
-  const { refreshToken } = req.cookies;
-  if (refreshToken === null) {
-    return res(ctx.status(401));
+  console.log(req.cookies);
+  const { shadowToken } = req.cookies;
+  if (!shadowToken) {
+    return res(ctx.status(401), ctx.json({ errorCode: 40105 }));
   }
   const response = {
     accessToken: 'accessToken',
   };
 
-  document.cookie = 'refreshToken=123; max-age=1209600';
+  document.cookie = 'shadowToken=true; max-age=1209600';
 
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
