@@ -22,6 +22,7 @@ type Return = {
   login: (code: string) => Promise<void>;
   logout: () => void;
   isLoggedIn: boolean;
+  revalidate: () => void;
 };
 
 function useAuth(): Return {
@@ -31,6 +32,10 @@ function useAuth(): Return {
   const { showAlert, getConfirm } = useModal();
 
   const fetchUserData = useGet<UserData>({ url: ENDPOINTS.LOGIN });
+  const fetchAccessToken = useGet<{ accessToken: string }>({
+    url: ENDPOINTS.ISSUE_ACCESS_TOKEN,
+  });
+  const fetchMyData = useGet<Member>({ url: ENDPOINTS.ME });
 
   const navigate = useNavigate();
 
@@ -42,7 +47,7 @@ function useAuth(): Return {
     }
 
     try {
-      const userData = await fetchUserData({ code });
+      const userData = await fetchUserData({ params: { code } });
       setUserData(userData);
     } catch {
       throw new Error('로그인 오류');
@@ -61,7 +66,17 @@ function useAuth(): Return {
     }
   };
 
-  return { login, logout, isLoggedIn };
+  const revalidate = async () => {
+    const { accessToken: token } = await fetchAccessToken();
+    const { careerLevel, jobType, ...memberData } = await fetchMyData({ token });
+
+    const registerCompleted = careerLevel !== null && jobType !== null;
+    const userData: UserData = { member: memberData, token, registerCompleted };
+
+    setUserData(userData);
+  };
+
+  return { login, logout, isLoggedIn, revalidate };
 }
 
 export default useAuth;

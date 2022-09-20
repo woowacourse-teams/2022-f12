@@ -8,17 +8,18 @@ type Props = {
   headers?: null | AxiosRequestHeaders;
 };
 
-function useGet<T>({
-  url,
-  headers,
-}: Props): (params: Record<string, unknown>) => Promise<T> {
+type FetchDataArgs = { params?: Record<string, unknown>; token?: string } | undefined;
+
+type FetchData<T> = ({ params, token }?: FetchDataArgs) => Promise<T>;
+
+function useGet<T>({ url, headers }: Props): FetchData<T> {
   const { axiosInstance } = useAxios();
   const handleError = useError();
 
-  const fetchData = async (params: unknown) => {
+  const fetchData = async ({ params, token }: FetchDataArgs) => {
     try {
       const { data }: AxiosResponse<T> = await axiosInstance.get(url, {
-        headers,
+        headers: token ? { ...headers, Authorization: `Bearer ${token}` } : headers,
         params,
       });
       return data;

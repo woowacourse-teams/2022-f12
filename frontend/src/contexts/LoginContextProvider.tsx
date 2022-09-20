@@ -28,7 +28,6 @@ function LoginContextProvider({ children }: PropsWithChildren) {
 
   const handleLogout = () => {
     setUserData(null);
-    setLoggedIn(false);
   };
 
   useEffect(() => {
