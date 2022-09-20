@@ -53,4 +53,27 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(refreshTokenResponse.header("Set-cookie")).contains("refreshToken")
         );
     }
+
+    @Test
+    void 로그인_된_상태에서_로그아웃한다() {
+        // given
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/login?code=" + CORINNE_GITHUB.getCode());
+        String refreshToken = response.header("Set-cookie").split("=")[1];
+
+        // when
+        String url = "/api/v1/logout";
+        ExtractableResponse<Response> refreshTokenResponse = RestAssured.given().log().all()
+                .when()
+                .cookie("refreshToken", refreshToken)
+                .get(url)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertAll(
+                () -> assertThat(refreshTokenResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                () -> assertThat(refreshTokenResponse.header("Set-cookie")).contains("refreshToken", "Max-Age=0")
+        );
+    }
 }

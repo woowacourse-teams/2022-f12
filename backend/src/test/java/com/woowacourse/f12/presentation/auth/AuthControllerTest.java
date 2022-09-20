@@ -172,4 +172,27 @@ class AuthControllerTest extends PresentationTest {
 
         verify(authService).issueAccessToken(any());
     }
+
+    @Test
+    void 리프레시_토큰이_있는_상태에서_로그아웃_요청_시_리프레시_쿠키_제거() throws Exception {
+        // given, when
+        final ResultActions resultActions = mockMvc.perform(get("/api/v1/logout")
+                .cookie(new Cookie("refreshToken", "refreshTokenValue")));
+
+        // then
+        resultActions.andExpect(status().isNoContent())
+                .andExpect(cookie().maxAge("refreshToken", 0))
+                .andDo(document("auth-logout"))
+                .andDo(print());
+    }
+
+    @Test
+    void 리프레시_토큰이_없는_상태에서_로그아웃_요청_시_예외_발생() throws Exception {
+        // given, when
+        final ResultActions resultActions = mockMvc.perform(get("/api/v1/logout"));
+
+        // then
+        resultActions.andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorCode").value(ErrorCode.NOT_EXIST_REFRESH_TOKEN.getValue()));
+    }
 }

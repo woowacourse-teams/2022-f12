@@ -7,6 +7,7 @@ import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotExistException;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.WebUtils;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -36,11 +38,15 @@ public class AuthController {
         return ResponseEntity.ok(LoginResponse.from(loginResult));
     }
 
-    private void setRefreshToken(final HttpServletResponse response, final String refreshToken) {
-        final Cookie cookie = new Cookie(REFRESH_TOKEN, refreshToken);
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout(final HttpServletRequest request, final HttpServletResponse response) {
+        final Cookie cookie = WebUtils.getCookie(request, "refreshToken");
+        if (cookie == null) {
+            throw new RefreshTokenNotExistException();
+        }
+        cookie.setMaxAge(0);
         response.addCookie(cookie);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/accessToken")
@@ -52,5 +58,12 @@ public class AuthController {
         final IssuedTokensResponse issuedTokensResponse = authService.issueAccessToken(refreshToken);
         setRefreshToken(response, issuedTokensResponse.getRefreshToken());
         return ResponseEntity.ok(new AccessTokenResponse(issuedTokensResponse.getAccessToken()));
+    }
+
+    private void setRefreshToken(final HttpServletResponse response, final String refreshToken) {
+        final Cookie cookie = new Cookie(REFRESH_TOKEN, refreshToken);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
     }
 }

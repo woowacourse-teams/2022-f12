@@ -16,3 +16,11 @@ operation::auth-login[snippets='http-request,http-response']
 - 40104, 40105
 
 operation::auth-issue-access-token[snippets='http-request,http-response']
+
+=== 로그아웃
+
+==== 발생 가능 에러
+
+- 40105
+
+operation::auth-logout[snippets='http-request,http-response']
