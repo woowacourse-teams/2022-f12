@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
 import * as S from '@/pages/ProfileSearch/ProfileSearch.style';
 
@@ -10,9 +10,10 @@ import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
 import ProfileSearchResult from '@/components/Profile/ProfileSearchResult/ProfileSearchResult';
 
+import { UserDataContext } from '@/contexts/LoginContextProvider';
+
 import useDebounce from '@/hooks/useDebouce';
 import useSearch from '@/hooks/useSearch';
-import useSessionStorage from '@/hooks/useSessionStorage';
 import useUrlSyncState from '@/hooks/useUrlSyncState';
 
 import { ENDPOINTS } from '@/constants/api';
@@ -31,7 +32,7 @@ function ProfileSearch({ type = 'default' }: Props) {
   const [searchInput, setSearchInput] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
   const debouncedSearchInput = useDebounce<string>(searchInput, 300);
 
-  const [userData] = useSessionStorage<UserData>('userData');
+  const userData = useContext(UserDataContext);
   const hasToken = userData && userData.token !== undefined;
 
   const commonParams = {
