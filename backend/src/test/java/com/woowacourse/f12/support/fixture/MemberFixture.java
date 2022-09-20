@@ -86,6 +86,10 @@ public enum MemberFixture {
     }
 
     public Member 추가정보를_입력하여_생성(final Long id, final CareerLevel careerLevel, final JobType jobType) {
+        return 추가정보와_팔로워_카운트를_입력하여_생성(id, careerLevel, jobType, this.followerCount);
+    }
+
+    public Member 추가정보와_팔로워_카운트를_입력하여_생성(final Long id, final CareerLevel careerLevel, final JobType jobType, final int followerCount) {
         return Member.builder()
                 .id(id)
                 .gitHubId(this.gitHubId)
@@ -93,7 +97,7 @@ public enum MemberFixture {
                 .imageUrl(this.imageUrl)
                 .careerLevel(careerLevel)
                 .jobType(jobType)
-                .followerCount(this.followerCount)
+                .followerCount(followerCount)
                 .build();
     }
 
