@@ -1,35 +1,43 @@
 package com.woowacourse.f12.acceptance;
 
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.domain.product.ProductRepository;
+import com.woowacourse.f12.dto.request.member.MemberRequest;
+import com.woowacourse.f12.dto.response.auth.LoginMemberResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
+import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
+import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
+import com.woowacourse.f12.dto.response.member.MemberPageResponse;
+import com.woowacourse.f12.dto.response.member.MemberResponse;
+import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
+import com.woowacourse.f12.dto.response.product.ProductResponse;
+import com.woowacourse.f12.support.fixture.ProductFixture;
+import com.woowacourse.f12.support.fixture.ReviewFixture;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+
+import java.util.List;
+
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.*;
 import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
 import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.민초;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.오찌;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.dto.request.member.MemberRequest;
-import com.woowacourse.f12.dto.response.auth.LoginMemberResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.response.member.MemberPageResponse;
-import com.woowacourse.f12.dto.response.member.MemberResponse;
-import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-
 class MemberAcceptanceTest extends AcceptanceTest {
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Test
     void 로그인_하고_내_회원정보를_업데이트한다() {
@@ -296,7 +304,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void 로그인_하지_않고_회원목록을_키워드와_옵션으로_검색하여_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
-
         민초.로그인을_하고().추가정보를_입력한다(memberRequest);
 
         LoginResponse secondLoginResponse = 코린.로그인을_한다();
@@ -320,6 +327,71 @@ class MemberAcceptanceTest extends AcceptanceTest {
                         .hasSize(1)
                         .containsOnly(expectedMemberResponse)
         );
+    }
+
+    @Test
+    void 로그인_하지_않고_회원목록을_대표장비를_포함하여_키워드로_조회한다() {
+        // given
+        final Product product = 제품을_저장한다(ProductFixture.KEYBOARD_2.생성());
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+        민초.로그인을_하고().추가정보를_입력한다(memberRequest);
+
+        LoginResponse corinneLoginResponse = 코린.로그인을_한다();
+        final Long corinneId = corinneLoginResponse.getMember().getId();
+
+        코린.로그인한_상태로(corinneLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(corinneLoginResponse.getToken()).리뷰를_작성한다(product.getId(), ReviewFixture.REVIEW_RATING_2);
+        List<InventoryProductResponse> inventoryProducts = 자신의_인벤토리_장비를_조회한다(corinneLoginResponse).getItems();
+        final InventoryProductResponse inventoryProductResponse = inventoryProducts.get(0);
+
+        코린.로그인한_상태로(corinneLoginResponse.getToken()).대표장비를_등록한다(List.of(inventoryProductResponse.getId()));
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members?page=0&size=2&query=cheese");
+
+        // then
+        MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
+
+        Member member = 코린.엔티티를().추가정보와_인벤토리를_추가해서_생성(corinneId, SENIOR, BACKEND, List.of(인벤토리_엔티티로_변환한다(inventoryProductResponse, corinneId)));
+        MemberWithProfileProductResponse expectedMemberResponse = MemberWithProfileProductResponse.of(member, false);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems())
+                        .usingRecursiveFieldByFieldElementComparator()
+                        .hasSize(1)
+                        .containsOnly(expectedMemberResponse)
+        );
+    }
+
+    private Product 제품을_저장한다(Product product) {
+        return productRepository.save(product);
+    }
+
+    private InventoryProduct 인벤토리_엔티티로_변환한다(InventoryProductResponse inventoryProductResponse, Long memberId) {
+        return InventoryProduct.builder()
+                .product(제품_엔티티로_변환한다(inventoryProductResponse.getProduct()))
+                .selected(true)
+                .member(Member.builder()
+                        .id(memberId)
+                        .build())
+                .build();
+    }
+
+    private Product 제품_엔티티로_변환한다(ProductResponse productResponse) {
+        return Product.builder()
+                .id(productResponse.getId())
+                .name(productResponse.getName())
+                .category(productResponse.getCategory().toCategory())
+                .rating(productResponse.getRating())
+                .imageUrl(productResponse.getImageUrl())
+                .reviewCount(productResponse.getReviewCount())
+                .build();
+    }
+
+    private InventoryProductsResponse 자신의_인벤토리_장비를_조회한다(final LoginResponse secondLoginResponse) {
+        return 코린.로그인한_상태로(secondLoginResponse.getToken()).자신의_인벤토리를_조회한다().as(InventoryProductsResponse.class);
     }
 
     @Test

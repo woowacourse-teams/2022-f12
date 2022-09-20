@@ -1,17 +1,18 @@
 package com.woowacourse.f12.support.fixture;
 
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
-
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
+
 import java.util.List;
+
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
 
 public enum MemberFixture {
 
@@ -55,7 +56,7 @@ public enum MemberFixture {
         return new GitHubProfileResponse(this.gitHubId, this.name, this.imageUrl);
     }
 
-    public Member 인벤토리를_추가해서_생성(final Long id, final InventoryProduct... inventoryProducts) {
+    public Member 인벤토리를_추가해서_생성(final Long id, final List<InventoryProduct> inventoryProducts) {
         return Member.builder()
                 .id(id)
                 .gitHubId(this.gitHubId)
@@ -63,7 +64,19 @@ public enum MemberFixture {
                 .imageUrl(this.imageUrl)
                 .careerLevel(this.careerLevel)
                 .jobType(this.jobType)
-                .inventoryProducts(new InventoryProducts(List.of(inventoryProducts)))
+                .inventoryProducts(new InventoryProducts(inventoryProducts))
+                .build();
+    }
+
+    public Member 추가정보와_인벤토리를_추가해서_생성(final Long id, final CareerLevel careerLevel, final JobType jobType, final List<InventoryProduct> inventoryProducts) {
+        return Member.builder()
+                .id(id)
+                .gitHubId(this.gitHubId)
+                .name(this.name)
+                .imageUrl(this.imageUrl)
+                .careerLevel(careerLevel)
+                .jobType(jobType)
+                .inventoryProducts(new InventoryProducts(inventoryProducts))
                 .build();
     }
 

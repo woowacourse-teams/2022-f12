@@ -48,7 +48,7 @@ class InventoryProductServiceTest {
         List<Long> selectedInventoryProductIds = List.of(2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
         InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
         given(inventoryProductRepository.findAllById(selectedInventoryProductIds))
@@ -97,7 +97,7 @@ class InventoryProductServiceTest {
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, null, KEYBOARD_1.생성());
         InventoryProduct duplicatedCategoryInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(2L, null,
                 KEYBOARD_2.생성());
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct, duplicatedCategoryInventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct, duplicatedCategoryInventoryProduct));
         duplicatedCategoryInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_2.생성());
 
         given(memberRepository.findById(1L))
@@ -119,7 +119,8 @@ class InventoryProductServiceTest {
         // given
         List<Long> selectedInventoryProductIds = List.of(1L, 2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, SELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_1.생성(1L)));
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(selectedInventoryProduct));
         InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, member, SOFTWARE_1.생성());
         InventoryProduct inventoryProduct2 = UNSELECTED_INVENTORY_PRODUCT.생성(2L, member, KEYBOARD_2.생성());
 
