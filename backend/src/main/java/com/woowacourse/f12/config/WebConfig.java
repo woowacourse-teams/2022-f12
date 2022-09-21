@@ -1,5 +1,6 @@
 package com.woowacourse.f12.config;
 
+import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -7,8 +8,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -37,6 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**")
                 .allowedMethods(CORS_ALLOWED_METHODS.split(","))
                 .allowedOrigins(MAIN_SERVER_DOMAIN, MAIN_SERVER_WWW_DOMAIN, TEST_SERVER_DOMAIN, FRONTEND_LOCALHOST)
+                .allowCredentials(true)
                 .exposedHeaders(HttpHeaders.LOCATION);
     }
 
