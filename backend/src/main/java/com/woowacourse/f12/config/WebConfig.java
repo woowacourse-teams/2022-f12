@@ -37,7 +37,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods(CORS_ALLOWED_METHODS.split(","))
                 .allowedOrigins(MAIN_SERVER_DOMAIN, MAIN_SERVER_WWW_DOMAIN, TEST_SERVER_DOMAIN, FRONTEND_LOCALHOST)
                 .allowCredentials(true)
-                .exposedHeaders(HttpHeaders.LOCATION);
+                .exposedHeaders(HttpHeaders.LOCATION, HttpHeaders.SET_COOKIE);
     }
 
     @Override
