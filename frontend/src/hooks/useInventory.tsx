@@ -1,4 +1,3 @@
-import useSessionStorage from './useSessionStorage';
 import { useContext } from 'react';
 
 import { UserDataContext } from '@/contexts/LoginContextProvider';
@@ -43,8 +42,7 @@ function useInventory({ memberId }: Props): Return {
     headers: { Authorization: `Bearer ${userData?.token}` },
   });
 
-  const [data] = useSessionStorage<UserData>('userData');
-  const hasToken = data && data.token !== undefined;
+  const hasToken = userData && userData.token !== undefined;
 
   const CommonParams = {
     params: {
@@ -56,7 +54,7 @@ function useInventory({ memberId }: Props): Return {
   const ParamsWithMemberId = {
     ...CommonParams,
     url: ENDPOINTS.REVIEWS_BY_MEMBER_ID(Number(memberId)),
-    headers: hasToken ? { Authorization: `Bearer ${data.token}` } : null,
+    headers: hasToken ? { Authorization: `Bearer ${userData.token}` } : null,
   };
 
   const ParamsWithoutMemberId = {
