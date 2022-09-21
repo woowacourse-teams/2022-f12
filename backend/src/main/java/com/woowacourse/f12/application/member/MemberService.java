@@ -1,6 +1,8 @@
 package com.woowacourse.f12.application.member;
 
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.*;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
@@ -30,10 +32,12 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final FollowingRepository followingRepository;
+    private final InventoryProductRepository inventoryProductRepository;
 
-    public MemberService(final MemberRepository memberRepository, final FollowingRepository followingRepository) {
+    public MemberService(final MemberRepository memberRepository, final FollowingRepository followingRepository, final InventoryProductRepository inventoryProductRepository) {
         this.memberRepository = memberRepository;
         this.followingRepository = followingRepository;
+        this.inventoryProductRepository = inventoryProductRepository;
     }
 
     public LoggedInMemberResponse findLoggedInMember(final Long loggedInId) {
@@ -70,15 +74,30 @@ public class MemberService {
     }
 
     public MemberPageResponse findByContains(@Nullable final Long loggedInId, final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
-        final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
-        final JobType jobType = parseJobType(memberSearchRequest);
-        final Slice<Member> slice = memberRepository.findBySearchConditions(memberSearchRequest.getQuery(), careerLevel,
-                jobType, pageable);
+        final Slice<Member> slice = findMembersBySearchConditions(memberSearchRequest, pageable);
+        setInventoryProductsToMembers(slice);
         if (isNotLoggedIn(loggedInId)) {
             return MemberPageResponse.ofByFollowingCondition(slice, false);
         }
         final List<Following> followings = followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId, extractMemberIds(slice.getContent()));
         return MemberPageResponse.of(slice, followings);
+    }
+
+    private Slice<Member> findMembersBySearchConditions(final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
+        final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
+        final JobType jobType = parseJobType(memberSearchRequest);
+        return memberRepository.findBySearchConditions(memberSearchRequest.getQuery(), careerLevel,
+                jobType, pageable);
+    }
+
+    private void setInventoryProductsToMembers(final Slice<Member> slice) {
+        final List<InventoryProduct> mixedInventoryProducts = inventoryProductRepository.findWithProductByMembers(slice.getContent());
+        for (Member member : slice.getContent()) {
+            final List<InventoryProduct> memberInventoryProducts = mixedInventoryProducts.stream()
+                    .filter(it -> it.getMember().isSameId(member.getId()))
+                    .collect(Collectors.toList());
+            member.updateInventoryProducts(memberInventoryProducts);
+        }
     }
 
     private JobType parseJobType(final MemberSearchRequest memberSearchRequest) {
@@ -138,12 +157,21 @@ public class MemberService {
                 .orElseThrow(NotFollowingException::new);
     }
 
-    public MemberPageResponse findFollowingsByConditions(final Long loggedInId, final MemberSearchRequest memberSearchRequest,
+    public MemberPageResponse findFollowingsByConditions(final Long loggedInId,
+                                                         final MemberSearchRequest memberSearchRequest,
                                                          final Pageable pageable) {
+        final Slice<Member> slice = findFollowingsBySearchConditions(loggedInId,
+                memberSearchRequest, pageable);
+        setInventoryProductsToMembers(slice);
+        return MemberPageResponse.ofByFollowingCondition(slice, true);
+    }
+
+    private Slice<Member> findFollowingsBySearchConditions(final Long loggedInId,
+                                                           final MemberSearchRequest memberSearchRequest,
+                                                           final Pageable pageable) {
         final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
         final JobType jobType = parseJobType(memberSearchRequest);
-        final Slice<Member> slice = memberRepository.findFollowingsBySearchConditions(loggedInId, memberSearchRequest.getQuery(),
+        return memberRepository.findFollowingsBySearchConditions(loggedInId, memberSearchRequest.getQuery(),
                 careerLevel, jobType, pageable);
-        return MemberPageResponse.ofByFollowingCondition(slice, true);
     }
 }

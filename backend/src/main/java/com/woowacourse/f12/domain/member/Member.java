@@ -108,6 +108,10 @@ public class Member {
         return Objects.equals(id, this.id);
     }
 
+    public void updateInventoryProducts(final List<InventoryProduct> values) {
+        this.inventoryProducts = new InventoryProducts(values);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
