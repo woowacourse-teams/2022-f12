@@ -25,22 +25,26 @@ function ProductListSection({
   pageSize = 12,
 }: Props) {
   const isSinglePage = getNextPage === undefined;
-  const productList = (
-    <Masonry columnCount={4}>
-      {data.map(({ id, imageUrl, name, rating, reviewCount }, index) => (
-        <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
-          <ProductCard
-            imageUrl={imageUrl}
-            name={name}
-            rating={rating}
-            reviewCount={reviewCount}
-            index={index % pageSize}
-          />
-        </Link>
-      ))}
-      {data.length === 0 && <NoDataPlaceholder />}
-    </Masonry>
-  );
+  const productList =
+    data.length === 0 ? (
+      <S.NoDataContainer>
+        <NoDataPlaceholder />
+      </S.NoDataContainer>
+    ) : (
+      <Masonry columnCount={4}>
+        {data.map(({ id, imageUrl, name, rating, reviewCount }, index) => (
+          <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
+            <ProductCard
+              imageUrl={imageUrl}
+              name={name}
+              rating={rating}
+              reviewCount={reviewCount}
+              index={index % pageSize}
+            />
+          </Link>
+        ))}
+      </Masonry>
+    );
 
   return (
     <S.Container aria-label={title}>
