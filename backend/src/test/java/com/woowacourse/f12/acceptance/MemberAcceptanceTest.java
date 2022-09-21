@@ -621,7 +621,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 .id(productResponse.getId())
                 .name(productResponse.getName())
                 .category(productResponse.getCategory().toCategory())
-                .avgRating(productResponse.getRating())
+                .rating(productResponse.getRating())
                 .imageUrl(productResponse.getImageUrl())
                 .reviewCount(productResponse.getReviewCount())
                 .build();

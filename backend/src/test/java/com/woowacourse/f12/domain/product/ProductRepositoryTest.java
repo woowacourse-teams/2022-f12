@@ -17,8 +17,6 @@ import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -42,17 +40,18 @@ class ProductRepositoryTest {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @Test
     void 제품을_단일_조회_한다() {
         // given
         Product product = 제품_저장(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성());
-        리뷰_저장(REVIEW_RATING_4.작성(product, member));
-        리뷰_저장(REVIEW_RATING_5.작성(product, member));
-        entityManager.clear();
+        Review review1 = REVIEW_RATING_4.작성(product, member);
+        Review review2 = REVIEW_RATING_5.작성(product, member);
+        product.reflectReview(review1);
+        product.reflectReview(review2);
+
+        리뷰_저장(review1);
+        리뷰_저장(review2);
 
         // when
         Product savedProduct = productRepository.findById(product.getId())
@@ -60,7 +59,7 @@ class ProductRepositoryTest {
 
         // then
         assertAll(
-                () -> assertThat(savedProduct.getAvgRating()).isEqualTo(4.5),
+                () -> assertThat(savedProduct.getRating()).isEqualTo(4.5),
                 () -> assertThat(savedProduct.getReviewCount()).isEqualTo(2)
         );
     }
@@ -89,9 +88,16 @@ class ProductRepositoryTest {
         Product product2 = 제품_저장(KEYBOARD_2.생성());
         Member member = memberRepository.save(CORINNE.생성());
 
-        리뷰_저장(REVIEW_RATING_5.작성(product1, member));
-        리뷰_저장(REVIEW_RATING_5.작성(product2, member));
-        리뷰_저장(REVIEW_RATING_5.작성(product2, member));
+        Review review1 = REVIEW_RATING_5.작성(product1, member);
+        Review review2 = REVIEW_RATING_5.작성(product2, member);
+
+        product1.reflectReview(review1);
+        product2.reflectReview(review2);
+        product2.reflectReview(review2);
+
+        리뷰_저장(review1);
+        리뷰_저장(review2);
+        리뷰_저장(review2);
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("reviewCount")));
 

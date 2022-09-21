@@ -1,6 +1,7 @@
 package com.woowacourse.f12.domain.product;
 
 import com.woowacourse.f12.domain.review.Review;
+import com.woowacourse.f12.exception.internalserver.InvalidReflectReviewException;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,7 +41,7 @@ public class Product {
     private int totalRating;
 
     @Column(name = "avg_rating", nullable = false)
-    private double avgRating;
+    private double rating;
 
     @Column(name = "category", nullable = false, length = 8)
     @Enumerated(value = EnumType.STRING)
@@ -50,13 +51,13 @@ public class Product {
     }
 
     private Product(final Long id, final String name, final String imageUrl, final int reviewCount,
-                    final int totalRating, final double avgRating, final Category category) {
+                    final int totalRating, final double rating, final Category category) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
         this.reviewCount = reviewCount;
         this.totalRating = totalRating;
-        this.avgRating = avgRating;
+        this.rating = rating;
         this.category = category;
     }
 
@@ -65,9 +66,16 @@ public class Product {
     }
 
     public void reflectReview(final Review review) {
+        validateWrittenAboutThis(review);
         reviewCount++;
         totalRating += review.getRating();
-        avgRating = (double) totalRating / reviewCount;
+        rating = (double) totalRating / reviewCount;
+    }
+
+    private void validateWrittenAboutThis(final Review review) {
+        if (!review.isWrittenAbout(this)) {
+            throw new InvalidReflectReviewException();
+        }
     }
 
     @Override
