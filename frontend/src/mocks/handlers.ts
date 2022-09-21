@@ -177,7 +177,7 @@ const getAccessToken = (req, res, ctx) => {
   const { shadowToken } = req.cookies;
 
   if (shadowToken !== 'true') {
-    return res(ctx.status(401), ctx.json({ errorCode: 40105 }));
+    return res(ctx.status(401), ctx.json({ errorCode: '40105' }));
   }
 
   const response = {

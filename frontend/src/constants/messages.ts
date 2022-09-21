@@ -1,4 +1,4 @@
-export const API_ERROR_MESSAGES = {
+export const API_ERROR_MESSAGES: Record<string, string> = {
   40000: '유효하지 않은 검색 요청입니다.',
   40001: '유효하지 않은 페이지입니다.',
   40002: '소셜 로그인에 실패했습니다.',
