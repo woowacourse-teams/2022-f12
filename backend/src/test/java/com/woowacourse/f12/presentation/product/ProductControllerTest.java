@@ -57,7 +57,7 @@ class ProductControllerTest extends PresentationTest {
     void 키보드_목록_페이지_조회_성공() throws Exception {
         // given
         ProductSearchRequest productSearchRequest = new ProductSearchRequest(null, KEYBOARD_CONSTANT);
-        Pageable pageable = PageRequest.of(0, 150, Sort.by("rating", "id").descending());
+        Pageable pageable = PageRequest.of(0, 150, Sort.by("rating", "reviewCount", "id").descending());
         given(productService.findBySearchConditions(any(ProductSearchRequest.class), any(Pageable.class)))
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
 
@@ -76,7 +76,7 @@ class ProductControllerTest extends PresentationTest {
     void 제품_목록_페이지_조회_성공() throws Exception {
         // given
         ProductSearchRequest productSearchRequest = new ProductSearchRequest(null, null);
-        Pageable pageable = PageRequest.of(0, 150, Sort.by("rating", "id").descending());
+        Pageable pageable = PageRequest.of(0, 150, Sort.by("rating", "reviewCount", "id").descending());
         given(productService.findBySearchConditions(any(ProductSearchRequest.class), any(Pageable.class)))
                 .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of(KEYBOARD_1.생성(1L)))));
 
