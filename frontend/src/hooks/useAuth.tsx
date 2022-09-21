@@ -53,7 +53,7 @@ function useAuth(): Return {
     }
 
     try {
-      const userData = await fetchUserData({ params: { code } });
+      const userData = await fetchUserData({ params: { code }, includeCookie: true });
       setUserData(userData);
     } catch {
       throw new Error('로그인 오류');
