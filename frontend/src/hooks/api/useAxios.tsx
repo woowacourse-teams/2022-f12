@@ -43,6 +43,10 @@ function useAxios(): Return {
   };
 
   const handleAPIError = async (error: AxiosError<ErrorResponseBody>) => {
+    if (error.response === undefined) {
+      throw new Error(FAILURE_MESSAGES.NO_REQUEST_MADE);
+    }
+
     const errorResponseBody = error.response.data;
 
     // setError보다 먼저 와야 오류 화면이 표시되지 않음

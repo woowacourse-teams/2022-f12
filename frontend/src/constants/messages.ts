@@ -46,6 +46,7 @@ export const FAILURE_MESSAGES = {
   LOGIN_CANCELED: '로그인을 취소했거나 오류가 발생했습니다.',
   LOGOUT: '로그아웃에 실패했습니다. 다시 시도해주세요.',
   NO_REFRESH_TOKEN: '로그인 하지 않은 사용자',
+  NO_REQUEST_MADE: '요청에 실패했습니다.',
 } as const;
 
 export const SUCCESS_MESSAGES = {
