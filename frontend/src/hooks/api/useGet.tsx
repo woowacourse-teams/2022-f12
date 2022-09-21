@@ -8,9 +8,11 @@ type Props = {
   headers?: null | AxiosRequestHeaders;
 };
 
-type FetchDataArgs = { params?: Record<string, unknown>; token?: string } | undefined;
+type FetchDataArgs =
+  | { params?: Record<string, unknown>; token?: string; includeCookie?: boolean }
+  | undefined;
 
-type FetchData<T> = ({ params, token }?: FetchDataArgs) => Promise<T>;
+type FetchData<T> = ({ params, token, includeCookie }?: FetchDataArgs) => Promise<T>;
 
 function useGet<T>({ url, headers }: Props): FetchData<T> {
   const { axiosInstance } = useAxios();
@@ -24,6 +26,7 @@ function useGet<T>({ url, headers }: Props): FetchData<T> {
             ? { ...headers, Authorization: `Bearer ${args.token}` }
             : headers,
         params: args && args.params,
+        withCredentials: (args && args.includeCookie) || false,
       });
       return data;
     } catch (error) {
