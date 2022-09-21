@@ -365,35 +365,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Product 제품을_저장한다(Product product) {
-        return productRepository.save(product);
-    }
-
-    private InventoryProduct 인벤토리_엔티티로_변환한다(InventoryProductResponse inventoryProductResponse, Long memberId) {
-        return InventoryProduct.builder()
-                .product(제품_엔티티로_변환한다(inventoryProductResponse.getProduct()))
-                .selected(true)
-                .member(Member.builder()
-                        .id(memberId)
-                        .build())
-                .build();
-    }
-
-    private Product 제품_엔티티로_변환한다(ProductResponse productResponse) {
-        return Product.builder()
-                .id(productResponse.getId())
-                .name(productResponse.getName())
-                .category(productResponse.getCategory().toCategory())
-                .rating(productResponse.getRating())
-                .imageUrl(productResponse.getImageUrl())
-                .reviewCount(productResponse.getReviewCount())
-                .build();
-    }
-
-    private InventoryProductsResponse 자신의_인벤토리_장비를_조회한다(final LoginResponse secondLoginResponse) {
-        return 코린.로그인한_상태로(secondLoginResponse.getToken()).자신의_인벤토리를_조회한다().as(InventoryProductsResponse.class);
-    }
-
     @Test
     void 로그인_하고_한명을_팔로우한_뒤_회원목록을_검색한다() {
         // given
@@ -579,5 +550,78 @@ class MemberAcceptanceTest extends AcceptanceTest {
                         .hasSize(1)
                         .containsExactly(followingResponse)
         );
+    }
+
+    @Test
+    void 로그인_하고_팔로우하는_회원의_목록을_대표장비를_포함하여_검색조건을_설정하여_조회한다() {
+        // given
+        Product product = 제품을_저장한다(ProductFixture.KEYBOARD_2.생성());
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+
+        LoginResponse followingLoginResponse = 오찌.로그인을_한다();
+        Long followingId = followingLoginResponse.getMember().getId();
+        오찌.로그인한_상태로(followingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+        오찌.로그인한_상태로(followingLoginResponse.getToken()).리뷰를_작성한다(product.getId(), ReviewFixture.REVIEW_RATING_2);
+        List<InventoryProductResponse> inventoryProducts = 자신의_인벤토리_장비를_조회한다(followingLoginResponse).getItems();
+        InventoryProductResponse inventoryProductResponse = inventoryProducts.get(0);
+        오찌.로그인한_상태로(followingLoginResponse.getToken()).대표장비를_등록한다(List.of(inventoryProductResponse.getId()));
+
+        LoginResponse notFollowingLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(notFollowingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+
+        LoginResponse loginResponse = 코린.로그인을_한다();
+        String loginToken = loginResponse.getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+
+        코린.로그인한_상태로(loginToken).팔로우한다(followingId);
+
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다(
+                "/api/v1/members/me/followings?page=0&size=1&query=O&careerLevel=senior&jobType=backend", loginToken);
+
+        // then
+        MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
+
+        Member following = 오찌.엔티티를().추가정보와_인벤토리를_추가해서_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND,
+                List.of(인벤토리_엔티티로_변환한다(inventoryProductResponse, followingId)));
+        MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(following, true);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems())
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("followerCount")
+                        .hasSize(1)
+                        .containsExactly(followingResponse)
+        );
+    }
+
+    private Product 제품을_저장한다(Product product) {
+        return productRepository.save(product);
+    }
+
+    private InventoryProduct 인벤토리_엔티티로_변환한다(InventoryProductResponse inventoryProductResponse, Long memberId) {
+        return InventoryProduct.builder()
+                .product(제품_엔티티로_변환한다(inventoryProductResponse.getProduct()))
+                .selected(true)
+                .member(Member.builder()
+                        .id(memberId)
+                        .build())
+                .build();
+    }
+
+    private Product 제품_엔티티로_변환한다(ProductResponse productResponse) {
+        return Product.builder()
+                .id(productResponse.getId())
+                .name(productResponse.getName())
+                .category(productResponse.getCategory().toCategory())
+                .rating(productResponse.getRating())
+                .imageUrl(productResponse.getImageUrl())
+                .reviewCount(productResponse.getReviewCount())
+                .build();
+    }
+
+    private InventoryProductsResponse 자신의_인벤토리_장비를_조회한다(final LoginResponse secondLoginResponse) {
+        return 코린.로그인한_상태로(secondLoginResponse.getToken()).자신의_인벤토리를_조회한다().as(InventoryProductsResponse.class);
     }
 }

@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -163,6 +164,7 @@ class MemberServiceTest {
         // then
         assertAll(
                 () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.of(member, false))
@@ -196,6 +198,8 @@ class MemberServiceTest {
         // then
         assertAll(
                 () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> verify(followingRepository).findByFollowerIdAndFollowingIdIn(loggedInId, List.of(member.getId())),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.of(member, true))
@@ -416,6 +420,8 @@ class MemberServiceTest {
 
         given(memberRepository.findFollowingsBySearchConditions(loggedInId, null, null, null, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(Collections.emptyList());
 
         // when
         MemberPageResponse memberPageResponse = memberService.findFollowingsByConditions(loggedInId,
@@ -423,6 +429,8 @@ class MemberServiceTest {
 
         // then
         assertAll(
+                () -> verify(memberRepository).findFollowingsBySearchConditions(loggedInId, null, null, null, pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.of(member, true))

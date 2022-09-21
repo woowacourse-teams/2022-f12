@@ -157,12 +157,21 @@ public class MemberService {
                 .orElseThrow(NotFollowingException::new);
     }
 
-    public MemberPageResponse findFollowingsByConditions(final Long loggedInId, final MemberSearchRequest memberSearchRequest,
+    public MemberPageResponse findFollowingsByConditions(final Long loggedInId,
+                                                         final MemberSearchRequest memberSearchRequest,
                                                          final Pageable pageable) {
+        final Slice<Member> slice = findFollowingsBySearchConditions(loggedInId,
+                memberSearchRequest, pageable);
+        setInventoryProductsToMembers(slice);
+        return MemberPageResponse.ofByFollowingCondition(slice, true);
+    }
+
+    private Slice<Member> findFollowingsBySearchConditions(final Long loggedInId,
+                                                           final MemberSearchRequest memberSearchRequest,
+                                                           final Pageable pageable) {
         final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
         final JobType jobType = parseJobType(memberSearchRequest);
-        final Slice<Member> slice = memberRepository.findFollowingsBySearchConditions(loggedInId, memberSearchRequest.getQuery(),
+        return memberRepository.findFollowingsBySearchConditions(loggedInId, memberSearchRequest.getQuery(),
                 careerLevel, jobType, pageable);
-        return MemberPageResponse.ofByFollowingCondition(slice, true);
     }
 }
