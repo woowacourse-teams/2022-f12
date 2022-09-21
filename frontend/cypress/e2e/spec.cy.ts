@@ -1,6 +1,7 @@
 describe('비회원 사용자 기본 플로우', () => {
   beforeEach(() => {
     cy.intercept({ method: 'GET', url: '**/api/v1/products*' }).as('productsRequest');
+    cy.intercept({ method: 'GET', url: '**/api/v1/products/*' }).as('productRequest');
     cy.intercept({ method: 'GET', url: '**/api/v1/reviews*' }).as('reviewsRequest');
 
     cy.visit('');
@@ -103,15 +104,17 @@ describe('비회원 사용자 기본 플로우', () => {
 
       cy.findByRole('region', { name: '인기 있는 제품' })
         .findAllByRole('article')
-        .findByRole('img')
-        .click();
+        .first()
+        // .findByRole('img')
+        .click({ force: true });
 
       // 후기는 없는 제품이 있을 수도 있기 때문에 삭제하거나 빈 데이터 이미지 표시 필요
       // cy.findByRole('region', { name: '최근 후기' })
       //   .findAllByRole('article')
       //   .should('be.visible');
+      cy.wait('@productRequest');
 
-      cy.findByRole('img', { name: '제품 이미지' }).should('be.visible');
+      expect(cy.findByRole('img', { name: '제품 이미지' })).to.exist;
 
       cy.findByRole('region', { name: '통계 정보' })
         .scrollIntoView()

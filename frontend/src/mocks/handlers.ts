@@ -13,6 +13,8 @@ import {
   reviewsWithProduct,
 } from '@/mocks/data';
 
+// let errorCall = 0;
+
 // 제품 목록 조회
 const getKeyboards = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
@@ -24,6 +26,7 @@ const getKeyboards = (req, res, ctx) => {
     hasNext: page < 2,
     items: products.slice(startIndex, endIndex),
   };
+
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
@@ -113,6 +116,16 @@ const getReviewsByProductId = (req, res, ctx) => {
     items: reviewsWithOutProduct.slice(startIndex, endIndex),
   };
 
+  // 추후 accessToken 만료 테스트 용 핸들러
+  // const errorResponse = {
+  //   errorCode: 40104,
+  // };
+
+  // if (errorCall === 0) {
+  //   errorCall += 1;
+  //   return res(ctx.status(401), ctx.json(errorResponse), ctx.delay());
+  // }
+
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
 
@@ -124,6 +137,7 @@ const postReviewByProductId = (req, res, ctx) => {
   if (!userData || !userData.token) {
     return res(ctx.status(403));
   }
+
   return res(ctx.status(201));
 };
 
@@ -150,18 +164,36 @@ const deleteReviewByReviewId = (req, res, ctx) => {
 };
 
 // 로그인
-const getToken = (req, res, ctx) => {
+const handleLoginRequest = (req, res, ctx) => {
+  return res(
+    ctx.status(200),
+    ctx.json(myUserData),
+    ctx.delay(),
+    ctx.cookie('shadowToken', 'true')
+  );
+};
+
+const getAccessToken = (req, res, ctx) => {
+  const { shadowToken } = req.cookies;
+
+  if (shadowToken !== 'true') {
+    return res(ctx.status(401), ctx.json({ errorCode: '40105' }));
+  }
+
   const response = {
-    member: {
-      id: 1,
-      gitHubId: 'yangdongjue5510',
-      imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
-      name: '양동주',
-    },
-    registerCompleted: false,
-    token: 'iJ9.eyJzdWIiOiIyIiwiaWF0IjoxNjU4MTQ4Mzg1LCJleHAiOjE2NTgxNTE',
+    accessToken: 'accessToken',
   };
-  return res(ctx.status(200), ctx.json(response), ctx.delay());
+
+  return res(
+    ctx.status(200),
+    ctx.json(response),
+    ctx.cookie('shadowToken', 'true'),
+    ctx.delay()
+  );
+};
+
+const logout = (req, res, ctx) => {
+  return res(ctx.cookie('shadowToken', 'false'));
 };
 
 const getInventoryProducts = (req, res, ctx) => {
@@ -251,7 +283,7 @@ const unfollowUser = (req, res, ctx) => {
 };
 
 export const handlers = [
-  rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, getToken),
+  rest.get(`${BASE_URL}${ENDPOINTS.LOGIN}`, handleLoginRequest),
 
   rest.get(`${BASE_URL}${ENDPOINTS.ME}`, getMyInfo),
   rest.patch(`${BASE_URL}${ENDPOINTS.ME}`, submitAdditionalInfo),
@@ -290,4 +322,6 @@ export const handlers = [
   rest.get(`${BASE_URL}${ENDPOINTS.MY_FOLLOWING}`, searchMember),
   rest.post(`${BASE_URL}${ENDPOINTS.FOLLOWING(':id')}`, followUser),
   rest.delete(`${BASE_URL}${ENDPOINTS.FOLLOWING(':id')}`, unfollowUser),
+  rest.post(`${BASE_URL}${ENDPOINTS.ISSUE_ACCESS_TOKEN}`, getAccessToken),
+  rest.get(`${BASE_URL}${ENDPOINTS.LOGOUT}`, logout),
 ];

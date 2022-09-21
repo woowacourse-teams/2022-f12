@@ -1,4 +1,4 @@
-export const API_ERROR_MESSAGES = {
+export const API_ERROR_MESSAGES: Record<string, string> = {
   40000: '유효하지 않은 검색 요청입니다.',
   40001: '유효하지 않은 페이지입니다.',
   40002: '소셜 로그인에 실패했습니다.',
@@ -19,6 +19,8 @@ export const API_ERROR_MESSAGES = {
   40101: '인증 정보가 만료되었습니다. 다시 로그인해주세요.',
   40102: '인정 정보가 유효하지 않습니다.',
   40103: '추가정보 입력이 완료되지 않았습니다. 입력 완료 후 서비스를 이용해주세요.',
+  40104: '인증이 만료되었습니다. 다시 로그인해주세요',
+  40105: '리프레시 토큰이 존재하지 않습니다.',
   40300: '해당 요청을 처리할 수 있는 권한이 없습니다.',
   40410: '존재하지 않는 회원정보입니다.',
   40420: '존재하지 않는 제품입니다.',
@@ -43,6 +45,8 @@ export const VALIDATION_ERROR_MESSAGES = {
 export const FAILURE_MESSAGES = {
   LOGIN_CANCELED: '로그인을 취소했거나 오류가 발생했습니다.',
   LOGOUT: '로그아웃에 실패했습니다. 다시 시도해주세요.',
+  NO_REFRESH_TOKEN: '로그인 하지 않은 사용자',
+  NO_REQUEST_MADE: '요청에 실패했습니다.',
 } as const;
 
 export const SUCCESS_MESSAGES = {
