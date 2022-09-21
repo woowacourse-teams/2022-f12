@@ -1,5 +1,22 @@
 package com.woowacourse.f12.acceptance;
 
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다;
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.민초;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.오찌;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Product;
@@ -17,22 +34,10 @@ import com.woowacourse.f12.support.fixture.ProductFixture;
 import com.woowacourse.f12.support.fixture.ReviewFixture;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
-
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.*;
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MemberAcceptanceTest extends AcceptanceTest {
 
@@ -352,7 +357,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member member = 코린.엔티티를().추가정보와_인벤토리를_추가해서_생성(corinneId, SENIOR, BACKEND, List.of(인벤토리_엔티티로_변환한다(inventoryProductResponse, corinneId)));
+        Member member = 코린.엔티티를().추가정보와_인벤토리를_추가해서_생성(corinneId, SENIOR, BACKEND,
+                List.of(인벤토리_엔티티로_변환한다(inventoryProductResponse, corinneId)));
         MemberWithProfileProductResponse expectedMemberResponse = MemberWithProfileProductResponse.of(member, false);
 
         assertAll(

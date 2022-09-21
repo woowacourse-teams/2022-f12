@@ -65,6 +65,7 @@ public class ReviewService {
     private Long saveReview(final ReviewRequest reviewRequest, final Member member, final Product product) {
         validateNotWritten(member, product);
         final Review review = reviewRequest.toReview(product, member);
+        product.reflectReview(review);
         return reviewRepository.save(review)
                 .getId();
     }
@@ -118,7 +119,8 @@ public class ReviewService {
     public void delete(final Long reviewId, final Long memberId) {
         final Review review = findTarget(reviewId, memberId);
         reviewRepository.delete(review);
-        final InventoryProduct inventoryProduct = inventoryProductRepository.findWithProductByMemberAndProduct(review.getMember(), review.getProduct())
+        final InventoryProduct inventoryProduct = inventoryProductRepository.findWithProductByMemberAndProduct(
+                        review.getMember(), review.getProduct())
                 .orElseThrow(InventoryProductNotFoundException::new);
         inventoryProductRepository.delete(inventoryProduct);
     }

@@ -89,6 +89,10 @@ public class Review {
         return this.member.equals(member);
     }
 
+    public boolean isWrittenAbout(final Product product) {
+        return this.product.equals(product);
+    }
+
     public void update(final Review updateReview) {
         this.content = updateReview.getContent();
         this.rating = updateReview.getRating();

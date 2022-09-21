@@ -55,6 +55,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(productResponse.getCategory()).isEqualTo(KEYBOARD_CONSTANT),
                 () -> assertThat(productResponse).usingRecursiveComparison()
                         .ignoringFieldsOfTypes(CategoryConstant.class)
+                        .ignoringFields("rating")
                         .isEqualTo(product)
         );
     }
