@@ -63,7 +63,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions(null, null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findWithOutSearchConditions(PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -74,12 +74,28 @@ class MemberRepositoryTest {
     }
 
     @Test
+    void 옵션만_입력하고_회원을_조회한다() {
+        // given
+        memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
+
+        // when
+        final Slice<Member> slice = memberRepository.findWithOnlyOptions(SENIOR, null, PageRequest.of(0, 2));
+
+        // then
+        assertAll(
+                () -> assertThat(slice.hasNext()).isFalse(),
+                () -> assertThat(slice.getContent()).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                        .containsOnly(CORINNE.생성())
+        );
+    }
+
+    @Test
     void 회원의_깃허브_아이디를_키워드로_조회한다() {
         // given
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions("hamcheeseburger", null, null,
+        Slice<Member> slice = memberRepository.findWithSearchConditions("hamcheeseburger", null, null,
                 PageRequest.of(0, 2));
 
         // then
@@ -96,7 +112,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions("cheese", null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findWithSearchConditions("cheese", null, null, PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -114,7 +130,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, null,
+        Slice<Member> slice = memberRepository.findWithSearchConditions(keyword, SENIOR, null,
                 PageRequest.of(0, 2));
 
         // then
@@ -133,7 +149,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, BACKEND,
+        Slice<Member> slice = memberRepository.findWithSearchConditions(keyword, SENIOR, BACKEND,
                 PageRequest.of(0, 2));
 
         // then
@@ -162,6 +178,7 @@ class MemberRepositoryTest {
                 .gitHubId(mincho.getGitHubId())
                 .name(mincho.getName())
                 .imageUrl(mincho.getImageUrl())
+                .registered(true)
                 .careerLevel(mincho.getCareerLevel())
                 .jobType(mincho.getJobType())
                 .followerCount(1)
@@ -185,7 +202,7 @@ class MemberRepositoryTest {
         memberRepository.save(NOT_ADDITIONAL_INFO.생성());
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions(null, null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findWithSearchConditions(null, null, null, PageRequest.of(0, 2));
 
         // then
         assertAll(

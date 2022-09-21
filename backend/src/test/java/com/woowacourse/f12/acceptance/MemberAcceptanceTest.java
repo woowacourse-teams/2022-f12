@@ -215,7 +215,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         코린.로그인한_상태로(secondLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members?page=0&size=2");
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/members?page=0&size=2&sort=followerCount,desc");
 
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);

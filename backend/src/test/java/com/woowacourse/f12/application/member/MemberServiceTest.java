@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -149,13 +150,57 @@ class MemberServiceTest {
     }
 
     @Test
+    void 비회원이_검색_조건_없이_회원을_조회한다() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
+
+        given(memberRepository.findWithOutSearchConditions(pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+
+        // when
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+        MemberPageResponse memberPageResponse = memberService.findByContains(null, memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findWithOutSearchConditions(pageable),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.of(member, false)));
+    }
+
+    @Test
+    void 비회원이_옵션으로만_회원을_조회한다() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
+
+        given(memberRepository.findWithOnlyOptions(SENIOR, BACKEND, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+
+        // when
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
+        MemberPageResponse memberPageResponse = memberService.findByContains(null, memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findWithOnlyOptions(SENIOR, BACKEND, pageable),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.of(member, false)));
+    }
+
+    @Test
     void 비회원이_키워드와_옵션으로_회원을_조회한다() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
 
-        given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
+        given(memberRepository.findWithSearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
         given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
                 .willReturn(List.of(inventoryProduct));
@@ -166,7 +211,7 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
+                () -> verify(memberRepository).findWithSearchConditions("cheese", SENIOR, BACKEND, pageable),
                 () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
@@ -187,7 +232,7 @@ class MemberServiceTest {
                 .followingId(member.getId())
                 .build();
 
-        given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
+        given(memberRepository.findWithSearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
         given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
                 .willReturn(List.of(inventoryProduct));
@@ -200,7 +245,7 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
+                () -> verify(memberRepository).findWithSearchConditions("cheese", SENIOR, BACKEND, pageable),
                 () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> verify(followingRepository).findByFollowerIdAndFollowingIdIn(loggedInId, List.of(member.getId())),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),

@@ -74,7 +74,9 @@ public class MemberService {
     }
 
     public MemberPageResponse findByContains(@Nullable final Long loggedInId, final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
-        final Slice<Member> slice = findMembersBySearchConditions(memberSearchRequest, pageable);
+        final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
+        final JobType jobType = parseJobType(memberSearchRequest);
+        final Slice<Member> slice = getSlice(memberSearchRequest, pageable, careerLevel, jobType);
         setInventoryProductsToMembers(slice);
         if (isNotLoggedIn(loggedInId)) {
             return MemberPageResponse.ofByFollowingCondition(slice, false);
@@ -83,10 +85,14 @@ public class MemberService {
         return MemberPageResponse.of(slice, followings);
     }
 
-    private Slice<Member> findMembersBySearchConditions(final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
-        final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
-        final JobType jobType = parseJobType(memberSearchRequest);
-        return memberRepository.findBySearchConditions(memberSearchRequest.getQuery(), careerLevel,
+    private Slice<Member> getSlice(final MemberSearchRequest memberSearchRequest, final Pageable pageable, final CareerLevel careerLevel, final JobType jobType) {
+        if (memberSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
+            return memberRepository.findWithOutSearchConditions(pageable);
+        }
+        if (memberSearchRequest.getQuery() == null && careerLevel != null && jobType != null){
+            return memberRepository.findWithOnlyOptions(careerLevel, jobType, pageable);
+        }
+        return memberRepository.findWithSearchConditions(memberSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
     }
 
