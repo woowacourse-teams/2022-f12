@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class WebConfigTest {
 
     private static final String CORS_ALLOWED_METHODS = "GET,POST,HEAD,PUT,PATCH,DELETE,TRACE,OPTIONS";
+    private static final String CORS_ALLOWED_HEADERS = String.join(", ", HttpHeaders.LOCATION, HttpHeaders.SET_COOKIE);
 
     @Autowired
     private MockMvc mockMvc;
@@ -34,7 +35,7 @@ class WebConfigTest {
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin))
                 .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, CORS_ALLOWED_METHODS))
-                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, CORS_ALLOWED_HEADERS))
                 .andDo(print());
     }
 
