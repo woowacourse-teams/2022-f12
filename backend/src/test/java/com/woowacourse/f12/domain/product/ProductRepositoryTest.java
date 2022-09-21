@@ -166,6 +166,26 @@ class ProductRepositoryTest {
         );
     }
 
+    @Test
+    void 제품들을_where_조건없이_조회한다() {
+        // given
+        Product keyboard1 = 제품_저장(KEYBOARD_1.생성());
+        Member member = memberRepository.save(CORINNE.생성());
+        제품_저장(KEYBOARD_2.생성());
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1, member));
+
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating"), Order.desc("reviewCount")));
+
+        // when
+        Slice<Product> page = productRepository.findWithoutSearchConditions(pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(page.hasNext()).isTrue(),
+                () -> assertThat(page.getContent()).containsOnly(keyboard1)
+        );
+    }
+
     private Product 제품_저장(Product product) {
         return productRepository.save(product);
     }
