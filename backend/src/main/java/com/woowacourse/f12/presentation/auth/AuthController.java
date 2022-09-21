@@ -9,6 +9,9 @@ import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotExistException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.boot.web.server.Cookie.SameSite;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,9 +64,11 @@ public class AuthController {
     }
 
     private void setRefreshToken(final HttpServletResponse response, final String refreshToken) {
-        final Cookie cookie = new Cookie(REFRESH_TOKEN, refreshToken);
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+        final ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN, refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite(SameSite.NONE.attributeValue())
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }
