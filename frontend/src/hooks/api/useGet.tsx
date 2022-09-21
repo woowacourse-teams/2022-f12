@@ -23,7 +23,7 @@ function useGet<T>({ url, headers }: Props): FetchData<T> {
           args && args.token
             ? { ...headers, Authorization: `Bearer ${args.token}` }
             : headers,
-        params: args && args.params && args.params,
+        params: args && args.params,
       });
       return data;
     } catch (error) {
