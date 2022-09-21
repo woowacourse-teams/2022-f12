@@ -130,7 +130,7 @@ function ProfileCard({
           <S.UserNameWrapper>
             <S.UserName>{gitHubId}</S.UserName>
             <S.LinkWrapper
-              href={`${GITHUB_URL}${gitHubId}`}
+              to={`${GITHUB_URL}${gitHubId}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -186,7 +186,7 @@ function ProfileCard({
             <NextSign />
           </S.RightButton>
         </S.InventoryWrapper>
-        <S.LinkWrapper href={`${ROUTES.PROFILE}/${id}`}>
+        <S.LinkWrapper to={`${ROUTES.PROFILE}/${id}`}>
           <S.ProfileViewButton>프로필 보기</S.ProfileViewButton>
         </S.LinkWrapper>
       </S.RightSection>
