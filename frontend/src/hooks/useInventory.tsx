@@ -54,12 +54,12 @@ function useInventory({ memberId }: Props): Return {
   const ParamsWithMemberId = {
     ...CommonParams,
     url: ENDPOINTS.REVIEWS_BY_MEMBER_ID(Number(memberId)),
-    headers: hasToken ? { Authorization: `Bearer ${userData.token}` } : null,
   };
 
   const ParamsWithoutMemberId = {
     ...CommonParams,
     url: ENDPOINTS.MY_REVIEWS,
+    headers: hasToken ? { Authorization: `Bearer ${userData.token}` } : null,
   };
 
   const {
