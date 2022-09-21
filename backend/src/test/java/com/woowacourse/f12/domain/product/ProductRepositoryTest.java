@@ -47,8 +47,6 @@ class ProductRepositoryTest {
         Member member = memberRepository.save(CORINNE.생성());
         Review review1 = REVIEW_RATING_4.작성(product, member);
         Review review2 = REVIEW_RATING_5.작성(product, member);
-        product.reflectReview(review1);
-        product.reflectReview(review2);
 
         리뷰_저장(review1);
         리뷰_저장(review2);
@@ -90,14 +88,11 @@ class ProductRepositoryTest {
 
         Review review1 = REVIEW_RATING_5.작성(product1, member);
         Review review2 = REVIEW_RATING_5.작성(product2, member);
-
-        product1.reflectReview(review1);
-        product2.reflectReview(review2);
-        product2.reflectReview(review2);
+        Review review3 = REVIEW_RATING_5.작성(product2, member);
 
         리뷰_저장(review1);
         리뷰_저장(review2);
-        리뷰_저장(review2);
+        리뷰_저장(review3);
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("reviewCount")));
 

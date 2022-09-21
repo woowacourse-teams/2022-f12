@@ -1,7 +1,5 @@
 package com.woowacourse.f12.domain.product;
 
-import com.woowacourse.f12.domain.review.Review;
-import com.woowacourse.f12.exception.internalserver.InvalidReflectReviewException;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -65,17 +63,18 @@ public class Product {
         return this.category == category;
     }
 
-    public void reflectReview(final Review review) {
-        validateWrittenAboutThis(review);
-        reviewCount++;
-        totalRating += review.getRating();
-        rating = (double) totalRating / reviewCount;
+    public void reflectReviewRating(final int reviewRating) {
+        increaseReviewCount();
+        calculateRatings(reviewRating);
     }
 
-    private void validateWrittenAboutThis(final Review review) {
-        if (!review.isWrittenAbout(this)) {
-            throw new InvalidReflectReviewException();
-        }
+    private void increaseReviewCount() {
+        reviewCount++;
+    }
+
+    private void calculateRatings(final int reviewRating) {
+        totalRating += reviewRating;
+        rating = (double) totalRating / reviewCount;
     }
 
     @Override
