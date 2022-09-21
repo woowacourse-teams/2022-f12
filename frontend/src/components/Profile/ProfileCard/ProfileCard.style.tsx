@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div<{ index: number }>`
@@ -93,7 +94,7 @@ export const RightButton = styled.button`
   font-size: 1.5rem;
 `;
 
-export const LinkWrapper = styled.a``;
+export const LinkWrapper = styled(Link)``;
 
 export const ProfileViewButton = styled.button`
   border: none;
