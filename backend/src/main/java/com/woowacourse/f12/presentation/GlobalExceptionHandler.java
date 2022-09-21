@@ -14,7 +14,7 @@ import com.woowacourse.f12.exception.internalserver.InternalServerException;
 import com.woowacourse.f12.exception.notfound.NotFoundException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
-import javax.servlet.http.Cookie;
+import com.woowacourse.f12.presentation.auth.RefreshTokenCookieProvider;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.util.WebUtils;
 
 @Slf4j
 @RestControllerAdvice
@@ -35,6 +34,12 @@ public class GlobalExceptionHandler {
     private static final String REQUEST_DATA_FORMAT_ERROR_MESSAGE = "요청으로 넘어온 값이 형식에 맞지 않습니다.";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "서버 오류가 발생했습니다";
     private static final String LOG_FORMAT = "Class : {}, Code : {}, Message : {}";
+
+    private final RefreshTokenCookieProvider refreshTokenCookieProvider;
+
+    public GlobalExceptionHandler(final RefreshTokenCookieProvider refreshTokenCookieProvider) {
+        this.refreshTokenCookieProvider = refreshTokenCookieProvider;
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleNotFoundException(final NotFoundException e) {
@@ -77,11 +82,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleRefreshTokenNotFoundException(final RefreshTokenInvalidException e,
                                                                                  final HttpServletRequest request,
                                                                                  final HttpServletResponse response) {
-        final Cookie cookie = WebUtils.getCookie(request, "refreshToken");
-        if (cookie != null) {
-            cookie.setMaxAge(0);
-            response.addCookie(cookie);
-        }
+        refreshTokenCookieProvider.removeCookie(request, response);
         return handleUnauthorizedException(e);
     }
 
