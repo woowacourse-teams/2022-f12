@@ -20,11 +20,12 @@ import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
-import java.util.Objects;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -57,7 +58,7 @@ public class ReviewService {
     }
 
     private void validateRegisterCompleted(final Member member) {
-        if (!member.isRegisterCompleted()) {
+        if (!member.isRegistered()) {
             throw new RegisterNotCompletedException();
         }
     }

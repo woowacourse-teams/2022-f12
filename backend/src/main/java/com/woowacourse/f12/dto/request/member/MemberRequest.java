@@ -28,6 +28,7 @@ public class MemberRequest {
         return Member.builder()
                 .careerLevel(careerLevel.toCareerLevel())
                 .jobType(jobType.toJobType())
+                .registered(true)
                 .build();
     }
 }

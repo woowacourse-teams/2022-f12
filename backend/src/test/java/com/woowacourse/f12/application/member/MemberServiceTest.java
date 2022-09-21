@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -135,14 +134,18 @@ class MemberServiceTest {
     @Test
     void 회원정보를_업데이트_한다() {
         // given
+        final Member corinne = CORINNE.생성(1L);
         given(memberRepository.findById(1L))
-                .willReturn(Optional.of(CORINNE.생성(1L)));
+                .willReturn(Optional.of(corinne));
 
         // when
         memberService.updateMember(1L, new MemberRequest(JUNIOR_CONSTANT, ETC_CONSTANT));
 
         // then
-        verify(memberRepository).findById(1L);
+        assertAll(
+                () -> verify(memberRepository).findById(1L),
+                () -> assertThat(corinne.isRegistered()).isTrue()
+        );
     }
 
     @Test

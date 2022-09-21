@@ -16,23 +16,25 @@ import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
 
 public enum MemberFixture {
 
-    CORINNE("hamcheeseburger", "유현지", "corinne_url", SENIOR, BACKEND),
-    MINCHO("jswith", "홍영민", "mincho_url", JUNIOR, FRONTEND),
-    OHZZI("Ohzzi", "오지훈", "Ohzzi_url", JUNIOR, BACKEND),
-    CORINNE_UPDATED("hamcheeseburger", "괴물개발자", "corinne_url", SENIOR, BACKEND),
-    NOT_ADDITIONAL_INFO("invalid", "invalid", "invalid", null, null);
+    CORINNE("hamcheeseburger", "유현지", "corinne_url", true, SENIOR, BACKEND),
+    MINCHO("jswith", "홍영민", "mincho_url", true, JUNIOR, FRONTEND),
+    OHZZI("Ohzzi", "오지훈", "Ohzzi_url", true, JUNIOR, BACKEND),
+    CORINNE_UPDATED("hamcheeseburger", "괴물개발자", "corinne_url", true, SENIOR, BACKEND),
+    NOT_ADDITIONAL_INFO("invalid", "invalid", "invalid", false, null, null);
 
     private final String gitHubId;
     private final String name;
     private final String imageUrl;
+    private final boolean registered;
     private final CareerLevel careerLevel;
     private final JobType jobType;
 
-    MemberFixture(final String gitHubId, final String name, final String imageUrl, final CareerLevel careerLevel,
+    MemberFixture(final String gitHubId, final String name, final String imageUrl, final boolean registered, final CareerLevel careerLevel,
                   final JobType jobType) {
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.registered = registered;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
     }
@@ -47,6 +49,7 @@ public enum MemberFixture {
                 .gitHubId(this.gitHubId)
                 .name(this.name)
                 .imageUrl(this.imageUrl)
+                .registered(this.registered)
                 .careerLevel(this.careerLevel)
                 .jobType(this.jobType)
                 .build();
@@ -62,6 +65,7 @@ public enum MemberFixture {
                 .gitHubId(this.gitHubId)
                 .name(this.name)
                 .imageUrl(this.imageUrl)
+                .registered(this.registered)
                 .careerLevel(this.careerLevel)
                 .jobType(this.jobType)
                 .inventoryProducts(new InventoryProducts(inventoryProducts))
@@ -99,6 +103,7 @@ public enum MemberFixture {
                 .gitHubId(this.gitHubId)
                 .name(this.name)
                 .imageUrl(this.imageUrl)
+                .registered(this.registered)
                 .careerLevel(careerLevel)
                 .jobType(jobType)
                 .build();
