@@ -46,7 +46,7 @@ function useAxios(): Return {
     const errorResponseBody = error.response.data;
 
     // setError보다 먼저 와야 오류 화면이 표시되지 않음
-    if (errorResponseBody.errorCode === 40104) {
+    if (errorResponseBody.errorCode === '40104') {
       return await reissueTokenAndRetry(error);
     }
 
@@ -57,7 +57,7 @@ function useAxios(): Return {
       throw new Error(API_ERROR_CODE_EXCEPTION_MESSAGES.NO_CODE);
     }
 
-    if (errorResponseBody.errorCode === 40105) {
+    if (errorResponseBody.errorCode === '40105') {
       throw new Error(FAILURE_MESSAGES.NO_REFRESH_TOKEN);
     }
 
