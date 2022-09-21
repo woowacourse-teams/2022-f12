@@ -33,7 +33,7 @@ public class ProductResponse {
                 product.getName(),
                 product.getImageUrl(),
                 product.getReviewCount(),
-                product.getRating(),
+                product.getAvgRating(),
                 CategoryConstant.from(product.getCategory())
         );
     }

@@ -1,11 +1,18 @@
 package com.woowacourse.f12.domain.product;
 
+import com.woowacourse.f12.domain.review.Review;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
-import org.hibernate.annotations.Formula;
-
-import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "product", uniqueConstraints = {
@@ -14,7 +21,7 @@ import java.util.Objects;
 @Getter
 public class Product {
 
-    private static final int MAXIMUM_IMAGE_URL_LENGTH = 65535;
+    private static final int MAXIMUM_IMAGE_URL_LENGTH = 15000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,31 +33,41 @@ public class Product {
     @Column(name = "image_url", nullable = false, length = MAXIMUM_IMAGE_URL_LENGTH)
     private String imageUrl;
 
-    @Formula("(SELECT COUNT(1) FROM review r WHERE r.product_id = id)")
+    @Column(name = "review_count", nullable = false)
     private int reviewCount;
 
-    @Formula("(SELECT IFNULL(AVG(r.rating), 0) FROM review r WHERE r.product_id = id)")
-    private double rating;
+    @Column(name = "total_rating", nullable = false)
+    private int totalRating;
 
-    @Column(name = "category", nullable = false)
+    @Column(name = "avg_rating", nullable = false)
+    private double avgRating;
+
+    @Column(name = "category", nullable = false, length = 8)
     @Enumerated(value = EnumType.STRING)
     private Category category;
 
     protected Product() {
     }
 
-    private Product(final Long id, final String name, final String imageUrl, final int reviewCount, final double rating,
-                    final Category category) {
+    private Product(final Long id, final String name, final String imageUrl, final int reviewCount,
+                    final int totalRating, final double avgRating, final Category category) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
         this.reviewCount = reviewCount;
-        this.rating = rating;
+        this.totalRating = totalRating;
+        this.avgRating = avgRating;
         this.category = category;
     }
 
     public boolean isSameCategory(final Category category) {
         return this.category == category;
+    }
+
+    public void reflectReview(final Review review) {
+        reviewCount++;
+        totalRating += review.getRating();
+        avgRating = (double) totalRating / reviewCount;
     }
 
     @Override

@@ -60,7 +60,7 @@ class ProductRepositoryTest {
 
         // then
         assertAll(
-                () -> assertThat(savedProduct.getRating()).isEqualTo(4.5),
+                () -> assertThat(savedProduct.getAvgRating()).isEqualTo(4.5),
                 () -> assertThat(savedProduct.getReviewCount()).isEqualTo(2)
         );
     }
