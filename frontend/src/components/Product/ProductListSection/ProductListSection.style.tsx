@@ -19,3 +19,9 @@ export const Wrapper = styled.div`
   margin: 1rem auto 0 auto;
   width: 100%;
 `;
+
+export const NoDataContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
