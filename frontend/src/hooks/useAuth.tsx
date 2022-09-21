@@ -65,7 +65,7 @@ function useAuth(): Return {
     if (!confirmation) return;
 
     try {
-      await requestLogout();
+      await requestLogout({ includeCookie: true });
       handleLogout();
       await showAlert(SUCCESS_MESSAGES.LOGOUT);
     } catch {
