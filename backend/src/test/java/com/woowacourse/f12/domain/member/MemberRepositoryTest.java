@@ -1,6 +1,20 @@
 package com.woowacourse.f12.domain.member;
 
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
+import static com.woowacourse.f12.support.fixture.MemberFixture.NOT_ADDITIONAL_INFO;
+import static com.woowacourse.f12.support.fixture.MemberFixture.OHZZI;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import com.woowacourse.f12.config.JpaConfig;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -11,18 +25,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
-import static com.woowacourse.f12.support.fixture.MemberFixture.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DataJpaTest
 @Import({JpaConfig.class})
@@ -161,6 +163,78 @@ class MemberRepositoryTest {
     }
 
     @Test
+    void 팔로잉하는_회원의_목록을_키워드와_옵션을_입력하지않고_조회한다() {
+        // given
+        Member corinne = CORINNE.생성();
+        Member mincho = MINCHO.생성();
+        Member ohzzi = OHZZI.생성();
+        memberRepository.saveAll(List.of(corinne, mincho, ohzzi));
+        followingRepository.save(Following.builder()
+                .followerId(corinne.getId())
+                .followingId(mincho.getId())
+                .build());
+        entityManager.clear();
+
+        Member expected = Member.builder()
+                .id(mincho.getId())
+                .gitHubId(mincho.getGitHubId())
+                .name(mincho.getName())
+                .imageUrl(mincho.getImageUrl())
+                .registered(true)
+                .careerLevel(mincho.getCareerLevel())
+                .jobType(mincho.getJobType())
+                .followerCount(1)
+                .build();
+
+        // when
+        Slice<Member> slice = memberRepository.findFollowingsWithOutSearchConditions(corinne.getId(),
+                PageRequest.of(0, 1, Sort.by("id").descending()));
+
+        // then
+        assertAll(
+                () -> assertThat(slice.hasNext()).isFalse(),
+                () -> assertThat(slice.getContent()).usingRecursiveFieldByFieldElementComparator()
+                        .containsExactly(expected)
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원의_목록을_옵션만으로_조회한다() {
+        // given
+        Member corinne = CORINNE.생성();
+        Member mincho = MINCHO.생성();
+        Member ohzzi = OHZZI.생성();
+        memberRepository.saveAll(List.of(corinne, mincho, ohzzi));
+        followingRepository.save(Following.builder()
+                .followerId(corinne.getId())
+                .followingId(mincho.getId())
+                .build());
+        entityManager.clear();
+
+        Member expected = Member.builder()
+                .id(mincho.getId())
+                .gitHubId(mincho.getGitHubId())
+                .name(mincho.getName())
+                .imageUrl(mincho.getImageUrl())
+                .registered(true)
+                .careerLevel(mincho.getCareerLevel())
+                .jobType(mincho.getJobType())
+                .followerCount(1)
+                .build();
+
+        // when
+        Slice<Member> slice = memberRepository.findFollowingsWithOnlyOptions(corinne.getId(), null, FRONTEND,
+                PageRequest.of(0, 1, Sort.by("id").descending()));
+
+        // then
+        assertAll(
+                () -> assertThat(slice.hasNext()).isFalse(),
+                () -> assertThat(slice.getContent()).usingRecursiveFieldByFieldElementComparator()
+                        .containsExactly(expected)
+        );
+    }
+
+    @Test
     void 팔로잉하는_회원의_목록을_키워드와_옵션으로_조회한다() {
         // given
         Member corinne = CORINNE.생성();
@@ -185,7 +259,7 @@ class MemberRepositoryTest {
                 .build();
 
         // when
-        Slice<Member> slice = memberRepository.findFollowingsBySearchConditions(corinne.getId(), "jswith", JUNIOR,
+        Slice<Member> slice = memberRepository.findFollowingsWithSearchConditions(corinne.getId(), "jswith", JUNIOR,
                 FRONTEND, PageRequest.of(0, 1, Sort.by("id").descending()));
 
         // then

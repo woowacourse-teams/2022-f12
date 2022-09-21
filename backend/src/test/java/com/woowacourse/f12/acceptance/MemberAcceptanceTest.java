@@ -1,5 +1,22 @@
 package com.woowacourse.f12.acceptance;
 
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다;
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.민초;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.오찌;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Product;
@@ -17,22 +34,10 @@ import com.woowacourse.f12.support.fixture.ProductFixture;
 import com.woowacourse.f12.support.fixture.ReviewFixture;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
-
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.*;
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MemberAcceptanceTest extends AcceptanceTest {
 
@@ -332,17 +337,17 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인_하지_않고_회원목록을_대표장비를_포함하여_키워드로_조회한다() {
         // given
-        final Product product = 제품을_저장한다(ProductFixture.KEYBOARD_2.생성());
+        Product product = 제품을_저장한다(ProductFixture.KEYBOARD_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
         민초.로그인을_하고().추가정보를_입력한다(memberRequest);
 
         LoginResponse corinneLoginResponse = 코린.로그인을_한다();
-        final Long corinneId = corinneLoginResponse.getMember().getId();
+        Long corinneId = corinneLoginResponse.getMember().getId();
 
         코린.로그인한_상태로(corinneLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
         코린.로그인한_상태로(corinneLoginResponse.getToken()).리뷰를_작성한다(product.getId(), ReviewFixture.REVIEW_RATING_2);
         List<InventoryProductResponse> inventoryProducts = 자신의_인벤토리_장비를_조회한다(corinneLoginResponse).getItems();
-        final InventoryProductResponse inventoryProductResponse = inventoryProducts.get(0);
+        InventoryProductResponse inventoryProductResponse = inventoryProducts.get(0);
 
         코린.로그인한_상태로(corinneLoginResponse.getToken()).대표장비를_등록한다(List.of(inventoryProductResponse.getId()));
 
@@ -352,7 +357,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
 
-        Member member = 코린.엔티티를().추가정보와_인벤토리를_추가해서_생성(corinneId, SENIOR, BACKEND, List.of(인벤토리_엔티티로_변환한다(inventoryProductResponse, corinneId)));
+        Member member = 코린.엔티티를().추가정보와_인벤토리를_추가해서_생성(corinneId, SENIOR, BACKEND,
+                List.of(인벤토리_엔티티로_변환한다(inventoryProductResponse, corinneId)));
         MemberWithProfileProductResponse expectedMemberResponse = MemberWithProfileProductResponse.of(member, false);
 
         assertAll(
@@ -477,7 +483,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하고_팔로우하는_회원의_목록을_조회한다() {
+    void 로그인_하고_팔로우하는_회원의_목록을_키워드와_옵션_없이_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -515,7 +521,46 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하고_팔로우하는_회원의_목록을_검색조건을_설정하여_조회한다() {
+    void 로그인_하고_팔로우하는_회원의_목록을_옵션으로만_조회한다() {
+        // given
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+
+        LoginResponse followingLoginResponse = 오찌.로그인을_한다();
+        Long followingId = followingLoginResponse.getMember().getId();
+        오찌.로그인한_상태로(followingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+
+        LoginResponse notFollowingLoginResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(notFollowingLoginResponse.getToken()).추가정보를_입력한다(memberRequest);
+
+        LoginResponse loginResponse = 코린.로그인을_한다();
+        String loginToken = loginResponse.getToken();
+        코린.로그인한_상태로(loginToken).추가정보를_입력한다(memberRequest);
+
+        코린.로그인한_상태로(loginToken).팔로우한다(followingId);
+
+        // when
+        ExtractableResponse<Response> response = 로그인된_상태로_GET_요청을_보낸다(
+                "/api/v1/members/me/followings?page=0&size=1&careerLevel=senior&jobType=backend",
+                loginToken);
+
+        // then
+        MemberPageResponse memberPageResponse = response.as(MemberPageResponse.class);
+
+        Member following = 오찌.엔티티를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
+        MemberWithProfileProductResponse followingResponse = MemberWithProfileProductResponse.of(following, true);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems())
+                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("followerCount")
+                        .hasSize(1)
+                        .containsExactly(followingResponse)
+        );
+    }
+
+    @Test
+    void 로그인_하고_팔로우하는_회원의_목록을_키워드와_옵션으로_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 

@@ -3,7 +3,12 @@ package com.woowacourse.f12.application.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
-import com.woowacourse.f12.domain.member.*;
+import com.woowacourse.f12.domain.member.CareerLevel;
+import com.woowacourse.f12.domain.member.Following;
+import com.woowacourse.f12.domain.member.FollowingRepository;
+import com.woowacourse.f12.domain.member.JobType;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.LoggedInMemberResponse;
@@ -14,15 +19,14 @@ import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,7 +38,8 @@ public class MemberService {
     private final FollowingRepository followingRepository;
     private final InventoryProductRepository inventoryProductRepository;
 
-    public MemberService(final MemberRepository memberRepository, final FollowingRepository followingRepository, final InventoryProductRepository inventoryProductRepository) {
+    public MemberService(final MemberRepository memberRepository, final FollowingRepository followingRepository,
+                         final InventoryProductRepository inventoryProductRepository) {
         this.memberRepository = memberRepository;
         this.followingRepository = followingRepository;
         this.inventoryProductRepository = inventoryProductRepository;
@@ -73,23 +78,26 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    public MemberPageResponse findByContains(@Nullable final Long loggedInId, final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
-        final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
-        final JobType jobType = parseJobType(memberSearchRequest);
-        final Slice<Member> slice = getSlice(memberSearchRequest, pageable, careerLevel, jobType);
+    public MemberPageResponse findByContains(@Nullable final Long loggedInId,
+                                             final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
+        final Slice<Member> slice = findBySearchConditions(memberSearchRequest, pageable);
         setInventoryProductsToMembers(slice);
         if (isNotLoggedIn(loggedInId)) {
             return MemberPageResponse.ofByFollowingCondition(slice, false);
         }
-        final List<Following> followings = followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId, extractMemberIds(slice.getContent()));
+        final List<Following> followings = followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId,
+                extractMemberIds(slice.getContent()));
         return MemberPageResponse.of(slice, followings);
     }
 
-    private Slice<Member> getSlice(final MemberSearchRequest memberSearchRequest, final Pageable pageable, final CareerLevel careerLevel, final JobType jobType) {
+    private Slice<Member> findBySearchConditions(final MemberSearchRequest memberSearchRequest,
+                                                 final Pageable pageable) {
+        final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
+        final JobType jobType = parseJobType(memberSearchRequest);
         if (memberSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
             return memberRepository.findWithOutSearchConditions(pageable);
         }
-        if (memberSearchRequest.getQuery() == null && careerLevel != null && jobType != null){
+        if (memberSearchRequest.getQuery() == null && careerLevel != null && jobType != null) {
             return memberRepository.findWithOnlyOptions(careerLevel, jobType, pageable);
         }
         return memberRepository.findWithSearchConditions(memberSearchRequest.getQuery(), careerLevel,
@@ -97,7 +105,8 @@ public class MemberService {
     }
 
     private void setInventoryProductsToMembers(final Slice<Member> slice) {
-        final List<InventoryProduct> mixedInventoryProducts = inventoryProductRepository.findWithProductByMembers(slice.getContent());
+        final List<InventoryProduct> mixedInventoryProducts = inventoryProductRepository.findWithProductByMembers(
+                slice.getContent());
         for (Member member : slice.getContent()) {
             final List<InventoryProduct> memberInventoryProducts = mixedInventoryProducts.stream()
                     .filter(it -> it.getMember().isSameId(member.getId()))
@@ -166,8 +175,7 @@ public class MemberService {
     public MemberPageResponse findFollowingsByConditions(final Long loggedInId,
                                                          final MemberSearchRequest memberSearchRequest,
                                                          final Pageable pageable) {
-        final Slice<Member> slice = findFollowingsBySearchConditions(loggedInId,
-                memberSearchRequest, pageable);
+        final Slice<Member> slice = findFollowingsBySearchConditions(loggedInId, memberSearchRequest, pageable);
         setInventoryProductsToMembers(slice);
         return MemberPageResponse.ofByFollowingCondition(slice, true);
     }
@@ -177,7 +185,13 @@ public class MemberService {
                                                            final Pageable pageable) {
         final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
         final JobType jobType = parseJobType(memberSearchRequest);
-        return memberRepository.findFollowingsBySearchConditions(loggedInId, memberSearchRequest.getQuery(),
+        if (memberSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
+            return memberRepository.findFollowingsWithOutSearchConditions(loggedInId, pageable);
+        }
+        if (memberSearchRequest.getQuery() == null && careerLevel != null && jobType != null) {
+            return memberRepository.findFollowingsWithOnlyOptions(loggedInId, careerLevel, jobType, pageable);
+        }
+        return memberRepository.findFollowingsWithSearchConditions(loggedInId, memberSearchRequest.getQuery(),
                 careerLevel, jobType, pageable);
     }
 }
