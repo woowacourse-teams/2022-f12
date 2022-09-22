@@ -24,6 +24,6 @@ public class LoginResponse {
     public static LoginResponse from(final LoginResult loginResult) {
         final Member member = loginResult.getMember();
         final LoginMemberResponse loginMemberResponse = LoginMemberResponse.from(member);
-        return new LoginResponse(loginResult.getAccessToken(), member.isRegisterCompleted(), loginMemberResponse);
+        return new LoginResponse(loginResult.getAccessToken(), member.isRegistered(), loginMemberResponse);
     }
 }

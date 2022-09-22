@@ -31,6 +31,9 @@ public class Member {
     @Column(name = "image_url", length = 65535, nullable = false)
     private String imageUrl;
 
+    @Column(name = "registered", nullable = false)
+    private boolean registered;
+
     @Column(name = "career_level")
     @Enumerated(EnumType.STRING)
     private CareerLevel careerLevel;
@@ -49,12 +52,13 @@ public class Member {
     protected Member() {
     }
 
-    private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final CareerLevel careerLevel,
+    private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final boolean registered, final CareerLevel careerLevel,
                    final JobType jobType, final InventoryProducts inventoryProducts, final int followerCount) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.registered = registered;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
         this.inventoryProducts = inventoryProducts;
@@ -66,6 +70,7 @@ public class Member {
         updateImageUrl(updateMember.imageUrl);
         updateCareerLevel(updateMember.careerLevel);
         updateJobType(updateMember.jobType);
+        updateRegistered(updateMember.registered);
     }
 
     private void updateName(final String name) {
@@ -92,8 +97,11 @@ public class Member {
         }
     }
 
-    public boolean isRegisterCompleted() {
-        return Objects.nonNull(this.careerLevel) && Objects.nonNull(this.jobType);
+    private void updateRegistered(final boolean registered) {
+        if (this.registered) {
+            return;
+        }
+        this.registered = registered;
     }
 
     public List<InventoryProduct> getProfileProduct() {

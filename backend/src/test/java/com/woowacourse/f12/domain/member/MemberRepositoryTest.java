@@ -1,6 +1,20 @@
 package com.woowacourse.f12.domain.member;
 
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
+import static com.woowacourse.f12.support.fixture.MemberFixture.NOT_ADDITIONAL_INFO;
+import static com.woowacourse.f12.support.fixture.MemberFixture.OHZZI;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import com.woowacourse.f12.config.JpaConfig;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -11,18 +25,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
-import static com.woowacourse.f12.support.fixture.MemberFixture.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DataJpaTest
 @Import({JpaConfig.class})
@@ -63,7 +65,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions(null, null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findWithOutSearchConditions(PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -74,12 +76,28 @@ class MemberRepositoryTest {
     }
 
     @Test
+    void 옵션만_입력하고_회원을_조회한다() {
+        // given
+        memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
+
+        // when
+        Slice<Member> slice = memberRepository.findWithSearchConditions(null, SENIOR, null, PageRequest.of(0, 2));
+
+        // then
+        assertAll(
+                () -> assertThat(slice.hasNext()).isFalse(),
+                () -> assertThat(slice.getContent()).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                        .containsOnly(CORINNE.생성())
+        );
+    }
+
+    @Test
     void 회원의_깃허브_아이디를_키워드로_조회한다() {
         // given
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions("hamcheeseburger", null, null,
+        Slice<Member> slice = memberRepository.findWithSearchConditions("hamcheeseburger", null, null,
                 PageRequest.of(0, 2));
 
         // then
@@ -96,7 +114,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions("cheese", null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findWithSearchConditions("cheese", null, null, PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -114,7 +132,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, null,
+        Slice<Member> slice = memberRepository.findWithSearchConditions(keyword, SENIOR, null,
                 PageRequest.of(0, 2));
 
         // then
@@ -133,7 +151,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions(keyword, SENIOR, BACKEND,
+        Slice<Member> slice = memberRepository.findWithSearchConditions(keyword, SENIOR, BACKEND,
                 PageRequest.of(0, 2));
 
         // then
@@ -141,6 +159,78 @@ class MemberRepositoryTest {
                 () -> assertThat(slice.hasNext()).isFalse(),
                 () -> assertThat(slice.getContent()).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                         .containsOnly(CORINNE.생성())
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원의_목록을_키워드와_옵션을_입력하지않고_조회한다() {
+        // given
+        Member corinne = CORINNE.생성();
+        Member mincho = MINCHO.생성();
+        Member ohzzi = OHZZI.생성();
+        memberRepository.saveAll(List.of(corinne, mincho, ohzzi));
+        followingRepository.save(Following.builder()
+                .followerId(corinne.getId())
+                .followingId(mincho.getId())
+                .build());
+        entityManager.clear();
+
+        Member expected = Member.builder()
+                .id(mincho.getId())
+                .gitHubId(mincho.getGitHubId())
+                .name(mincho.getName())
+                .imageUrl(mincho.getImageUrl())
+                .registered(true)
+                .careerLevel(mincho.getCareerLevel())
+                .jobType(mincho.getJobType())
+                .followerCount(1)
+                .build();
+
+        // when
+        Slice<Member> slice = memberRepository.findFollowingsWithOutSearchConditions(corinne.getId(),
+                PageRequest.of(0, 1, Sort.by("id").descending()));
+
+        // then
+        assertAll(
+                () -> assertThat(slice.hasNext()).isFalse(),
+                () -> assertThat(slice.getContent()).usingRecursiveFieldByFieldElementComparator()
+                        .containsExactly(expected)
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원의_목록을_옵션만으로_조회한다() {
+        // given
+        Member corinne = CORINNE.생성();
+        Member mincho = MINCHO.생성();
+        Member ohzzi = OHZZI.생성();
+        memberRepository.saveAll(List.of(corinne, mincho, ohzzi));
+        followingRepository.save(Following.builder()
+                .followerId(corinne.getId())
+                .followingId(mincho.getId())
+                .build());
+        entityManager.clear();
+
+        Member expected = Member.builder()
+                .id(mincho.getId())
+                .gitHubId(mincho.getGitHubId())
+                .name(mincho.getName())
+                .imageUrl(mincho.getImageUrl())
+                .registered(true)
+                .careerLevel(mincho.getCareerLevel())
+                .jobType(mincho.getJobType())
+                .followerCount(1)
+                .build();
+
+        // when
+        Slice<Member> slice = memberRepository.findFollowingsWithSearchConditions(corinne.getId(), null, null, FRONTEND,
+                PageRequest.of(0, 1, Sort.by("id").descending()));
+
+        // then
+        assertAll(
+                () -> assertThat(slice.hasNext()).isFalse(),
+                () -> assertThat(slice.getContent()).usingRecursiveFieldByFieldElementComparator()
+                        .containsExactly(expected)
         );
     }
 
@@ -162,13 +252,14 @@ class MemberRepositoryTest {
                 .gitHubId(mincho.getGitHubId())
                 .name(mincho.getName())
                 .imageUrl(mincho.getImageUrl())
+                .registered(true)
                 .careerLevel(mincho.getCareerLevel())
                 .jobType(mincho.getJobType())
                 .followerCount(1)
                 .build();
 
         // when
-        Slice<Member> slice = memberRepository.findFollowingsBySearchConditions(corinne.getId(), "jswith", JUNIOR,
+        Slice<Member> slice = memberRepository.findFollowingsWithSearchConditions(corinne.getId(), "jswith", JUNIOR,
                 FRONTEND, PageRequest.of(0, 1, Sort.by("id").descending()));
 
         // then
@@ -185,7 +276,7 @@ class MemberRepositoryTest {
         memberRepository.save(NOT_ADDITIONAL_INFO.생성());
 
         // when
-        Slice<Member> slice = memberRepository.findBySearchConditions(null, null, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findWithSearchConditions(null, null, null, PageRequest.of(0, 2));
 
         // then
         assertAll(
