@@ -200,7 +200,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
                 코린.로그인한_상태로(loginToken).리뷰를_작성한다(product2.getId(), REVIEW_RATING_4));
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/reviews?page=0&size=2&sort=createdAt,desc");
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/reviews?page=0&size=2&sort=id,desc");
 
         // then
         ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = response.as(
