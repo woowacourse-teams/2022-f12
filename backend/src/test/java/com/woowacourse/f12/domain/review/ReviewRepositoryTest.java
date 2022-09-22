@@ -99,7 +99,7 @@ class ReviewRepositoryTest {
         Product product1 = productRepository.save(KEYBOARD_1.생성());
         Product product2 = productRepository.save(KEYBOARD_2.생성());
         Member member = memberRepository.save(CORINNE.생성());
-        Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("id")));
         리뷰_저장(REVIEW_RATING_5.작성(product1, member));
         Review review = 리뷰_저장(REVIEW_RATING_5.작성(product2, member));
 
