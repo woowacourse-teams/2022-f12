@@ -18,7 +18,6 @@ import com.woowacourse.f12.presentation.product.CategoryConstant;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -42,10 +41,19 @@ public class ProductService {
         return ProductResponse.from(product);
     }
 
-    public ProductPageResponse findBySearchConditions(final ProductSearchRequest productSearchRequest, final Pageable pageable) {
-        final Category category = parseCategory(productSearchRequest);
-        final Slice<Product> slice = productRepository.findBySearchConditions(productSearchRequest.getQuery(), category, pageable);
+    public ProductPageResponse findBySearchConditions(final ProductSearchRequest productSearchRequest,
+                                                      final Pageable pageable) {
+        final Slice<Product> slice = findProductBySearchConditions(productSearchRequest, pageable);
         return ProductPageResponse.from(slice);
+    }
+
+    private Slice<Product> findProductBySearchConditions(final ProductSearchRequest productSearchRequest,
+                                                         final Pageable pageable) {
+        final Category category = parseCategory(productSearchRequest);
+        if (productSearchRequest.getQuery() == null && category == null) {
+            return productRepository.findWithoutSearchConditions(pageable);
+        }
+        return productRepository.findWithSearchConditions(productSearchRequest.getQuery(), category, pageable);
     }
 
     private Category parseCategory(final ProductSearchRequest productSearchRequest) {

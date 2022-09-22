@@ -17,8 +17,6 @@ import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -42,17 +40,16 @@ class ProductRepositoryTest {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @Test
     void 제품을_단일_조회_한다() {
         // given
         Product product = 제품_저장(KEYBOARD_1.생성());
         Member member = memberRepository.save(CORINNE.생성());
-        리뷰_저장(REVIEW_RATING_4.작성(product, member));
-        리뷰_저장(REVIEW_RATING_5.작성(product, member));
-        entityManager.clear();
+        Review review1 = REVIEW_RATING_4.작성(product, member);
+        Review review2 = REVIEW_RATING_5.작성(product, member);
+
+        리뷰_저장(review1);
+        리뷰_저장(review2);
 
         // when
         Product savedProduct = productRepository.findById(product.getId())
@@ -73,7 +70,7 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1);
 
         // when
-        Slice<Product> slice = productRepository.findBySearchConditions(null, KEYBOARD, pageable);
+        Slice<Product> slice = productRepository.findWithSearchConditions(null, KEYBOARD, pageable);
 
         // then
         assertAll(
@@ -89,14 +86,18 @@ class ProductRepositoryTest {
         Product product2 = 제품_저장(KEYBOARD_2.생성());
         Member member = memberRepository.save(CORINNE.생성());
 
-        리뷰_저장(REVIEW_RATING_5.작성(product1, member));
-        리뷰_저장(REVIEW_RATING_5.작성(product2, member));
-        리뷰_저장(REVIEW_RATING_5.작성(product2, member));
+        Review review1 = REVIEW_RATING_5.작성(product1, member);
+        Review review2 = REVIEW_RATING_5.작성(product2, member);
+        Review review3 = REVIEW_RATING_5.작성(product2, member);
+
+        리뷰_저장(review1);
+        리뷰_저장(review2);
+        리뷰_저장(review3);
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("reviewCount")));
 
         // when
-        Slice<Product> slice = productRepository.findBySearchConditions(null, KEYBOARD, pageable);
+        Slice<Product> slice = productRepository.findWithSearchConditions(null, KEYBOARD, pageable);
 
         // then
         assertAll(
@@ -120,7 +121,7 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating")));
 
         // when
-        Slice<Product> slice = productRepository.findBySearchConditions(null, KEYBOARD, pageable);
+        Slice<Product> slice = productRepository.findWithSearchConditions(null, KEYBOARD, pageable);
 
         // then
         assertAll(
@@ -138,7 +139,7 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 2);
 
         // when
-        Slice<Product> page = productRepository.findBySearchConditions("1", null, pageable);
+        Slice<Product> page = productRepository.findWithSearchConditions("1", null, pageable);
 
         // then
         assertAll(
@@ -156,12 +157,32 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 2);
 
         // when
-        Slice<Product> page = productRepository.findBySearchConditions("1", KEYBOARD, pageable);
+        Slice<Product> page = productRepository.findWithSearchConditions("1", KEYBOARD, pageable);
 
         // then
         assertAll(
                 () -> assertThat(page.hasNext()).isFalse(),
                 () -> assertThat(page.getContent()).contains(keyboard1)
+        );
+    }
+
+    @Test
+    void 제품들을_where_조건없이_조회한다() {
+        // given
+        Product keyboard1 = 제품_저장(KEYBOARD_1.생성());
+        Member member = memberRepository.save(CORINNE.생성());
+        제품_저장(KEYBOARD_2.생성());
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1, member));
+
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating"), Order.desc("reviewCount")));
+
+        // when
+        Slice<Product> page = productRepository.findWithoutSearchConditions(pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(page.hasNext()).isTrue(),
+                () -> assertThat(page.getContent()).containsOnly(keyboard1)
         );
     }
 

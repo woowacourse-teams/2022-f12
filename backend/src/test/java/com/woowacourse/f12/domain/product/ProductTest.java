@@ -1,10 +1,10 @@
 package com.woowacourse.f12.domain.product;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
 import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class ProductTest {
 

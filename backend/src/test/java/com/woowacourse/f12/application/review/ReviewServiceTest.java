@@ -91,7 +91,7 @@ class ReviewServiceTest {
                 .willReturn(false);
         given(inventoryProductRepository.save(inventoryProduct))
                 .willReturn(inventoryProduct);
-        given(reviewRepository.save(reviewRequest.toReview(product, member)))
+        given(reviewRepository.save(any(Review.class)))
                 .willReturn(REVIEW_RATING_5.작성(1L, product, member));
 
         // when
@@ -100,6 +100,7 @@ class ReviewServiceTest {
         // then
         assertAll(
                 () -> assertThat(reviewId).isEqualTo(1L),
+//                () -> assertThat(product.getReviewCount()).isOne(),
                 () -> verify(productRepository).findById(productId),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).save(any(Review.class)),
@@ -336,7 +337,8 @@ class ReviewServiceTest {
         Long reviewId = 1L;
         Long memberId = 1L;
         Member member = CORINNE.생성(memberId);
-        Review review = REVIEW_RATING_5.작성(reviewId, KEYBOARD_1.생성(), member);
+        Product product = KEYBOARD_1.생성();
+        Review review = REVIEW_RATING_5.작성(reviewId, product, member);
         ReviewRequest updateRequest = new ReviewRequest("수정할 내용", 4);
 
         given(memberRepository.findById(memberId))
@@ -351,7 +353,7 @@ class ReviewServiceTest {
         assertAll(
                 () -> assertThat(review).usingRecursiveComparison()
                         .comparingOnlyFields("content", "rating")
-                        .isEqualTo(updateRequest.toReview(null, null)),
+                        .isEqualTo(updateRequest.toReview(product, member)),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId)
         );

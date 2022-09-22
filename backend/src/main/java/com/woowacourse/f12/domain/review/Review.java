@@ -68,6 +68,7 @@ public class Review {
         this.product = product;
         this.member = member;
         this.createdAt = createdAt;
+        reflectToProduct();
     }
 
     private void validateContent(final String content) {
@@ -83,6 +84,10 @@ public class Review {
         if (rating < MINIMUM_RATING || rating > MAXIMUM_RATING) {
             throw new InvalidRatingValueException();
         }
+    }
+
+    private void reflectToProduct() {
+        product.reflectReviewRating(rating);
     }
 
     public boolean isWrittenBy(final Member member) {
