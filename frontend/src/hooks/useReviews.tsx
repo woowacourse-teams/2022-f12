@@ -49,7 +49,7 @@ function useReviews({ size, productId, handleRefetchOnSuccess }: Props): Return 
   const CommonParams = {
     params: {
       size,
-      sort: 'createdAt,desc',
+      // sort: 'createdAt,desc',
     },
   };
 
