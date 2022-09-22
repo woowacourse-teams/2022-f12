@@ -6,10 +6,10 @@ type Props = {
 
 function useLazyImage({ src }: Props) {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const imageRef = useRef(null);
+  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    let imageContentObserver;
+    let imageContentObserver: IntersectionObserver;
 
     if (imageRef && !imageSrc) {
       imageContentObserver = new IntersectionObserver(
@@ -26,7 +26,7 @@ function useLazyImage({ src }: Props) {
     }
 
     return () => {
-      imageContentObserver && imageContentObserver.disconnect(imageRef);
+      imageContentObserver && imageContentObserver.disconnect();
     };
   }, [imageRef, imageSrc, src]);
 

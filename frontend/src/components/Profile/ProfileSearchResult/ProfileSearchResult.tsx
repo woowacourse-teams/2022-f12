@@ -56,7 +56,11 @@ function ProfileSearchResult({
       isError={isError}
     >
       <S.Container>{profileSearchDataList}</S.Container>
-      {profileSearchData.length === 0 && <NoDataPlaceholder />}
+      {profileSearchData.length === 0 && (
+        <S.NoDataContainer>
+          <NoDataPlaceholder />
+        </S.NoDataContainer>
+      )}
     </InfiniteScroll>
   );
 }
