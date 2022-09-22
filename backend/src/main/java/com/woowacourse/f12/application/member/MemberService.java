@@ -97,9 +97,6 @@ public class MemberService {
         if (memberSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
             return memberRepository.findWithOutSearchConditions(pageable);
         }
-        if (memberSearchRequest.getQuery() == null && careerLevel != null && jobType != null) {
-            return memberRepository.findWithOnlyOptions(careerLevel, jobType, pageable);
-        }
         return memberRepository.findWithSearchConditions(memberSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
     }
@@ -187,9 +184,6 @@ public class MemberService {
         final JobType jobType = parseJobType(memberSearchRequest);
         if (memberSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
             return memberRepository.findFollowingsWithOutSearchConditions(loggedInId, pageable);
-        }
-        if (memberSearchRequest.getQuery() == null && careerLevel != null && jobType != null) {
-            return memberRepository.findFollowingsWithOnlyOptions(loggedInId, careerLevel, jobType, pageable);
         }
         return memberRepository.findFollowingsWithSearchConditions(loggedInId, memberSearchRequest.getQuery(),
                 careerLevel, jobType, pageable);

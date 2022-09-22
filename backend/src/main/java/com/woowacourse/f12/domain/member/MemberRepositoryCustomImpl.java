@@ -44,12 +44,14 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return new SliceImpl<>(jpaQuery.fetch(), pageable, memberIds.hasNext());
     }
 
-    public Slice<Member> findWithOnlyOptions(final CareerLevel careerLevel, final JobType jobType,
-                                             final Pageable pageable) {
+    public Slice<Member> findWithSearchConditions(final String keyword, final CareerLevel careerLevel,
+                                                  final JobType jobType,
+                                                  final Pageable pageable) {
         final JPAQuery<Member> jpaQuery = jpaQueryFactory.selectFrom(member)
                 .where(
                         eqCareerLevel(careerLevel),
-                        eqJobType(jobType)
+                        eqJobType(jobType),
+                        toContainsExpression(member.gitHubId, keyword)
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
@@ -72,24 +74,6 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return member.jobType.eq(jobType);
     }
 
-    public Slice<Member> findWithSearchConditions(final String keyword, final CareerLevel careerLevel,
-                                                  final JobType jobType,
-                                                  final Pageable pageable) {
-        final JPAQuery<Member> jpaQuery = jpaQueryFactory.selectFrom(member)
-                .where(
-                        toContainsExpression(member.gitHubId, keyword),
-                        toEqExpression(member.careerLevel, careerLevel),
-                        toEqExpression(member.jobType, jobType),
-                        member.careerLevel.isNotNull(),
-                        member.jobType.isNotNull()
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .orderBy(makeOrderSpecifiers(member, pageable));
-
-        return toSlice(pageable, jpaQuery.fetch());
-    }
-
     public Slice<Member> findFollowingsWithOutSearchConditions(final Long loggedInId, final Pageable pageable) {
         final List<Long> followingMemberIds = findFollowingMemberIds(loggedInId);
         final JPAQuery<Member> jpaQuery = jpaQueryFactory.selectFrom(member)
@@ -104,36 +88,17 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return toSlice(pageable, jpaQuery.fetch());
     }
 
-    public Slice<Member> findFollowingsWithOnlyOptions(final Long loggedInId, final CareerLevel careerLevel,
-                                                       final JobType jobType,
-                                                       final Pageable pageable) {
+    public Slice<Member> findFollowingsWithSearchConditions(final Long loggedInId, final String keyword,
+                                                            final CareerLevel careerLevel,
+                                                            final JobType jobType,
+                                                            final Pageable pageable) {
         final List<Long> followingMemberIds = findFollowingMemberIds(loggedInId);
         final JPAQuery<Member> jpaQuery = jpaQueryFactory.selectFrom(member)
                 .where(
                         member.id.in(followingMemberIds),
                         eqCareerLevel(careerLevel),
-                        eqJobType(jobType)
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .orderBy(makeOrderSpecifiers(member, pageable));
-
-        return toSlice(pageable, jpaQuery.fetch());
-    }
-
-    public Slice<Member> findFollowingsWithSearchConditions(final Long loggedInId, final String keyword,
-                                                            final CareerLevel careerLevel,
-                                                            final JobType jobType, final Pageable pageable) {
-        final JPAQuery<Member> jpaQuery = jpaQueryFactory.selectFrom(member)
-                .join(following)
-                .on(member.id.eq(following.followingId))
-                .where(
-                        following.followerId.eq(loggedInId),
-                        toContainsExpression(member.gitHubId, keyword),
-                        toEqExpression(member.careerLevel, careerLevel),
-                        toEqExpression(member.jobType, jobType),
-                        member.careerLevel.isNotNull(),
-                        member.jobType.isNotNull()
+                        eqJobType(jobType),
+                        toContainsExpression(member.gitHubId, keyword)
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)

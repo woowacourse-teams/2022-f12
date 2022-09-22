@@ -81,7 +81,7 @@ class MemberRepositoryTest {
         memberRepository.saveAll(List.of(CORINNE.생성(), MINCHO.생성()));
 
         // when
-        final Slice<Member> slice = memberRepository.findWithOnlyOptions(SENIOR, null, PageRequest.of(0, 2));
+        Slice<Member> slice = memberRepository.findWithSearchConditions(null, SENIOR, null, PageRequest.of(0, 2));
 
         // then
         assertAll(
@@ -223,7 +223,7 @@ class MemberRepositoryTest {
                 .build();
 
         // when
-        Slice<Member> slice = memberRepository.findFollowingsWithOnlyOptions(corinne.getId(), null, FRONTEND,
+        Slice<Member> slice = memberRepository.findFollowingsWithSearchConditions(corinne.getId(), null, null, FRONTEND,
                 PageRequest.of(0, 1, Sort.by("id").descending()));
 
         // then

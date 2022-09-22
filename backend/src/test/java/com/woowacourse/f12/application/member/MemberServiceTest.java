@@ -179,7 +179,7 @@ class MemberServiceTest {
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
 
-        given(memberRepository.findWithOnlyOptions(SENIOR, BACKEND, pageable))
+        given(memberRepository.findWithSearchConditions(null, SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
 
         // when
@@ -188,7 +188,7 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findWithOnlyOptions(SENIOR, BACKEND, pageable),
+                () -> verify(memberRepository).findWithSearchConditions(null, SENIOR, BACKEND, pageable),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.of(member, false)));
@@ -494,7 +494,7 @@ class MemberServiceTest {
         Member member = CORINNE.생성(2L);
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
 
-        given(memberRepository.findFollowingsWithOnlyOptions(loggedInId, SENIOR, BACKEND, pageable))
+        given(memberRepository.findFollowingsWithSearchConditions(loggedInId, null, SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
         given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
                 .willReturn(Collections.emptyList());
@@ -505,7 +505,8 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findFollowingsWithOnlyOptions(loggedInId, SENIOR, BACKEND, pageable),
+                () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, null, SENIOR, BACKEND,
+                        pageable),
                 () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
