@@ -68,6 +68,7 @@ public class Review {
         this.product = product;
         this.member = member;
         this.createdAt = createdAt;
+        reflectToProduct();
     }
 
     private void validateContent(final String content) {
@@ -85,12 +86,12 @@ public class Review {
         }
     }
 
-    public boolean isWrittenBy(final Member member) {
-        return this.member.equals(member);
+    private void reflectToProduct() {
+        product.reflectReviewRating(rating);
     }
 
-    public boolean isWrittenAbout(final Product product) {
-        return this.product.equals(product);
+    public boolean isWrittenBy(final Member member) {
+        return this.member.equals(member);
     }
 
     public void update(final Review updateReview) {

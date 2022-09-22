@@ -47,8 +47,6 @@ class ProductRepositoryTest {
         Member member = memberRepository.save(CORINNE.생성());
         Review review1 = REVIEW_RATING_4.작성(product, member);
         Review review2 = REVIEW_RATING_5.작성(product, member);
-        product.reflectReview(review1);
-        product.reflectReview(review2);
 
         리뷰_저장(review1);
         리뷰_저장(review2);
@@ -72,7 +70,7 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1);
 
         // when
-        Slice<Product> slice = productRepository.findBySearchConditions(null, KEYBOARD, pageable);
+        Slice<Product> slice = productRepository.findWithSearchConditions(null, KEYBOARD, pageable);
 
         // then
         assertAll(
@@ -90,19 +88,16 @@ class ProductRepositoryTest {
 
         Review review1 = REVIEW_RATING_5.작성(product1, member);
         Review review2 = REVIEW_RATING_5.작성(product2, member);
-
-        product1.reflectReview(review1);
-        product2.reflectReview(review2);
-        product2.reflectReview(review2);
+        Review review3 = REVIEW_RATING_5.작성(product2, member);
 
         리뷰_저장(review1);
         리뷰_저장(review2);
-        리뷰_저장(review2);
+        리뷰_저장(review3);
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("reviewCount")));
 
         // when
-        Slice<Product> slice = productRepository.findBySearchConditions(null, KEYBOARD, pageable);
+        Slice<Product> slice = productRepository.findWithSearchConditions(null, KEYBOARD, pageable);
 
         // then
         assertAll(
@@ -126,7 +121,7 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating")));
 
         // when
-        Slice<Product> slice = productRepository.findBySearchConditions(null, KEYBOARD, pageable);
+        Slice<Product> slice = productRepository.findWithSearchConditions(null, KEYBOARD, pageable);
 
         // then
         assertAll(
@@ -144,7 +139,7 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 2);
 
         // when
-        Slice<Product> page = productRepository.findBySearchConditions("1", null, pageable);
+        Slice<Product> page = productRepository.findWithSearchConditions("1", null, pageable);
 
         // then
         assertAll(
@@ -162,12 +157,32 @@ class ProductRepositoryTest {
         Pageable pageable = PageRequest.of(0, 2);
 
         // when
-        Slice<Product> page = productRepository.findBySearchConditions("1", KEYBOARD, pageable);
+        Slice<Product> page = productRepository.findWithSearchConditions("1", KEYBOARD, pageable);
 
         // then
         assertAll(
                 () -> assertThat(page.hasNext()).isFalse(),
                 () -> assertThat(page.getContent()).contains(keyboard1)
+        );
+    }
+
+    @Test
+    void 제품들을_where_조건없이_조회한다() {
+        // given
+        Product keyboard1 = 제품_저장(KEYBOARD_1.생성());
+        Member member = memberRepository.save(CORINNE.생성());
+        제품_저장(KEYBOARD_2.생성());
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1, member));
+
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating"), Order.desc("reviewCount")));
+
+        // when
+        Slice<Product> page = productRepository.findWithoutSearchConditions(pageable);
+
+        // then
+        assertAll(
+                () -> assertThat(page.hasNext()).isTrue(),
+                () -> assertThat(page.getContent()).containsOnly(keyboard1)
         );
     }
 

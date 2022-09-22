@@ -61,7 +61,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 모든_제품_목록을_페이징하여_조회한다() {
+    void 모든_제품_목록을_키워드와_옵션없이_페이징하여_조회한다() {
         // given
         제품을_저장한다(KEYBOARD_1.생성());
         Product product = 제품을_저장한다(MOUSE_1.생성());

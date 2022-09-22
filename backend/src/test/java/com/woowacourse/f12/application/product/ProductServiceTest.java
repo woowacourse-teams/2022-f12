@@ -118,11 +118,32 @@ class ProductServiceTest {
     }
 
     @Test
+    void 제품명과_카테고리_없이_제품_목록을_조회한다() {
+        // given
+        Product product = KEYBOARD_1.생성(1L);
+        Pageable pageable = PageRequest.of(0, 2);
+        ProductSearchRequest productSearchRequest = new ProductSearchRequest(null, null);
+        given(productRepository.findWithoutSearchConditions(pageable))
+                .willReturn(new SliceImpl<>(List.of(product), pageable, false));
+
+        // when
+        ProductPageResponse productPageResponse = productService.findBySearchConditions(productSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(productRepository).findWithoutSearchConditions(pageable),
+                () -> assertThat(productPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(productPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsExactly(ProductResponse.from(product))
+        );
+    }
+
+    @Test
     void 제품명과_카테고리로_제품_목록을_조회한다() {
         // given
         Product product = KEYBOARD_1.생성(1L);
         Pageable pageable = PageRequest.of(0, 2);
-        given(productRepository.findBySearchConditions("키보드1", KEYBOARD, pageable))
+        given(productRepository.findWithSearchConditions("키보드1", KEYBOARD, pageable))
                 .willReturn(new SliceImpl<>(List.of(product), pageable, false));
         ProductSearchRequest productSearchRequest = new ProductSearchRequest("키보드1", KEYBOARD_CONSTANT);
 
@@ -131,7 +152,7 @@ class ProductServiceTest {
 
         // then
         assertAll(
-                () -> verify(productRepository).findBySearchConditions("키보드1", KEYBOARD, pageable),
+                () -> verify(productRepository).findWithSearchConditions("키보드1", KEYBOARD, pageable),
                 () -> assertThat(productPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(productPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsExactly(ProductResponse.from(product))
