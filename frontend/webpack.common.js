@@ -14,22 +14,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx|ts|tsx)$/,
+        test: /\.(ts|tsx)$/,
         exclude: /(node_modules)/,
         use: 'babel-loader',
-      },
-      {
-        test: /\.s?css$/,
-        use: [
-          { loader: 'style-loader' },
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-            },
-          },
-          { loader: 'sass-loader' },
-        ],
       },
       {
         test: /\.(png|jpe?g|gif|ico|webp)$/,
@@ -40,7 +27,6 @@ module.exports = {
       },
       {
         test: /\.svg$/i,
-        issuer: /\.[jt]sx?$/,
         use: ['@svgr/webpack'],
       },
     ],

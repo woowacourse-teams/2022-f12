@@ -8,6 +8,7 @@ import {
 } from '@/contexts/LoginContextProvider';
 
 import useGet from '@/hooks/api/useGet';
+import usePost from '@/hooks/api/usePost';
 import useModal from '@/hooks/useModal';
 
 import { ENDPOINTS } from '@/constants/api';
@@ -22,6 +23,7 @@ type Return = {
   login: (code: string) => Promise<void>;
   logout: () => void;
   isLoggedIn: boolean;
+  revalidate: () => void;
 };
 
 function useAuth(): Return {
@@ -31,8 +33,17 @@ function useAuth(): Return {
   const { showAlert, getConfirm } = useModal();
 
   const fetchUserData = useGet<UserData>({ url: ENDPOINTS.LOGIN });
+  const fetchAccessToken = usePost<unknown, { accessToken: string }>({
+    url: ENDPOINTS.ISSUE_ACCESS_TOKEN,
+  });
+  const fetchMyData = useGet<Member>({ url: ENDPOINTS.ME });
+  const requestLogout = useGet({ url: ENDPOINTS.LOGOUT });
 
   const navigate = useNavigate();
+
+  const isError = (error: unknown): error is Error => {
+    return error instanceof Error;
+  };
 
   const login = async (code: string) => {
     if (!code) {
@@ -42,7 +53,7 @@ function useAuth(): Return {
     }
 
     try {
-      const userData = await fetchUserData({ code });
+      const userData = await fetchUserData({ params: { code }, includeCookie: true });
       setUserData(userData);
     } catch {
       throw new Error('로그인 오류');
@@ -51,17 +62,37 @@ function useAuth(): Return {
 
   const logout = async () => {
     const confirmation = await getConfirm(CONFIRM_MESSAGES.LOGOUT);
-    if (confirmation) {
-      try {
-        handleLogout();
-        await showAlert(SUCCESS_MESSAGES.LOGOUT);
-      } catch {
-        await showAlert(FAILURE_MESSAGES.LOGOUT);
-      }
+    if (!confirmation) return;
+
+    try {
+      await requestLogout({ includeCookie: true });
+      handleLogout();
+      await showAlert(SUCCESS_MESSAGES.LOGOUT);
+    } catch {
+      await showAlert(FAILURE_MESSAGES.LOGOUT);
     }
   };
 
-  return { login, logout, isLoggedIn };
+  const revalidate = async () => {
+    try {
+      const response = await fetchAccessToken('', false);
+
+      const { accessToken: token } = response;
+      const { careerLevel, jobType, ...memberData } = await fetchMyData({ token });
+
+      const registerCompleted = careerLevel !== null && jobType !== null;
+      const userData: UserData = { member: memberData, token, registerCompleted };
+
+      setUserData(userData);
+    } catch (error) {
+      if (isError(error) && error.message === FAILURE_MESSAGES.NO_REFRESH_TOKEN) {
+        // 한 경우에만 silent 처리
+        return;
+      }
+      console.log(error);
+    }
+  };
+  return { login, logout, isLoggedIn, revalidate };
 }
 
 export default useAuth;

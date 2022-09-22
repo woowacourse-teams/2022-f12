@@ -1,17 +1,5 @@
 package com.woowacourse.f12.acceptance;
 
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
-import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
-import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Member;
@@ -25,10 +13,21 @@ import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductRespons
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
+
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.*;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class InventoryProductAcceptanceTest extends AcceptanceTest {
 
@@ -197,6 +196,6 @@ class InventoryProductAcceptanceTest extends AcceptanceTest {
     }
 
     private InventoryProduct 인벤토리에_있는_장비를_찾아온다(Product product, Member member) {
-        return inventoryProductRepository.findByMemberAndProduct(member, product).get();
+        return inventoryProductRepository.findWithProductByMemberAndProduct(member, product).get();
     }
 }

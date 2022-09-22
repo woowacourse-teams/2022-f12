@@ -1,30 +1,5 @@
 package com.woowacourse.f12.presentation.member;
 
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
-import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
-import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.ArgumentMatchers.refEq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.application.member.MemberService;
@@ -42,9 +17,6 @@ import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.badrequest.SelfFollowException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -57,6 +29,27 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
+import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
 class MemberControllerTest extends PresentationTest {
@@ -304,7 +297,7 @@ class MemberControllerTest extends PresentationTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
                 KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
 
         MemberPageResponse memberPageResponse =
                 MemberPageResponse.ofByFollowingCondition(new SliceImpl<>(List.of(member), pageable, false),
@@ -332,7 +325,7 @@ class MemberControllerTest extends PresentationTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
                 KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
         Long loggedInId = 2L;
         Following following = Following.builder()
                 .followerId(loggedInId)
@@ -388,7 +381,7 @@ class MemberControllerTest extends PresentationTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
                 KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
 
         MemberPageResponse memberPageResponse =
                 MemberPageResponse.ofByFollowingCondition(new SliceImpl<>(List.of(member), pageable, false),
