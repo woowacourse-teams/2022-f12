@@ -68,7 +68,7 @@ public enum MemberFixture {
                 .careerLevel(this.careerLevel)
                 .jobType(this.jobType)
                 .followerCount(this.followerCount)
-                .inventoryProducts(new InventoryProducts(List.of(inventoryProducts)))
+                .inventoryProducts(new InventoryProducts(inventoryProducts))
                 .build();
     }
 
