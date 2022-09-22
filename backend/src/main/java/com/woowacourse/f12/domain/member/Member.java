@@ -5,7 +5,6 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
 import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
 import lombok.Builder;
 import lombok.Getter;
-import org.hibernate.annotations.Formula;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -32,6 +31,9 @@ public class Member {
     @Column(name = "image_url", length = 65535, nullable = false)
     private String imageUrl;
 
+    @Column(name = "registered", nullable = false)
+    private boolean registered;
+
     @Column(name = "career_level")
     @Enumerated(EnumType.STRING)
     private CareerLevel careerLevel;
@@ -50,16 +52,17 @@ public class Member {
     protected Member() {
     }
 
-    private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final CareerLevel careerLevel,
+    private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final boolean registered, final CareerLevel careerLevel,
                    final JobType jobType, final int followerCount, final InventoryProducts inventoryProducts) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.registered = registered;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
-        this.followerCount = followerCount;
         this.inventoryProducts = inventoryProducts;
+        this.followerCount = followerCount;
     }
 
     public void update(final Member updateMember) {
@@ -68,6 +71,7 @@ public class Member {
         updateCareerLevel(updateMember.careerLevel);
         updateJobType(updateMember.jobType);
         updateFollowerCount(updateMember.followerCount);
+        updateRegistered(updateMember.registered);
     }
 
     private void updateName(final String name) {
@@ -101,8 +105,11 @@ public class Member {
         this.followerCount = followerCount;
     }
 
-    public boolean isRegisterCompleted() {
-        return Objects.nonNull(this.careerLevel) && Objects.nonNull(this.jobType);
+    private void updateRegistered(final boolean registered) {
+        if (this.registered) {
+            return;
+        }
+        this.registered = registered;
     }
 
     public List<InventoryProduct> getProfileProduct() {

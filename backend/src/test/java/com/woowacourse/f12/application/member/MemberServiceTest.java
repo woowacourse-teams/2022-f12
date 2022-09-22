@@ -136,6 +136,7 @@ class MemberServiceTest {
     @Test
     void 회원정보를_업데이트_한다() {
         // given
+        final Member corinne = CORINNE.생성(1L);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(CORINNE.생성(1L)));
 
@@ -143,7 +144,54 @@ class MemberServiceTest {
         memberService.updateMember(1L, new MemberRequest(JUNIOR_CONSTANT, ETC_CONSTANT));
 
         // then
-        verify(memberRepository).findById(1L);
+        assertAll(
+                () -> verify(memberRepository).findById(1L),
+                () -> assertThat(corinne.isRegistered()).isTrue()
+        );
+    }
+
+    @Test
+    void 비회원이_검색_조건_없이_회원을_조회한다() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
+
+        given(memberRepository.findWithOutSearchConditions(pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+
+        // when
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+        MemberPageResponse memberPageResponse = memberService.findByContains(null, memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findWithOutSearchConditions(pageable),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.of(member, false)));
+    }
+
+    @Test
+    void 비회원이_옵션으로만_회원을_조회한다() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
+
+        given(memberRepository.findWithSearchConditions(null, SENIOR, BACKEND, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+
+        // when
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
+        MemberPageResponse memberPageResponse = memberService.findByContains(null, memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findWithSearchConditions(null, SENIOR, BACKEND, pageable),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.of(member, false)));
     }
 
     @Test
@@ -153,7 +201,7 @@ class MemberServiceTest {
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
         Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
 
-        given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
+        given(memberRepository.findWithSearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
         given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
                 .willReturn(List.of(inventoryProduct));
@@ -164,7 +212,7 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
+                () -> verify(memberRepository).findWithSearchConditions("cheese", SENIOR, BACKEND, pageable),
                 () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
@@ -185,7 +233,7 @@ class MemberServiceTest {
                 .followingId(member.getId())
                 .build();
 
-        given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
+        given(memberRepository.findWithSearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
         given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
                 .willReturn(List.of(inventoryProduct));
@@ -198,7 +246,7 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
+                () -> verify(memberRepository).findWithSearchConditions("cheese", SENIOR, BACKEND, pageable),
                 () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> verify(followingRepository).findByFollowerIdAndFollowingIdIn(loggedInId, List.of(member.getId())),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
@@ -448,14 +496,14 @@ class MemberServiceTest {
     }
 
     @Test
-    void 팔로잉하는_회원을_조회한다() {
+    void 팔로잉하는_회원을_키워드와_옵션_없이_조회한다() {
         // given
         Long loggedInId = 1L;
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         Member member = CORINNE.생성(2L);
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
 
-        given(memberRepository.findFollowingsBySearchConditions(loggedInId, null, null, null, pageable))
+        given(memberRepository.findFollowingsWithOutSearchConditions(loggedInId, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
         given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
                 .willReturn(Collections.emptyList());
@@ -466,7 +514,63 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findFollowingsBySearchConditions(loggedInId, null, null, null, pageable),
+                () -> verify(memberRepository).findFollowingsWithOutSearchConditions(loggedInId, pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.of(member, true))
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원을_옵션으로만_조회한다() {
+        // given
+        Long loggedInId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        Member member = CORINNE.생성(2L);
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
+
+        given(memberRepository.findFollowingsWithSearchConditions(loggedInId, null, SENIOR, BACKEND, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(Collections.emptyList());
+
+        // when
+        MemberPageResponse memberPageResponse = memberService.findFollowingsByConditions(loggedInId,
+                memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, null, SENIOR, BACKEND,
+                        pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.of(member, true))
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원을_키워드와_옵션으로_조회한다() {
+        // given
+        Long loggedInId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        Member member = CORINNE.생성(2L);
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("ham", SENIOR_CONSTANT, null);
+
+        given(memberRepository.findFollowingsWithSearchConditions(loggedInId, "ham", SENIOR, null, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(Collections.emptyList());
+
+        // when
+        MemberPageResponse memberPageResponse = memberService.findFollowingsByConditions(loggedInId,
+                memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, "ham", SENIOR, null,
+                        pageable),
                 () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
