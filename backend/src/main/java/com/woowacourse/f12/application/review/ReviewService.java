@@ -20,12 +20,11 @@ import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
+import java.util.Objects;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -66,6 +65,7 @@ public class ReviewService {
     private Long saveReview(final ReviewRequest reviewRequest, final Member member, final Product product) {
         validateNotWritten(member, product);
         final Review review = reviewRequest.toReview(product, member);
+        review.reflectToProductWhenWritten();
         return reviewRepository.save(review)
                 .getId();
     }
@@ -118,6 +118,7 @@ public class ReviewService {
     @Transactional
     public void delete(final Long reviewId, final Long memberId) {
         final Review review = findTarget(reviewId, memberId);
+        review.reflectToProductBeforeDelete();
         reviewRepository.delete(review);
         final InventoryProduct inventoryProduct = inventoryProductRepository.findWithProductByMemberAndProduct(
                         review.getMember(), review.getProduct())

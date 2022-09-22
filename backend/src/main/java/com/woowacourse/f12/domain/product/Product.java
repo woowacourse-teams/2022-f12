@@ -63,17 +63,29 @@ public class Product {
         return this.category == category;
     }
 
-    public void reflectReviewRating(final int reviewRating) {
-        increaseReviewCount();
-        calculateRatings(reviewRating);
-    }
-
-    private void increaseReviewCount() {
+    public void increaseReviewCount() {
         reviewCount++;
     }
 
-    private void calculateRatings(final int reviewRating) {
-        totalRating += reviewRating;
+    public void decreaseReviewCount() {
+        reviewCount--;
+    }
+
+    public void increaseRating(final int rating) {
+        this.totalRating += rating;
+        calculateRating();
+    }
+
+    public void decreaseRating(final int rating) {
+        this.totalRating -= rating;
+        calculateRating();
+    }
+
+    private void calculateRating() {
+        if (reviewCount == 0) {
+            rating = 0;
+            return;
+        }
         rating = (double) totalRating / reviewCount;
     }
 
