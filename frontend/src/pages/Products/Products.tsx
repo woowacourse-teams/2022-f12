@@ -11,7 +11,7 @@ import Select from '@/components/common/Select/Select';
 
 import ProductListSection from '@/components/Product/ProductListSection/ProductListSection';
 
-import useDebounce from '@/hooks/useDebouce';
+import useDebounce from '@/hooks/useDebounce';
 import useSearch from '@/hooks/useSearch';
 import useUrlSyncState from '@/hooks/useUrlSyncState';
 

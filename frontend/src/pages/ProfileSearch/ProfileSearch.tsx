@@ -12,7 +12,7 @@ import ProfileSearchResult from '@/components/Profile/ProfileSearchResult/Profil
 
 import { UserDataContext } from '@/contexts/LoginContextProvider';
 
-import useDebounce from '@/hooks/useDebouce';
+import useDebounce from '@/hooks/useDebounce';
 import useSearch from '@/hooks/useSearch';
 import useUrlSyncState from '@/hooks/useUrlSyncState';
 

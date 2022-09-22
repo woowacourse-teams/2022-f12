@@ -23,7 +23,7 @@ type Return = {
   login: (code: string) => Promise<void>;
   logout: () => void;
   isLoggedIn: boolean;
-  revalidate: () => void;
+  revalidate: () => Promise<void>;
 };
 
 function useAuth(): Return {
