@@ -68,7 +68,6 @@ public class Review {
         this.product = product;
         this.member = member;
         this.createdAt = createdAt;
-        reflectToProduct();
     }
 
     private void validateContent(final String content) {
@@ -86,8 +85,15 @@ public class Review {
         }
     }
 
-    private void reflectToProduct() {
-        product.reflectReviewRating(rating);
+    public void reflectToProductWhenWritten() {
+        product.increaseReviewCount();
+        product.increaseRating(rating);
+    }
+
+    public void reflectToProductBeforeDelete() {
+        product.decreaseReviewCount();
+        ;
+        product.decreaseRating(rating);
     }
 
     public boolean isWrittenBy(final Member member) {
@@ -95,8 +101,10 @@ public class Review {
     }
 
     public void update(final Review updateReview) {
-        this.content = updateReview.getContent();
-        this.rating = updateReview.getRating();
+        product.decreaseRating(rating);
+        content = updateReview.getContent();
+        rating = updateReview.getRating();
+        product.increaseRating(rating);
     }
 
     @Override
