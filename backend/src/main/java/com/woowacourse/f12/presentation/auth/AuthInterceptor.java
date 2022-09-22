@@ -2,7 +2,7 @@ package com.woowacourse.f12.presentation.auth;
 
 import com.woowacourse.f12.application.auth.JwtProvider;
 import com.woowacourse.f12.exception.unauthorized.TokenExpiredException;
-import java.util.Objects;
+import com.woowacourse.f12.exception.unauthorized.TokenNotExistsException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
@@ -20,21 +20,30 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
-        if (isNotTarget(handler)) {
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
+                             final Object handler) {
+        if (!(handler instanceof HandlerMethod) || getLoginAnnotation(handler) == null) {
             return true;
         }
-        validateAuthorization(request);
+
+        if (hasAuthorization(request)) {
+            validateAuthorization(request);
+            return true;
+        }
+        validateTokenRequired(handler);
         return true;
     }
 
-    private boolean isNotTarget(final Object handler) {
-        if (!(handler instanceof HandlerMethod)) {
-            return true;
+    private void validateTokenRequired(final Object handler) {
+        Login auth = getLoginAnnotation(handler);
+        if (auth != null && auth.required()) {
+            throw new TokenNotExistsException();
         }
+    }
+
+    private Login getLoginAnnotation(final Object handler) {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
-        LoginRequired auth = handlerMethod.getMethodAnnotation(LoginRequired.class);
-        return Objects.isNull(auth);
+        return handlerMethod.getMethodAnnotation(Login.class);
     }
 
     private void validateAuthorization(final HttpServletRequest request) {
@@ -42,5 +51,9 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (!jwtProvider.validateToken(authorizationHeader)) {
             throw new TokenExpiredException();
         }
+    }
+
+    private boolean hasAuthorization(final HttpServletRequest request) {
+        return request.getHeader(HttpHeaders.AUTHORIZATION) != null;
     }
 }

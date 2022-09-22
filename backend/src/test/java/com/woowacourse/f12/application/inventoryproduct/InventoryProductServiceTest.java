@@ -19,10 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.ProductFixture.*;
+import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.ProductFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -48,7 +48,7 @@ class InventoryProductServiceTest {
         List<Long> selectedInventoryProductIds = List.of(2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
         InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
         given(inventoryProductRepository.findAllById(selectedInventoryProductIds))
@@ -95,8 +95,9 @@ class InventoryProductServiceTest {
         List<Long> selectedInventoryProductIds = List.of(1L, 2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, null, KEYBOARD_1.생성());
-        InventoryProduct duplicatedCategoryInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_2.생성());
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct, duplicatedCategoryInventoryProduct);
+        InventoryProduct duplicatedCategoryInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(2L, null,
+                KEYBOARD_2.생성());
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct, duplicatedCategoryInventoryProduct));
         duplicatedCategoryInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_2.생성());
 
         given(memberRepository.findById(1L))
@@ -118,7 +119,8 @@ class InventoryProductServiceTest {
         // given
         List<Long> selectedInventoryProductIds = List.of(1L, 2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, SELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_1.생성(1L)));
+        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(selectedInventoryProduct));
         InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, member, SOFTWARE_1.생성());
         InventoryProduct inventoryProduct2 = UNSELECTED_INVENTORY_PRODUCT.생성(2L, member, KEYBOARD_2.생성());
 
@@ -144,7 +146,7 @@ class InventoryProductServiceTest {
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성(1L));
         given(memberRepository.existsById(1L))
                 .willReturn(true);
-        given(inventoryProductRepository.findByMemberId(memberId))
+        given(inventoryProductRepository.findWithProductByMemberId(memberId))
                 .willReturn(List.of(inventoryProduct));
 
         // when
@@ -156,7 +158,7 @@ class InventoryProductServiceTest {
                         .usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(InventoryProductResponse.from(inventoryProduct)),
                 () -> verify(memberRepository).existsById(memberId),
-                () -> verify(inventoryProductRepository).findByMemberId(memberId)
+                () -> verify(inventoryProductRepository).findWithProductByMemberId(memberId)
         );
     }
 }

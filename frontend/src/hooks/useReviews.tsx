@@ -1,9 +1,12 @@
+import { useContext } from 'react';
+
+import { UserDataContext } from '@/contexts/LoginContextProvider';
+
 import useDelete from '@/hooks/api/useDelete';
 import useGetMany from '@/hooks/api/useGetMany';
 import usePost from '@/hooks/api/usePost';
 import usePut from '@/hooks/api/usePut';
 import useModal from '@/hooks/useModal';
-import useSessionStorage from '@/hooks/useSessionStorage';
 
 import { ENDPOINTS } from '@/constants/api';
 import { SUCCESS_MESSAGES, CONFIRM_MESSAGES } from '@/constants/messages';
@@ -38,22 +41,21 @@ function useReviews({
   handleRefetchOnSuccess,
 }: PropsWithProductId): ReturnWithProductId;
 function useReviews({ size, productId, handleRefetchOnSuccess }: Props): Return {
-  const [data] = useSessionStorage<UserData>('userData');
+  const userData = useContext(UserDataContext);
   const { showAlert, getConfirm } = useModal();
 
-  const hasToken = data && data.token !== undefined;
+  const hasToken = userData && userData.token !== undefined;
 
   const CommonParams = {
     params: {
       size,
-      sort: 'createdAt,desc',
     },
   };
 
   const ParamsWithProduct = {
     ...CommonParams,
     url: ENDPOINTS.REVIEWS_BY_PRODUCT_ID(productId),
-    headers: hasToken ? { Authorization: `Bearer ${data.token}` } : null,
+    headers: hasToken ? { Authorization: `Bearer ${userData.token}` } : null,
   };
 
   const ParamsWithoutProduct = {

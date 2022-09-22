@@ -1,14 +1,12 @@
 import { Fragment, useState } from 'react';
 
-import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
-
 import DeskSetupCard from '@/components/DeskSetupCard/DeskSetupCard';
 import * as S from '@/components/Profile/InventoryProductList/InventoryProductList.style';
 
 import { CATEGORIES } from '@/constants/product';
 
 type Props = {
-  submitHandler?: () => void;
+  refetchInventoryProducts?: () => void;
   updateProfileProduct?: (array: number[]) => Promise<boolean>;
   inventoryList: Record<string, InventoryProduct[]>;
   editable: boolean;
@@ -17,7 +15,7 @@ type Props = {
 function InventoryProductList({
   inventoryList,
   editable,
-  submitHandler,
+  refetchInventoryProducts,
   updateProfileProduct,
 }: Props) {
   const selectedItems = Object.values(inventoryList)
@@ -36,10 +34,20 @@ function InventoryProductList({
 
   const handleEdit = async () => {
     if (!editable) return;
+
     if (isEditMode) {
-      const didPatch = await updateProfileProduct(Object.values(selectedState));
-      if (didPatch) submitHandler();
-      setEditMode(false);
+      const isInventoryChanged =
+        JSON.stringify(selectedItemsIdsByCategory) !== JSON.stringify(selectedState);
+
+      if (isInventoryChanged) {
+        await updateProfileProduct(Object.values(selectedState)).then(() => {
+          refetchInventoryProducts();
+        });
+        setEditMode(false);
+      } else {
+        setEditMode(false);
+        return;
+      }
 
       return;
     }
@@ -63,7 +71,6 @@ function InventoryProductList({
   return (
     <>
       <S.FlexWrapper>
-        <SectionHeader title={'리뷰를 작성한 제품'} />
         {editable && (
           <S.EditDeskSetupButton onClick={handleEdit}>
             {isEditMode ? '데스크 셋업 변경 완료' : '데스크 셋업 변경하기'}

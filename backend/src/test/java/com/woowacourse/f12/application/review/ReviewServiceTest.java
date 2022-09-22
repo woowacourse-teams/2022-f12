@@ -1,13 +1,13 @@
 package com.woowacourse.f12.application.review;
 
-import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.MemberFixtures.NOT_ADDITIONAL_INFO;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
-import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_1;
-import static com.woowacourse.f12.support.ReviewFixtures.REVIEW_RATING_5;
+import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.NOT_ADDITIONAL_INFO;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_1;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -42,7 +42,6 @@ import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
-import com.woowacourse.f12.support.ReviewFixtures;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -92,7 +91,7 @@ class ReviewServiceTest {
                 .willReturn(false);
         given(inventoryProductRepository.save(inventoryProduct))
                 .willReturn(inventoryProduct);
-        given(reviewRepository.save(reviewRequest.toReview(product, member)))
+        given(reviewRepository.save(any(Review.class)))
                 .willReturn(REVIEW_RATING_5.작성(1L, product, member));
 
         // when
@@ -101,6 +100,7 @@ class ReviewServiceTest {
         // then
         assertAll(
                 () -> assertThat(reviewId).isEqualTo(1L),
+//                () -> assertThat(product.getReviewCount()).isOne(),
                 () -> verify(productRepository).findById(productId),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).save(any(Review.class)),
@@ -207,6 +207,7 @@ class ReviewServiceTest {
         Member member = CORINNE.생성(1L);
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
         Review review = REVIEW_RATING_5.작성(1L, product, member);
+        review.reflectToProductWhenWritten();
         Slice<Review> slice = new SliceImpl<>(List.of(review), pageable, true);
 
         given(productRepository.existsById(productId))
@@ -236,6 +237,7 @@ class ReviewServiceTest {
         Member member = CORINNE.생성(1L);
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
         Review review = REVIEW_RATING_5.작성(1L, product, member);
+        review.reflectToProductWhenWritten();
         Slice<Review> slice = new SliceImpl<>(List.of(review), pageable, true);
 
         given(productRepository.existsById(productId))
@@ -267,6 +269,7 @@ class ReviewServiceTest {
         Member member = CORINNE.생성(1L);
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("createdAt")));
         Review review = REVIEW_RATING_5.작성(1L, product, member);
+        review.reflectToProductWhenWritten();
         Slice<Review> slice = new SliceImpl<>(List.of(review), pageable, true);
 
         given(productRepository.existsById(productId))
@@ -310,7 +313,9 @@ class ReviewServiceTest {
         Pageable pageable = PageRequest.of(0, 2, Sort.by(Order.desc("createdAt")));
         Member member = CORINNE.생성(1L);
         Review review1 = REVIEW_RATING_5.작성(3L, KEYBOARD_1.생성(), member);
+        review1.reflectToProductWhenWritten();
         Review review2 = REVIEW_RATING_5.작성(2L, KEYBOARD_2.생성(), member);
+        review2.reflectToProductWhenWritten();
         Slice<Review> slice = new SliceImpl<>(List.of(review1, review2), pageable, true);
 
         given(reviewRepository.findPageBy(pageable))
@@ -337,7 +342,9 @@ class ReviewServiceTest {
         Long reviewId = 1L;
         Long memberId = 1L;
         Member member = CORINNE.생성(memberId);
-        Review review = REVIEW_RATING_5.작성(reviewId, KEYBOARD_1.생성(), member);
+        Product product = KEYBOARD_1.생성();
+        Review review = REVIEW_RATING_5.작성(reviewId, product, member);
+        review.reflectToProductWhenWritten();
         ReviewRequest updateRequest = new ReviewRequest("수정할 내용", 4);
 
         given(memberRepository.findById(memberId))
@@ -352,7 +359,8 @@ class ReviewServiceTest {
         assertAll(
                 () -> assertThat(review).usingRecursiveComparison()
                         .comparingOnlyFields("content", "rating")
-                        .isEqualTo(updateRequest.toReview(null, null)),
+                        .isEqualTo(updateRequest.toReview(product, member)),
+                () -> assertThat(product.getRating()).isEqualTo(4.0),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId)
         );
@@ -433,6 +441,7 @@ class ReviewServiceTest {
         Member member = CORINNE.생성(memberId);
         Product product = KEYBOARD_1.생성(productId);
         Review review = REVIEW_RATING_5.작성(reviewId, product, member);
+        review.reflectToProductWhenWritten();
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, member, product);
 
         given(memberRepository.findById(memberId))
@@ -441,7 +450,7 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(review));
         willDoNothing().given(reviewRepository)
                 .delete(any(Review.class));
-        given(inventoryProductRepository.findByMemberAndProduct(member, product))
+        given(inventoryProductRepository.findWithProductByMemberAndProduct(member, product))
                 .willReturn(Optional.of(inventoryProduct));
         willDoNothing().given(inventoryProductRepository)
                 .delete(any(InventoryProduct.class));
@@ -449,10 +458,11 @@ class ReviewServiceTest {
         // when, then
         assertAll(
                 () -> assertDoesNotThrow(() -> reviewService.delete(reviewId, memberId)),
+                () -> assertThat(product.getReviewCount()).isZero(),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId),
                 () -> verify(reviewRepository).delete(review),
-                () -> verify(inventoryProductRepository).findByMemberAndProduct(member, product),
+                () -> verify(inventoryProductRepository).findWithProductByMemberAndProduct(member, product),
                 () -> verify(inventoryProductRepository).delete(inventoryProduct)
         );
     }
@@ -536,7 +546,7 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(review));
         willDoNothing().given(reviewRepository)
                 .delete(any(Review.class));
-        given(inventoryProductRepository.findByMemberAndProduct(member, product))
+        given(inventoryProductRepository.findWithProductByMemberAndProduct(member, product))
                 .willReturn(Optional.empty());
 
         // when, then
@@ -546,7 +556,7 @@ class ReviewServiceTest {
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId),
                 () -> verify(reviewRepository).delete(any(Review.class)),
-                () -> verify(inventoryProductRepository).findByMemberAndProduct(member, product),
+                () -> verify(inventoryProductRepository).findWithProductByMemberAndProduct(member, product),
                 () -> verify(inventoryProductRepository, times(0)).delete(any(InventoryProduct.class))
         );
     }
@@ -598,7 +608,7 @@ class ReviewServiceTest {
     @Test
     void 인벤토리_아이디로_리뷰를_조회한다() {
         // given
-        Review review = ReviewFixtures.REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L));
+        Review review = REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L));
         given(inventoryProductRepository.findById(any(Long.class)))
                 .willReturn(Optional.of(SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L))));
         given(reviewRepository.findByMemberAndProduct(any(Member.class), any(Product.class)))

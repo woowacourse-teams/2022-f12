@@ -22,32 +22,24 @@ public class MemberPageResponse {
         this.items = items;
     }
 
-    public static MemberPageResponse fromNotFollowees(final Slice<Member> followeesSlice) {
-        final List<MemberWithProfileProductResponse> memberResponses = followeesSlice.getContent()
+    public static MemberPageResponse ofByFollowingCondition(final Slice<Member> members, final boolean followingCondition) {
+        final List<MemberWithProfileProductResponse> memberResponses = members.getContent()
                 .stream()
-                .map(member -> MemberWithProfileProductResponse.of(member, false))
+                .map(member -> MemberWithProfileProductResponse.of(member, followingCondition))
                 .collect(Collectors.toList());
-        return new MemberPageResponse(followeesSlice.hasNext(), memberResponses);
+        return new MemberPageResponse(members.hasNext(), memberResponses);
     }
 
-    public static MemberPageResponse fromFollowees(final Slice<Member> followeesSlice) {
-        final List<MemberWithProfileProductResponse> memberResponses = followeesSlice.getContent()
+    public static MemberPageResponse of(final Slice<Member> members, final List<Following> followingRelations) {
+        final List<MemberWithProfileProductResponse> memberResponses = members.getContent()
                 .stream()
-                .map(member -> MemberWithProfileProductResponse.of(member, true))
+                .map(member -> MemberWithProfileProductResponse.of(member, isFollowing(followingRelations, member)))
                 .collect(Collectors.toList());
-        return new MemberPageResponse(followeesSlice.hasNext(), memberResponses);
+        return new MemberPageResponse(members.hasNext(), memberResponses);
     }
 
-    public static MemberPageResponse of(final Slice<Member> slice, List<Following> followings) {
-        final List<MemberWithProfileProductResponse> memberResponses = slice.getContent()
-                .stream()
-                .map(member -> MemberWithProfileProductResponse.of(member, isFollowing(followings, member)))
-                .collect(Collectors.toList());
-        return new MemberPageResponse(slice.hasNext(), memberResponses);
-    }
-
-    private static boolean isFollowing(final List<Following> followings, final Member member) {
-        return followings.stream()
-                .anyMatch(it -> it.getFolloweeId().equals(member.getId()));
+    private static boolean isFollowing(final List<Following> followingRelations, final Member member) {
+        return followingRelations.stream()
+                .anyMatch(it -> it.isFollowing(member.getId()));
     }
 }

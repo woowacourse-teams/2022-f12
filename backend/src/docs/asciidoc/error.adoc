@@ -22,14 +22,17 @@
 |40051|ALREADY_FOLLOWING|이미 팔로우하고 있는 회원을 팔로우하려고 함.
 |40052|NOT_FOLLOWING|팔로우하고 있지 않음.
 |40100|NOT_EXIST_TOKEN|토큰이 존재하지 않음.
-|40101|EXPIRED_TOKEN|토큰이 만료됨.
+|40101|EXPIRED_ACCESS_TOKEN|액세스 토큰이 만료됨.
 |40102|INVALID_TOKEN|토큰이 유효한 형식이 아님.
-|40103|REGISTER_NOT_COMPLETED|회원가입이 완료되지 않은 회원이 인증 인가가 필요한 요청을 보냄
+|40103|REGISTER_NOT_COMPLETED|회원가입이 완료되지 않은 회원이 인증 인가가 필요한 요청을 보냄.
+|40104|EXPIRED_REFRESH_TOKEN|리프레시 토큰이 만료됨.
+|40105|NOT_EXIST_REFRESH_TOKEN|리프레시 토큰이 존재하지 않음.
 |40300|PERMISSION_DENIED|권한이 없는 요청임.
 |40410|MEMBER_NOT_FOUND|회원 정보가 존재하지 않음.
 |40420|PRODUCT_NOT_FOUND|제품 정보가 존재하지 않음.
 |40430|REVIEW_NOT_FOUND|리뷰 정보가 존재하지 않음.
 |40440|INVENTORY_PRODUCT_NOT_FOUND|인벤토리 아이템 정보가 존재하지 않음.
+|41400|URL_TOO_LONG|HTTP Request URL의 길이가 1000자를 넘음.
 |50000|INTERNAL_SERVER_ERROR|예상하지 못한 내부 서버 에러 발생.
 |50001|EXTERNAL_SERVER_ERROR|외부 API에 문제 발생.
 |===

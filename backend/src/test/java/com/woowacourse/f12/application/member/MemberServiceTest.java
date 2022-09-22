@@ -1,6 +1,7 @@
 package com.woowacourse.f12.application.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Following;
 import com.woowacourse.f12.domain.member.FollowingRepository;
 import com.woowacourse.f12.domain.member.Member;
@@ -11,9 +12,9 @@ import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
+import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
 import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
-import com.woowacourse.f12.support.MemberFixtures;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,9 +35,10 @@ import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
-import static com.woowacourse.f12.support.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.MemberFixtures.CORINNE;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.NOT_ADDITIONAL_INFO;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -52,6 +55,9 @@ class MemberServiceTest {
     @Mock
     private FollowingRepository followingRepository;
 
+    @Mock
+    private InventoryProductRepository inventoryProductRepository;
+
     @InjectMocks
     private MemberService memberService;
 
@@ -67,7 +73,7 @@ class MemberServiceTest {
         // then
         assertAll(
                 () -> assertThat(memberResponse).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(CORINNE.생성(1L), false)),
+                        .isEqualTo(MemberResponse.of(CORINNE.생성(1L), false)),
                 () -> verify(memberRepository).findById(1L)
         );
     }
@@ -81,7 +87,7 @@ class MemberServiceTest {
 
         given(memberRepository.findById(targetId))
                 .willReturn(Optional.of(corinne));
-        given(followingRepository.existsByFollowerIdAndFolloweeId(loggedInId, targetId))
+        given(followingRepository.existsByFollowerIdAndFollowingId(loggedInId, targetId))
                 .willReturn(false);
 
         // when
@@ -90,9 +96,9 @@ class MemberServiceTest {
         // then
         assertAll(
                 () -> assertThat(actual).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(corinne, false)),
+                        .isEqualTo(MemberResponse.of(corinne, false)),
                 () -> verify(memberRepository).findById(targetId),
-                () -> verify(followingRepository).existsByFollowerIdAndFolloweeId(loggedInId, targetId)
+                () -> verify(followingRepository).existsByFollowerIdAndFollowingId(loggedInId, targetId)
         );
     }
 
@@ -113,7 +119,7 @@ class MemberServiceTest {
     @Test
     void 추가_정보가_입력되지_않은_멤버_아이디로_회원정보를_조회한다() {
         // given
-        Member member = MemberFixtures.NOT_ADDITIONAL_INFO.생성();
+        Member member = NOT_ADDITIONAL_INFO.생성();
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(member));
 
@@ -122,7 +128,7 @@ class MemberServiceTest {
         // then
         assertAll(
                 () -> assertThat(memberResponse).usingRecursiveComparison()
-                        .isEqualTo(MemberResponse.from(member, false)),
+                        .isEqualTo(MemberResponse.of(member, false)),
                 () -> verify(memberRepository).findById(1L)
         );
     }
@@ -130,6 +136,7 @@ class MemberServiceTest {
     @Test
     void 회원정보를_업데이트_한다() {
         // given
+        final Member corinne = CORINNE.생성(1L);
         given(memberRepository.findById(1L))
                 .willReturn(Optional.of(CORINNE.생성(1L)));
 
@@ -137,7 +144,54 @@ class MemberServiceTest {
         memberService.updateMember(1L, new MemberRequest(JUNIOR_CONSTANT, ETC_CONSTANT));
 
         // then
-        verify(memberRepository).findById(1L);
+        assertAll(
+                () -> verify(memberRepository).findById(1L),
+                () -> assertThat(corinne.isRegistered()).isTrue()
+        );
+    }
+
+    @Test
+    void 비회원이_검색_조건_없이_회원을_조회한다() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
+
+        given(memberRepository.findWithOutSearchConditions(pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+
+        // when
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+        MemberPageResponse memberPageResponse = memberService.findByContains(null, memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findWithOutSearchConditions(pageable),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.of(member, false)));
+    }
+
+    @Test
+    void 비회원이_옵션으로만_회원을_조회한다() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
+
+        given(memberRepository.findWithSearchConditions(null, SENIOR, BACKEND, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+
+        // when
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
+        MemberPageResponse memberPageResponse = memberService.findByContains(null, memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findWithSearchConditions(null, SENIOR, BACKEND, pageable),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.of(member, false)));
     }
 
     @Test
@@ -145,10 +199,12 @@ class MemberServiceTest {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
 
-        given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
+        given(memberRepository.findWithSearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(List.of(inventoryProduct));
 
         // when
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", SENIOR_CONSTANT, BACKEND_CONSTANT);
@@ -156,7 +212,8 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
+                () -> verify(memberRepository).findWithSearchConditions("cheese", SENIOR, BACKEND, pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.of(member, false))
@@ -168,17 +225,19 @@ class MemberServiceTest {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProduct);
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
 
         Long loggedInId = 2L;
         Following following = Following.builder()
                 .followerId(loggedInId)
-                .followeeId(member.getId())
+                .followingId(member.getId())
                 .build();
 
-        given(memberRepository.findBySearchConditions("cheese", SENIOR, BACKEND, pageable))
+        given(memberRepository.findWithSearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
-        given(followingRepository.findByFollowerIdAndFolloweeIdIn(loggedInId, List.of(member.getId())))
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(List.of(inventoryProduct));
+        given(followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId, List.of(member.getId())))
                 .willReturn(List.of(following));
 
         // when
@@ -187,7 +246,9 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findBySearchConditions("cheese", SENIOR, BACKEND, pageable),
+                () -> verify(memberRepository).findWithSearchConditions("cheese", SENIOR, BACKEND, pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> verify(followingRepository).findByFollowerIdAndFollowingIdIn(loggedInId, List.of(member.getId())),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.of(member, true))
@@ -195,29 +256,31 @@ class MemberServiceTest {
     }
 
     @Test
-    void 다른_회원을_팔로우한다() {
+    void 다른_회원을_팔로우한다_팔로우에_성공하면_팔로잉_멤버의_팔로워_카운트가_증가한다() {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
         Following following = Following.builder()
                 .followerId(followerId)
-                .followeeId(followeeId)
+                .followingId(followingId)
                 .build();
+        Member followingMember = CORINNE.생성();
 
+        given(memberRepository.findById(followingId))
+                .willReturn(Optional.of(followingMember));
         given(memberRepository.existsById(followerId))
-                .willReturn(true);
-        given(memberRepository.existsById(followeeId))
                 .willReturn(true);
         given(followingRepository.save(following)).willReturn(following);
 
         // when
-        memberService.follow(followerId, followeeId);
+        memberService.follow(followerId, followingId);
 
         // then
         assertAll(
+                () -> assertThat(followingMember.getFollowerCount()).isEqualTo(1),
+                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
-                () -> verify(memberRepository).existsById(followeeId),
-                () -> verify(followingRepository).existsByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository).existsByFollowerIdAndFollowingId(followerId, followingId),
                 () -> verify(followingRepository).save(following)
         );
     }
@@ -226,38 +289,41 @@ class MemberServiceTest {
     void 다른_회원을_팔로우할때_팔로워가_존재하지_않으면_예외를_반환한다() {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
+        given(memberRepository.findById(followingId))
+                .willReturn(Optional.of(CORINNE.생성()));
         given(memberRepository.existsById(followerId))
                 .willReturn(false);
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> memberService.follow(followerId, followeeId))
+                () -> assertThatThrownBy(() -> memberService.follow(followerId, followingId))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
+                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
-                () -> verify(memberRepository, times(0)).existsById(followeeId),
-                () -> verify(followingRepository, times(0)).existsByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository, times(0))
+                        .existsByFollowerIdAndFollowingId(followerId, followingId),
                 () -> verify(followingRepository, times(0)).save(any(Following.class))
         );
     }
 
     @Test
-    void 다른_회원을_팔로우할때_팔로이가_존재하지_않으면_예외를_반환한다() {
+    void 다른_회원을_팔로우할때_대상회원이_존재하지_않으면_예외를_반환한다() {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
-        given(memberRepository.existsById(followerId))
-                .willReturn(true);
-        given(memberRepository.existsById(followeeId))
-                .willReturn(false);
+        Long followingId = 2L;
+
+        given(memberRepository.findById(followingId))
+                .willReturn(Optional.empty());
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> memberService.follow(followerId, followeeId))
+                () -> assertThatThrownBy(() -> memberService.follow(followerId, followingId))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
-                () -> verify(memberRepository).existsById(followerId),
-                () -> verify(memberRepository).existsById(followeeId),
-                () -> verify(followingRepository, times(0)).existsByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(memberRepository).findById(followingId),
+                () -> verify(memberRepository, times(0)).existsById(followerId),
+                () -> verify(followingRepository, times(0))
+                        .existsByFollowerIdAndFollowingId(followerId, followingId),
                 () -> verify(followingRepository, times(0)).save(any(Following.class))
         );
     }
@@ -266,52 +332,54 @@ class MemberServiceTest {
     void 이미_팔로우하고_있는_회원을_팔로우하려_하면_예외를_반환한다() {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
+        given(memberRepository.findById(followingId))
+                .willReturn(Optional.of(CORINNE.생성(followingId)));
         given(memberRepository.existsById(followerId))
                 .willReturn(true);
-        given(memberRepository.existsById(followeeId))
-                .willReturn(true);
-        given(followingRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId))
+        given(followingRepository.existsByFollowerIdAndFollowingId(followerId, followingId))
                 .willReturn(true);
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> memberService.follow(followerId, followeeId))
+                () -> assertThatThrownBy(() -> memberService.follow(followerId, followingId))
                         .isExactlyInstanceOf(AlreadyFollowingException.class),
+                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
-                () -> verify(memberRepository).existsById(followeeId),
-                () -> verify(followingRepository).existsByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository).existsByFollowerIdAndFollowingId(followerId, followingId),
                 () -> verify(followingRepository, times(0)).save(any(Following.class))
         );
     }
 
     @Test
-    void 다른_회원을_언팔로우한다() {
+    void 다른_회원을_언팔로우한다_성공하면_팔로잉_멤버의_팔로워_카운트를_감소시킨다() {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
         Following following = Following.builder()
                 .followerId(followerId)
-                .followeeId(followeeId)
+                .followingId(followingId)
                 .build();
+        Member followingMember = CORINNE.팔로워_카운트를_입력하여_생성(5);
 
+        given(memberRepository.findById(followingId))
+                .willReturn(Optional.of(followingMember));
         given(memberRepository.existsById(followerId))
                 .willReturn(true);
-        given(memberRepository.existsById(followeeId))
-                .willReturn(true);
-        given(followingRepository.findByFollowerIdAndFolloweeId(followerId, followeeId))
+        given(followingRepository.findByFollowerIdAndFollowingId(followerId, followingId))
                 .willReturn(Optional.of(following));
         willDoNothing().given(followingRepository)
                 .delete(following);
 
         // when
-        memberService.unfollow(followerId, followeeId);
+        memberService.unfollow(followerId, followingId);
 
         // then
         assertAll(
+                () -> assertThat(followingMember.getFollowerCount()).isEqualTo(4),
+                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
-                () -> verify(memberRepository).existsById(followeeId),
-                () -> verify(followingRepository).findByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository).findByFollowerIdAndFollowingId(followerId, followingId),
                 () -> verify(followingRepository).delete(following)
         );
     }
@@ -320,22 +388,25 @@ class MemberServiceTest {
     void 다른_회원을_언팔로우할_때_팔로워가_존재하지_않으면_예외를_반환한다() {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
         Following following = Following.builder()
                 .followerId(followerId)
-                .followeeId(followeeId)
+                .followingId(followingId)
                 .build();
 
+        given(memberRepository.findById(followingId))
+                .willReturn(Optional.of(CORINNE.생성(followingId)));
         given(memberRepository.existsById(followerId))
                 .willReturn(false);
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followeeId))
+                () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followingId))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
+                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
-                () -> verify(memberRepository, times(0)).existsById(followeeId),
-                () -> verify(followingRepository, times(0)).findByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository, times(0))
+                        .findByFollowerIdAndFollowingId(followerId, followingId),
                 () -> verify(followingRepository, times(0)).delete(following)
         );
     }
@@ -344,24 +415,23 @@ class MemberServiceTest {
     void 다른_회원을_언팔로우할_때_팔로이가_존재하지_않으면_예외를_반환한다() {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
         Following following = Following.builder()
                 .followerId(followerId)
-                .followeeId(followeeId)
+                .followingId(followingId)
                 .build();
 
-        given(memberRepository.existsById(followerId))
-                .willReturn(true);
-        given(memberRepository.existsById(followeeId))
-                .willReturn(false);
+        given(memberRepository.findById(followingId))
+                .willReturn(Optional.empty());
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followeeId))
+                () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followingId))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
-                () -> verify(memberRepository).existsById(followerId),
-                () -> verify(memberRepository).existsById(followeeId),
-                () -> verify(followingRepository, times(0)).findByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(memberRepository).findById(followingId),
+                () -> verify(memberRepository, times(0)).existsById(followerId),
+                () -> verify(followingRepository, times(0))
+                        .findByFollowerIdAndFollowingId(followerId, followingId),
                 () -> verify(followingRepository, times(0)).delete(following)
         );
     }
@@ -370,46 +440,138 @@ class MemberServiceTest {
     void 다른_회원을_언팔로우할_때_팔로잉_상태가_아니면_예외를_반환한다() {
         // given
         Long followerId = 1L;
-        Long followeeId = 2L;
+        Long followingId = 2L;
         Following following = Following.builder()
                 .followerId(followerId)
-                .followeeId(followeeId)
+                .followingId(followingId)
                 .build();
 
+        given(memberRepository.findById(followingId))
+                .willReturn(Optional.of(CORINNE.생성(followingId)));
         given(memberRepository.existsById(followerId))
                 .willReturn(true);
-        given(memberRepository.existsById(followeeId))
-                .willReturn(true);
-        given(followingRepository.findByFollowerIdAndFolloweeId(followerId, followeeId))
+        given(followingRepository.findByFollowerIdAndFollowingId(followerId, followingId))
                 .willReturn(Optional.empty());
 
         // when, then
         assertAll(
-                () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followeeId))
+                () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followingId))
                         .isExactlyInstanceOf(NotFollowingException.class),
+                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
-                () -> verify(memberRepository).existsById(followeeId),
-                () -> verify(followingRepository).findByFollowerIdAndFolloweeId(followerId, followeeId),
+                () -> verify(followingRepository).findByFollowerIdAndFollowingId(followerId, followingId),
                 () -> verify(followingRepository, times(0)).delete(following)
         );
     }
 
     @Test
-    void 팔로잉하는_회원을_조회한다() {
+    void 다른_회원을_언팔로우할때_팔로잉_멤버의_팔로우_카운트가_0이면_예외가_발생한다() {
+        // given
+        Long followerId = 1L;
+        Long followingId = 2L;
+        Following following = Following.builder()
+                .followerId(followerId)
+                .followingId(followingId)
+                .build();
+        Member followingMember = CORINNE.팔로워_카운트를_입력하여_생성(0);
+
+        given(memberRepository.findById(followingId))
+                .willReturn(Optional.of(followingMember));
+        given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(followingRepository.findByFollowerIdAndFollowingId(followerId, followingId))
+                .willReturn(Optional.of(following));
+        willDoNothing().given(followingRepository)
+                .delete(following);
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followingId))
+                        .isExactlyInstanceOf(InvalidFollowerCountException.class),
+                () -> verify(memberRepository).findById(followingId),
+                () -> verify(memberRepository).existsById(followerId),
+                () -> verify(followingRepository).findByFollowerIdAndFollowingId(followerId, followingId),
+                () -> verify(followingRepository).delete(following)
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원을_키워드와_옵션_없이_조회한다() {
         // given
         Long loggedInId = 1L;
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         Member member = CORINNE.생성(2L);
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
 
-        given(memberRepository.findFolloweesBySearchConditions(loggedInId, null, null, null, pageable))
+        given(memberRepository.findFollowingsWithOutSearchConditions(loggedInId, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(Collections.emptyList());
 
         // when
-        MemberPageResponse memberPageResponse = memberService.findFolloweesByConditions(loggedInId, memberSearchRequest, pageable);
+        MemberPageResponse memberPageResponse = memberService.findFollowingsByConditions(loggedInId,
+                memberSearchRequest, pageable);
 
         // then
         assertAll(
+                () -> verify(memberRepository).findFollowingsWithOutSearchConditions(loggedInId, pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.of(member, true))
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원을_옵션으로만_조회한다() {
+        // given
+        Long loggedInId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        Member member = CORINNE.생성(2L);
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
+
+        given(memberRepository.findFollowingsWithSearchConditions(loggedInId, null, SENIOR, BACKEND, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(Collections.emptyList());
+
+        // when
+        MemberPageResponse memberPageResponse = memberService.findFollowingsByConditions(loggedInId,
+                memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, null, SENIOR, BACKEND,
+                        pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(MemberWithProfileProductResponse.of(member, true))
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원을_키워드와_옵션으로_조회한다() {
+        // given
+        Long loggedInId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        Member member = CORINNE.생성(2L);
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("ham", SENIOR_CONSTANT, null);
+
+        given(memberRepository.findFollowingsWithSearchConditions(loggedInId, "ham", SENIOR, null, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(Collections.emptyList());
+
+        // when
+        MemberPageResponse memberPageResponse = memberService.findFollowingsByConditions(loggedInId,
+                memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, "ham", SENIOR, null,
+                        pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.of(member, true))

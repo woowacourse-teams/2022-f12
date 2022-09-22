@@ -6,12 +6,17 @@ import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
 
 import com.woowacourse.f12.dto.response.ExceptionResponse;
 import com.woowacourse.f12.exception.CustomException;
+import com.woowacourse.f12.exception.UriTooLongException;
 import com.woowacourse.f12.exception.badrequest.InvalidValueException;
 import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
 import com.woowacourse.f12.exception.internalserver.ExternalServerException;
 import com.woowacourse.f12.exception.internalserver.InternalServerException;
 import com.woowacourse.f12.exception.notfound.NotFoundException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
+import com.woowacourse.f12.presentation.auth.RefreshTokenCookieProvider;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +34,12 @@ public class GlobalExceptionHandler {
     private static final String REQUEST_DATA_FORMAT_ERROR_MESSAGE = "요청으로 넘어온 값이 형식에 맞지 않습니다.";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "서버 오류가 발생했습니다";
     private static final String LOG_FORMAT = "Class : {}, Code : {}, Message : {}";
+
+    private final RefreshTokenCookieProvider refreshTokenCookieProvider;
+
+    public GlobalExceptionHandler(final RefreshTokenCookieProvider refreshTokenCookieProvider) {
+        this.refreshTokenCookieProvider = refreshTokenCookieProvider;
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleNotFoundException(final NotFoundException e) {
@@ -67,6 +78,14 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse.from(stringBuilder.toString(), INVALID_REQUEST_BODY_TYPE));
     }
 
+    @ExceptionHandler(RefreshTokenInvalidException.class)
+    public ResponseEntity<ExceptionResponse> handleRefreshTokenNotFoundException(final RefreshTokenInvalidException e,
+                                                                                 final HttpServletRequest request,
+                                                                                 final HttpServletResponse response) {
+        refreshTokenCookieProvider.removeCookie(request, response);
+        return handleUnauthorizedException(e);
+    }
+
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ExceptionResponse> handleUnauthorizedException(final UnauthorizedException e) {
         log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
@@ -82,6 +101,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ExternalServerException.class, InternalServerException.class})
     public ResponseEntity<ExceptionResponse> handleInternalException(final CustomException e) {
         return ResponseEntity.internalServerError().body(ExceptionResponse.from(e));
+    }
+
+    @ExceptionHandler(UriTooLongException.class)
+    public ResponseEntity<ExceptionResponse> handleUriTooLongException(final CustomException e) {
+        return ResponseEntity.status(HttpStatus.URI_TOO_LONG).body(ExceptionResponse.from(e));
     }
 
     @ExceptionHandler(Exception.class)

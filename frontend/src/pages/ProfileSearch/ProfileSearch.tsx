@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
 import * as S from '@/pages/ProfileSearch/ProfileSearch.style';
 
@@ -10,8 +10,10 @@ import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
 import ProfileSearchResult from '@/components/Profile/ProfileSearchResult/ProfileSearchResult';
 
+import { UserDataContext } from '@/contexts/LoginContextProvider';
+
+import useDebounce from '@/hooks/useDebounce';
 import useSearch from '@/hooks/useSearch';
-import useSessionStorage from '@/hooks/useSessionStorage';
 import useUrlSyncState from '@/hooks/useUrlSyncState';
 
 import { ENDPOINTS } from '@/constants/api';
@@ -28,12 +30,13 @@ function ProfileSearch({ type = 'default' }: Props) {
   const [careerLevel, setCareerLevel] = useUrlSyncState(SEARCH_PARAMS.CAREER_LEVEL);
   const [jobType, setJobType] = useUrlSyncState(SEARCH_PARAMS.JOB_TYPE);
   const [searchInput, setSearchInput] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
+  const debouncedSearchInput = useDebounce<string>(searchInput, 300);
 
-  const [userData] = useSessionStorage<UserData>('userData');
+  const userData = useContext(UserDataContext);
   const hasToken = userData && userData.token !== undefined;
 
   const commonParams = {
-    query: searchInput,
+    query: debouncedSearchInput,
     filter: { careerLevel, jobType, sort: 'followerCount,desc' },
     size: String(PROFILE_SEARCH_SIZE),
   };

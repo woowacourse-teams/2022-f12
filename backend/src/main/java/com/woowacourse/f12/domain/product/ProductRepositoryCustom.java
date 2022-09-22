@@ -5,5 +5,7 @@ import org.springframework.data.domain.Slice;
 
 public interface ProductRepositoryCustom {
 
-    Slice<Product> findBySearchConditions(String keyword, Category category, Pageable pageable);
+    Slice<Product> findWithoutSearchConditions(Pageable pageable);
+
+    Slice<Product> findWithSearchConditions(String keyword, Category category, Pageable pageable);
 }

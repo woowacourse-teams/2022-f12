@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.exception.badrequest.BlankContentException;
 import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
 import com.woowacourse.f12.exception.badrequest.InvalidRatingValueException;
@@ -19,10 +20,15 @@ class ReviewTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 5})
     void 리뷰_평점_값이_1과_5_사이_정수면_생성된다(int rating) {
-        // given, when
+        // given
+        Product product = Product.builder()
+                .build();
+
+        // when
         Review review = Review.builder()
                 .rating(rating)
                 .content("내용")
+                .product(product)
                 .build();
 
         // then
@@ -43,12 +49,15 @@ class ReviewTest {
     @Test
     void 리뷰_내용의_길이가_1000자_이하면_생성된다() {
         // given
-        String invalidContent = "1".repeat(1000);
+        String validContent = "1".repeat(1000);
+        Product product = Product.builder()
+                .build();
 
         // when
         Review review = Review.builder()
                 .rating(5)
-                .content(invalidContent)
+                .content(validContent)
+                .product(product)
                 .build();
 
         // then
@@ -90,10 +99,13 @@ class ReviewTest {
         Member targetMember = Member.builder()
                 .id(targetMemberId)
                 .build();
+        Product product = Product.builder()
+                .build();
         Review review = Review.builder()
                 .member(author)
                 .content("내용")
                 .rating(5)
+                .product(product)
                 .build();
 
         // when
@@ -106,15 +118,21 @@ class ReviewTest {
     @Test
     void 리뷰를_수정한다() {
         // given
+        Product product = Product.builder()
+                .build();
         Review review = Review.builder()
                 .id(1L)
                 .content("내용")
                 .rating(5)
+                .product(product)
                 .build();
+        review.reflectToProductWhenWritten();
+
         Review updateReview = Review.builder()
                 .id(2L)
                 .content("수정한 내용")
                 .rating(4)
+                .product(product)
                 .build();
 
         // when
@@ -124,8 +142,58 @@ class ReviewTest {
         assertAll(
                 () -> assertThat(review.getId()).isEqualTo(1L),
                 () -> assertThat(review).usingRecursiveComparison()
-                        .ignoringFields("id")
-                        .isEqualTo(updateReview)
+                        .ignoringFields("id", "product")
+                        .isEqualTo(updateReview),
+                () -> assertThat(review.getProduct().getReviewCount()).isOne(),
+                () -> assertThat(review.getProduct().getTotalRating()).isEqualTo(4),
+                () -> assertThat(review.getProduct().getRating()).isEqualTo(4.0)
+        );
+    }
+
+    @Test
+    void 리뷰_작성_시_리뷰_대상_제품의_리뷰_개수와_평점을_증가시킨다() {
+        // given
+        Product product = Product.builder()
+                .build();
+
+        Review review = Review.builder()
+                .content("내용")
+                .rating(5)
+                .product(product)
+                .build();
+
+        // when
+        review.reflectToProductWhenWritten();
+
+        // then
+        assertAll(
+                () -> assertThat(product.getReviewCount()).isOne(),
+                () -> assertThat(product.getTotalRating()).isEqualTo(5),
+                () -> assertThat(product.getRating()).isEqualTo(5.0)
+        );
+    }
+
+    @Test
+    void 리뷰_삭제_전에_리뷰_대상_제품의_리뷰_개수와_평점을_감소시킨다() {
+        // given
+        Product product = Product.builder()
+                .build();
+
+        Review review = Review.builder()
+                .content("내용")
+                .rating(5)
+                .product(product)
+                .build();
+        review.reflectToProductWhenWritten();
+
+        // when
+        review.reflectToProductBeforeDelete();
+
+        // then
+        assertAll(
+                () -> assertThat(product.getReviewCount()).isZero(),
+                () -> assertThat(product.getTotalRating()).isEqualTo(0),
+                () -> assertThat(product.getRating()).isEqualTo(0)
         );
     }
 }

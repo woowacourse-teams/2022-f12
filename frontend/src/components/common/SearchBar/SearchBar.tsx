@@ -16,7 +16,12 @@ function SearchBar({ searchInput, setSearchInput }: Props) {
 
   return (
     <S.Container>
-      <S.Input type="text" value={searchInput || ''} onChange={handleInputChange} />
+      <S.Input
+        maxLength={100}
+        type="text"
+        value={searchInput || ''}
+        onChange={handleInputChange}
+      />
       <S.Button>
         <SearchImage />
       </S.Button>

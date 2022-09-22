@@ -57,7 +57,7 @@ public class ReviewService {
     }
 
     private void validateRegisterCompleted(final Member member) {
-        if (!member.isRegisterCompleted()) {
+        if (!member.isRegistered()) {
             throw new RegisterNotCompletedException();
         }
     }
@@ -65,6 +65,7 @@ public class ReviewService {
     private Long saveReview(final ReviewRequest reviewRequest, final Member member, final Product product) {
         validateNotWritten(member, product);
         final Review review = reviewRequest.toReview(product, member);
+        review.reflectToProductWhenWritten();
         return reviewRepository.save(review)
                 .getId();
     }
@@ -117,8 +118,10 @@ public class ReviewService {
     @Transactional
     public void delete(final Long reviewId, final Long memberId) {
         final Review review = findTarget(reviewId, memberId);
+        review.reflectToProductBeforeDelete();
         reviewRepository.delete(review);
-        final InventoryProduct inventoryProduct = inventoryProductRepository.findByMemberAndProduct(review.getMember(), review.getProduct())
+        final InventoryProduct inventoryProduct = inventoryProductRepository.findWithProductByMemberAndProduct(
+                        review.getMember(), review.getProduct())
                 .orElseThrow(InventoryProductNotFoundException::new);
         inventoryProductRepository.delete(inventoryProduct);
     }

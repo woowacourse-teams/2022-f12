@@ -17,7 +17,7 @@ export const ProfileSection = styled.section`
 `;
 
 export const InventorySection = styled.section`
-  width: 95%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -50,4 +50,26 @@ export const DeskSetupSection = styled.section`
   width: 100%;
   height: 25rem;
   background-color: ${({ theme }) => theme.colors.secondary};
+`;
+
+export const TabButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: start;
+  gap: 0.2rem;
+`;
+
+export const TabButton = styled.button<{ selected: boolean }>`
+  width: max-content;
+  padding: 0.4rem 0.6rem;
+  font-size: 1.2rem;
+  border-radius: 0.4rem;
+  background-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primary : theme.colors.secondary};
+  transition: 0.5s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primary};
+    transition: 0.5s;
+  }
 `;

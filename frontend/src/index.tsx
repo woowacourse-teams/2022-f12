@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components';
 
 import App from '@/App';
 
+import CacheContextProvider from '@/contexts/CacheContextProvider';
 import LoginContextProvider from '@/contexts/LoginContextProvider';
 import ModalContextProvider from '@/contexts/ModalContextProvider';
 
@@ -34,11 +35,13 @@ root.render(
       <ResetCss />
       <GlobalStyles />
       <BrowserRouter>
-        <LoginContextProvider>
-          <ModalContextProvider>
-            <App />
-          </ModalContextProvider>
-        </LoginContextProvider>
+        <CacheContextProvider>
+          <LoginContextProvider>
+            <ModalContextProvider>
+              <App />
+            </ModalContextProvider>
+          </LoginContextProvider>
+        </CacheContextProvider>
       </BrowserRouter>
     </ThemeProvider>
   </>

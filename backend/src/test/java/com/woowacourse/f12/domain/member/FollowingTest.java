@@ -16,7 +16,7 @@ class FollowingTest {
         assertThatThrownBy(
                 () -> Following.builder()
                         .followerId(memberId)
-                        .followeeId(memberId)
+                        .followingId(memberId)
                         .build()
         ).isExactlyInstanceOf(SelfFollowException.class);
     }

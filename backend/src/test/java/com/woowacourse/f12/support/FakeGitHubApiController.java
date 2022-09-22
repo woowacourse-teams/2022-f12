@@ -1,19 +1,26 @@
 package com.woowacourse.f12.support;
 
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.MINCHO_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.OHZZI_GITHUB;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
+import static com.woowacourse.f12.support.fixture.MemberFixture.OHZZI;
+
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.dto.request.auth.GitHubTokenRequest;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.auth.GitHubTokenResponse;
+import java.util.Map;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-import java.util.Objects;
-
-import static com.woowacourse.f12.support.GitHubProfileFixtures.*;
-import static com.woowacourse.f12.support.MemberFixtures.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class FakeGitHubApiController {

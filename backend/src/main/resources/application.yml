@@ -6,6 +6,7 @@ spring:
       main:
       release:
       local:
+      performance:
     default: local
   jpa:
     hibernate:
@@ -17,3 +18,8 @@ spring:
 
 server:
   port: 8080
+
+  servlet:
+    session:
+      cookie:
+        same-site: none

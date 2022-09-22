@@ -5,7 +5,6 @@ import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import lombok.Getter;
-import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 @Embeddable
 public class InventoryProducts {
 
-    @BatchSize(size = 150)
     @OneToMany(mappedBy = "member")
     private List<InventoryProduct> items = new ArrayList<>();
 

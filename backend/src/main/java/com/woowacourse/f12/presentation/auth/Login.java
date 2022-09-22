@@ -7,5 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LoginRequired {
+public @interface Login {
+
+    boolean required() default true;
 }

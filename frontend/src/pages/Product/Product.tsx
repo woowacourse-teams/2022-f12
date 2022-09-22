@@ -13,6 +13,7 @@ import ProductDetail from '@/components/Product/ProductDetail/ProductDetail';
 import ReviewBottomSheet from '@/components/Review/ReviewBottomSheet/ReviewBottomSheet';
 import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListSection';
 
+import useAnimation from '@/hooks/useAnimation';
 import useAuth from '@/hooks/useAuth';
 import useProduct from '@/hooks/useProduct';
 import useReviews from '@/hooks/useReviews';
@@ -21,7 +22,6 @@ import useStatistics from '@/hooks/useStatistics';
 import theme from '@/style/theme';
 
 import Plus from '@/assets/plus.svg';
-import useAnimation from '@/hooks/useAnimation';
 
 export const PRODUCT_PAGE_REVIEW_SIZE = 6;
 

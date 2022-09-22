@@ -9,6 +9,7 @@ import * as S from '@/components/Review/ReviewCard/ReviewCard.style';
 import useAnimation from '@/hooks/useAnimation';
 import useAuth from '@/hooks/useAuth';
 
+import { GITHUB_IMAGE_SIZE_SEARCH_PARAM } from '@/constants/link';
 import ROUTES from '@/constants/routes';
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
   index?: number;
+  userNameVisible?: boolean;
 };
 
 function ReviewCard({
@@ -25,6 +27,7 @@ function ReviewCard({
   handleEdit,
   reviewData,
   index = 0,
+  userNameVisible = true,
 }: Props) {
   const { product, rating, content, author, createdAt, authorMatch = false } = reviewData;
   const { isLoggedIn } = useAuth();
@@ -64,9 +67,14 @@ function ReviewCard({
       <S.ReviewArea isFull={!product}>
         <S.Wrapper>
           <S.UserWrapper>
-            <S.ProfileLink to={`${ROUTES.PROFILE}/${author.id}`}>
-              <UserNameTag imageUrl={author.imageUrl} username={author.gitHubId} />
-            </S.ProfileLink>
+            {userNameVisible && (
+              <S.ProfileLink to={`${ROUTES.PROFILE}/${author.id}`}>
+                <UserNameTag
+                  imageUrl={`${author.imageUrl}${GITHUB_IMAGE_SIZE_SEARCH_PARAM.small}`}
+                  username={author.gitHubId}
+                />
+              </S.ProfileLink>
+            )}
             {!product && authorMatch && (
               <S.ReviewModifyButtonWrapper>
                 <S.ReviewModifyButton onClick={handleEditClick}>

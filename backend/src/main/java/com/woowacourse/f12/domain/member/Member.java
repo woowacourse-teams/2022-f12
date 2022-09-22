@@ -2,22 +2,14 @@ package com.woowacourse.f12.domain.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
-import java.util.List;
-import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
 import lombok.Builder;
 import lombok.Getter;
-import org.hibernate.annotations.Formula;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "member")
@@ -39,6 +31,9 @@ public class Member {
     @Column(name = "image_url", length = 65535, nullable = false)
     private String imageUrl;
 
+    @Column(name = "registered", nullable = false)
+    private boolean registered;
+
     @Column(name = "career_level")
     @Enumerated(EnumType.STRING)
     private CareerLevel careerLevel;
@@ -47,22 +42,23 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private JobType jobType;
 
+    @Column(name = "follower_count", nullable = false)
+    private int followerCount;
+
     @Builder.Default
     @Embedded
     private InventoryProducts inventoryProducts = new InventoryProducts();
 
-    @Formula("(SELECT COUNT(1) FROM following f WHERE f.followee_id = id)")
-    private int followerCount;
-
     protected Member() {
     }
 
-    private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final CareerLevel careerLevel,
-                   final JobType jobType, final InventoryProducts inventoryProducts, final int followerCount) {
+    private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final boolean registered, final CareerLevel careerLevel,
+                   final JobType jobType, final int followerCount, final InventoryProducts inventoryProducts) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.registered = registered;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
         this.inventoryProducts = inventoryProducts;
@@ -74,6 +70,8 @@ public class Member {
         updateImageUrl(updateMember.imageUrl);
         updateCareerLevel(updateMember.careerLevel);
         updateJobType(updateMember.jobType);
+        updateFollowerCount(updateMember.followerCount);
+        updateRegistered(updateMember.registered);
     }
 
     private void updateName(final String name) {
@@ -100,8 +98,18 @@ public class Member {
         }
     }
 
-    public boolean isRegisterCompleted() {
-        return Objects.nonNull(this.careerLevel) && Objects.nonNull(this.jobType);
+    private void updateFollowerCount(final int followerCount) {
+        if (followerCount < 0){
+            throw new InvalidFollowerCountException();
+        }
+        this.followerCount = followerCount;
+    }
+
+    private void updateRegistered(final boolean registered) {
+        if (this.registered) {
+            return;
+        }
+        this.registered = registered;
     }
 
     public List<InventoryProduct> getProfileProduct() {
@@ -114,6 +122,10 @@ public class Member {
 
     public boolean isSameId(final Long id) {
         return Objects.equals(id, this.id);
+    }
+
+    public void updateInventoryProducts(final List<InventoryProduct> values) {
+        this.inventoryProducts = new InventoryProducts(values);
     }
 
     @Override

@@ -1,10 +1,31 @@
 package com.woowacourse.f12.domain.review;
 
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.MOBILE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
+import static com.woowacourse.f12.support.fixture.MemberFixture.NOT_ADDITIONAL_INFO;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_1;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_2;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_4;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.springframework.data.domain.Sort.Order.desc;
+
 import com.woowacourse.f12.config.JpaConfig;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
+import java.util.List;
+import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,23 +34,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-import java.util.Optional;
-
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.domain.member.JobType.MOBILE;
-import static com.woowacourse.f12.support.MemberFixtures.*;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.ProductFixture.KEYBOARD_2;
-import static com.woowacourse.f12.support.ReviewFixtures.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.springframework.data.domain.Sort.Order.desc;
 
 @DataJpaTest
 @Import(JpaConfig.class)
@@ -95,7 +99,7 @@ class ReviewRepositoryTest {
         Product product1 = productRepository.save(KEYBOARD_1.생성());
         Product product2 = productRepository.save(KEYBOARD_2.생성());
         Member member = memberRepository.save(CORINNE.생성());
-        Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("id")));
         리뷰_저장(REVIEW_RATING_5.작성(product1, member));
         Review review = 리뷰_저장(REVIEW_RATING_5.작성(product2, member));
 
@@ -290,6 +294,7 @@ class ReviewRepositoryTest {
     }
 
     private Review 리뷰_저장(Review review) {
+        review.reflectToProductWhenWritten();
         return reviewRepository.save(review);
     }
 }

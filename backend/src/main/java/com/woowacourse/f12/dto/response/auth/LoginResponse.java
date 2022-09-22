@@ -1,6 +1,7 @@
 package com.woowacourse.f12.dto.response.auth;
 
 import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.dto.result.LoginResult;
 import lombok.Getter;
 
 @Getter
@@ -20,8 +21,9 @@ public class LoginResponse {
         this.member = loginMemberResponse;
     }
 
-    public static LoginResponse of(final String token, final Member member) {
+    public static LoginResponse from(final LoginResult loginResult) {
+        final Member member = loginResult.getMember();
         final LoginMemberResponse loginMemberResponse = LoginMemberResponse.from(member);
-        return new LoginResponse(token, member.isRegisterCompleted(), loginMemberResponse);
+        return new LoginResponse(loginResult.getAccessToken(), member.isRegistered(), loginMemberResponse);
     }
 }

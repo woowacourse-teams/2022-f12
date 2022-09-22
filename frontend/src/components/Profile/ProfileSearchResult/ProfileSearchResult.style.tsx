@@ -15,3 +15,8 @@ export const CardWrapper = styled.div`
   display: flex;
   justify-content: center;
 `;
+
+export const NoDataContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;

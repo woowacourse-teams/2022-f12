@@ -1,4 +1,3 @@
-import { Player } from '@lottiefiles/react-lottie-player';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -10,11 +9,11 @@ import useAuth from '@/hooks/useAuth';
 import useFollowing from '@/hooks/useFollowing';
 
 import TITLE from '@/constants/header';
-import { GITHUB_URL } from '@/constants/link';
-import LOTTIE_FILES from '@/constants/lottieFiles';
+import { GITHUB_IMAGE_SIZE_SEARCH_PARAM, GITHUB_URL } from '@/constants/link';
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 import ROUTES from '@/constants/routes';
 
+import Empty from '@/assets/empty.svg';
 import GithubIcon from '@/assets/github.svg';
 import NextSign from '@/assets/nextSign.svg';
 import PrevSign from '@/assets/prevSign.svg';
@@ -123,7 +122,7 @@ function ProfileCard({
     <S.Container index={index}>
       <S.LeftSection>
         <S.ProfileImageWrapper>
-          <S.ProfileImage src={imageUrl} />
+          <S.ProfileImage src={`${imageUrl}${GITHUB_IMAGE_SIZE_SEARCH_PARAM.large}`} />
         </S.ProfileImageWrapper>
       </S.LeftSection>
       <S.RightSection>
@@ -131,7 +130,7 @@ function ProfileCard({
           <S.UserNameWrapper>
             <S.UserName>{gitHubId}</S.UserName>
             <S.LinkWrapper
-              href={`${GITHUB_URL}${gitHubId}`}
+              to={`${GITHUB_URL}${gitHubId}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -166,11 +165,7 @@ function ProfileCard({
                           <S.ProductImage src={equipment.imageUrl as string} />
                         </Link>
                       ) : (
-                        <Player
-                          loop
-                          src={LOTTIE_FILES.EMPTY_BOX}
-                          style={{ height: '80px', width: '80px' }}
-                        />
+                        <Empty />
                       )}
                       <S.ProductTitle>
                         {equipment.id ? (
@@ -191,7 +186,7 @@ function ProfileCard({
             <NextSign />
           </S.RightButton>
         </S.InventoryWrapper>
-        <S.LinkWrapper href={`${ROUTES.PROFILE}/${id}`}>
+        <S.LinkWrapper to={`${ROUTES.PROFILE}/${id}`}>
           <S.ProfileViewButton>프로필 보기</S.ProfileViewButton>
         </S.LinkWrapper>
       </S.RightSection>
