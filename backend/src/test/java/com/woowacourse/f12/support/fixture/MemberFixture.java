@@ -16,11 +16,11 @@ import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
 
 public enum MemberFixture {
 
-    CORINNE("hamcheeseburger", "유현지", "corinne_url", true, SENIOR, BACKEND),
-    MINCHO("jswith", "홍영민", "mincho_url", true, JUNIOR, FRONTEND),
-    OHZZI("Ohzzi", "오지훈", "Ohzzi_url", true, JUNIOR, BACKEND),
-    CORINNE_UPDATED("hamcheeseburger", "괴물개발자", "corinne_url", true, SENIOR, BACKEND),
-    NOT_ADDITIONAL_INFO("invalid", "invalid", "invalid", false, null, null);
+    CORINNE("hamcheeseburger", "유현지", "corinne_url", true, SENIOR, BACKEND, 0),
+    MINCHO("jswith", "홍영민", "mincho_url", true, JUNIOR, FRONTEND, 0),
+    OHZZI("Ohzzi", "오지훈", "Ohzzi_url", true, JUNIOR, BACKEND, 0),
+    CORINNE_UPDATED("hamcheeseburger", "괴물개발자", "corinne_url", true, SENIOR, BACKEND, 0),
+    NOT_ADDITIONAL_INFO("invalid", "invalid", "invalid", false, null, null, 0);
 
     private final String gitHubId;
     private final String name;
@@ -28,15 +28,17 @@ public enum MemberFixture {
     private final boolean registered;
     private final CareerLevel careerLevel;
     private final JobType jobType;
+    private final int followerCount;
 
     MemberFixture(final String gitHubId, final String name, final String imageUrl, final boolean registered, final CareerLevel careerLevel,
-                  final JobType jobType) {
+                  final JobType jobType, final int followerCount) {
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.registered = registered;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
+        this.followerCount = followerCount;
     }
 
     public Member 생성() {
@@ -52,6 +54,7 @@ public enum MemberFixture {
                 .registered(this.registered)
                 .careerLevel(this.careerLevel)
                 .jobType(this.jobType)
+                .followerCount(this.followerCount)
                 .build();
     }
 
@@ -68,6 +71,7 @@ public enum MemberFixture {
                 .registered(this.registered)
                 .careerLevel(this.careerLevel)
                 .jobType(this.jobType)
+                .followerCount(this.followerCount)
                 .inventoryProducts(new InventoryProducts(inventoryProducts))
                 .build();
     }
@@ -90,6 +94,7 @@ public enum MemberFixture {
                 .gitHubId(this.gitHubId)
                 .name(this.name)
                 .imageUrl(this.imageUrl)
+                .followerCount(this.followerCount)
                 .build();
     }
 
@@ -98,6 +103,10 @@ public enum MemberFixture {
     }
 
     public Member 추가정보를_입력하여_생성(final Long id, final CareerLevel careerLevel, final JobType jobType) {
+        return 추가정보와_팔로워_카운트를_입력하여_생성(id, careerLevel, jobType, this.followerCount);
+    }
+
+    public Member 추가정보와_팔로워_카운트를_입력하여_생성(final Long id, final CareerLevel careerLevel, final JobType jobType, final int followerCount) {
         return Member.builder()
                 .id(id)
                 .gitHubId(this.gitHubId)
@@ -106,6 +115,18 @@ public enum MemberFixture {
                 .registered(this.registered)
                 .careerLevel(careerLevel)
                 .jobType(jobType)
+                .followerCount(followerCount)
+                .build();
+    }
+
+    public Member 팔로워_카운트를_입력하여_생성(final int followerCount) {
+        return Member.builder()
+                .gitHubId(this.gitHubId)
+                .name(this.name)
+                .imageUrl(this.imageUrl)
+                .careerLevel(this.careerLevel)
+                .jobType(this.jobType)
+                .followerCount(followerCount)
                 .build();
     }
 }

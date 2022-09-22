@@ -2,6 +2,7 @@ package com.woowacourse.f12.domain.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
+import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
 import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.Formula;
@@ -42,12 +43,12 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private JobType jobType;
 
+    @Column(name = "follower_count", nullable = false)
+    private int followerCount;
+
     @Builder.Default
     @Embedded
     private InventoryProducts inventoryProducts = new InventoryProducts();
-
-    @Formula("(SELECT COUNT(1) FROM following f WHERE f.following_id = id)")
-    private int followerCount;
 
     protected Member() {
     }
@@ -70,6 +71,7 @@ public class Member {
         updateImageUrl(updateMember.imageUrl);
         updateCareerLevel(updateMember.careerLevel);
         updateJobType(updateMember.jobType);
+        updateFollowerCount(updateMember.followerCount);
         updateRegistered(updateMember.registered);
     }
 
@@ -95,6 +97,13 @@ public class Member {
         if (Objects.nonNull(jobType)) {
             this.jobType = jobType;
         }
+    }
+
+    private void updateFollowerCount(final int followerCount) {
+        if (followerCount < 0){
+            throw new InvalidFollowerCountException();
+        }
+        this.followerCount = followerCount;
     }
 
     private void updateRegistered(final boolean registered) {

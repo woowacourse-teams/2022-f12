@@ -99,4 +99,38 @@ public class CustomPageableArgumentResolverTest extends PresentationTest {
         // then
         verify(productService).findBySearchConditions(refEq(productSearchRequest), eq(pageable));
     }
+
+    @Test
+    void 평점순으로_제품_조회_API_요청_시_리뷰순을_세컨더리_정렬_기준_추가() throws Exception {
+        // given
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("rating", "reviewCount", "id").descending());
+        given(productService.findBySearchConditions(any(ProductSearchRequest.class), eq(pageable)))
+                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
+
+        // when
+        mockMvc.perform(
+                        get("/api/v1/products?page=0&size=10&sort=rating,desc"))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(productService).findBySearchConditions(any(ProductSearchRequest.class), eq(pageable));
+    }
+
+    @Test
+    void 리뷰순으로_제품_조회_API_요청_시_평점순을_세컨더리_정렬_기준_추가() throws Exception {
+        // given
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("reviewCount", "rating", "id").descending());
+        given(productService.findBySearchConditions(any(ProductSearchRequest.class), eq(pageable)))
+                .willReturn(ProductPageResponse.from(new SliceImpl<>(List.of())));
+
+        // when
+        mockMvc.perform(
+                        get("/api/v1/products?page=0&size=10&sort=reviewCount,desc"))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        verify(productService).findBySearchConditions(any(ProductSearchRequest.class), eq(pageable));
+    }
 }

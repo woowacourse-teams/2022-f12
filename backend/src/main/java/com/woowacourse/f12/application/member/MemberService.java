@@ -136,17 +136,20 @@ public class MemberService {
 
     @Transactional
     public void follow(final Long followerId, final Long followingId) {
-        validateFollowingMembersExist(followerId, followingId);
+        final Member followingMember = memberRepository.findById(followingId)
+                .orElseThrow(MemberNotFoundException::new);
+        validateFollowingMembersExist(followerId);
         validateNotFollowing(followerId, followingId);
         final Following following = Following.builder()
                 .followerId(followerId)
                 .followingId(followingId)
                 .build();
         followingRepository.save(following);
+        increaseFollowerCount(followingMember);
     }
 
-    private void validateFollowingMembersExist(final Long followerId, final Long followingId) {
-        if (!memberRepository.existsById(followerId) || !memberRepository.existsById(followingId)) {
+    private void validateFollowingMembersExist(final Long followerId) {
+        if (!memberRepository.existsById(followerId)) {
             throw new MemberNotFoundException();
         }
     }
@@ -157,11 +160,21 @@ public class MemberService {
         }
     }
 
+    private void increaseFollowerCount(final Member followingMember) {
+        final Member updatedMember = Member.builder()
+                .followerCount(followingMember.getFollowerCount() + 1)
+                .build();
+        followingMember.update(updatedMember);
+    }
+
     @Transactional
     public void unfollow(final Long followerId, final Long followingId) {
-        validateFollowingMembersExist(followerId, followingId);
+        final Member followingMember = memberRepository.findById(followingId)
+                .orElseThrow(MemberNotFoundException::new);
+        validateFollowingMembersExist(followerId);
         final Following following = findFollowingRelation(followerId, followingId);
         followingRepository.delete(following);
+        decreaseFollowerCount(followingMember);
     }
 
     private Following findFollowingRelation(final Long followerId, final Long followingId) {
@@ -169,8 +182,14 @@ public class MemberService {
                 .orElseThrow(NotFollowingException::new);
     }
 
-    public MemberPageResponse findFollowingsByConditions(final Long loggedInId,
-                                                         final MemberSearchRequest memberSearchRequest,
+    private void decreaseFollowerCount(final Member followingMember) {
+        final Member updatedMember = Member.builder()
+                .followerCount(followingMember.getFollowerCount() - 1)
+                .build();
+        followingMember.update(updatedMember);
+    }
+
+    public MemberPageResponse findFollowingsByConditions(final Long loggedInId, final MemberSearchRequest memberSearchRequest,
                                                          final Pageable pageable) {
         final Slice<Member> slice = findFollowingsBySearchConditions(loggedInId, memberSearchRequest, pageable);
         setInventoryProductsToMembers(slice);
