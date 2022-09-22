@@ -22,7 +22,9 @@ export const LogoutContext = createContext<() => void | null>(null);
 
 function LoginContextProvider({ children }: PropsWithChildren) {
   const [userData, setUserData] = useState<UserData>(null);
-  const checkLoginStatus = () => userData && !!userData.token;
+  const checkLoginStatus = () => {
+    return userData && !!userData.token;
+  };
 
   const [isLoggedIn, setLoggedIn] = useState<boolean>(checkLoginStatus());
   // 토큰이 중간에 변경되더라도 존재 여부가 바뀌지 않으면 변경되지 않도록 설정
