@@ -191,6 +191,7 @@ class ProductRepositoryTest {
     }
 
     private Review 리뷰_저장(Review review) {
+        review.reflectToProductWhenWritten();
         return reviewRepository.save(review);
     }
 }
