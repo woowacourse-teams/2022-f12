@@ -47,6 +47,11 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
+        Member updateMember = Member.builder()
+                .followerCount(mincho.getFollowerCount() + 1)
+                .build();
+        mincho.update(updateMember);
+        entityManager.flush();
         entityManager.clear();
 
         // when
@@ -155,6 +160,11 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
+        Member updateMember = Member.builder()
+                        .followerCount(mincho.getFollowerCount() + 1)
+                                .build();
+        mincho.update(updateMember);
+        entityManager.flush();
         entityManager.clear();
 
         Member expected = Member.builder()

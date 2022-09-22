@@ -2,6 +2,7 @@ package com.woowacourse.f12.domain.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
+import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
 import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.Formula;
@@ -39,26 +40,26 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private JobType jobType;
 
+    @Column(name = "follower_count", nullable = false)
+    private int followerCount;
+
     @Builder.Default
     @Embedded
     private InventoryProducts inventoryProducts = new InventoryProducts();
-
-    @Formula("(SELECT COUNT(1) FROM following f WHERE f.following_id = id)")
-    private int followerCount;
 
     protected Member() {
     }
 
     private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final CareerLevel careerLevel,
-                   final JobType jobType, final InventoryProducts inventoryProducts, final int followerCount) {
+                   final JobType jobType, final int followerCount, final InventoryProducts inventoryProducts) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
-        this.inventoryProducts = inventoryProducts;
         this.followerCount = followerCount;
+        this.inventoryProducts = inventoryProducts;
     }
 
     public void update(final Member updateMember) {
@@ -66,6 +67,7 @@ public class Member {
         updateImageUrl(updateMember.imageUrl);
         updateCareerLevel(updateMember.careerLevel);
         updateJobType(updateMember.jobType);
+        updateFollowerCount(updateMember.followerCount);
     }
 
     private void updateName(final String name) {
@@ -90,6 +92,13 @@ public class Member {
         if (Objects.nonNull(jobType)) {
             this.jobType = jobType;
         }
+    }
+
+    private void updateFollowerCount(final int followerCount) {
+        if (followerCount < 0){
+            throw new InvalidFollowerCountException();
+        }
+        this.followerCount = followerCount;
     }
 
     public boolean isRegisterCompleted() {
