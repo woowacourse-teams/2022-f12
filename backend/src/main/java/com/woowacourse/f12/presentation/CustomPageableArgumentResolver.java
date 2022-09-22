@@ -6,14 +6,17 @@ import com.woowacourse.f12.exception.badrequest.InvalidPageSizeFormatException;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Nonnull;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
@@ -23,24 +26,46 @@ public class CustomPageableArgumentResolver extends PageableHandlerMethodArgumen
     private static final Pattern NUMBER_PATTERN = Pattern.compile("^[0-9]*$");
 
     @Override
-    public boolean supportsParameter(final MethodParameter parameter) {
+    public boolean supportsParameter(@Nonnull final MethodParameter parameter) {
         return super.supportsParameter(parameter);
     }
 
     @Override
-    public Pageable resolveArgument(final MethodParameter methodParameter, final ModelAndViewContainer mavContainer,
+    @Nonnull
+    public Pageable resolveArgument(@Nonnull final MethodParameter methodParameter,
+                                    final ModelAndViewContainer mavContainer,
                                     final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         final String pageArgument = webRequest.getParameter("page");
         validatePage(pageArgument);
         final String sizeArgument = webRequest.getParameter("size");
         validateSize(sizeArgument);
         final Pageable pageable = super.resolveArgument(methodParameter, mavContainer, webRequest, binderFactory);
-        return addSecondarySortById(pageable);
+        final Sort completedSort = addAdditionalSort(webRequest, pageable.getSort());
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), completedSort);
     }
 
-    private Pageable addSecondarySortById(final Pageable pageable) {
-        final Sort sort = pageable.getSort().and(Sort.by("id").descending());
-        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+    private Sort addAdditionalSort(final NativeWebRequest webRequest, Sort sort) {
+        final String requestURL = ((ServletWebRequest) webRequest).getRequest().getRequestURI();
+        if (requestURL.equals("/api/v1/products")) {
+            sort = addSecondarySortByProductSort(sort);
+        }
+        return addFinallySortById(sort);
+    }
+
+    private Sort addSecondarySortByProductSort(final Sort sort) {
+        final Order ratingOrder = sort.getOrderFor("rating");
+        final Order reviewCountOrder = sort.getOrderFor("reviewCount");
+        if (ratingOrder != null) {
+            return sort.and(Sort.by("reviewCount").descending());
+        }
+        if (reviewCountOrder != null) {
+            return sort.and(Sort.by("rating")).descending();
+        }
+        return sort;
+    }
+
+    private Sort addFinallySortById(final Sort sort) {
+        return sort.and(Sort.by("id").descending());
     }
 
     private void validatePage(final String pageArgument) {
