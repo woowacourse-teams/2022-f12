@@ -47,7 +47,7 @@ function useInventory({ memberId }: Props): Return {
   const CommonParams = {
     params: {
       size: '4',
-      sort: 'createdAt,desc',
+      // sort: 'createdAt,desc',
     },
   };
 
