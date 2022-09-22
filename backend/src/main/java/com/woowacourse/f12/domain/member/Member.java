@@ -5,7 +5,6 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
 import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
 import lombok.Builder;
 import lombok.Getter;
-import org.hibernate.annotations.Formula;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -54,7 +53,7 @@ public class Member {
     }
 
     private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final boolean registered, final CareerLevel careerLevel,
-                   final JobType jobType, final InventoryProducts inventoryProducts, final int followerCount) {
+                   final JobType jobType, final int followerCount, final InventoryProducts inventoryProducts) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;

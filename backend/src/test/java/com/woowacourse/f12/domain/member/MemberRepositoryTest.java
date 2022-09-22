@@ -1,20 +1,6 @@
 package com.woowacourse.f12.domain.member;
 
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
-import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
-import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
-import static com.woowacourse.f12.support.fixture.MemberFixture.NOT_ADDITIONAL_INFO;
-import static com.woowacourse.f12.support.fixture.MemberFixture.OHZZI;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import com.woowacourse.f12.config.JpaConfig;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -25,6 +11,18 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
+
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
+import static com.woowacourse.f12.support.fixture.MemberFixture.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DataJpaTest
 @Import({JpaConfig.class})
@@ -178,6 +176,10 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
+        mincho.update(Member.builder()
+                .followerCount(mincho.getFollowerCount() + 1)
+                .build());
+        entityManager.flush();
         entityManager.clear();
 
         Member expected = Member.builder()
@@ -214,6 +216,10 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
+        mincho.update(Member.builder()
+                .followerCount(mincho.getFollowerCount() + 1)
+                .build());
+        entityManager.flush();
         entityManager.clear();
 
         Member expected = Member.builder()
@@ -251,8 +257,8 @@ class MemberRepositoryTest {
                 .followingId(mincho.getId())
                 .build());
         Member updateMember = Member.builder()
-                        .followerCount(mincho.getFollowerCount() + 1)
-                                .build();
+                .followerCount(mincho.getFollowerCount() + 1)
+                .build();
         mincho.update(updateMember);
         entityManager.flush();
         entityManager.clear();
