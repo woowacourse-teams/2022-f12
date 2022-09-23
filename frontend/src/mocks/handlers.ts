@@ -118,7 +118,7 @@ const getReviewsByProductId = (req, res, ctx) => {
 
   // 추후 accessToken 만료 테스트 용 핸들러
   // const errorResponse = {
-  //   errorCode: 40104,
+  //   errorCode: 40101,
   // };
 
   // if (errorCall === 0) {
