@@ -50,7 +50,7 @@ function useAxios(): Return {
     const errorResponseBody = error.response.data;
 
     // setError보다 먼저 와야 오류 화면이 표시되지 않음
-    if (errorResponseBody.errorCode === '40104') {
+    if (errorResponseBody.errorCode === '40101') {
       return await reissueTokenAndRetry(error);
     }
 
