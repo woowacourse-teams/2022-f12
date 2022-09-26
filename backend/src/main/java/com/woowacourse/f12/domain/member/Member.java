@@ -70,7 +70,6 @@ public class Member {
         updateImageUrl(updateMember.imageUrl);
         updateCareerLevel(updateMember.careerLevel);
         updateJobType(updateMember.jobType);
-        updateFollowerCount(updateMember.followerCount);
         updateRegistered(updateMember.registered);
     }
 
@@ -98,11 +97,15 @@ public class Member {
         }
     }
 
-    private void updateFollowerCount(final int followerCount) {
-        if (followerCount < 0){
+    public void follow() {
+        this.followerCount += 1;
+    }
+
+    public void unfollow() {
+        if (this.followerCount == 0) {
             throw new InvalidFollowerCountException();
         }
-        this.followerCount = followerCount;
+        this.followerCount -= 1;
     }
 
     private void updateRegistered(final boolean registered) {

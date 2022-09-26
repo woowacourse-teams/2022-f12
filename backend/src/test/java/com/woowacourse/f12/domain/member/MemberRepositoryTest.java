@@ -47,10 +47,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        Member updateMember = Member.builder()
-                .followerCount(mincho.getFollowerCount() + 1)
-                .build();
-        mincho.update(updateMember);
+        mincho.follow();
         entityManager.flush();
         entityManager.clear();
 
@@ -176,9 +173,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.update(Member.builder()
-                .followerCount(mincho.getFollowerCount() + 1)
-                .build());
+        mincho.follow();
         entityManager.flush();
         entityManager.clear();
 
@@ -216,9 +211,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.update(Member.builder()
-                .followerCount(mincho.getFollowerCount() + 1)
-                .build());
+        mincho.follow();
         entityManager.flush();
         entityManager.clear();
 
@@ -256,10 +249,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        Member updateMember = Member.builder()
-                .followerCount(mincho.getFollowerCount() + 1)
-                .build();
-        mincho.update(updateMember);
+        mincho.follow();
         entityManager.flush();
         entityManager.clear();
 
