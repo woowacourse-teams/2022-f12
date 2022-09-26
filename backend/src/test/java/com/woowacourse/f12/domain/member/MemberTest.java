@@ -1,8 +1,10 @@
 package com.woowacourse.f12.domain.member;
 
+import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MemberTest {
 
@@ -54,5 +56,75 @@ class MemberTest {
         // then
         assertThat(member).usingRecursiveComparison()
                 .isEqualTo(expected);
+    }
+
+    @Test
+    void 팔로워_수를_증가한다() {
+        // given
+        Member member = Member.builder()
+                .id(1L)
+                .name("유현지")
+                .imageUrl("imageUrl")
+                .careerLevel(CareerLevel.SENIOR)
+                .jobType(JobType.BACKEND)
+                .build();
+        Member expected = Member.builder()
+                .id(1L)
+                .name("유현지")
+                .imageUrl("imageUrl")
+                .careerLevel(CareerLevel.SENIOR)
+                .jobType(JobType.BACKEND)
+                .followerCount(1)
+                .build();
+
+        // when
+        member.increaseFollowerCount();
+
+        // then
+        assertThat(member).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    @Test
+    void 팔로워_수를_감소한다() {
+        // given
+        Member member = Member.builder()
+                .id(1L)
+                .name("유현지")
+                .imageUrl("imageUrl")
+                .careerLevel(CareerLevel.SENIOR)
+                .jobType(JobType.BACKEND)
+                .followerCount(1)
+                .build();
+        Member expected = Member.builder()
+                .id(1L)
+                .name("유현지")
+                .imageUrl("imageUrl")
+                .careerLevel(CareerLevel.SENIOR)
+                .jobType(JobType.BACKEND)
+                .build();
+
+        // when
+        member.decreaseFollowerCount();
+
+        // then
+        assertThat(member).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    @Test
+    void 팔로워_수가_0인_상태에서_팔로워_수를_감소하면_예외가_발생한다() {
+        // given
+        Member member = Member.builder()
+                .id(1L)
+                .name("유현지")
+                .imageUrl("imageUrl")
+                .careerLevel(CareerLevel.SENIOR)
+                .jobType(JobType.BACKEND)
+                .build();
+
+        // when, then
+        assertThatThrownBy(member::decreaseFollowerCount)
+                .isInstanceOf(InvalidFollowerCountException.class);
     }
 }

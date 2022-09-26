@@ -1,22 +1,5 @@
 package com.woowacourse.f12.acceptance;
 
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_GET_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PATCH_요청을_보낸다;
-import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다;
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.민초;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.오찌;
-import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Product;
@@ -26,6 +9,7 @@ import com.woowacourse.f12.dto.response.auth.LoginMemberResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductResponse;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
+import com.woowacourse.f12.dto.response.member.LoggedInMemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
@@ -34,10 +18,22 @@ import com.woowacourse.f12.support.fixture.ProductFixture;
 import com.woowacourse.f12.support.fixture.ReviewFixture;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
+
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.*;
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.support.fixture.AcceptanceFixture.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MemberAcceptanceTest extends AcceptanceTest {
 
@@ -638,6 +634,27 @@ class MemberAcceptanceTest extends AcceptanceTest {
                         .hasSize(1)
                         .containsExactly(followingResponse)
         );
+    }
+
+    @Test
+    void 재로그인_시_팔로워_수가_변하지_않는다() {
+        // given
+        MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+        LoginResponse followingResponse = 민초.로그인을_한다();
+        민초.로그인한_상태로(followingResponse.getToken()).추가정보를_입력한다(memberRequest);
+
+        LoginResponse followerResponse = 코린.로그인을_한다();
+        코린.로그인한_상태로(followerResponse.getToken()).추가정보를_입력한다(memberRequest);
+        코린.로그인한_상태로(followerResponse.getToken()).팔로우한다(followingResponse.getMember().getId());
+
+        LoginResponse reLoggedInFollowingResponse = 민초.로그인을_한다();
+
+        // when
+        LoggedInMemberResponse followingMemberResponse = 민초.로그인한_상태로(reLoggedInFollowingResponse.getToken()).자신의_프로필을_조회한다()
+                .as(LoggedInMemberResponse.class);
+
+        // then
+        assertThat(followingMemberResponse.getFollowerCount()).isOne();
     }
 
     private Product 제품을_저장한다(Product product) {
