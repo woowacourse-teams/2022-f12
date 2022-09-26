@@ -643,14 +643,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
         LoginResponse followingResponse = 민초.로그인을_한다();
         민초.로그인한_상태로(followingResponse.getToken()).추가정보를_입력한다(memberRequest);
 
-        final LoginResponse followerResponse = 코린.로그인을_한다();
+        LoginResponse followerResponse = 코린.로그인을_한다();
         코린.로그인한_상태로(followerResponse.getToken()).추가정보를_입력한다(memberRequest);
         코린.로그인한_상태로(followerResponse.getToken()).팔로우한다(followingResponse.getMember().getId());
 
-        final LoginResponse reLoggedInFollowingResponse = 민초.로그인을_한다();
+        LoginResponse reLoggedInFollowingResponse = 민초.로그인을_한다();
 
         // when
-        final LoggedInMemberResponse followingMemberResponse = 민초.로그인한_상태로(reLoggedInFollowingResponse.getToken()).자신의_프로필을_조회한다()
+        LoggedInMemberResponse followingMemberResponse = 민초.로그인한_상태로(reLoggedInFollowingResponse.getToken()).자신의_프로필을_조회한다()
                 .as(LoggedInMemberResponse.class);
 
         // then

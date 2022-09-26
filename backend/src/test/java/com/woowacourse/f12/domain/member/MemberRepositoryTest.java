@@ -47,7 +47,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.follow();
+        mincho.increaseFollowerCount();
         entityManager.flush();
         entityManager.clear();
 
@@ -173,7 +173,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.follow();
+        mincho.increaseFollowerCount();
         entityManager.flush();
         entityManager.clear();
 
@@ -211,7 +211,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.follow();
+        mincho.increaseFollowerCount();
         entityManager.flush();
         entityManager.clear();
 
@@ -249,7 +249,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.follow();
+        mincho.increaseFollowerCount();
         entityManager.flush();
         entityManager.clear();
 

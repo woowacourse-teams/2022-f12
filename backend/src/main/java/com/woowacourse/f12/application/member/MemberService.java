@@ -141,7 +141,7 @@ public class MemberService {
                 .followingId(followingId)
                 .build();
         followingRepository.save(following);
-        targetMember.follow();
+        targetMember.increaseFollowerCount();
     }
 
     private void validateFollowingMembersExist(final Long followerId) {
@@ -163,7 +163,7 @@ public class MemberService {
         validateFollowingMembersExist(followerId);
         final Following following = findFollowingRelation(followerId, followingId);
         followingRepository.delete(following);
-        targetMember.unfollow();
+        targetMember.decreaseFollowerCount();
     }
 
     private Following findFollowingRelation(final Long followerId, final Long followingId) {

@@ -78,7 +78,7 @@ class MemberTest {
                 .build();
 
         // when
-        member.follow();
+        member.increaseFollowerCount();
 
         // then
         assertThat(member).usingRecursiveComparison()
@@ -105,7 +105,7 @@ class MemberTest {
                 .build();
 
         // when
-        member.unfollow();
+        member.decreaseFollowerCount();
 
         // then
         assertThat(member).usingRecursiveComparison()
@@ -124,7 +124,7 @@ class MemberTest {
                 .build();
 
         // when, then
-        assertThatThrownBy(member::unfollow)
+        assertThatThrownBy(member::decreaseFollowerCount)
                 .isInstanceOf(InvalidFollowerCountException.class);
     }
 }

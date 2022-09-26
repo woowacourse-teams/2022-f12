@@ -97,11 +97,11 @@ public class Member {
         }
     }
 
-    public void follow() {
+    public void increaseFollowerCount() {
         this.followerCount += 1;
     }
 
-    public void unfollow() {
+    public void decreaseFollowerCount() {
         if (this.followerCount == 0) {
             throw new InvalidFollowerCountException();
         }
