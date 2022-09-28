@@ -1,5 +1,28 @@
 package com.woowacourse.f12.application.member;
 
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.FRONTEND_CONSTANT;
+import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.NOT_ADDITIONAL_INFO;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.verify;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.times;
+
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Following;
@@ -15,6 +38,9 @@ import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
 import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
 import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,27 +50,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
-import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
-import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
-import static com.woowacourse.f12.support.fixture.MemberFixture.NOT_ADDITIONAL_INFO;
-import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -159,6 +164,8 @@ class MemberServiceTest {
 
         given(memberRepository.findWithOutSearchConditions(pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(List.of(inventoryProduct));
 
         // when
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
@@ -167,6 +174,7 @@ class MemberServiceTest {
         // then
         assertAll(
                 () -> verify(memberRepository).findWithOutSearchConditions(pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.of(member, false)));
@@ -181,6 +189,8 @@ class MemberServiceTest {
 
         given(memberRepository.findWithSearchConditions(null, SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(List.of(inventoryProduct));
 
         // when
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
@@ -189,6 +199,7 @@ class MemberServiceTest {
         // then
         assertAll(
                 () -> verify(memberRepository).findWithSearchConditions(null, SENIOR, BACKEND, pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.of(member, false)));
@@ -252,6 +263,32 @@ class MemberServiceTest {
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.of(member, true))
+        );
+    }
+
+    @Test
+    void 회원목록을_검색하여_조회할때_해당_결과가_없으면_다음_로직이_일어나지_않는다() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
+        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
+        Long loggedInId = 2L;
+
+        given(memberRepository.findWithSearchConditions("invalid", JUNIOR, FRONTEND, pageable))
+                .willReturn(new SliceImpl<>(Collections.emptyList(), pageable, false));
+
+        // when
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("invalid", JUNIOR_CONSTANT,
+                FRONTEND_CONSTANT);
+        MemberPageResponse memberPageResponse = memberService.findByContains(loggedInId, memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findWithSearchConditions("invalid", JUNIOR, FRONTEND, pageable),
+                () -> verify(inventoryProductRepository, times(0)).findWithProductByMembers(any()),
+                () -> verify(followingRepository, times(0)).findByFollowerIdAndFollowingIdIn(anyLong(), any()),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).isEmpty()
         );
     }
 
@@ -575,6 +612,31 @@ class MemberServiceTest {
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(MemberWithProfileProductResponse.of(member, true))
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원목록을_검색할때_결과가_없으면_다음_로직이_일어나지_않는다() {
+        // given
+        Long loggedInId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("invalid", JUNIOR_CONSTANT,
+                FRONTEND_CONSTANT);
+
+        given(memberRepository.findFollowingsWithSearchConditions(loggedInId, "invalid", JUNIOR, FRONTEND, pageable))
+                .willReturn(new SliceImpl<>(Collections.emptyList(), pageable, false));
+
+        // when
+        MemberPageResponse memberPageResponse = memberService.findFollowingsByConditions(loggedInId,
+                memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, "invalid", JUNIOR,
+                        FRONTEND, pageable),
+                () -> verify(inventoryProductRepository, times(0)).findWithProductByMembers(any()),
+                () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
+                () -> assertThat(memberPageResponse.getItems()).isEmpty()
         );
     }
 }
