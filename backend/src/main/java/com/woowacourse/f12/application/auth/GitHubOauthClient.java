@@ -55,7 +55,10 @@ public class GitHubOauthClient {
         try {
             final HttpResponse<String> accessTokenResponse = requestAccessToken(requestBody);
             return parseAccessToken(accessTokenResponse);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
+            throw new OauthProcessingException();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new OauthProcessingException();
         }
     }
