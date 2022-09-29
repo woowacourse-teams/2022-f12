@@ -1,10 +1,12 @@
 package com.woowacourse.f12.application.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.woowacourse.f12.application.auth.token.JwtProvider;
 import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.exception.unauthorized.TokenInvalidFormatException;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +15,9 @@ class JwtProviderTest {
     private final JwtProvider jwtProvider = new JwtProvider(new AuthTokenExtractor(),
             "testadsddersrsfsddsasdfaefasfkk2313123113trssttrs",
             3600000);
+
+    private final FakeJwtProvider fakeJwtProvider = new FakeJwtProvider(
+            "testadsddersrsfsddsasdfaefasfkk2313123113trssttrs", 3600000);
 
     @Test
     void 토큰을_생성한다() {
@@ -82,5 +87,16 @@ class JwtProviderTest {
 
         // then
         assertThat(payload).isEqualTo(new MemberPayload(1L, Role.USER));
+    }
+
+    @Test
+    void 토큰의_payload_복호화_시_Long_id가_아니면_예외를_발생한다() {
+        // given
+        String token = fakeJwtProvider.createAccessToken("string", Role.USER);
+        String authorizationHeader = "Bearer " + token;
+
+        // when, then
+        assertThatThrownBy(() -> jwtProvider.getPayload(authorizationHeader))
+                .isExactlyInstanceOf(TokenInvalidFormatException.class);
     }
 }

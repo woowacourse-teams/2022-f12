@@ -1,11 +1,13 @@
 package com.woowacourse.f12.application.auth.token;
 
 import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.exception.unauthorized.TokenInvalidFormatException;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.RequiredTypeException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
@@ -36,7 +38,7 @@ public class JwtProvider {
     public String createAccessToken(final Long id, final Role role) {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
-        final Map<String, Object> claims = Map.of("id", id.toString(), "role", role);
+        final Map<String, Object> claims = Map.of("id", id, "role", role);
 
         return Jwts.builder()
                 .setSubject(ACCESS_TOKEN_SUBJECT)
@@ -81,8 +83,12 @@ public class JwtProvider {
         final String token = authTokenExtractor.extractToken(authorizationHeader, TOKEN_TYPE);
         Claims body = getClaimsJws(token)
                 .getBody();
-        String id = body.get("id", String.class);
-        Role role = Role.valueOf(body.get("role", String.class));
-        return new MemberPayload(Long.parseLong(id), role);
+        try {
+            Long id = body.get("id", Long.class);
+            Role role = Role.valueOf(body.get("role", String.class));
+            return new MemberPayload(id, role);
+        } catch (RequiredTypeException e) {
+            throw new TokenInvalidFormatException();
+        }
     }
 }
