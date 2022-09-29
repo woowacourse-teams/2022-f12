@@ -1,4 +1,4 @@
-package com.woowacourse.f12.application.auth;
+package com.woowacourse.f12.application.auth.token;
 
 import com.woowacourse.f12.domain.member.Role;
 import io.jsonwebtoken.Jwts;

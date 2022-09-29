@@ -1,10 +1,8 @@
-package com.woowacourse.f12.application.auth;
+package com.woowacourse.f12.application.auth.token;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.woowacourse.f12.application.auth.token.JwtProvider;
-import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.exception.unauthorized.TokenInvalidFormatException;
 import com.woowacourse.f12.support.AuthTokenExtractor;

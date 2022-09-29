@@ -1,8 +1,7 @@
-package com.woowacourse.f12.application.auth;
+package com.woowacourse.f12.application.auth.token;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woowacourse.f12.application.auth.token.RefreshToken;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
