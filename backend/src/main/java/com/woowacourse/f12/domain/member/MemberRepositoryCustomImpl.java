@@ -108,10 +108,8 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     }
 
     private List<Long> findFollowingMemberIds(final Long loggedInId) {
-        return jpaQueryFactory.select(member.id)
-                .from(member)
-                .join(following)
-                .on(member.id.eq(following.followingId))
+        return jpaQueryFactory.select(following.followingId)
+                .from(following)
                 .where(
                         following.followerId.eq(loggedInId)
                 ).fetch();
