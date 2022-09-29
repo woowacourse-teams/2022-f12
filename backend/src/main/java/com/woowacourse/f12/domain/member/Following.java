@@ -12,7 +12,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "following",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"following_id", "follower_id"})})
+        uniqueConstraints = {@UniqueConstraint(name = "following_following_id_follower_id_unique",
+                columnNames = {"following_id", "follower_id"})})
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter

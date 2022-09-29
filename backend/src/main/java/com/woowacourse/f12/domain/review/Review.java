@@ -16,7 +16,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "review",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id", "member_id"})})
+        uniqueConstraints = {@UniqueConstraint(name = "review_product_id_member_id_unique",
+                columnNames = {"product_id", "member_id"})})
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter

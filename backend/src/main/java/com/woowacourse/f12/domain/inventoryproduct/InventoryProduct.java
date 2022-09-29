@@ -11,7 +11,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "inventory_product",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id", "member_id"})})
+        uniqueConstraints = {@UniqueConstraint(name = "inventory_member_product_unique",
+                columnNames = {"product_id", "member_id"})})
 @Builder
 @Getter
 public class InventoryProduct {

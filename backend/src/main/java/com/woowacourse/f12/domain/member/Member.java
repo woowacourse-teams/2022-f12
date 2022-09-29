@@ -13,7 +13,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "member",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"github_id"})})
+        uniqueConstraints = {@UniqueConstraint(name = "member_github_id_unique",
+                columnNames = {"github_id"})})
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter
