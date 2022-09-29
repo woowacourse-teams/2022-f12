@@ -5,25 +5,18 @@ import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.exception.badrequest.BlankContentException;
 import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
 import com.woowacourse.f12.exception.badrequest.InvalidRatingValueException;
-import java.time.LocalDateTime;
-import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
 @Entity
-@Table(name = "review")
+@Table(name = "review",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id", "member_id"})})
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter
@@ -92,7 +85,6 @@ public class Review {
 
     public void reflectToProductBeforeDelete() {
         product.decreaseReviewCount();
-        ;
         product.decreaseRating(rating);
     }
 

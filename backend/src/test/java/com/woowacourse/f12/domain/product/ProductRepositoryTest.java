@@ -1,17 +1,5 @@
 package com.woowacourse.f12.domain.product;
 
-import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
-import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
-import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
-import static com.woowacourse.f12.support.fixture.ProductFixture.MOUSE_1;
-import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_1;
-import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_2;
-import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_4;
-import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import com.woowacourse.f12.config.JpaConfig;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
@@ -26,6 +14,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+
+import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
+import static com.woowacourse.f12.support.fixture.ProductFixture.*;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DataJpaTest
 @Import(JpaConfig.class)
@@ -44,9 +40,10 @@ class ProductRepositoryTest {
     void 제품을_단일_조회_한다() {
         // given
         Product product = 제품_저장(KEYBOARD_1.생성());
-        Member member = memberRepository.save(CORINNE.생성());
-        Review review1 = REVIEW_RATING_4.작성(product, member);
-        Review review2 = REVIEW_RATING_5.작성(product, member);
+        Member member1 = memberRepository.save(CORINNE.생성());
+        Member member2 = memberRepository.save(MINCHO.생성());
+        Review review1 = REVIEW_RATING_4.작성(product, member1);
+        Review review2 = REVIEW_RATING_5.작성(product, member2);
 
         리뷰_저장(review1);
         리뷰_저장(review2);
@@ -84,11 +81,12 @@ class ProductRepositoryTest {
         // given
         Product product1 = 제품_저장(KEYBOARD_1.생성());
         Product product2 = 제품_저장(KEYBOARD_2.생성());
-        Member member = memberRepository.save(CORINNE.생성());
+        Member member1 = memberRepository.save(CORINNE.생성());
+        Member member2 = memberRepository.save(MINCHO.생성());
 
-        Review review1 = REVIEW_RATING_5.작성(product1, member);
-        Review review2 = REVIEW_RATING_5.작성(product2, member);
-        Review review3 = REVIEW_RATING_5.작성(product2, member);
+        Review review1 = REVIEW_RATING_5.작성(product1, member1);
+        Review review2 = REVIEW_RATING_5.작성(product2, member1);
+        Review review3 = REVIEW_RATING_5.작성(product2, member2);
 
         리뷰_저장(review1);
         리뷰_저장(review2);
@@ -109,14 +107,16 @@ class ProductRepositoryTest {
     @Test
     void 키보드_전체_목록을_평균_평점_순으로_페이징하여_조회한다() {
         // given
-        Product product2 = 제품_저장(KEYBOARD_1.생성());
-        Product product1 = 제품_저장(KEYBOARD_2.생성());
+        Product product1 = 제품_저장(KEYBOARD_1.생성());
+        Product product2 = 제품_저장(KEYBOARD_2.생성());
+        Product product3 = 제품_저장(MOUSE_1.생성());
+        Product product4 = 제품_저장(MOUSE_2.생성());
         Member member = memberRepository.save(CORINNE.생성());
 
         리뷰_저장(REVIEW_RATING_2.작성(product1, member));
-        리뷰_저장(REVIEW_RATING_1.작성(product1, member));
-        리뷰_저장(REVIEW_RATING_5.작성(product2, member));
-        리뷰_저장(REVIEW_RATING_4.작성(product2, member));
+        리뷰_저장(REVIEW_RATING_1.작성(product2, member));
+        리뷰_저장(REVIEW_RATING_5.작성(product3, member));
+        리뷰_저장(REVIEW_RATING_4.작성(product4, member));
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating")));
 
@@ -126,7 +126,7 @@ class ProductRepositoryTest {
         // then
         assertAll(
                 () -> assertThat(slice.hasNext()).isTrue(),
-                () -> assertThat(slice.getContent()).containsExactly(product2)
+                () -> assertThat(slice.getContent()).containsExactly(product1)
         );
     }
 
