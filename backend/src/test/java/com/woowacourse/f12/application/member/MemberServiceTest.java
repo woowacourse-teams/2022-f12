@@ -271,7 +271,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void 회원목록을_검색하여_조회할때_해당_결과가_없으면_다음_로직이_일어나지_않는다() {
+    void 회원목록을_검색하여_조회할때_해당_결과가_없으면_다음_로직이_실행되지_않는다() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
@@ -621,7 +621,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void 팔로잉하는_회원목록을_검색할때_결과가_없으면_다음_로직이_일어나지_않는다() {
+    void 팔로잉하는_회원목록을_검색할때_결과가_없으면_다음_로직이_실행되지_않는다() {
         // given
         Long loggedInId = 1L;
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
