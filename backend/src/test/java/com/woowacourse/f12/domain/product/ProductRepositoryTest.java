@@ -27,7 +27,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 
-@DataJpaTest
+@DataJpaTest(showSql = false)
 @Import(JpaConfig.class)
 class ProductRepositoryTest {
 

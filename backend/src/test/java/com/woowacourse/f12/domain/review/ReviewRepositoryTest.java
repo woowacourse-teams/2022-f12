@@ -35,7 +35,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 
-@DataJpaTest
+@DataJpaTest(showSql = false)
 @Import(JpaConfig.class)
 class ReviewRepositoryTest {
 
