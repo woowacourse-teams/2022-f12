@@ -47,7 +47,11 @@ public class FakeGitHubApiController {
                 .equals(clientSecret)) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(new GitHubTokenResponse(codeAndToken.get(gitHubTokenRequest.getCode())));
+        final String accessToken = codeAndToken.get(gitHubTokenRequest.getCode());
+        if (accessToken == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(new GitHubTokenResponse(accessToken));
     }
 
     @GetMapping("/user")
@@ -61,6 +65,9 @@ public class FakeGitHubApiController {
             return ResponseEntity.badRequest().build();
         }
         Member member = tokenAndMember.get(splitValue[1]);
+        if (member == null) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(
                 new GitHubProfileResponse(member.getGitHubId(), member.getName(), member.getImageUrl()));
     }
