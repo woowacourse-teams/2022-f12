@@ -3,6 +3,6 @@ const TITLE = {
   RECENT_REVIEW: '최근 작성된 후기',
   ALL_PRODUCT: '모든 제품',
   DESK_SETUP: '데스크 셋업',
-};
+} as const;
 
 export default TITLE;
