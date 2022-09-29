@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "member")
+@Table(name = "member",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"github_id"})})
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter
