@@ -41,7 +41,8 @@ public class MemberController {
 
     @GetMapping("/{memberId}")
     @Login(required = false)
-    public ResponseEntity<MemberResponse> show(@PathVariable final Long memberId, @VerifiedMember @Nullable final Long loggedInMemberId) {
+    public ResponseEntity<MemberResponse> show(@PathVariable final Long memberId,
+                                               @VerifiedMember @Nullable final Long loggedInMemberId) {
         final MemberResponse memberResponse = memberService.find(memberId, loggedInMemberId);
         return ResponseEntity.ok(memberResponse);
     }
@@ -59,13 +60,15 @@ public class MemberController {
     public ResponseEntity<MemberPageResponse> searchMembers(@VerifiedMember @Nullable final Long loggedInId,
                                                             @ModelAttribute final MemberSearchRequest memberSearchRequest,
                                                             final Pageable pageable) {
-        final MemberPageResponse memberPageResponse = memberService.findByContains(loggedInId, memberSearchRequest, pageable);
+        final MemberPageResponse memberPageResponse = memberService.findBySearchConditions(loggedInId,
+                memberSearchRequest, pageable);
         return ResponseEntity.ok(memberPageResponse);
     }
 
     @PostMapping("/{memberId}/following")
     @Login
-    public ResponseEntity<Void> follow(@VerifiedMember final Long followerId, @PathVariable("memberId") final Long followingId) {
+    public ResponseEntity<Void> follow(@VerifiedMember final Long followerId,
+                                       @PathVariable("memberId") final Long followingId) {
         memberService.follow(followerId, followingId);
         return ResponseEntity.noContent()
                 .build();
@@ -73,7 +76,8 @@ public class MemberController {
 
     @DeleteMapping("/{memberId}/following")
     @Login
-    public ResponseEntity<Void> unfollow(@VerifiedMember final Long followerId, @PathVariable("memberId") final Long followingId) {
+    public ResponseEntity<Void> unfollow(@VerifiedMember final Long followerId,
+                                         @PathVariable("memberId") final Long followingId) {
         memberService.unfollow(followerId, followingId);
         return ResponseEntity.noContent()
                 .build();

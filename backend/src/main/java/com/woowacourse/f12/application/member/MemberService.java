@@ -78,8 +78,9 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    public MemberPageResponse findByContains(@Nullable final Long loggedInId,
-                                             final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
+    public MemberPageResponse findBySearchConditions(@Nullable final Long loggedInId,
+                                                     final MemberSearchRequest memberSearchRequest,
+                                                     final Pageable pageable) {
         final Slice<Member> slice = findBySearchConditions(memberSearchRequest, pageable);
         if (slice.isEmpty()) {
             return MemberPageResponse.ofByFollowingCondition(slice, false);

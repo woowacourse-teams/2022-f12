@@ -169,7 +169,8 @@ class MemberServiceTest {
 
         // when
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
-        MemberPageResponse memberPageResponse = memberService.findByContains(null, memberSearchRequest, pageable);
+        MemberPageResponse memberPageResponse = memberService.findBySearchConditions(null, memberSearchRequest,
+                pageable);
 
         // then
         assertAll(
@@ -194,7 +195,8 @@ class MemberServiceTest {
 
         // when
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
-        MemberPageResponse memberPageResponse = memberService.findByContains(null, memberSearchRequest, pageable);
+        MemberPageResponse memberPageResponse = memberService.findBySearchConditions(null, memberSearchRequest,
+                pageable);
 
         // then
         assertAll(
@@ -219,7 +221,8 @@ class MemberServiceTest {
 
         // when
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", SENIOR_CONSTANT, BACKEND_CONSTANT);
-        MemberPageResponse memberPageResponse = memberService.findByContains(null, memberSearchRequest, pageable);
+        MemberPageResponse memberPageResponse = memberService.findBySearchConditions(null, memberSearchRequest,
+                pageable);
 
         // then
         assertAll(
@@ -253,7 +256,8 @@ class MemberServiceTest {
 
         // when
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", SENIOR_CONSTANT, BACKEND_CONSTANT);
-        MemberPageResponse memberPageResponse = memberService.findByContains(loggedInId, memberSearchRequest, pageable);
+        MemberPageResponse memberPageResponse = memberService.findBySearchConditions(loggedInId, memberSearchRequest,
+                pageable);
 
         // then
         assertAll(
@@ -280,7 +284,8 @@ class MemberServiceTest {
         // when
         MemberSearchRequest memberSearchRequest = new MemberSearchRequest("invalid", JUNIOR_CONSTANT,
                 FRONTEND_CONSTANT);
-        MemberPageResponse memberPageResponse = memberService.findByContains(loggedInId, memberSearchRequest, pageable);
+        MemberPageResponse memberPageResponse = memberService.findBySearchConditions(loggedInId, memberSearchRequest,
+                pageable);
 
         // then
         assertAll(
