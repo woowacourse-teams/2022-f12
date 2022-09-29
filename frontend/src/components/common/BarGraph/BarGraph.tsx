@@ -2,17 +2,16 @@ import { useState } from 'react';
 
 import * as S from '@/components/common/BarGraph/BarGraph.style';
 
+import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
+
 import theme from '@/style/theme';
 
 type Prop = {
   statistics: Statistics;
 };
 
-type JobType = ['프론트엔드', '백엔드', '모바일', '기타'];
-type CareerLevel = ['경력 없음', '0-2년차', '3-5년차', '6년차 이상'];
-
-const jobTypeList: JobType = ['프론트엔드', '백엔드', '모바일', '기타'];
-const careerLevelList: CareerLevel = ['경력 없음', '0-2년차', '3-5년차', '6년차 이상'];
+const jobTypeList = Object.values(JOB_TYPES);
+const careerLevelList = Object.values(CAREER_LEVELS);
 
 function BarGraph({ statistics }: Prop) {
   const [isJobType, setIsJobType] = useState(true);
