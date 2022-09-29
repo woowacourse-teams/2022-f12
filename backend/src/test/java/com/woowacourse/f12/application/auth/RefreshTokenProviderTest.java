@@ -3,6 +3,8 @@ package com.woowacourse.f12.application.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.woowacourse.f12.application.auth.token.RefreshToken;
+import com.woowacourse.f12.application.auth.token.RefreshTokenProvider;
 import org.junit.jupiter.api.Test;
 
 class RefreshTokenProviderTest {

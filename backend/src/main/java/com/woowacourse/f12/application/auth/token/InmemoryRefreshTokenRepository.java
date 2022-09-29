@@ -1,4 +1,4 @@
-package com.woowacourse.f12.application.auth;
+package com.woowacourse.f12.application.auth.token;
 
 import java.util.Map;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.woowacourse.f12.application.auth;
+package com.woowacourse.f12.application.auth.token;
 
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import io.jsonwebtoken.Claims;

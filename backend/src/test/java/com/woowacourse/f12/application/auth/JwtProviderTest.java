@@ -2,6 +2,7 @@ package com.woowacourse.f12.application.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.woowacourse.f12.application.auth.token.JwtProvider;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import org.junit.jupiter.api.Test;
 

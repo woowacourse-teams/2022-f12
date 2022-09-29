@@ -11,6 +11,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.verify;
 
+import com.woowacourse.f12.application.auth.token.JwtProvider;
+import com.woowacourse.f12.application.auth.token.RefreshToken;
+import com.woowacourse.f12.application.auth.token.RefreshTokenProvider;
+import com.woowacourse.f12.application.auth.token.RefreshTokenRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
