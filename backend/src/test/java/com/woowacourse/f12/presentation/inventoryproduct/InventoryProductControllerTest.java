@@ -19,9 +19,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.token.JwtProvider;
+import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.application.inventoryproduct.InventoryProductService;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
@@ -59,7 +61,7 @@ class InventoryProductControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(List.of(1L));
         willDoNothing().given(inventoryProductService).updateProfileProducts(1L, profileProductRequest);
 
@@ -92,7 +94,7 @@ class InventoryProductControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(List.of(1L));
         willThrow(new InventoryProductNotFoundException()).given(inventoryProductService)
                 .updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
@@ -151,7 +153,7 @@ class InventoryProductControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(List.of(1L, 2L));
         willThrow(new DuplicatedProfileProductCategoryException())
                 .given(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
@@ -182,7 +184,7 @@ class InventoryProductControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(List.of(1L, 2L));
         willThrow(new InvalidProfileProductCategoryException())
                 .given(inventoryProductService).updateProfileProducts(anyLong(), any(ProfileProductRequest.class));
@@ -216,7 +218,7 @@ class InventoryProductControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(inventoryProductService.findByMemberId(memberId))
                 .willReturn(InventoryProductsResponse.from(List.of(inventoryProduct)));
 

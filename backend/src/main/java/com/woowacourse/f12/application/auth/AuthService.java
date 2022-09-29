@@ -6,9 +6,11 @@ import com.woowacourse.f12.application.auth.token.RefreshTokenProvider;
 import com.woowacourse.f12.application.auth.token.RefreshTokenRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
+import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,7 @@ public class AuthService {
         final GitHubProfileResponse gitHubProfileResponse = getGitHubProfileResponse(code);
         final Member member = addOrUpdateMember(gitHubProfileResponse);
         final Long memberId = member.getId();
-        final String applicationAccessToken = jwtProvider.createAccessToken(memberId);
+        final String applicationAccessToken = jwtProvider.createAccessToken(memberId, member.getRole());
         final RefreshToken refreshToken = refreshTokenProvider.createToken(memberId);
         refreshTokenRepository.save(refreshToken);
         return new LoginResult(refreshToken.getRefreshToken(), applicationAccessToken, member);
@@ -63,7 +65,10 @@ public class AuthService {
                 .orElseThrow(RefreshTokenInvalidException::new);
         checkExpired(refreshTokenValue, refreshToken);
         final Long memberId = refreshToken.getMemberId();
-        final String newAccessToken = jwtProvider.createAccessToken(memberId);
+        final Role memberRole = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new)
+                .getRole();
+        final String newAccessToken = jwtProvider.createAccessToken(memberId, memberRole);
         final RefreshToken newRefreshToken = refreshTokenProvider.createToken(memberId);
         refreshTokenRepository.save(newRefreshToken);
         refreshTokenRepository.delete(refreshTokenValue);

@@ -32,7 +32,9 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
         if (Objects.isNull(authorizationHeader)) {
             return null;
         }
-        final String payload = jwtProvider.getPayload(authorizationHeader);
+        final String payload = jwtProvider.getPayload(authorizationHeader)
+                .getId()
+                .toString();
         try {
             return Long.parseLong(payload);
         } catch (NumberFormatException e) {

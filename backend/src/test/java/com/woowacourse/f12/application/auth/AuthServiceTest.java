@@ -17,6 +17,7 @@ import com.woowacourse.f12.application.auth.token.RefreshTokenProvider;
 import com.woowacourse.f12.application.auth.token.RefreshTokenRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
@@ -72,7 +73,7 @@ class AuthServiceTest {
                 .willReturn(Optional.empty());
         given(memberRepository.save(gitHubProfile.toMember()))
                 .willReturn(member);
-        given(jwtProvider.createAccessToken(member.getId()))
+        given(jwtProvider.createAccessToken(member.getId(), member.getRole()))
                 .willReturn(expectedAccessToken);
         given(refreshTokenProvider.createToken(memberId))
                 .willReturn(new RefreshToken(refreshTokenValue, memberId, expiredAt));
@@ -90,7 +91,7 @@ class AuthServiceTest {
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
                 () -> verify(memberRepository).save(gitHubProfile.toMember()),
-                () -> verify(jwtProvider).createAccessToken(memberId),
+                () -> verify(jwtProvider).createAccessToken(memberId, member.getRole()),
                 () -> verify(refreshTokenProvider).createToken(memberId)
         );
     }
@@ -111,7 +112,7 @@ class AuthServiceTest {
                 .willReturn(gitHubProfile);
         given(memberRepository.findByGitHubId(gitHubProfile.getGitHubId()))
                 .willReturn(Optional.of(member));
-        given(jwtProvider.createAccessToken(member.getId()))
+        given(jwtProvider.createAccessToken(member.getId(), member.getRole()))
                 .willReturn(applicationToken);
         given(refreshTokenProvider.createToken(memberId))
                 .willReturn(new RefreshToken(refreshTokenValue, memberId, expiredAt));
@@ -127,7 +128,7 @@ class AuthServiceTest {
                 () -> verify(gitHubOauthClient).getAccessToken(code),
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
-                () -> verify(jwtProvider).createAccessToken(memberId),
+                () -> verify(jwtProvider).createAccessToken(memberId, member.getRole()),
                 () -> verify(refreshTokenProvider).createToken(memberId)
         );
     }
@@ -147,8 +148,10 @@ class AuthServiceTest {
                 .willReturn(newRefreshToken);
         given(refreshTokenRepository.save(eq(newRefreshToken)))
                 .willReturn(newRefreshToken);
-        given(jwtProvider.createAccessToken(1L))
+        given(jwtProvider.createAccessToken(1L, Role.USER))
                 .willReturn(newAccessTokenValue);
+        given(memberRepository.findById(1L))
+                .willReturn(Optional.of(Member.builder().id(1L).build()));
         willDoNothing().given(refreshTokenRepository).delete(refreshTokenValue);
 
         // when
@@ -161,7 +164,7 @@ class AuthServiceTest {
                 () -> verify(refreshTokenRepository).findToken(refreshTokenValue),
                 () -> verify(refreshTokenProvider).createToken(memberId),
                 () -> verify(refreshTokenRepository).save(eq(newRefreshToken)),
-                () -> verify(jwtProvider).createAccessToken(1L),
+                () -> verify(jwtProvider).createAccessToken(1L, Role.USER),
                 () -> verify(refreshTokenRepository).delete(refreshTokenValue)
         );
     }
