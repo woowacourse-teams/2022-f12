@@ -1,5 +1,7 @@
 package com.woowacourse.f12.acceptance.support;
 
+import static com.woowacourse.f12.acceptance.support.EscapeSqlUtil.escapeTableName;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
@@ -31,8 +33,9 @@ public class DatabaseCleanup implements InitializingBean {
         entityManager.flush();
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
         for (String tableName : tableNames) {
-            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1")
+            entityManager.createNativeQuery("TRUNCATE TABLE " + escapeTableName(tableName)).executeUpdate();
+            entityManager.createNativeQuery(
+                            "ALTER TABLE " + escapeTableName(tableName) + " ALTER COLUMN ID RESTART WITH 1")
                     .executeUpdate();
         }
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
