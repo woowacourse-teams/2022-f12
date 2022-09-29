@@ -1,4 +1,4 @@
-package com.woowacourse.f12.application.auth;
+package com.woowacourse.f12.application.auth.token;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;

@@ -1,4 +1,4 @@
-package com.woowacourse.f12.application.auth;
+package com.woowacourse.f12.application.auth.token;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

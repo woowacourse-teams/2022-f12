@@ -26,9 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woowacourse.f12.application.auth.JwtProvider;
+import com.woowacourse.f12.application.auth.token.JwtProvider;
+import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
@@ -89,7 +91,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willReturn(1L);
 
@@ -124,7 +126,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
@@ -157,7 +159,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
@@ -188,7 +190,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new BlankContentException());
 
@@ -221,7 +223,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidContentLengthException(1000));
 
@@ -253,7 +255,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new InvalidRatingValueException());
 
@@ -285,7 +287,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new ProductNotFoundException());
 
@@ -316,7 +318,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new MemberNotFoundException());
 
@@ -347,7 +349,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new RegisterNotCompletedException());
 
@@ -378,7 +380,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new AlreadyWrittenReviewException());
 
@@ -477,7 +479,7 @@ class ReviewControllerTest extends PresentationTest {
                         pageable, false), corinne.getId());
 
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(reviewService.findPageByProductId(anyLong(), eq(corinne.getId()), any(Pageable.class)))
@@ -534,7 +536,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(new MemberPayload(memberId, Role.USER));
         willDoNothing().given(reviewService)
                 .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
 
@@ -568,7 +570,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(new MemberPayload(memberId, Role.USER));
         willThrow(new MemberNotFoundException()).given(reviewService)
                 .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
 
@@ -601,7 +603,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(new MemberPayload(memberId, Role.USER));
         willThrow(new ReviewNotFoundException()).given(reviewService)
                 .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
 
@@ -634,7 +636,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(new MemberPayload(memberId, Role.USER));
         willThrow(new NotAuthorException()).given(reviewService)
                 .update(eq(reviewId), eq(memberId), any(ReviewRequest.class));
 
@@ -666,7 +668,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(new MemberPayload(memberId, Role.USER));
         willDoNothing().given(reviewService)
                 .delete(reviewId, memberId);
 
@@ -697,7 +699,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(new MemberPayload(memberId, Role.USER));
         willThrow(new MemberNotFoundException()).given(reviewService)
                 .delete(reviewId, memberId);
 
@@ -727,7 +729,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(new MemberPayload(memberId, Role.USER));
         willThrow(new ReviewNotFoundException()).given(reviewService)
                 .delete(reviewId, memberId);
 
@@ -757,7 +759,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(memberId.toString());
+                .willReturn(new MemberPayload(memberId, Role.USER));
         willThrow(new NotAuthorException()).given(reviewService)
                 .delete(reviewId, memberId);
 
@@ -811,7 +813,7 @@ class ReviewControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.findPageByMemberId(anyLong(), any(Pageable.class)))
                 .willReturn(ReviewWithProductPageResponse.from(
                         new SliceImpl<>(List.of(

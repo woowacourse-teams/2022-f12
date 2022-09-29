@@ -1,15 +1,19 @@
-package com.woowacourse.f12.application.auth;
+package com.woowacourse.f12.application.auth.token;
 
+import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.exception.unauthorized.TokenInvalidFormatException;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.RequiredTypeException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -31,15 +35,16 @@ public class JwtProvider {
         this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    public String createAccessToken(final Long id) {
+    public String createAccessToken(final Long id, final Role role) {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
+        final Map<String, Object> claims = Map.of("id", id, "role", role);
 
         return Jwts.builder()
                 .setSubject(ACCESS_TOKEN_SUBJECT)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .claim("id", id.toString())
+                .addClaims(claims)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -74,10 +79,16 @@ public class JwtProvider {
                 .parseClaimsJws(token);
     }
 
-    public String getPayload(final String authorizationHeader) {
+    public MemberPayload getPayload(final String authorizationHeader) {
         final String token = authTokenExtractor.extractToken(authorizationHeader, TOKEN_TYPE);
-        return (String) getClaimsJws(token)
-                .getBody()
-                .get("id");
+        Claims body = getClaimsJws(token)
+                .getBody();
+        try {
+            Long id = body.get("id", Long.class);
+            Role role = Role.valueOf(body.get("role", String.class));
+            return new MemberPayload(id, role);
+        } catch (RequiredTypeException e) {
+            throw new TokenInvalidFormatException();
+        }
     }
 }

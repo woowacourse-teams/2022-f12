@@ -1,6 +1,6 @@
 package com.woowacourse.f12.dto.response.auth;
 
-import com.woowacourse.f12.application.auth.RefreshToken;
+import com.woowacourse.f12.application.auth.token.RefreshToken;
 import lombok.Getter;
 
 @Getter

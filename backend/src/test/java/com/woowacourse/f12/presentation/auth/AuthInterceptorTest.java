@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woowacourse.f12.application.auth.JwtProvider;
+import com.woowacourse.f12.application.auth.token.JwtProvider;
 import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.presentation.PresentationTest;

@@ -1,7 +1,10 @@
-package com.woowacourse.f12.application.auth;
+package com.woowacourse.f12.application.auth.token;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.exception.unauthorized.TokenInvalidFormatException;
 import com.woowacourse.f12.support.AuthTokenExtractor;
 import org.junit.jupiter.api.Test;
 
@@ -11,13 +14,16 @@ class JwtProviderTest {
             "testadsddersrsfsddsasdfaefasfkk2313123113trssttrs",
             3600000);
 
+    private final FakeJwtProvider fakeJwtProvider = new FakeJwtProvider(
+            "testadsddersrsfsddsasdfaefasfkk2313123113trssttrs", 3600000);
+
     @Test
     void 토큰을_생성한다() {
         // given
         Long memberId = 1L;
 
         // when
-        String token = jwtProvider.createAccessToken(memberId);
+        String token = jwtProvider.createAccessToken(memberId, Role.USER);
 
         // then
         assertThat(token).isNotNull();
@@ -26,7 +32,7 @@ class JwtProviderTest {
     @Test
     void 토큰이_유효한_경우() {
         // given
-        String token = jwtProvider.createAccessToken(1L);
+        String token = jwtProvider.createAccessToken(1L, Role.USER);
         String authorizationHeader = "Bearer " + token;
 
         // when, then
@@ -39,7 +45,7 @@ class JwtProviderTest {
         JwtProvider jwtProvider = new JwtProvider(new AuthTokenExtractor(),
                 "testadsddersrsfsddsasdfaefasfkk2313123113trssttrs",
                 0);
-        String token = jwtProvider.createAccessToken(1L);
+        String token = jwtProvider.createAccessToken(1L, Role.USER);
         String authorizationHeader = "Bearer " + token;
 
         // when, then
@@ -61,7 +67,7 @@ class JwtProviderTest {
         JwtProvider invalidJwtProvider = new JwtProvider(new AuthTokenExtractor(),
                 "invalidlasndflkslflkasnf12sdfasdfasdfa",
                 10000000);
-        String token = invalidJwtProvider.createAccessToken(1L);
+        String token = invalidJwtProvider.createAccessToken(1L, Role.USER);
         String authorizationHeader = "Bearer " + token;
 
         // when, then
@@ -71,13 +77,24 @@ class JwtProviderTest {
     @Test
     void 토큰의_payload를_복호화한다() {
         // given
-        String token = jwtProvider.createAccessToken(1L);
+        String token = jwtProvider.createAccessToken(1L, Role.USER);
         String authorizationHeader = "Bearer " + token;
 
         // when
-        String payload = jwtProvider.getPayload(authorizationHeader);
+        MemberPayload payload = jwtProvider.getPayload(authorizationHeader);
 
         // then
-        assertThat(payload).isEqualTo("1");
+        assertThat(payload).isEqualTo(new MemberPayload(1L, Role.USER));
+    }
+
+    @Test
+    void 토큰의_payload_복호화_시_Long_id가_아니면_예외를_발생한다() {
+        // given
+        String token = fakeJwtProvider.createAccessToken("string", Role.USER);
+        String authorizationHeader = "Bearer " + token;
+
+        // when, then
+        assertThatThrownBy(() -> jwtProvider.getPayload(authorizationHeader))
+                .isExactlyInstanceOf(TokenInvalidFormatException.class);
     }
 }
