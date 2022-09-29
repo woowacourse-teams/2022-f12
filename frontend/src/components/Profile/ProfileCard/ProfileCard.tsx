@@ -21,15 +21,6 @@ import PrevSign from '@/assets/prevSign.svg';
 
 const DISTANCE_DIFFERENCE = 116;
 
-type ProfileProduct = {
-  id: number;
-  name: string;
-  imageUrl: string;
-  reviewCount: number;
-  rating: number;
-  category: string;
-};
-
 type DeskSetupProduct = Pick<Product, 'id' | 'name' | 'imageUrl'>;
 type ProfileProductCategories = Exclude<Category, 'software'>;
 
@@ -40,29 +31,25 @@ const profileCategories: ProfileProductCategories[] = [
   'stand',
 ];
 
+type ProfileSearchResult = Member & { profileProducts: Product[] };
+
 type Props = {
-  id: number;
-  gitHubId: string;
-  imageUrl: string;
-  careerLevel: string;
-  jobType: string;
-  profileProducts: ProfileProduct[];
-  followerCount: number;
-  following: boolean;
+  profileSearchResult: ProfileSearchResult;
   index?: number;
 };
 
-function ProfileCard({
-  id,
-  gitHubId,
-  imageUrl,
-  careerLevel,
-  jobType,
-  profileProducts,
-  followerCount: initialFollowerCount,
-  following,
-  index = 0,
-}: Props) {
+function ProfileCard({ profileSearchResult, index = 0 }: Props) {
+  const {
+    id,
+    gitHubId,
+    imageUrl,
+    careerLevel,
+    jobType,
+    profileProducts,
+    followerCount: initialFollowerCount,
+    following,
+  } = profileSearchResult;
+
   const [positionX, setPositionX] = useState(0);
   const [followed, setFollowed] = useState(following);
   const [followerCount, setFollowerCount] = useState(initialFollowerCount);
