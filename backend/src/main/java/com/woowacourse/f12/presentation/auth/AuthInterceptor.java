@@ -48,7 +48,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private void validateAuthorization(final HttpServletRequest request) {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (!jwtProvider.validateToken(authorizationHeader)) {
+        if (!jwtProvider.isValidToken(authorizationHeader)) {
             throw new TokenExpiredException();
         }
     }

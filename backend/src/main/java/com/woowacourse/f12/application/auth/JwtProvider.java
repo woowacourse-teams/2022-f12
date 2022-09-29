@@ -44,7 +44,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public boolean validateToken(final String authorizationHeader) {
+    public boolean isValidToken(final String authorizationHeader) {
         final String token = authTokenExtractor.extractToken(authorizationHeader, TOKEN_TYPE);
         try {
             final Jws<Claims> claims = getClaimsJws(token);
