@@ -10,7 +10,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "inventory_product")
+@Table(name = "inventory_product",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id", "member_id"})})
 @Builder
 @Getter
 public class InventoryProduct {
