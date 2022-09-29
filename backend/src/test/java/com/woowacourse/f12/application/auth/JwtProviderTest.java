@@ -30,7 +30,7 @@ class JwtProviderTest {
         String authorizationHeader = "Bearer " + token;
 
         // when, then
-        assertThat(jwtProvider.validateToken(authorizationHeader)).isTrue();
+        assertThat(jwtProvider.isValidToken(authorizationHeader)).isTrue();
     }
 
     @Test
@@ -43,7 +43,7 @@ class JwtProviderTest {
         String authorizationHeader = "Bearer " + token;
 
         // when, then
-        assertThat(jwtProvider.validateToken(authorizationHeader)).isFalse();
+        assertThat(jwtProvider.isValidToken(authorizationHeader)).isFalse();
     }
 
     @Test
@@ -52,7 +52,7 @@ class JwtProviderTest {
         String authorizationHeader = "Bearer invalidToken";
 
         // when, then
-        assertThat(jwtProvider.validateToken(authorizationHeader)).isFalse();
+        assertThat(jwtProvider.isValidToken(authorizationHeader)).isFalse();
     }
 
     @Test
@@ -65,7 +65,7 @@ class JwtProviderTest {
         String authorizationHeader = "Bearer " + token;
 
         // when, then
-        assertThat(jwtProvider.validateToken(authorizationHeader)).isFalse();
+        assertThat(jwtProvider.isValidToken(authorizationHeader)).isFalse();
     }
 
     @Test

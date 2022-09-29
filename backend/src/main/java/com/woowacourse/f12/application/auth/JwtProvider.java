@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class JwtProvider {
 
     private static final String TOKEN_TYPE = "Bearer";
+    private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
 
     private final AuthTokenExtractor authTokenExtractor;
     private final Key secretKey;
@@ -35,24 +36,35 @@ public class JwtProvider {
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .setSubject(id.toString())
+                .setSubject(ACCESS_TOKEN_SUBJECT)
                 .setIssuedAt(now)
                 .setExpiration(validity)
+                .claim("id", id.toString())
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public boolean validateToken(final String authorizationHeader) {
+    public boolean isValidToken(final String authorizationHeader) {
         final String token = authTokenExtractor.extractToken(authorizationHeader, TOKEN_TYPE);
         try {
             final Jws<Claims> claims = getClaimsJws(token);
-            return !claims
-                    .getBody()
-                    .getExpiration()
-                    .before(new Date());
+            return isAccessToken(claims) && isNotExpired(claims);
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    private boolean isAccessToken(final Jws<Claims> claims) {
+        return claims.getBody()
+                .getSubject()
+                .equals(ACCESS_TOKEN_SUBJECT);
+    }
+
+    private boolean isNotExpired(final Jws<Claims> claims) {
+        return claims
+                .getBody()
+                .getExpiration()
+                .after(new Date());
     }
 
     private Jws<Claims> getClaimsJws(final String token) {
@@ -64,8 +76,8 @@ public class JwtProvider {
 
     public String getPayload(final String authorizationHeader) {
         final String token = authTokenExtractor.extractToken(authorizationHeader, TOKEN_TYPE);
-        return getClaimsJws(token)
+        return (String) getClaimsJws(token)
                 .getBody()
-                .getSubject();
+                .get("id");
     }
 }
