@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -22,6 +23,7 @@ import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
 import static com.woowacourse.f12.support.fixture.MemberFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DataJpaTest
@@ -289,5 +291,29 @@ class MemberRepositoryTest {
                 () -> assertThat(slice.hasNext()).isFalse(),
                 () -> assertThat(slice.getContent()).isEmpty()
         );
+    }
+
+    @Test
+    void 깃허브_이름은_회원간_중복일_수_없다() {
+        // given
+        Member member1 = Member.builder()
+                .name("유현지")
+                .gitHubId("hamcheeseburger")
+                .imageUrl("imageUrl")
+                .careerLevel(CareerLevel.SENIOR)
+                .jobType(JobType.BACKEND)
+                .build();
+        Member member2 = Member.builder()
+                .name("유현주")
+                .gitHubId("hamcheeseburger")
+                .imageUrl("imageUrl")
+                .careerLevel(CareerLevel.SENIOR)
+                .jobType(JobType.BACKEND)
+                .build();
+        memberRepository.save(member1);
+
+        // when, then
+        assertThatThrownBy(() -> memberRepository.save(member2))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 }

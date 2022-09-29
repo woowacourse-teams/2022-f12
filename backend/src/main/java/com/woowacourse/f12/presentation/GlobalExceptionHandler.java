@@ -1,9 +1,5 @@
 package com.woowacourse.f12.presentation;
 
-import static com.woowacourse.f12.exception.ErrorCode.INTERNAL_SERVER_ERROR;
-import static com.woowacourse.f12.exception.ErrorCode.INVALID_REQUEST_BODY_TYPE;
-import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
-
 import com.woowacourse.f12.dto.response.ExceptionResponse;
 import com.woowacourse.f12.exception.CustomException;
 import com.woowacourse.f12.exception.UriTooLongException;
@@ -15,9 +11,8 @@ import com.woowacourse.f12.exception.notfound.NotFoundException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
 import com.woowacourse.f12.presentation.auth.RefreshTokenCookieProvider;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -27,10 +22,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import static com.woowacourse.f12.exception.ErrorCode.*;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String DATA_DUPLICATED_MESSAGE = "값이 중복될 수 없습니다";
     private static final String REQUEST_DATA_FORMAT_ERROR_MESSAGE = "요청으로 넘어온 값이 형식에 맞지 않습니다.";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "서버 오류가 발생했습니다";
     private static final String LOG_FORMAT = "Class : {}, Code : {}, Message : {}";
@@ -51,6 +52,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleInvalidValueException(final InvalidValueException e) {
         log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
         return ResponseEntity.badRequest().body(ExceptionResponse.from(e));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidValueException(final DataIntegrityViolationException e) {
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), DATA_DUPLICATED.getValue(), e.getMessage());
+
+        return ResponseEntity.badRequest().body(ExceptionResponse.from(DATA_DUPLICATED_MESSAGE, DATA_DUPLICATED));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
