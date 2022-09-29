@@ -122,7 +122,10 @@ public class GitHubOauthClient {
             final HttpRequest profileRequest = buildProfileRequest(accessToken);
             final HttpResponse<String> profileResponse = httpClient.send(profileRequest, BodyHandlers.ofString());
             return parseProfile(profileResponse);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
+            throw new OauthProcessingException();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new OauthProcessingException();
         }
     }
