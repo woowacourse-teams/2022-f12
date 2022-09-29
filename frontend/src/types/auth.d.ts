@@ -1,4 +1,4 @@
-declare type UserData = {
+type UserData = {
   member: Omit<Member, 'careerLevel' | 'jobType'>;
   token: string;
   registerCompleted: boolean;
