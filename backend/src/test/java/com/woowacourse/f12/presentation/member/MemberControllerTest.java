@@ -76,7 +76,7 @@ class MemberControllerTest extends PresentationTest {
     void 로그인된_상태에서_나의_회원정보를_조회_성공() throws Exception {
         // given
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
@@ -95,7 +95,7 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(print());
 
         assertAll(
-                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(memberService).findLoggedInMember(1L)
         );
@@ -148,7 +148,7 @@ class MemberControllerTest extends PresentationTest {
         String authorizationHeader = "Bearer Token";
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(loggedInId.toString());
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(memberService.find(targetId, loggedInId))
                 .willReturn(MemberResponse.of(CORINNE.생성(targetId), false));
@@ -165,7 +165,7 @@ class MemberControllerTest extends PresentationTest {
 
         assertAll(
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(memberService).find(targetId, loggedInId)
         );
     }
@@ -175,7 +175,7 @@ class MemberControllerTest extends PresentationTest {
         // given
         MemberRequest memberRequest = new MemberRequest(JUNIOR_CONSTANT, ETC_CONSTANT);
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
@@ -195,7 +195,7 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(print());
 
         assertAll(
-                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(memberService).updateMember(eq(1L), any(MemberRequest.class))
         );
@@ -209,7 +209,7 @@ class MemberControllerTest extends PresentationTest {
         memberRequest.put("jobType", "backend");
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
@@ -228,7 +228,7 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(print());
 
         assertAll(
-                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(memberService).updateMember(eq(1L), any(MemberRequest.class))
         );
@@ -242,7 +242,7 @@ class MemberControllerTest extends PresentationTest {
         memberRequest.put("jobType", "invalid");
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
@@ -261,7 +261,7 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(print());
 
         assertAll(
-                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(memberService, times(0)).updateMember(eq(1L), any(MemberRequest.class))
         );
@@ -272,7 +272,7 @@ class MemberControllerTest extends PresentationTest {
         // given
         MemberRequest memberRequest = new MemberRequest(null, null);
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn("1");
@@ -291,7 +291,7 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(print());
 
         assertAll(
-                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(memberService, times(0)).updateMember(eq(1L), any(MemberRequest.class))
         );
@@ -342,7 +342,7 @@ class MemberControllerTest extends PresentationTest {
                 new SliceImpl<>(List.of(member), pageable, false), List.of(following));
         String authorizationHeader = "Bearer Token";
 
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(loggedInId.toString());
@@ -361,7 +361,7 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(print());
 
         assertAll(
-                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(memberService).findBySearchConditions(eq(loggedInId), refEq(memberSearchRequest),
                         refEq(pageable))
@@ -417,7 +417,7 @@ class MemberControllerTest extends PresentationTest {
         Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(followerId.toString());
@@ -443,7 +443,7 @@ class MemberControllerTest extends PresentationTest {
         Long followingId = 1L;
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(followerId.toString());
@@ -471,7 +471,7 @@ class MemberControllerTest extends PresentationTest {
         Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(followerId.toString());
@@ -499,7 +499,7 @@ class MemberControllerTest extends PresentationTest {
         Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(followerId.toString());
@@ -527,7 +527,7 @@ class MemberControllerTest extends PresentationTest {
         Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(followerId.toString());
@@ -555,7 +555,7 @@ class MemberControllerTest extends PresentationTest {
         Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(followerId.toString());
@@ -583,7 +583,7 @@ class MemberControllerTest extends PresentationTest {
         Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(followerId.toString());
@@ -611,7 +611,7 @@ class MemberControllerTest extends PresentationTest {
         Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(followerId.toString());
@@ -644,7 +644,7 @@ class MemberControllerTest extends PresentationTest {
                         false);
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(loggedInId.toString());
@@ -663,7 +663,7 @@ class MemberControllerTest extends PresentationTest {
                 .andDo(print());
 
         assertAll(
-                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(memberService).findFollowingsByConditions(eq(loggedInId), refEq(memberSearchRequest),
                         eq(pageable))
