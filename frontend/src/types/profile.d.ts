@@ -1,7 +1,7 @@
 type Senior = { senior: '6년차 이상' };
 type Midlevel = { midlevel: '3-5년차' };
 type Junior = { junior: '0-2년차' };
-type NoCareer = { none: '경력없음' };
+type NoCareer = { none: '경력 없음' };
 
 type CareerLevels = Senior & Midlevel & Junior & NoCareer;
 type CareerLevel = keyof CareerLevels;

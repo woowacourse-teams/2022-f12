@@ -1,5 +1,5 @@
 export const CAREER_LEVELS: CareerLevels = {
-  none: '경력없음',
+  none: '경력 없음',
   junior: '0-2년차',
   midlevel: '3-5년차',
   senior: '6년차 이상',
