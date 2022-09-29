@@ -33,7 +33,7 @@ class AuthServiceTest {
     private AuthService authService;
 
     @Mock
-    private GitHubOauthClient gitHubOauthClient;
+    private GitHubOauthClient oauthClient;
 
     @Mock
     private MemberRepository memberRepository;
@@ -60,9 +60,9 @@ class AuthServiceTest {
         GitHubProfileResponse gitHubProfile = CORINNE.깃허브_프로필();
         Member member = CORINNE.생성(memberId);
 
-        given(gitHubOauthClient.getAccessToken(code))
+        given(oauthClient.getAccessToken(code))
                 .willReturn(accessToken);
-        given(gitHubOauthClient.getProfile(accessToken))
+        given(oauthClient.getProfile(accessToken))
                 .willReturn(gitHubProfile);
         given(memberRepository.findByGitHubId(gitHubProfile.getGitHubId()))
                 .willReturn(Optional.empty());
@@ -82,8 +82,8 @@ class AuthServiceTest {
                 () -> assertThat(loginResult.getMember()).usingRecursiveComparison()
                         .isEqualTo(member),
                 () -> assertThat(loginResult.getRefreshToken()).isEqualTo(refreshTokenValue),
-                () -> verify(gitHubOauthClient).getAccessToken(code),
-                () -> verify(gitHubOauthClient).getProfile(accessToken),
+                () -> verify(oauthClient).getAccessToken(code),
+                () -> verify(oauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
                 () -> verify(memberRepository).save(gitHubProfile.toMember()),
                 () -> verify(jwtProvider).createAccessToken(memberId),
@@ -101,9 +101,9 @@ class AuthServiceTest {
 
         GitHubProfileResponse gitHubProfile = CORINNE_UPDATED.깃허브_프로필();
         Member member = CORINNE.생성(memberId);
-        given(gitHubOauthClient.getAccessToken(code))
+        given(oauthClient.getAccessToken(code))
                 .willReturn(accessToken);
-        given(gitHubOauthClient.getProfile(accessToken))
+        given(oauthClient.getProfile(accessToken))
                 .willReturn(gitHubProfile);
         given(memberRepository.findByGitHubId(gitHubProfile.getGitHubId()))
                 .willReturn(Optional.of(member));
@@ -120,8 +120,8 @@ class AuthServiceTest {
                 () -> assertThat(loginResult.getAccessToken()).isEqualTo(applicationToken),
                 () -> assertThat(loginResult.getMember()).usingRecursiveComparison()
                         .isEqualTo(member),
-                () -> verify(gitHubOauthClient).getAccessToken(code),
-                () -> verify(gitHubOauthClient).getProfile(accessToken),
+                () -> verify(oauthClient).getAccessToken(code),
+                () -> verify(oauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
                 () -> verify(jwtProvider).createAccessToken(memberId),
                 () -> verify(refreshTokenProvider).createToken(memberId)
