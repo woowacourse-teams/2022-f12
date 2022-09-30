@@ -80,7 +80,8 @@ public class GitHubOauthClient {
         return HttpRequest.newBuilder(toURI(accessTokenUrl))
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody)).build();
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
     }
 
     private URI toURI(final String accessTokenUrl) {
