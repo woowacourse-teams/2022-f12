@@ -17,37 +17,16 @@ function ProfileSearchResult({
   isLoading,
   isError,
 }: Props) {
-  const profileSearchDataList = profileSearchData.map(
-    (
-      {
-        id,
-        gitHubId,
-        imageUrl,
-        careerLevel,
-        jobType,
-        profileProducts,
-        followerCount,
-        following,
-      },
-      index
-    ) => {
-      return (
-        <S.CardWrapper key={id}>
-          <ProfileCard
-            id={id}
-            gitHubId={gitHubId}
-            imageUrl={imageUrl}
-            careerLevel={careerLevel}
-            jobType={jobType}
-            profileProducts={profileProducts}
-            followerCount={followerCount}
-            following={following}
-            index={index % PROFILE_SEARCH_SIZE}
-          />
-        </S.CardWrapper>
-      );
-    }
-  );
+  const profileSearchDataList = profileSearchData.map((profileSearchResult, index) => {
+    return (
+      <S.CardWrapper key={profileSearchResult.id}>
+        <ProfileCard
+          profileSearchResult={profileSearchResult}
+          index={index % PROFILE_SEARCH_SIZE}
+        />
+      </S.CardWrapper>
+    );
+  });
 
   return (
     <InfiniteScroll

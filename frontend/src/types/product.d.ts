@@ -1,13 +1,13 @@
-declare type Keyboard = { keyboard: '키보드' };
-declare type Mouse = { mouse: '마우스' };
-declare type Monitor = { monitor: '모니터' };
-declare type Stand = { stand: '거치대' };
-declare type Software = { software: '소프트웨어' };
+type Keyboard = { keyboard: '키보드' };
+type Mouse = { mouse: '마우스' };
+type Monitor = { monitor: '모니터' };
+type Stand = { stand: '거치대' };
+type Software = { software: '소프트웨어' };
 
-declare type Categories = Keyboard & Mouse & Monitor & Stand & Software;
-declare type Category = keyof Categories;
+type Categories = Keyboard & Mouse & Monitor & Stand & Software;
+type Category = keyof Categories;
 
-declare type Product = {
+type Product = {
   id: number;
   name: string;
   imageUrl: string;
@@ -16,7 +16,7 @@ declare type Product = {
   category: Category;
 };
 
-declare type Statistics = {
+type Statistics = {
   careerLevel: {
     [Key in CareerLevel]: number;
   };

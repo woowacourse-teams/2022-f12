@@ -41,8 +41,8 @@ const PRODUCT_SEARCH_SIZE = 12;
 
 function Products() {
   const [keyword, setKeyword] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
-  const [category, setCategory] = useUrlSyncState(SEARCH_PARAMS.CATEGORY);
-  const [sort, setSort] = useUrlSyncState(SEARCH_PARAMS.SORT, DefaultSort.value);
+  const [category, setCategory] = useUrlSyncState<Category>(SEARCH_PARAMS.CATEGORY);
+  const [sort, setSort] = useUrlSyncState<Sort>(SEARCH_PARAMS.SORT, DefaultSort.value);
   const debouncedKeyword = useDebounce<string>(keyword, 300);
 
   const {
@@ -62,7 +62,7 @@ function Products() {
   });
 
   const title = useMemo(
-    () => (category in CATEGORIES ? CATEGORIES[category as Category] : TITLE.ALL_PRODUCT),
+    () => (category in CATEGORIES ? CATEGORIES[category] : TITLE.ALL_PRODUCT),
     [category]
   );
 
