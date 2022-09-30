@@ -7,6 +7,7 @@ import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.auth.GitHubTokenResponse;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
 import com.woowacourse.f12.exception.internalserver.GitHubServerException;
+import com.woowacourse.f12.exception.internalserver.OauthJsonParsingException;
 import com.woowacourse.f12.exception.internalserver.OauthProcessingException;
 import java.io.IOException;
 import java.net.URI;
@@ -67,7 +68,7 @@ public class GitHubOauthClient {
         try {
             return objectMapper.writeValueAsString(gitHubTokenRequest);
         } catch (JsonProcessingException e) {
-            throw new OauthProcessingException();
+            throw new OauthJsonParsingException();
         }
     }
 
@@ -112,7 +113,7 @@ public class GitHubOauthClient {
         try {
             return objectMapper.readValue(response.body(), clazz);
         } catch (JsonProcessingException e) {
-            throw new OauthProcessingException();
+            throw new OauthJsonParsingException();
         }
     }
 
