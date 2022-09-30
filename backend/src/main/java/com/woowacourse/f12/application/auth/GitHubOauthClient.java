@@ -78,6 +78,7 @@ public class GitHubOauthClient {
 
     private HttpRequest buildAccessTokenRequest(final String requestBody) {
         return HttpRequest.newBuilder(toURI(accessTokenUrl))
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody)).build();
     }
@@ -132,7 +133,11 @@ public class GitHubOauthClient {
     }
 
     private HttpRequest buildProfileRequest(final String accessToken) {
-        return HttpRequest.newBuilder(toURI(profileUrl)).GET().header(HttpHeaders.AUTHORIZATION, "token " + accessToken)
+        return HttpRequest
+                .newBuilder(toURI(profileUrl))
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "token " + accessToken)
+                .GET()
                 .build();
     }
 
