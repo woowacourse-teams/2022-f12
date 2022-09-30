@@ -33,11 +33,8 @@ public class GitHubOauthClient {
     private final String profileUrl;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final HttpClient httpClient = HttpClient.newBuilder()
-            .version(Version.HTTP_1_1)
-            .followRedirects(Redirect.NORMAL)
-            .connectTimeout(Duration.ofSeconds(10))
-            .build();
+    private final HttpClient httpClient = HttpClient.newBuilder().version(Version.HTTP_2)
+            .followRedirects(Redirect.NORMAL).connectTimeout(Duration.ofSeconds(10)).build();
 
     public GitHubOauthClient(@Value("${github.client.id}") final String clientId,
                              @Value("${github.client.secret}") final String secret,
@@ -71,42 +68,15 @@ public class GitHubOauthClient {
         }
     }
 
-    private HttpResponse<String> requestAccessToken(final String requestBody)
-            throws IOException, InterruptedException {
+    private HttpResponse<String> requestAccessToken(final String requestBody) throws IOException, InterruptedException {
         final HttpRequest accessTokenRequest = buildAccessTokenRequest(requestBody);
         return httpClient.send(accessTokenRequest, BodyHandlers.ofString());
     }
 
-    private String parseAccessToken(final HttpResponse<String> response) {
-        validateStatus(response);
-        final GitHubTokenResponse gitHubTokenResponse = parseJson(response, GitHubTokenResponse.class);
-        return gitHubTokenResponse.getAccessToken();
-    }
-
-    private <T> T parseJson(final HttpResponse<String> response, Class<T> clazz) {
-        try {
-            return objectMapper.readValue(response.body(), clazz);
-        } catch (JsonProcessingException e) {
-            throw new OauthProcessingException();
-        }
-    }
-
-    private void validateStatus(final HttpResponse<String> response) {
-        final HttpStatus status = HttpStatus.resolve(response.statusCode());
-        if (status == null || status.is4xxClientError()) {
-            throw new InvalidGitHubLoginException();
-        }
-        if (status.is5xxServerError()) {
-            throw new GitHubServerException();
-        }
-    }
-
     private HttpRequest buildAccessTokenRequest(final String requestBody) {
-        return HttpRequest.newBuilder()
-                .uri(toURI(accessTokenUrl))
+        return HttpRequest.newBuilder(toURI(accessTokenUrl))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody)).build();
     }
 
     private URI toURI(final String accessTokenUrl) {
@@ -117,10 +87,33 @@ public class GitHubOauthClient {
         }
     }
 
+    private String parseAccessToken(final HttpResponse<String> response) {
+        validateStatusSuccess(response);
+        final GitHubTokenResponse gitHubTokenResponse = parseJson(response, GitHubTokenResponse.class);
+        return gitHubTokenResponse.getAccessToken();
+    }
+
+    private void validateStatusSuccess(final HttpResponse<String> response) {
+        final HttpStatus status = HttpStatus.resolve(response.statusCode());
+        if (status == null || status.is4xxClientError()) {
+            throw new InvalidGitHubLoginException();
+        }
+        if (status.is5xxServerError()) {
+            throw new GitHubServerException();
+        }
+    }
+
+    private <T> T parseJson(final HttpResponse<String> response, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(response.body(), clazz);
+        } catch (JsonProcessingException e) {
+            throw new OauthProcessingException();
+        }
+    }
+
     public GitHubProfileResponse getProfile(final String accessToken) {
         try {
-            final HttpRequest profileRequest = buildProfileRequest(accessToken);
-            final HttpResponse<String> profileResponse = httpClient.send(profileRequest, BodyHandlers.ofString());
+            final HttpResponse<String> profileResponse = requestProfile(accessToken);
             return parseProfile(profileResponse);
         } catch (IOException e) {
             throw new OauthProcessingException();
@@ -130,15 +123,18 @@ public class GitHubOauthClient {
         }
     }
 
+    private HttpResponse<String> requestProfile(final String accessToken) throws IOException, InterruptedException {
+        final HttpRequest profileRequest = buildProfileRequest(accessToken);
+        return httpClient.send(profileRequest, BodyHandlers.ofString());
+    }
+
     private HttpRequest buildProfileRequest(final String accessToken) {
-        return HttpRequest.newBuilder(toURI(profileUrl))
-                .GET()
-                .header(HttpHeaders.AUTHORIZATION, "token " + accessToken)
+        return HttpRequest.newBuilder(toURI(profileUrl)).GET().header(HttpHeaders.AUTHORIZATION, "token " + accessToken)
                 .build();
     }
 
     private GitHubProfileResponse parseProfile(final HttpResponse<String> profileResponse) {
-        validateStatus(profileResponse);
+        validateStatusSuccess(profileResponse);
         return parseJson(profileResponse, GitHubProfileResponse.class);
     }
 }
