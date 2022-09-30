@@ -31,7 +31,7 @@ import static com.woowacourse.f12.exception.ErrorCode.*;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final String DATA_DUPLICATED_MESSAGE = "값이 중복될 수 없습니다";
+    private static final String REQUEST_DUPLICATED_MESSAGE = "요청이 중복될 수 없습니다";
     private static final String REQUEST_DATA_FORMAT_ERROR_MESSAGE = "요청으로 넘어온 값이 형식에 맞지 않습니다.";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "서버 오류가 발생했습니다";
     private static final String LOG_FORMAT = "Class : {}, Code : {}, Message : {}";
@@ -56,9 +56,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ExceptionResponse> handleInvalidValueException(final DataIntegrityViolationException e) {
-        log.info(LOG_FORMAT, e.getClass().getSimpleName(), DATA_DUPLICATED.getValue(), e.getMessage());
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), REQUEST_DUPLICATED.getValue(), e.getMessage());
 
-        return ResponseEntity.badRequest().body(ExceptionResponse.from(DATA_DUPLICATED_MESSAGE, DATA_DUPLICATED));
+        return ResponseEntity.badRequest().body(ExceptionResponse.from(REQUEST_DUPLICATED_MESSAGE, REQUEST_DUPLICATED));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

@@ -5,7 +5,7 @@
 
 ==== 발생 가능 에러
 
-- 40002, 50001, 40060
+- 40002, 40060, 50001
 
 operation::auth-login[snippets='http-request,http-response']
 

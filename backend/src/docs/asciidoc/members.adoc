@@ -70,7 +70,7 @@ operation::members-search[snippets='http-request,http-response']
 
 ==== 발생 가능 에러
 
-- 40050, 40051, 40410, 40060
+- 40050, 40051, 40060, 40410
 
 operation::follow[snippets='http-request,http-response']
 

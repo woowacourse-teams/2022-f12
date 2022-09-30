@@ -12,7 +12,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "inventory_product",
         uniqueConstraints = {@UniqueConstraint(name = "inventory_member_product_unique",
-                columnNames = {"product_id", "member_id"})})
+                columnNames = {"member_id", "product_id"})})
 @Builder
 @Getter
 public class InventoryProduct {
