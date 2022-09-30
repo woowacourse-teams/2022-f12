@@ -33,8 +33,11 @@ public class GitHubOauthClient {
     private final String profileUrl;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final HttpClient httpClient = HttpClient.newBuilder().version(Version.HTTP_2)
-            .followRedirects(Redirect.NORMAL).connectTimeout(Duration.ofSeconds(10)).build();
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .version(Version.HTTP_2)
+            .followRedirects(Redirect.NORMAL)
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
 
     public GitHubOauthClient(@Value("${github.client.id}") final String clientId,
                              @Value("${github.client.secret}") final String secret,
