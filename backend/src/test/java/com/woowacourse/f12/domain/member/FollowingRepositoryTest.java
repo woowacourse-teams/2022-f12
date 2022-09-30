@@ -88,6 +88,7 @@ class FollowingRepositoryTest {
                 .followingId(2L)
                 .build();
         followingRepository.save(following1);
+
         // when, then
         assertThatThrownBy(() -> followingRepository.save(following2))
                 .isInstanceOf(DataIntegrityViolationException.class);
