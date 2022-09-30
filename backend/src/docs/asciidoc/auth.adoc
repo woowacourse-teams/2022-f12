@@ -5,7 +5,7 @@
 
 ==== 발생 가능 에러
 
-- 40002, 50001
+- 40002, 50000, 50001
 
 operation::auth-login[snippets='http-request,http-response']
 
@@ -13,7 +13,7 @@ operation::auth-login[snippets='http-request,http-response']
 
 ==== 발생 가능 에러
 
-- 40104, 40105
+- 40002, 40104, 40105, 50000, 50001
 
 operation::auth-issue-access-token[snippets='http-request,http-response']
 
