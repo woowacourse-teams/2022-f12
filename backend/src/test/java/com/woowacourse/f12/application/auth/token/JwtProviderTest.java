@@ -88,9 +88,31 @@ class JwtProviderTest {
     }
 
     @Test
-    void 토큰의_payload_복호화_시_Long_id가_아니면_예외를_발생한다() {
+    void 토큰의_payload_복호화_시_Long_id가_아니면_예외를_반환한다() {
         // given
         String token = fakeJwtProvider.createAccessToken("string", Role.USER);
+        String authorizationHeader = "Bearer " + token;
+
+        // when, then
+        assertThatThrownBy(() -> jwtProvider.getPayload(authorizationHeader))
+                .isExactlyInstanceOf(TokenInvalidFormatException.class);
+    }
+
+    @Test
+    void 토큰의_payload_복호화_시_필요한_정보가_없으면_예외를_반환한다() {
+        // given
+        String token = fakeJwtProvider.createAccessToken(1L);
+        String authorizationHeader = "Bearer " + token;
+
+        // when, then
+        assertThatThrownBy(() -> jwtProvider.getPayload(authorizationHeader))
+                .isExactlyInstanceOf(TokenInvalidFormatException.class);
+    }
+
+    @Test
+    void 토큰의_payload_복호화_시_role값이_올바르지_않으면_예외를_반환한다() {
+        // given
+        String token = fakeJwtProvider.createAccessToken(1L, "invalid");
         String authorizationHeader = "Bearer " + token;
 
         // when, then

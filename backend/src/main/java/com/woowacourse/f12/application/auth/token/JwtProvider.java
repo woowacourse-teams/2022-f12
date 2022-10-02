@@ -13,7 +13,6 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -38,13 +37,13 @@ public class JwtProvider {
     public String createAccessToken(final Long id, final Role role) {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
-        final Map<String, Object> claims = Map.of("id", id, "role", role);
 
         return Jwts.builder()
                 .setSubject(ACCESS_TOKEN_SUBJECT)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .addClaims(claims)
+                .claim("id", id)
+                .claim("role", role)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -59,19 +58,6 @@ public class JwtProvider {
         }
     }
 
-    private boolean isAccessToken(final Jws<Claims> claims) {
-        return claims.getBody()
-                .getSubject()
-                .equals(ACCESS_TOKEN_SUBJECT);
-    }
-
-    private boolean isNotExpired(final Jws<Claims> claims) {
-        return claims
-                .getBody()
-                .getExpiration()
-                .after(new Date());
-    }
-
     private Jws<Claims> getClaimsJws(final String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
@@ -79,15 +65,26 @@ public class JwtProvider {
                 .parseClaimsJws(token);
     }
 
+    private boolean isAccessToken(final Jws<Claims> claims) {
+        return claims.getBody()
+                .getSubject()
+                .equals(ACCESS_TOKEN_SUBJECT);
+    }
+
+    private boolean isNotExpired(final Jws<Claims> claims) {
+        return claims.getBody()
+                .getExpiration()
+                .after(new Date());
+    }
+
     public MemberPayload getPayload(final String authorizationHeader) {
         final String token = authTokenExtractor.extractToken(authorizationHeader, TOKEN_TYPE);
-        Claims body = getClaimsJws(token)
-                .getBody();
+        Claims body = getClaimsJws(token).getBody();
         try {
             Long id = body.get("id", Long.class);
             Role role = Role.valueOf(body.get("role", String.class));
             return new MemberPayload(id, role);
-        } catch (RequiredTypeException e) {
+        } catch (RequiredTypeException | NullPointerException | IllegalArgumentException e) {
             throw new TokenInvalidFormatException();
         }
     }

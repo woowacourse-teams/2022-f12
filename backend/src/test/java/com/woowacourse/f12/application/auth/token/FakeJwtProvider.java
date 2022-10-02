@@ -7,7 +7,6 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 
 public class FakeJwtProvider {
@@ -23,16 +22,43 @@ public class FakeJwtProvider {
         this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    public String createAccessToken(final String id, final Role role) {
+    public String createAccessToken(final Long id) {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
-        final Map<String, Object> claims = Map.of("id", id, "role", role);
 
         return Jwts.builder()
                 .setSubject(ACCESS_TOKEN_SUBJECT)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .addClaims(claims)
+                .claim("id", id)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String createAccessToken(final String id, final Role role) {
+        final Date now = new Date();
+        final Date validity = new Date(now.getTime() + validityInMilliseconds);
+
+        return Jwts.builder()
+                .setSubject(ACCESS_TOKEN_SUBJECT)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .claim("id", id)
+                .claim("role", role)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String createAccessToken(final Long id, final String role) {
+        final Date now = new Date();
+        final Date validity = new Date(now.getTime() + validityInMilliseconds);
+
+        return Jwts.builder()
+                .setSubject(ACCESS_TOKEN_SUBJECT)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .claim("id", id)
+                .claim("role", role)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }

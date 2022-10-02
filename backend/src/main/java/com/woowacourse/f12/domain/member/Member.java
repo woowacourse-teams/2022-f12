@@ -58,7 +58,7 @@ public class Member {
     private InventoryProducts inventoryProducts = new InventoryProducts();
 
     @Builder.Default
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role = Role.USER;
 

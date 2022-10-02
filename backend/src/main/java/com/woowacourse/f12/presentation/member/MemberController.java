@@ -9,6 +9,7 @@ import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.presentation.auth.Login;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
+import com.woowacourse.f12.support.MemberPayloadSupport;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +45,8 @@ public class MemberController {
     @Login(required = false)
     public ResponseEntity<MemberResponse> show(@PathVariable final Long memberId,
                                                @VerifiedMember @Nullable final MemberPayload loggedInMemberPayload) {
-        Long id = getLoggedInMemberId(loggedInMemberPayload);
-        final MemberResponse memberResponse = memberService.find(memberId, id);
+        Long loggedInMemberId = MemberPayloadSupport.getLoggedInMemberId(loggedInMemberPayload);
+        final MemberResponse memberResponse = memberService.find(memberId, loggedInMemberId);
         return ResponseEntity.ok(memberResponse);
     }
 
@@ -63,7 +64,7 @@ public class MemberController {
             @VerifiedMember @Nullable final MemberPayload loggedInMemberPayload,
             @ModelAttribute final MemberSearchRequest memberSearchRequest,
             final Pageable pageable) {
-        Long loggedInMemberId = getLoggedInMemberId(loggedInMemberPayload);
+        Long loggedInMemberId = MemberPayloadSupport.getLoggedInMemberId(loggedInMemberPayload);
         final MemberPageResponse memberPageResponse = memberService.findBySearchConditions(loggedInMemberId,
                 memberSearchRequest, pageable);
         return ResponseEntity.ok(memberPageResponse);
@@ -95,12 +96,5 @@ public class MemberController {
             final Pageable pageable) {
         return ResponseEntity.ok(
                 memberService.findFollowingsByConditions(loggedInMemberPayload.getId(), memberSearchRequest, pageable));
-    }
-
-    private Long getLoggedInMemberId(@Nullable final MemberPayload loggedInMemberPayload) {
-        if (loggedInMemberPayload == null) {
-            return null;
-        }
-        return loggedInMemberPayload.getId();
     }
 }

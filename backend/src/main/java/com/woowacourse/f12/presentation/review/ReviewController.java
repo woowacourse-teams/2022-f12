@@ -9,6 +9,7 @@ import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.presentation.auth.Login;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
+import com.woowacourse.f12.support.MemberPayloadSupport;
 import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +49,7 @@ public class ReviewController {
     public ResponseEntity<ReviewWithAuthorPageResponse> showPageByProductId(@PathVariable final Long productId,
                                                                             @VerifiedMember @Nullable MemberPayload memberPayload,
                                                                             final Pageable pageable) {
-        final Long loggedInMemberId = getLoggedInMemberId(memberPayload);
+        final Long loggedInMemberId = MemberPayloadSupport.getLoggedInMemberId(memberPayload);
         final ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId,
                 loggedInMemberId, pageable);
         return ResponseEntity.ok(reviewPageResponse);
@@ -102,12 +103,5 @@ public class ReviewController {
     public ResponseEntity<ReviewWithProductResponse> showReview(@PathVariable final Long inventoryProductId) {
         final ReviewWithProductResponse reviewResponse = reviewService.findByInventoryProductId(inventoryProductId);
         return ResponseEntity.ok(reviewResponse);
-    }
-
-    private Long getLoggedInMemberId(@Nullable final MemberPayload loggedInMemberPayload) {
-        if (loggedInMemberPayload == null) {
-            return null;
-        }
-        return loggedInMemberPayload.getId();
     }
 }
