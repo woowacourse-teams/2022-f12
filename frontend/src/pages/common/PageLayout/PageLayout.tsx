@@ -10,6 +10,8 @@ import Loading from '@/components/common/Loading/Loading';
 
 import useAuth from '@/hooks/useAuth';
 
+import { breakpoints } from '@/style/theme';
+
 function PageLayout() {
   const location = useLocation();
 
@@ -41,10 +43,33 @@ function PageLayout() {
     }
   }, [isAuthenticated]);
 
+  const [currentDevice, setCurrentDevice] = useState<keyof typeof breakpoints>();
+
+  const handleWindowSize = () => {
+    const { innerWidth } = window;
+    if (innerWidth >= breakpoints.desktop) {
+      setCurrentDevice('desktop');
+      return;
+    }
+    if (innerWidth >= breakpoints.tablet) {
+      setCurrentDevice('tablet');
+      return;
+    }
+    setCurrentDevice('mobile');
+  };
+
+  useEffect(() => {
+    handleWindowSize();
+    window.addEventListener('resize', handleWindowSize);
+    return () => {
+      window.removeEventListener('resize', handleWindowSize);
+    };
+  }, []);
+
   return (
     <>
-      <HeaderLogo />
-      <HeaderNav />
+      <HeaderLogo device={currentDevice} />
+      {currentDevice === 'desktop' && <HeaderNav />}
       <Suspense>
         <S.Main>
           <AsyncWrapper isReady={isReady} fallback={<Loading />}>

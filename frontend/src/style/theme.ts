@@ -9,7 +9,7 @@ const colors = {
   WHITE: '#FAF9F9',
 };
 
-const breakpoints = {
+export const breakpoints = {
   mobile: 320,
   tablet: 768,
   desktop: 1440,

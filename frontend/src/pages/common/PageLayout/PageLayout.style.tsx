@@ -5,7 +5,6 @@ export const Main = styled.main`
   flex-direction: column;
   max-width: 1296px;
   width: 100%;
-  margin: 50px auto;
 
   ${({ theme: { device } }) => css`
     @media screen and ${device.mobile} {
@@ -13,6 +12,7 @@ export const Main = styled.main`
       padding: 1.2rem;
     }
     @media screen and ${device.desktop} {
+      margin: 50px auto;
       gap: 3rem;
     }
   `}
