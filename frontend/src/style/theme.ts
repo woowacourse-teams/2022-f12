@@ -9,6 +9,18 @@ const colors = {
   WHITE: '#FAF9F9',
 };
 
+const breakpoints = {
+  mobile: 320,
+  tablet: 768,
+  desktop: 1440,
+};
+
+const device = {
+  mobile: `(min-width: ${breakpoints.mobile}px)`,
+  tablet: `(min-width: ${breakpoints.tablet}px)`,
+  desktop: `(min-width: ${breakpoints.desktop}px)`,
+} as const;
+
 const theme: DefaultTheme = {
   headerHeight: '3rem',
 
@@ -20,6 +32,8 @@ const theme: DefaultTheme = {
     white: colors.WHITE,
     gray: colors.DARK_GRAY,
   },
+
+  device,
 } as const;
 
 export default theme;
