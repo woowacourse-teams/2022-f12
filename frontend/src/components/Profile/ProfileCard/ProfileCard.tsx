@@ -129,13 +129,13 @@ function ProfileCard({
         <S.UserInfoWrapper>
           <S.UserNameWrapper>
             <S.UserName>{gitHubId}</S.UserName>
-            <S.LinkWrapper
-              to={`${GITHUB_URL}${gitHubId}`}
+            <S.OuterLinkWrapper
+              href={`${GITHUB_URL}${gitHubId}`}
               target="_blank"
               rel="noopener noreferrer"
             >
               <GithubIcon />
-            </S.LinkWrapper>
+            </S.OuterLinkWrapper>
           </S.UserNameWrapper>
           <S.FollowerCountWrapper>{followerCount}명이 팔로우함</S.FollowerCountWrapper>
           <S.UserCareer>
