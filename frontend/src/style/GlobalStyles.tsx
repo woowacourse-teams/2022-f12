@@ -8,7 +8,9 @@ const GlobalStyles = createGlobalStyle`
 }
 
 body {
-  background-color: ${({ theme }) => theme.colors.white}
+  background-color: ${({ theme }) => theme.colors.white};
+  width: 100vw;
+  overflow-x: hidden;
 }
 
 button {

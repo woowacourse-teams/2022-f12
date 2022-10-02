@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Main = styled.main`
   display: flex;
@@ -6,7 +6,16 @@ export const Main = styled.main`
   max-width: 1296px;
   width: 100%;
   margin: 50px auto;
-  gap: 3rem;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      gap: 1rem;
+      padding: 1.2rem;
+    }
+    @media screen and ${device.desktop} {
+      gap: 3rem;
+    }
+  `}
 `;
 
 export const Nav = styled.nav`
