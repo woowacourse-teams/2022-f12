@@ -1,10 +1,12 @@
 package com.woowacourse.f12.dto.response.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.woowacourse.f12.domain.member.Member;
 import lombok.Getter;
 
 @Getter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GitHubProfileResponse {
 
     @JsonProperty("login")

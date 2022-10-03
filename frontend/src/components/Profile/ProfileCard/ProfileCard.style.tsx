@@ -94,6 +94,7 @@ export const RightButton = styled.button`
   font-size: 1.5rem;
 `;
 
+export const OuterLinkWrapper = styled.a``;
 export const LinkWrapper = styled(Link)``;
 
 export const ProfileViewButton = styled.button`

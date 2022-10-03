@@ -49,6 +49,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
@@ -504,6 +505,34 @@ class MemberControllerTest extends PresentationTest {
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(followerId.toString());
         willThrow(new AlreadyFollowingException())
+                .given(memberService)
+                .follow(followerId, followingId);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/members/" + followingId + "/following")
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+
+        verify(memberService).follow(followerId, followingId);
+    }
+
+    @Test
+    void 팔로우_실패_중복된_팔로우_관계가_삽입되었음() throws Exception {
+        // given
+        Long followerId = 1L;
+        Long followingId = 2L;
+
+        String authorizationHeader = "Bearer Token";
+        given(jwtProvider.validateToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(followerId.toString());
+        willThrow(new DataIntegrityViolationException("데이터가 중복될 수 없습니다."))
                 .given(memberService)
                 .follow(followerId, followingId);
 
