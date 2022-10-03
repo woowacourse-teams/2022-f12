@@ -530,10 +530,10 @@ class MemberControllerTest extends PresentationTest {
         Long followingId = 2L;
 
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(followerId.toString());
+                .willReturn(new MemberPayload(followerId, Role.USER));
         willThrow(new DataIntegrityViolationException("데이터가 중복될 수 없습니다."))
                 .given(memberService)
                 .follow(followerId, followingId);

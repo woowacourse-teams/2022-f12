@@ -15,14 +15,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "member",
-        uniqueConstraints = {@UniqueConstraint(name = "member_github_id_unique",
-                columnNames = {"github_id"})})
+        uniqueConstraints = {@UniqueConstraint(name = "member_github_id_unique", columnNames = {"github_id"})})
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter
