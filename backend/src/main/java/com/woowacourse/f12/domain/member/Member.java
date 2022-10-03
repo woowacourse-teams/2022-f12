@@ -3,13 +3,21 @@ package com.woowacourse.f12.domain.member;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
 import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "member",
@@ -51,11 +59,17 @@ public class Member {
     @Embedded
     private InventoryProducts inventoryProducts = new InventoryProducts();
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role = Role.USER;
+
     protected Member() {
     }
 
-    private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final boolean registered, final CareerLevel careerLevel,
-                   final JobType jobType, final int followerCount, final InventoryProducts inventoryProducts) {
+    private Member(final Long id, final String gitHubId, final String name, final String imageUrl,
+                   final boolean registered, final CareerLevel careerLevel, final JobType jobType,
+                   final int followerCount, final InventoryProducts inventoryProducts, final Role role) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
@@ -63,8 +77,9 @@ public class Member {
         this.registered = registered;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
-        this.inventoryProducts = inventoryProducts;
         this.followerCount = followerCount;
+        this.inventoryProducts = inventoryProducts;
+        this.role = role;
     }
 
     public void update(final Member updateMember) {

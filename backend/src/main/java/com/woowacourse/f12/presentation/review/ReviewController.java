@@ -1,5 +1,6 @@
 package com.woowacourse.f12.presentation.review;
 
+import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
@@ -8,6 +9,7 @@ import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.presentation.auth.Login;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
+import com.woowacourse.f12.support.MemberPayloadSupport;
 import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -35,9 +37,9 @@ public class ReviewController {
     @PostMapping("/products/{productId}/reviews")
     @Login
     public ResponseEntity<Void> create(@PathVariable final Long productId,
-                                       @VerifiedMember final Long memberId,
+                                       @VerifiedMember final MemberPayload memberPayload,
                                        @Valid @RequestBody final ReviewRequest reviewRequest) {
-        final Long id = reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest);
+        final Long id = reviewService.saveReviewAndInventoryProduct(productId, memberPayload.getId(), reviewRequest);
         return ResponseEntity.created(URI.create("/api/v1/reviews/" + id))
                 .build();
     }
@@ -45,10 +47,11 @@ public class ReviewController {
     @GetMapping("/products/{productId}/reviews")
     @Login(required = false)
     public ResponseEntity<ReviewWithAuthorPageResponse> showPageByProductId(@PathVariable final Long productId,
-                                                                            @VerifiedMember @Nullable Long memberId,
+                                                                            @VerifiedMember @Nullable MemberPayload memberPayload,
                                                                             final Pageable pageable) {
-        final ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId, memberId,
-                pageable);
+        final Long loggedInMemberId = MemberPayloadSupport.getLoggedInMemberId(memberPayload);
+        final ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId,
+                loggedInMemberId, pageable);
         return ResponseEntity.ok(reviewPageResponse);
     }
 
@@ -62,17 +65,18 @@ public class ReviewController {
     @PutMapping("/reviews/{reviewId}")
     @Login
     public ResponseEntity<Void> update(@PathVariable final Long reviewId,
-                                       @VerifiedMember final Long memberId,
+                                       @VerifiedMember final MemberPayload memberPayload,
                                        @Valid @RequestBody final ReviewRequest updateRequest) {
-        reviewService.update(reviewId, memberId, updateRequest);
+        reviewService.update(reviewId, memberPayload.getId(), updateRequest);
         return ResponseEntity.noContent()
                 .build();
     }
 
     @DeleteMapping("/reviews/{reviewId}")
     @Login
-    public ResponseEntity<Void> delete(@PathVariable final Long reviewId, @VerifiedMember final Long memberId) {
-        reviewService.delete(reviewId, memberId);
+    public ResponseEntity<Void> delete(@PathVariable final Long reviewId,
+                                       @VerifiedMember final MemberPayload memberPayload) {
+        reviewService.delete(reviewId, memberPayload.getId());
         return ResponseEntity.noContent()
                 .build();
     }
@@ -87,10 +91,11 @@ public class ReviewController {
 
     @GetMapping("/members/me/reviews")
     @Login
-    public ResponseEntity<ReviewWithProductPageResponse> showMyReviewPage(@VerifiedMember final Long memberId,
-                                                                          final Pageable pageable) {
-        final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPageByMemberId(memberId,
-                pageable);
+    public ResponseEntity<ReviewWithProductPageResponse> showMyReviewPage(
+            @VerifiedMember final MemberPayload memberPayload,
+            final Pageable pageable) {
+        final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPageByMemberId(
+                memberPayload.getId(), pageable);
         return ResponseEntity.ok(reviewWithProductPageResponse);
     }
 

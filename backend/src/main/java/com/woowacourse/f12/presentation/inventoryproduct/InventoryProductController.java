@@ -1,5 +1,6 @@
 package com.woowacourse.f12.presentation.inventoryproduct;
 
+import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.application.inventoryproduct.InventoryProductService;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
@@ -28,15 +29,17 @@ public class InventoryProductController {
     @Login
     public ResponseEntity<Void> updateProfileProducts(
             @RequestBody @Valid final ProfileProductRequest profileProductRequest,
-            @VerifiedMember final Long memberId) {
-        inventoryProductService.updateProfileProducts(memberId, profileProductRequest);
+            @VerifiedMember final MemberPayload memberPayload) {
+        inventoryProductService.updateProfileProducts(memberPayload.getId(), profileProductRequest);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/members/inventoryProducts")
     @Login
-    public ResponseEntity<InventoryProductsResponse> showMyInventoryProducts(@VerifiedMember final Long memberId) {
-        final InventoryProductsResponse inventoryProductsResponse = inventoryProductService.findByMemberId(memberId);
+    public ResponseEntity<InventoryProductsResponse> showMyInventoryProducts(
+            @VerifiedMember final MemberPayload memberPayload) {
+        final InventoryProductsResponse inventoryProductsResponse = inventoryProductService.findByMemberId(
+                memberPayload.getId());
         return ResponseEntity.ok(inventoryProductsResponse);
     }
 
