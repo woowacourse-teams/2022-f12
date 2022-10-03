@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @Import(JpaConfig.class)
@@ -124,6 +126,20 @@ class InventoryProductRepositoryTest {
         assertThat(actual).usingRecursiveFieldByFieldElementComparator()
                 .hasSize(1)
                 .containsExactly(inventoryProduct);
+    }
+
+    @Test
+    void 동일_제품으로_보유_장비를_중복해서_등록할_수_없다() {
+        // given
+        Member mincho = 회원을_저장한다(MINCHO.생성());
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
+        InventoryProduct inventoryProduct1 = UNSELECTED_INVENTORY_PRODUCT.생성(mincho, product);
+        InventoryProduct inventoryProduct2 = UNSELECTED_INVENTORY_PRODUCT.생성(mincho, product);
+        inventoryProductRepository.save(inventoryProduct1);
+
+        // when, then
+        assertThatThrownBy(() -> inventoryProductRepository.save(inventoryProduct2))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     private Product 제품을_저장한다(Product product) {

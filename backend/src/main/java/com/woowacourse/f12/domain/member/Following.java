@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "following")
+@Table(name = "following",
+        uniqueConstraints = {@UniqueConstraint(name = "following_following_id_follower_id_unique",
+                columnNames = {"following_id", "follower_id"})})
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter
