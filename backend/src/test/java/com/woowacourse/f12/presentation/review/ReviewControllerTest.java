@@ -1,5 +1,30 @@
 package com.woowacourse.f12.presentation.review;
 
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_1;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_4;
+import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.token.JwtProvider;
 import com.woowacourse.f12.application.auth.token.MemberPayload;
@@ -12,12 +37,19 @@ import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageRes
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
-import com.woowacourse.f12.exception.badrequest.*;
+import com.woowacourse.f12.exception.badrequest.AlreadyWrittenReviewException;
+import com.woowacourse.f12.exception.badrequest.BlankContentException;
+import com.woowacourse.f12.exception.badrequest.InvalidContentLengthException;
+import com.woowacourse.f12.exception.badrequest.InvalidRatingValueException;
+import com.woowacourse.f12.exception.badrequest.RegisterNotCompletedException;
 import com.woowacourse.f12.exception.forbidden.NotAuthorException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,25 +63,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
-import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
-import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
-import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
-import static com.woowacourse.f12.support.fixture.ReviewFixture.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
 class ReviewControllerTest extends PresentationTest {
@@ -400,10 +413,10 @@ class ReviewControllerTest extends PresentationTest {
         // given
         String authorizationHeader = "Bearer Token";
         ReviewRequest reviewRequest = new ReviewRequest("내용", 5);
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn("1");
+                .willReturn(new MemberPayload(1L, Role.USER));
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willThrow(new DataIntegrityViolationException("데이터가 중복될 수 없습니다."));
 
@@ -421,7 +434,7 @@ class ReviewControllerTest extends PresentationTest {
 
         // then
         assertAll(
-                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
                 () -> verify(reviewService).saveReviewAndInventoryProduct(eq(1L), eq(1L), any(ReviewRequest.class))
         );
