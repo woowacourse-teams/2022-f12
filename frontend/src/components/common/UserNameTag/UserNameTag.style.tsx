@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
@@ -8,9 +8,18 @@ export const Container = styled.div`
 
 export const Avatar = styled.img`
   border-radius: 50%;
-  width: 2rem;
-  height: 2rem;
+
   object-fit: cover;
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    @media screen and ${device.desktop} {
+      width: 2rem;
+      height: 2rem;
+    }
+  `}
 `;
 
 export const Username = styled.p``;

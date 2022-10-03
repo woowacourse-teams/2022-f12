@@ -26,6 +26,15 @@ export const Container = styled.article<{ index: number }>`
       }
     }
   `}
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      font-size: 0.8rem;
+    }
+    @media screen and ${device.desktop} {
+      font-size: 1rem;
+    }
+  `}
 `;
 
 export const ProductArea = styled(Link)`
@@ -69,8 +78,17 @@ export const Title = styled.p`
 export const ReviewArea = styled.div<{ isFull: boolean }>`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+
   width: ${({ isFull }) => (isFull ? '100%' : '60%')};
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      gap: 0.5rem;
+    }
+    @media screen and ${device.desktop} {
+      gap: 1rem;
+    }
+  `}
 `;
 
 export const FlexColumnWrapper = styled(ReviewArea)`
