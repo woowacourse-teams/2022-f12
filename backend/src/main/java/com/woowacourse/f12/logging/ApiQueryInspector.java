@@ -1,6 +1,5 @@
 package com.woowacourse.f12.logging;
 
-import java.util.Objects;
 import org.hibernate.resource.jdbc.spi.StatementInspector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -23,6 +22,6 @@ public class ApiQueryInspector implements StatementInspector {
     }
 
     private boolean isInRequestScope() {
-        return Objects.nonNull(RequestContextHolder.getRequestAttributes());
+        return RequestContextHolder.getRequestAttributes() != null;
     }
 }
