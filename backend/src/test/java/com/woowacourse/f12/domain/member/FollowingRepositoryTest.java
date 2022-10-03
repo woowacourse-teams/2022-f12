@@ -2,15 +2,12 @@ package com.woowacourse.f12.domain.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woowacourse.f12.config.JpaConfig;
+import com.woowacourse.f12.domain.RepositoryTest;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 
-@DataJpaTest(showSql = false)
-@Import(JpaConfig.class)
+@RepositoryTest
 class FollowingRepositoryTest {
 
     @Autowired

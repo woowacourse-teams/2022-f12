@@ -11,7 +11,7 @@ import static com.woowacourse.f12.support.fixture.MemberFixture.OHZZI;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.woowacourse.f12.config.JpaConfig;
+import com.woowacourse.f12.domain.RepositoryTest;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,14 +20,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 
-@DataJpaTest(showSql = false)
-@Import({JpaConfig.class})
+@RepositoryTest
 class MemberRepositoryTest {
 
     @Autowired

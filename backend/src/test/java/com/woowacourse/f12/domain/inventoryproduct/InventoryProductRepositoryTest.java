@@ -8,7 +8,7 @@ import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.woowacourse.f12.config.JpaConfig;
+import com.woowacourse.f12.domain.RepositoryTest;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.product.Product;
@@ -17,11 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 
-@DataJpaTest(showSql = false)
-@Import(JpaConfig.class)
+@RepositoryTest
 class InventoryProductRepositoryTest {
 
     @Autowired

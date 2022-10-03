@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.data.domain.Sort.Order.desc;
 
-import com.woowacourse.f12.config.JpaConfig;
+import com.woowacourse.f12.domain.RepositoryTest;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.product.Product;
@@ -28,15 +28,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 
-@DataJpaTest(showSql = false)
-@Import(JpaConfig.class)
+@RepositoryTest
 class ReviewRepositoryTest {
 
     @Autowired
