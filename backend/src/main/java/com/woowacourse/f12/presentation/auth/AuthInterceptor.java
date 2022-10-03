@@ -1,6 +1,6 @@
 package com.woowacourse.f12.presentation.auth;
 
-import com.woowacourse.f12.application.auth.JwtProvider;
+import com.woowacourse.f12.application.auth.token.JwtProvider;
 import com.woowacourse.f12.exception.unauthorized.TokenExpiredException;
 import com.woowacourse.f12.exception.unauthorized.TokenNotExistsException;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +48,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private void validateAuthorization(final HttpServletRequest request) {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (!jwtProvider.validateToken(authorizationHeader)) {
+        if (!jwtProvider.isValidToken(authorizationHeader)) {
             throw new TokenExpiredException();
         }
     }

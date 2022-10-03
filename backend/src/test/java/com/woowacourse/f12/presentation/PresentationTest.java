@@ -1,6 +1,6 @@
 package com.woowacourse.f12.presentation;
 
-import com.woowacourse.f12.application.auth.JwtProvider;
+import com.woowacourse.f12.application.auth.token.JwtProvider;
 import com.woowacourse.f12.config.LoggingConfig;
 import com.woowacourse.f12.logging.ApiQueryCounter;
 import com.woowacourse.f12.presentation.auth.RefreshTokenCookieProvider;
