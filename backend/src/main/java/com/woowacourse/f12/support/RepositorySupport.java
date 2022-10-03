@@ -2,15 +2,17 @@ package com.woowacourse.f12.support;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.*;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.EntityPathBase;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.core.types.dsl.SimpleExpression;
+import com.querydsl.core.types.dsl.StringPath;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class RepositorySupport {
 
@@ -18,14 +20,14 @@ public class RepositorySupport {
     }
 
     public static BooleanExpression toContainsExpression(final StringPath stringPath, final String keyword) {
-        if (Objects.isNull(keyword) || keyword.isBlank()) {
+        if (keyword == null || keyword.isBlank()) {
             return null;
         }
         return stringPath.contains(keyword);
     }
 
     public static <T> BooleanExpression toEqExpression(final SimpleExpression<T> simpleExpression, final T compared) {
-        if (Objects.isNull(compared)) {
+        if (compared == null) {
             return null;
         }
         return simpleExpression.eq(compared);

@@ -20,7 +20,6 @@ import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.presentation.product.CategoryConstant;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -70,7 +69,7 @@ public class ProductService {
 
     private Category parseCategory(final ProductSearchRequest productSearchRequest) {
         final CategoryConstant categoryConstant = productSearchRequest.getCategory();
-        if (Objects.isNull(categoryConstant)) {
+        if (categoryConstant == null) {
             return null;
         }
         return categoryConstant.toCategory();
