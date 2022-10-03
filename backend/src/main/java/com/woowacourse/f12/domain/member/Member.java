@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "member")
+@Table(name = "member",
+        uniqueConstraints = {@UniqueConstraint(name = "member_github_id_unique",
+                columnNames = {"github_id"})})
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter

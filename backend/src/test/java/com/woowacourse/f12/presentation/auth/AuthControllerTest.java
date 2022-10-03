@@ -1,5 +1,24 @@
 package com.woowacourse.f12.presentation.auth;
 
+import com.woowacourse.f12.application.auth.AuthService;
+import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
+import com.woowacourse.f12.dto.result.LoginResult;
+import com.woowacourse.f12.exception.ErrorCode;
+import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
+import com.woowacourse.f12.exception.internalserver.GitHubServerException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
+import com.woowacourse.f12.presentation.PresentationTest;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import javax.servlet.http.Cookie;
+
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,27 +29,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.woowacourse.f12.application.auth.AuthService;
-import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.result.LoginResult;
-import com.woowacourse.f12.exception.ErrorCode;
-import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
-import com.woowacourse.f12.exception.internalserver.GitHubServerException;
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
-import com.woowacourse.f12.presentation.PresentationTest;
-import javax.servlet.http.Cookie;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AuthController.class)
 class AuthControllerTest extends PresentationTest {
@@ -66,6 +65,27 @@ class AuthControllerTest extends PresentationTest {
                 .andDo(
                         document("auth-login")
                 );
+
+        verify(authService).login(code);
+    }
+
+    @Test
+    void 로그인_실패_github_아이디가_중복되어_등록됨() throws Exception {
+        // given
+        String code = "code";
+
+        given(authService.login(code))
+                .willThrow(DataIntegrityViolationException.class);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/login?code=" + code)
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andDo(print());
 
         verify(authService).login(code);
     }
