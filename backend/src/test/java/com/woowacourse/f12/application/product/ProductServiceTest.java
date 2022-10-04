@@ -18,6 +18,7 @@ import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -27,6 +28,7 @@ import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.domain.review.CareerLevelCount;
 import com.woowacourse.f12.domain.review.JobTypeCount;
 import com.woowacourse.f12.domain.review.ReviewRepository;
+import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
@@ -55,6 +57,25 @@ class ProductServiceTest {
 
     @InjectMocks
     private ProductService productService;
+
+    @Test
+    void 제품_추가_요청으로_제품을_저장한다() {
+        // given
+        Product savedProduct = KEYBOARD_1.생성(1L);
+        ProductCreateRequest productCreateRequest = new ProductCreateRequest("키보드1", "이미지 주소", KEYBOARD);
+
+        given(productRepository.save(any(Product.class)))
+                .willReturn(savedProduct);
+
+        // when
+        Long savedId = productService.save(productCreateRequest);
+
+        // then
+        assertAll(
+                () -> assertThat(savedId).isEqualTo(1L),
+                () -> verify(productRepository).save(any(Product.class))
+        );
+    }
 
     @Test
     void id_값으로_제품을_조회한다() {

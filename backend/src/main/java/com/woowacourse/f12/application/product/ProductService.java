@@ -9,6 +9,7 @@ import com.woowacourse.f12.domain.review.CareerLevelCount;
 import com.woowacourse.f12.domain.review.JobTypeCount;
 import com.woowacourse.f12.domain.review.MemberInfoStatistics;
 import com.woowacourse.f12.domain.review.ReviewRepository;
+import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
@@ -33,6 +34,12 @@ public class ProductService {
     public ProductService(final ProductRepository productRepository, final ReviewRepository reviewRepository) {
         this.productRepository = productRepository;
         this.reviewRepository = reviewRepository;
+    }
+
+    @Transactional
+    public Long save(final ProductCreateRequest productCreateRequest) {
+        return productRepository.save(productCreateRequest.toProduct())
+                .getId();
     }
 
     public ProductResponse findById(final Long id) {
