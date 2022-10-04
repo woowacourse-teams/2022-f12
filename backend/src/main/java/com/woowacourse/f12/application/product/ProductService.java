@@ -34,8 +34,8 @@ public class ProductService {
     private final ReviewRepository reviewRepository;
     private final InventoryProductRepository inventoryProductRepository;
 
-    public ProductService(ProductRepository productRepository, ReviewRepository reviewRepository,
-                          InventoryProductRepository inventoryProductRepository) {
+    public ProductService(final ProductRepository productRepository, final ReviewRepository reviewRepository,
+                          final InventoryProductRepository inventoryProductRepository) {
         this.productRepository = productRepository;
         this.reviewRepository = reviewRepository;
         this.inventoryProductRepository = inventoryProductRepository;

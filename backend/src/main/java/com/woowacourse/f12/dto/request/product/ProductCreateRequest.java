@@ -11,7 +11,7 @@ public class ProductCreateRequest {
     @NotNull(message = "제품 이름이 없습니다.")
     private String name;
 
-    @NotNull(message = "이미지 주소가가 없습니다.")
+    @NotNull(message = "이미지 주소가 없습니다.")
     private String imageUrl;
 
     @NotNull(message = "카테고리가 없습니다.")
