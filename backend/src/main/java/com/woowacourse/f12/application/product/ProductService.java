@@ -1,5 +1,6 @@
 package com.woowacourse.f12.application.product;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.product.Category;
@@ -31,10 +32,13 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
+    private final InventoryProductRepository inventoryProductRepository;
 
-    public ProductService(final ProductRepository productRepository, final ReviewRepository reviewRepository) {
+    public ProductService(ProductRepository productRepository, ReviewRepository reviewRepository,
+                          InventoryProductRepository inventoryProductRepository) {
         this.productRepository = productRepository;
         this.reviewRepository = reviewRepository;
+        this.inventoryProductRepository = inventoryProductRepository;
     }
 
     @Transactional
@@ -99,5 +103,14 @@ public class ProductService {
         final Product target = productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
         target.update(productUpdateRequest.toProduct());
+    }
+
+    @Transactional
+    public void delete(final Long productId) {
+        final Product target = productRepository.findById(productId)
+                .orElseThrow(ProductNotFoundException::new);
+        reviewRepository.deleteByProduct(target);
+        inventoryProductRepository.deleteByProduct(target);
+        productRepository.delete(target);
     }
 }

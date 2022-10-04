@@ -23,8 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.domain.review.CareerLevelCount;
@@ -57,6 +59,9 @@ class ProductServiceTest {
 
     @Mock
     private ReviewRepository reviewRepository;
+
+    @Mock
+    private InventoryProductRepository inventoryProductRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -215,6 +220,40 @@ class ProductServiceTest {
         assertAll(
                 () -> assertThatThrownBy(() -> productService.update(1L, productUpdateRequest)),
                 () -> verify(productRepository).findById(1L)
+        );
+    }
+
+    @Test
+    void 제품을_삭제한다() {
+        // given
+        Product target = KEYBOARD_1.생성(1L);
+
+        given(productRepository.findById(1L))
+                .willReturn(Optional.of(target));
+
+        // when
+        productService.delete(1L);
+
+        // then
+        assertAll(
+                () -> verify(productRepository).findById(1L),
+                () -> verify(productRepository).delete(target),
+                () -> verify(reviewRepository).deleteByProduct(target),
+                () -> verify(inventoryProductRepository).deleteByProduct(target)
+        );
+    }
+
+    @Test
+    void 없는_제품을_삭제하려고_하면_예외를_반환한다() {
+        // given
+        given(productRepository.findById(1L))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> productService.delete(1L)),
+                () -> verify(productRepository).findById(1L),
+                () -> verify(productRepository, times(0)).delete(any(Product.class))
         );
     }
 }
