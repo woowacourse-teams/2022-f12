@@ -15,17 +15,30 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.woowacourse.f12.application.auth.token.JwtProvider;
+import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
+import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.domain.product.Category;
+import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
+import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -41,6 +54,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -52,6 +67,10 @@ class ProductControllerTest extends PresentationTest {
 
     @MockBean
     private ProductService productService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    @MockBean
+    private JwtProvider jwtProvider;
 
     @Test
     void 키보드_목록_페이지_조회_성공() throws Exception {
@@ -204,5 +223,128 @@ class ProductControllerTest extends PresentationTest {
                 .andDo(print());
 
         verify(productService).calculateMemberStatisticsById(1L);
+    }
+
+    @Test
+    void 어드민_계정으로_로그인_하여_제품_추가_성공() throws Exception {
+        // given
+        final String authorizationHeader = "Bearer token";
+        given(productService.save(any(ProductCreateRequest.class)))
+                .willReturn(1L);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.ADMIN));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+        final ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyborad.url",
+                Category.KEYBOARD);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                        post("/api/v1/products")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(objectMapper.writeValueAsString(productCreateRequest))
+                )
+                .andDo(document("admin-products-create"))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isCreated())
+                .andExpect(header().string(HttpHeaders.LOCATION, "/api/v1/products/1"));
+    }
+
+    @Test
+    void 일반_계정으로_로그인_하여_제품_추가_실패() throws Exception {
+        // given
+        final String authorizationHeader = "Bearer token";
+        given(productService.save(any(ProductCreateRequest.class)))
+                .willReturn(1L);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.USER));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+        final ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyborad.url",
+                Category.KEYBOARD);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                        post("/api/v1/products")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(objectMapper.writeValueAsString(productCreateRequest))
+                )
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void 어드민_계정으로_로그인_하여_제품_수정_성공() throws Exception {
+        // given
+        final String authorizationHeader = "Bearer token";
+        willDoNothing().given(productService)
+                .update(anyLong(), any(ProductUpdateRequest.class));
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.ADMIN));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+        final ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("updatedName", "updatedURL",
+                Category.MONITOR);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(put("/api/v1/products/" + 1)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(productUpdateRequest))
+                )
+                .andDo(document("admin-products-update"))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isNoContent());
+    }
+
+    @Test
+    void 어드민_계정으로_로그인_하여_제품_삭제_성공() throws Exception {
+        // given
+        final String authorizationHeader = "Bearer token";
+        willDoNothing().given(productService)
+                .delete(anyLong());
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.ADMIN));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(delete("/api/v1/products/" + 1)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                )
+                .andDo(document("admin-products-delete"))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isNoContent());
+    }
+
+    @Test
+    void 어드민_계정으로_로그인_하여_존재하지_않는_제품_삭제_실패() throws Exception {
+        // given
+        final String authorizationHeader = "Bearer token";
+        willThrow(new ProductNotFoundException()).given(productService)
+                .delete(anyLong());
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.ADMIN));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(delete("/api/v1/products/" + 1)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                )
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isNotFound());
     }
 }

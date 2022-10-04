@@ -44,3 +44,27 @@ operation::products-page-get[snippets='http-request,http-response']
 - 40420
 
 operation::products-member-statistics-get[snippets='http-request,http-response']
+
+=== 제품 추가(어드민)
+
+==== 발생 가능 에러
+
+- 40003, 40100, 40101, 40102, 40107
+
+operation::admin-products-create[snippets='http-request,http-response']
+
+=== 제품 수정(어드민)
+
+==== 발생 가능 에러
+
+- 40003, 40100, 40101, 40102, 40107
+
+operation::admin-products-update[snippets='http-request,http-response']
+
+=== 제품 삭제(어드민)
+
+==== 발생 가능 에러
+
+- 40100, 40101, 40102, 40107, 40420
+
+operation::admin-products-delete[snippets='http-request,http-response']

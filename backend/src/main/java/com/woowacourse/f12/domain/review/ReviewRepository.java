@@ -19,4 +19,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
 
     @Query("select r from Review r join fetch r.member join fetch r.product where r.member.id = :memberId")
     Slice<Review> findPageByMemberId(Long memberId, Pageable pageable);
+
+    void deleteByProduct(Product target);
 }

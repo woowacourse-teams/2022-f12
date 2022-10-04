@@ -1,10 +1,17 @@
 package com.woowacourse.f12.domain.product;
 
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
-
-import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "product",
@@ -54,6 +61,12 @@ public class Product {
 
     public boolean isSameCategory(final Category category) {
         return this.category == category;
+    }
+
+    public void update(final Product updateProduct) {
+        this.name = updateProduct.getName();
+        this.imageUrl = updateProduct.getImageUrl();
+        this.category = updateProduct.getCategory();
     }
 
     public void increaseReviewCount() {

@@ -2,6 +2,7 @@ package com.woowacourse.f12.support.fixture;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.CORINNE_GITHUB;
+import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.KLAY_GITHUB;
 import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.MINCHO_GITHUB;
 import static com.woowacourse.f12.support.fixture.GitHubProfileFixture.OHZZI_GITHUB;
 
@@ -12,8 +13,9 @@ public enum AcceptanceFixture {
 
     코린(CORINNE_GITHUB.getCode(), MemberFixture.CORINNE),
     민초(MINCHO_GITHUB.getCode(), MemberFixture.MINCHO),
-    오찌(OHZZI_GITHUB.getCode(), MemberFixture.OHZZI);
-
+    오찌(OHZZI_GITHUB.getCode(), MemberFixture.OHZZI),
+    클레이(KLAY_GITHUB.getCode(), MemberFixture.ADMIN_KLAY),
+    ;
     private final String gitHubLoginCode;
     private final MemberFixture memberFixture;
 

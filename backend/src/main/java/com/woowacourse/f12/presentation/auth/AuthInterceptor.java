@@ -1,16 +1,20 @@
 package com.woowacourse.f12.presentation.auth;
 
 import com.woowacourse.f12.application.auth.token.JwtProvider;
+import com.woowacourse.f12.application.auth.token.MemberPayload;
+import com.woowacourse.f12.exception.unauthorized.InaccessibleException;
 import com.woowacourse.f12.exception.unauthorized.TokenExpiredException;
 import com.woowacourse.f12.exception.unauthorized.TokenNotExistsException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
+@Order(1)
 public class AuthInterceptor implements HandlerInterceptor {
 
     private final JwtProvider jwtProvider;
@@ -28,10 +32,24 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         if (hasAuthorization(request)) {
             validateAuthorization(request);
+            validateAdminRequired(request, handler);
             return true;
         }
+
         validateTokenRequired(handler);
         return true;
+    }
+
+    private void validateAdminRequired(final HttpServletRequest request, final Object handler) {
+        Login auth = getLoginAnnotation(handler);
+        if (auth.admin() && isNotAdmin(request)) {
+            throw new InaccessibleException();
+        }
+    }
+
+    private boolean isNotAdmin(final HttpServletRequest request) {
+        final MemberPayload payload = jwtProvider.getPayload(request.getHeader(HttpHeaders.AUTHORIZATION));
+        return !payload.isAdmin();
     }
 
     private void validateTokenRequired(final Object handler) {

@@ -2,12 +2,11 @@ package com.woowacourse.f12.domain.inventoryproduct;
 
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Product;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface InventoryProductRepository extends JpaRepository<InventoryProduct, Long> {
 
@@ -30,4 +29,6 @@ public interface InventoryProductRepository extends JpaRepository<InventoryProdu
 
     @Query("select i from InventoryProduct i join fetch i.product where i.member IN :members")
     List<InventoryProduct> findWithProductByMembers(List<Member> members);
+
+    void deleteByProduct(Product target);
 }
