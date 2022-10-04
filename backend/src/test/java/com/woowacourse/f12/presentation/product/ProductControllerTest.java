@@ -16,9 +16,11 @@ import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -301,5 +303,48 @@ class ProductControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isNoContent());
+    }
+
+    @Test
+    void 어드민_계정으로_로그인_하여_제품_삭제_성공() throws Exception {
+        // given
+        final String authorizationHeader = "Bearer token";
+        willDoNothing().given(productService)
+                .delete(anyLong());
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.ADMIN));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(delete("/api/v1/products/" + 1)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                )
+                .andDo(document("admin-products-delete"))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isNoContent());
+    }
+
+    @Test
+    void 어드민_계정으로_로그인_하여_존재하지_않는_제품_삭제_실패() throws Exception {
+        // given
+        final String authorizationHeader = "Bearer token";
+        willThrow(new ProductNotFoundException()).given(productService)
+                .delete(anyLong());
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.ADMIN));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(delete("/api/v1/products/" + 1)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                )
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isNotFound());
     }
 }

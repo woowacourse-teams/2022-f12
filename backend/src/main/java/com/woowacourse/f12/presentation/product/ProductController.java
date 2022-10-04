@@ -11,6 +11,7 @@ import com.woowacourse.f12.presentation.auth.Login;
 import java.net.URI;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,6 +57,13 @@ public class ProductController {
         productService.update(id, productUpdateRequest);
         return ResponseEntity.noContent()
                 .build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Login(admin = true)
+    public ResponseEntity<Void> delete(@PathVariable final Long id) {
+        productService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/statistics")

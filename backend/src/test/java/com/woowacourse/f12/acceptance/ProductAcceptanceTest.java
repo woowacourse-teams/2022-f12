@@ -1,6 +1,7 @@
 package com.woowacourse.f12.acceptance;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_DELETE_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PUT_요청을_보낸다;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
@@ -325,6 +326,26 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 Category.MONITOR);
         final ExtractableResponse<Response> response = 로그인된_상태로_PUT_요청을_보낸다("/api/v1/products/" + savedProduct.getId(),
                 loginToken, productUpdateRequest);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value())
+        );
+    }
+
+    @Test
+    void 어드민으로_로그인_하여_제품을_삭제한다() {
+        // given
+        final Product savedProduct = 제품을_저장한다(KEYBOARD_1.생성());
+
+        어드민을_저장한다(ADMIN_KLAY.생성());
+        final LoginResponse loginResponse = 클레이.로그인을_한다();
+        String loginToken = loginResponse.getToken();
+
+        // when
+        final ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다(
+                "/api/v1/products/" + savedProduct.getId(),
+                loginToken);
 
         // then
         assertAll(
