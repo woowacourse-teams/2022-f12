@@ -64,10 +64,29 @@ public class Product {
     }
 
     public void update(final Product updateProduct) {
-        this.name = updateProduct.getName();
-        this.imageUrl = updateProduct.getImageUrl();
-        this.category = updateProduct.getCategory();
+        updateName(updateProduct.getName());
+        updateImageUrl(updateProduct.getImageUrl());
+        updateCategory(updateProduct.getCategory());
     }
+
+    private void updateName(final String name) {
+        if (name != null) {
+            this.name = name;
+        }
+    }
+
+    private void updateImageUrl(final String imageUrl) {
+        if (imageUrl != null) {
+            this.imageUrl = imageUrl;
+        }
+    }
+
+    private void updateCategory(final Category category) {
+        if (category != null) {
+            this.category = category;
+        }
+    }
+
 
     public void increaseReviewCount() {
         reviewCount++;

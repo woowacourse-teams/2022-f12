@@ -7,14 +7,12 @@ import com.woowacourse.f12.exception.unauthorized.TokenExpiredException;
 import com.woowacourse.f12.exception.unauthorized.TokenNotExistsException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-@Order(1)
 public class AuthInterceptor implements HandlerInterceptor {
 
     private final JwtProvider jwtProvider;
@@ -40,9 +38,20 @@ public class AuthInterceptor implements HandlerInterceptor {
         return true;
     }
 
+    private boolean hasAuthorization(final HttpServletRequest request) {
+        return request.getHeader(HttpHeaders.AUTHORIZATION) != null;
+    }
+
+    private void validateAuthorization(final HttpServletRequest request) {
+        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (!jwtProvider.isValidToken(authorizationHeader)) {
+            throw new TokenExpiredException();
+        }
+    }
+
     private void validateAdminRequired(final HttpServletRequest request, final Object handler) {
         Login auth = getLoginAnnotation(handler);
-        if (auth.admin() && isNotAdmin(request)) {
+        if (auth != null && auth.admin() && isNotAdmin(request)) {
             throw new InaccessibleException();
         }
     }
@@ -62,16 +71,5 @@ public class AuthInterceptor implements HandlerInterceptor {
     private Login getLoginAnnotation(final Object handler) {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         return handlerMethod.getMethodAnnotation(Login.class);
-    }
-
-    private void validateAuthorization(final HttpServletRequest request) {
-        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (!jwtProvider.isValidToken(authorizationHeader)) {
-            throw new TokenExpiredException();
-        }
-    }
-
-    private boolean hasAuthorization(final HttpServletRequest request) {
-        return request.getHeader(HttpHeaders.AUTHORIZATION) != null;
     }
 }
