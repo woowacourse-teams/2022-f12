@@ -1,19 +1,5 @@
 package com.woowacourse.f12.domain.inventoryproduct;
 
-import com.woowacourse.f12.config.JpaConfig;
-import com.woowacourse.f12.domain.member.Member;
-import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.domain.product.Product;
-import com.woowacourse.f12.domain.product.ProductRepository;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.dao.DataIntegrityViolationException;
-
-import java.util.List;
-import java.util.Optional;
-
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
@@ -23,8 +9,18 @@ import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DataJpaTest
-@Import(JpaConfig.class)
+import com.woowacourse.f12.domain.RepositoryTest;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.domain.product.ProductRepository;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+
+@RepositoryTest
 class InventoryProductRepositoryTest {
 
     @Autowired
@@ -105,7 +101,8 @@ class InventoryProductRepositoryTest {
         장비를_등록한다(UNSELECTED_INVENTORY_PRODUCT.생성(member, product));
 
         // when
-        Optional<InventoryProduct> actual = inventoryProductRepository.findWithProductByMemberAndProduct(member, product);
+        Optional<InventoryProduct> actual = inventoryProductRepository.findWithProductByMemberAndProduct(member,
+                product);
 
         // then
         assertThat(actual).isPresent();

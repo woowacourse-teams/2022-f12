@@ -1,19 +1,15 @@
 package com.woowacourse.f12.domain.member;
 
-import com.woowacourse.f12.config.JpaConfig;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.dao.DataIntegrityViolationException;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DataJpaTest
-@Import(JpaConfig.class)
+import com.woowacourse.f12.domain.RepositoryTest;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+
+@RepositoryTest
 class FollowingRepositoryTest {
 
     @Autowired
