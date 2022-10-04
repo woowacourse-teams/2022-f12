@@ -1,0 +1,20 @@
+{
+  "root": true,
+  "parser": "@babel/eslint-parser",
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "plugins": ["prettier"],
+  "extends": [
+    "eslint:recommended", // eslint 기본 추천 규칙
+    "plugin:react/recommended", // 리액트에 필요한 규칙
+    "plugin:react/jsx-runtime", // react를 import 하지 않아도 되도록 인식하는 규칙
+    "plugin:react-hooks/recommended", // react-hooks에 관한 규칙
+    "prettier"
+  ],
+  "globals": {
+    "__API_URL__": true,
+    "__GITHUB_CLIENT_ID__": true
+  }
+}
