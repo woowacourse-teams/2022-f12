@@ -5,6 +5,7 @@ import static com.woowacourse.f12.domain.member.CareerLevel.MID_LEVEL;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.domain.member.JobType.ETC;
 import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
+import static com.woowacourse.f12.domain.product.Category.MOUSE;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.MID_LEVEL_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
@@ -15,6 +16,7 @@ import static com.woowacourse.f12.presentation.member.JobTypeConstant.FRONTEND_C
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.MOBILE_CONSTANT;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.MOUSE_1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -30,6 +32,7 @@ import com.woowacourse.f12.domain.review.JobTypeCount;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
+import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -177,6 +180,41 @@ class ProductServiceTest {
                 () -> assertThat(productPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(productPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsExactly(ProductResponse.from(product))
+        );
+    }
+
+    @Test
+    void 제품_정보를_수정한다() {
+        // given
+        Product target = KEYBOARD_1.생성(1L);
+        ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("마우스1", "이미지 주소", MOUSE);
+
+        given(productRepository.findById(1L))
+                .willReturn(Optional.of(target));
+
+        // when
+        productService.update(1L, productUpdateRequest);
+
+        // then
+        assertAll(
+                () -> assertThat(target).usingRecursiveComparison()
+                        .isEqualTo(MOUSE_1.생성(1L)),
+                () -> verify(productRepository).findById(1L)
+        );
+    }
+
+    @Test
+    void 없는_제품을_수정하려고_하면_예외를_반환한다() {
+        // given
+        ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("마우스1", "이미지 주소", MOUSE);
+
+        given(productRepository.findById(1L))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> productService.update(1L, productUpdateRequest)),
+                () -> verify(productRepository).findById(1L)
         );
     }
 }

@@ -11,6 +11,7 @@ import com.woowacourse.f12.domain.review.MemberInfoStatistics;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
+import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -91,5 +92,12 @@ public class ProductService {
         final List<JobTypeCount> jobTypeCounts = reviewRepository.findJobTypeCountByProductId(productId);
         final MemberInfoStatistics<JobTypeCount, JobType> jobTypeStatistics = new MemberInfoStatistics<>(jobTypeCounts);
         return jobTypeStatistics.calculateStatistics(JobType.values());
+    }
+
+    @Transactional
+    public void update(final Long productId, final ProductUpdateRequest productUpdateRequest) {
+        final Product target = productRepository.findById(productId)
+                .orElseThrow(ProductNotFoundException::new);
+        target.update(productUpdateRequest.toProduct());
     }
 }
