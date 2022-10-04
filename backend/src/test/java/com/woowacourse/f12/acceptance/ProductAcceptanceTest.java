@@ -2,6 +2,7 @@ package com.woowacourse.f12.acceptance;
 
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.GET_요청을_보낸다;
 import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_POST_요청을_보낸다;
+import static com.woowacourse.f12.acceptance.support.RestAssuredRequestUtil.로그인된_상태로_PUT_요청을_보낸다;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.MID_LEVEL_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
@@ -31,6 +32,7 @@ import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
+import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
@@ -306,6 +308,27 @@ class ProductAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header(HttpHeaders.LOCATION)).startsWith("/api/v1/products/")
+        );
+    }
+
+    @Test
+    void 어드민으로_로그인_하여_제품을_수정한다() {
+        // given
+        final Product savedProduct = 제품을_저장한다(KEYBOARD_1.생성());
+
+        어드민을_저장한다(ADMIN_KLAY.생성());
+        final LoginResponse loginResponse = 클레이.로그인을_한다();
+        String loginToken = loginResponse.getToken();
+
+        // when
+        final ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("updatedName", "updatedURL",
+                Category.MONITOR);
+        final ExtractableResponse<Response> response = 로그인된_상태로_PUT_요청을_보낸다("/api/v1/products/" + savedProduct.getId(),
+                loginToken, productUpdateRequest);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value())
         );
     }
 

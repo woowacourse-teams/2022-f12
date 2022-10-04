@@ -3,6 +3,7 @@ package com.woowacourse.f12.presentation.product;
 import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
+import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,6 +47,15 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> show(@PathVariable final Long id) {
         return ResponseEntity.ok(productService.findById(id));
+    }
+
+    @PutMapping("/{id}")
+    @Login(admin = true)
+    public ResponseEntity<Void> update(@PathVariable final Long id,
+                                       @RequestBody final ProductUpdateRequest productUpdateRequest) {
+        productService.update(id, productUpdateRequest);
+        return ResponseEntity.noContent()
+                .build();
     }
 
     @GetMapping("/{id}/statistics")

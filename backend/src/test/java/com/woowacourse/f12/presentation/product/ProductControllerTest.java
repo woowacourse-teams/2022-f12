@@ -15,11 +15,13 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,6 +36,7 @@ import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
+import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -272,5 +275,31 @@ class ProductControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void 어드민_계정으로_로그인_하여_제품_수정_성공() throws Exception {
+        // given
+        final String authorizationHeader = "Bearer token";
+        willDoNothing().given(productService)
+                .update(anyLong(), any(ProductUpdateRequest.class));
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.ADMIN));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+        final ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("updatedName", "updatedURL",
+                Category.MONITOR);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(put("/api/v1/products/" + 1)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(productUpdateRequest))
+                )
+                .andDo(document("admin-products-update"))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isNoContent());
     }
 }
