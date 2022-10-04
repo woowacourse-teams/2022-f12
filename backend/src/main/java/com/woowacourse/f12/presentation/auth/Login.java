@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
 public @interface Login {
 
     boolean required() default true;
+
+    boolean admin() default false;
 }
