@@ -8,7 +8,7 @@ const Login = ({ setAccessToken }) => {
   const navigate = useNavigate();
   const code = params.get("code");
   const sendLoginRequest = async () => {
-    const response = await axios.get(API_BASE_URL + "/login", {
+    const response = await axios.get(`${API_BASE_URL}/login`, {
       params: { code },
     });
     const accessToken = response.data.token;

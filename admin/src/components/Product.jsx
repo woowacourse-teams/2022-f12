@@ -11,7 +11,7 @@ const Product = ({ productData, accessToken, handleRefetch }) => {
 
   const requestUpdate = async (id) => {
     const response = await axios.patch(
-      API_BASE_URL + "/products/" + id,
+      `${API_BASE_URL}/products/${id}`,
       {
         name: nameInputValue,
         imageUrl: productData.imageUrl,

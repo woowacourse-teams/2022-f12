@@ -15,27 +15,6 @@ const HeaderLayOut = styled.div`
   flex-direction: column;
 `;
 
-const LoginButton = styled.a`
-  margin: 20px;
-  padding: 10px;
-  font-size: 20px;
-  background-color: #f6bebe;
-  border-radius: 10px;
-  border: none;
-  box-shadow: 2px 2px 2px gray;
-  text-decoration: none;
-  color: black;
-  &:visited {
-    color: black;
-  }
-  &:active {
-    position: relative;
-    top: 2px;
-    left: 2px;
-    box-shadow: none;
-  }
-`;
-
 const Main = ({ accessToken }) => {
   const [products, setProducts] = useState();
   const navigate = useNavigate();
@@ -43,7 +22,7 @@ const Main = ({ accessToken }) => {
   const size = 10;
 
   const getProducts = async () => {
-    const response = await axios.get(API_BASE_URL + "/products", {
+    const response = await axios.get(`${API_BASE_URL}/products`, {
       params: { page, size },
     });
     setProducts(response.data.items);

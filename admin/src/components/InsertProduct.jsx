@@ -12,13 +12,13 @@ const InsertProduct = ({ accessToken }) => {
   const requestInsertProduct = async () => {
     try {
       await axios.post(
-        API_BASE_URL + "/products",
+        `${API_BASE_URL}/products`,
         {
           name: productName,
           category: productCategory,
           imageUrl: productImageUrl,
         },
-        { headers: { Authorization: "Bearer " + accessToken } }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       navigate("/main");
     } catch (err) {
