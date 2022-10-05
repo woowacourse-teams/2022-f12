@@ -254,32 +254,6 @@ class ProductControllerTest extends PresentationTest {
     }
 
     @Test
-    void 일반_계정으로_로그인_하여_제품_추가_실패() throws Exception {
-        // given
-        final String authorizationHeader = "Bearer token";
-        given(productService.save(any(ProductCreateRequest.class)))
-                .willReturn(1L);
-        given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(new MemberPayload(1L, Role.USER));
-        given(jwtProvider.isValidToken(authorizationHeader))
-                .willReturn(true);
-        final ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyborad.url",
-                Category.KEYBOARD);
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                        post("/api/v1/products")
-                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(objectMapper.writeValueAsString(productCreateRequest))
-                )
-                .andDo(print());
-
-        // then
-        resultActions.andExpect(status().isForbidden());
-    }
-
-    @Test
     void 어드민_계정으로_로그인_하여_제품_수정_성공() throws Exception {
         // given
         final String authorizationHeader = "Bearer token";
