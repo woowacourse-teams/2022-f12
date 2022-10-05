@@ -1,7 +1,7 @@
 package com.woowacourse.f12.dto.request.product;
 
-import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.presentation.product.CategoryConstant;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
@@ -15,12 +15,12 @@ public class ProductCreateRequest {
     private String imageUrl;
 
     @NotNull(message = "카테고리가 없습니다.")
-    private Category category;
+    private CategoryConstant category;
 
     private ProductCreateRequest() {
     }
 
-    public ProductCreateRequest(final String name, final String imageUrl, final Category category) {
+    public ProductCreateRequest(final String name, final String imageUrl, final CategoryConstant category) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.category = category;
@@ -28,7 +28,7 @@ public class ProductCreateRequest {
 
     public Product toProduct() {
         return Product.builder()
-                .category(category)
+                .category(category.toCategory())
                 .name(name)
                 .imageUrl(imageUrl)
                 .build();
