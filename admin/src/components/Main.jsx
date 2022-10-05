@@ -6,7 +6,6 @@ import styled from "styled-components";
 import HeaderLogoImage from "../assets/HeaderLogo.svg";
 import { API_BASE_URL } from "../constants/urls";
 import Product from "./Product";
-import Items from "./Product";
 
 const HeaderLayOut = styled.div`
   width: 100vw;
