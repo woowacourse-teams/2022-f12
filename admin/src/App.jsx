@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import InsertProduct from "./components/InsertProduct";
 import Landing from "./components/Landing";
 import Login from "./components/Login";
 import Main from "./components/Main";
@@ -14,6 +15,10 @@ function App() {
         element={<Login setAccessToken={setAccessToken} />}
       />
       <Route path="/main" element={<Main accessToken={accessToken} />} />
+      <Route
+        path="/insertProduct"
+        element={<InsertProduct accessToken={accessToken} />}
+      />
     </Routes>
   );
 }

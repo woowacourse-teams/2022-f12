@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import HeaderLogoImage from "../assets/HeaderLogo.svg";
@@ -38,6 +39,7 @@ const LoginButton = styled.a`
 
 const Main = ({ accessToken }) => {
   const [products, setProducts] = useState();
+  const navigate = useNavigate();
   const page = 0;
   const size = 10;
 
@@ -51,9 +53,17 @@ const Main = ({ accessToken }) => {
   useEffect(() => {
     getProducts();
   }, []);
+
   return (
     <HeaderLayOut>
       <HeaderLogoImage />
+      <button
+        onClick={() => {
+          navigate("/insertProduct");
+        }}
+      >
+        제품 추가
+      </button>
       {products?.map((product) => {
         return (
           <Product
