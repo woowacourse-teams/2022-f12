@@ -9,6 +9,7 @@ import static com.woowacourse.f12.domain.member.JobType.ETC;
 import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
 import static com.woowacourse.f12.domain.member.JobType.MOBILE;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.MONITOR_CONSTANT;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
@@ -35,7 +36,6 @@ import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Role;
-import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
@@ -236,7 +236,7 @@ class ProductControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyborad.url",
-                Category.KEYBOARD);
+                KEYBOARD_CONSTANT);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -264,7 +264,7 @@ class ProductControllerTest extends PresentationTest {
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
         ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("updatedName", "updatedURL",
-                Category.MONITOR);
+                MONITOR_CONSTANT);
 
         // when
         ResultActions resultActions = mockMvc.perform(patch("/api/v1/products/" + 1)

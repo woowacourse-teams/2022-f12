@@ -5,7 +5,6 @@ import static com.woowacourse.f12.domain.member.CareerLevel.MID_LEVEL;
 import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.domain.member.JobType.ETC;
 import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
-import static com.woowacourse.f12.domain.product.Category.MOUSE;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.MID_LEVEL_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
@@ -15,6 +14,7 @@ import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTA
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.FRONTEND_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.MOBILE_CONSTANT;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.MOUSE_CONSTANT;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.MOUSE_1;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,7 +70,7 @@ class ProductServiceTest {
     void 제품_추가_요청으로_제품을_저장한다() {
         // given
         Product savedProduct = KEYBOARD_1.생성(1L);
-        ProductCreateRequest productCreateRequest = new ProductCreateRequest("키보드1", "이미지 주소", KEYBOARD);
+        ProductCreateRequest productCreateRequest = new ProductCreateRequest("키보드1", "이미지 주소", KEYBOARD_CONSTANT);
 
         given(productRepository.save(any(Product.class)))
                 .willReturn(savedProduct);
@@ -192,7 +192,7 @@ class ProductServiceTest {
     void 제품_정보를_수정한다() {
         // given
         Product target = KEYBOARD_1.생성(1L);
-        ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("마우스1", "이미지 주소", MOUSE);
+        ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("마우스1", "이미지 주소", MOUSE_CONSTANT);
 
         given(productRepository.findById(1L))
                 .willReturn(Optional.of(target));
@@ -211,7 +211,7 @@ class ProductServiceTest {
     @Test
     void 없는_제품을_수정하려고_하면_예외를_반환한다() {
         // given
-        ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("마우스1", "이미지 주소", MOUSE);
+        ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("마우스1", "이미지 주소", MOUSE_CONSTANT);
 
         given(productRepository.findById(1L))
                 .willReturn(Optional.empty());
