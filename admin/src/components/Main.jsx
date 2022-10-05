@@ -3,16 +3,33 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import HeaderLogoImage from "../assets/HeaderLogo.svg";
+import HeaderLayOut from "./HeaderLayOut";
 import { API_BASE_URL } from "../constants/urls";
 import Product from "./Product";
 
-const HeaderLayOut = styled.div`
-  width: 100vw;
+const Contents = styled.div`
+  margin: 20px;
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
+
+const Button = styled.div`
+  width: max-content;
+  margin: 20px;
+  padding: 10px;
+  background-color: #f6bebe;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 2px 2px 2px gray;
+  color: black;
+  &:active {
+    position: relative;
+    top: 2px;
+    left: 2px;
+    box-shadow: none;
+  }
 `;
 
 const Main = ({ accessToken }) => {
@@ -37,26 +54,28 @@ const Main = ({ accessToken }) => {
   }, []);
 
   return (
-    <HeaderLayOut>
-      <HeaderLogoImage />
-      <button
-        onClick={() => {
-          navigate("/insertProduct");
-        }}
-      >
-        제품 추가
-      </button>
-      {products?.map((product) => {
-        return (
-          <Product
-            key={product.id}
-            productData={product}
-            accessToken={accessToken}
-            handleRefetch={getProducts}
-          />
-        );
-      })}
-    </HeaderLayOut>
+    <>
+      <HeaderLayOut />
+      <Contents>
+        <Button
+          onClick={() => {
+            navigate("/insertProduct");
+          }}
+        >
+          제품 추가
+        </Button>
+        {products?.map((product) => {
+          return (
+            <Product
+              key={product.id}
+              productData={product}
+              accessToken={accessToken}
+              handleRefetch={getProducts}
+            />
+          );
+        })}
+      </Contents>
+    </>
   );
 };
 

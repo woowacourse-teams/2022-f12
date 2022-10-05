@@ -2,8 +2,9 @@ import styled from "styled-components";
 
 import { GITHUB_AUTH_URL } from "../constants/urls.js";
 import HeaderLogoImage from "../assets/HeaderLogo.svg";
+import HeaderLayOut from "./HeaderLayOut.jsx";
 
-const HeaderLayOut = styled.div`
+const LandingLayout = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -35,10 +36,10 @@ const LoginButton = styled.a`
 
 const Landing = () => {
   return (
-    <HeaderLayOut>
-      <HeaderLogoImage />
+    <LandingLayout>
+      <HeaderLayOut />
       <LoginButton href={GITHUB_AUTH_URL}>GitHub로 로그인</LoginButton>
-    </HeaderLayOut>
+    </LandingLayout>
   );
 };
 
