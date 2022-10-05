@@ -30,5 +30,7 @@ public interface InventoryProductRepository extends JpaRepository<InventoryProdu
     @Query("select i from InventoryProduct i join fetch i.product where i.member IN :members")
     List<InventoryProduct> findWithProductByMembers(List<Member> members);
 
-    void deleteByProduct(Product target);
+    @Modifying(clearAutomatically = true)
+    @Query("delete from InventoryProduct i where i.product=:product")
+    void deleteByProduct(Product product);
 }

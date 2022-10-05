@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
@@ -20,5 +21,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
     @Query("select r from Review r join fetch r.member join fetch r.product where r.member.id = :memberId")
     Slice<Review> findPageByMemberId(Long memberId, Pageable pageable);
 
-    void deleteByProduct(Product target);
+    @Modifying(clearAutomatically = true)
+    @Query("delete from Review r where r.product=:product")
+    void deleteByProduct(Product product);
 }

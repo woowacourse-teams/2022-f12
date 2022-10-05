@@ -63,7 +63,8 @@ public class ProductController {
     @Login(admin = true)
     public ResponseEntity<Void> delete(@PathVariable final Long id) {
         productService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+                .build();
     }
 
     @GetMapping("/{id}/statistics")

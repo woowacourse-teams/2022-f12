@@ -304,6 +304,27 @@ class ReviewRepositoryTest {
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
+    @Test
+    void 특정_제품에_대한_리뷰를_모두_삭제한다() {
+        // given
+        Product product = 제품_저장(KEYBOARD_1.생성());
+        Member corinne = memberRepository.save(CORINNE.생성());
+        Member mincho = memberRepository.save(MINCHO.생성());
+        Review review1 = REVIEW_RATING_1.작성(product, corinne);
+        Review review2 = REVIEW_RATING_1.작성(product, mincho);
+        reviewRepository.save(review1);
+        reviewRepository.save(review2);
+
+        entityManager.clear();
+
+        // when
+        reviewRepository.deleteByProduct(product);
+
+        // then
+        final long count = reviewRepository.count();
+        assertThat(count).isZero();
+    }
+
     private Product 제품_저장(Product product) {
         return productRepository.save(product);
     }

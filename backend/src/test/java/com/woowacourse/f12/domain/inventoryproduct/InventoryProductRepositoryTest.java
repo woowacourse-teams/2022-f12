@@ -139,6 +139,25 @@ class InventoryProductRepositoryTest {
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
+    @Test
+    void 특정_제품에_대한_인벤토리를_삭제한다() {
+        // given
+        Member mincho = 회원을_저장한다(MINCHO.생성());
+        Member corinne = 회원을_저장한다(CORINNE.생성());
+        Product product = 제품을_저장한다(KEYBOARD_1.생성());
+        InventoryProduct inventoryProduct1 = UNSELECTED_INVENTORY_PRODUCT.생성(mincho, product);
+        InventoryProduct inventoryProduct2 = UNSELECTED_INVENTORY_PRODUCT.생성(corinne, product);
+        inventoryProductRepository.save(inventoryProduct1);
+        inventoryProductRepository.save(inventoryProduct2);
+
+        // when
+        inventoryProductRepository.deleteByProduct(product);
+
+        // then
+        final long count = inventoryProductRepository.count();
+        assertThat(count).isZero();
+    }
+
     private Product 제품을_저장한다(Product product) {
         return productRepository.save(product);
     }
