@@ -22,10 +22,14 @@ const Main = ({ accessToken }) => {
   const size = 10;
 
   const getProducts = async () => {
-    const response = await axios.get(`${API_BASE_URL}/products`, {
-      params: { page, size },
-    });
-    setProducts(response.data.items);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/products`, {
+        params: { page, size },
+      });
+      setProducts(response.data.items);
+    } catch (err) {
+      alert(`${response.status} error: ${response.data.message}`);
+    }
   };
 
   useEffect(() => {

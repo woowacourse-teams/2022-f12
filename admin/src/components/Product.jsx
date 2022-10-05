@@ -10,17 +10,21 @@ const Product = ({ productData, accessToken, handleRefetch }) => {
   );
 
   const requestUpdate = async (id) => {
-    const response = await axios.patch(
-      `${API_BASE_URL}/products/${id}`,
-      {
-        name: nameInputValue,
-        imageUrl: productData.imageUrl,
-        category: categoryInputValue,
-      },
-      { headers: { Authorization: "Bearer " + accessToken } }
-    );
-    setEditMode(false);
-    handleRefetch();
+    try {
+      await axios.patch(
+        `${API_BASE_URL}/products/${id}`,
+        {
+          name: nameInputValue,
+          imageUrl: productData.imageUrl,
+          category: categoryInputValue,
+        },
+        { headers: { Authorization: "Bearer " + accessToken } }
+      );
+      setEditMode(false);
+      handleRefetch();
+    } catch (err) {
+      alert(`${response.status} error: ${response.data.message}`);
+    }
   };
 
   const onEditButtonClick = () => {
@@ -50,6 +54,7 @@ const Product = ({ productData, accessToken, handleRefetch }) => {
 
   return editMode ? (
     <div>
+      <span>{productData.id} </span>
       <input value={nameInputValue} onChange={handleNameInputChange} />
       <select
         defaultValue={categoryInputValue}
@@ -65,6 +70,7 @@ const Product = ({ productData, accessToken, handleRefetch }) => {
     </div>
   ) : (
     <div>
+      <span>{productData.id}</span>
       <span>{nameInputValue} </span>
       <span>{categoryInputValue} </span>
       <button onClick={onEditButtonClick}>수정</button>
