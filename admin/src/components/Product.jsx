@@ -1,22 +1,21 @@
 import axios from "axios";
 import { useState } from "react";
 import { API_BASE_URL } from "../constants/urls";
+import ProductCategorySelect from "./ProductCategorySelect";
 
 const Product = ({ productData, accessToken, handleRefetch }) => {
   const [editMode, setEditMode] = useState(false);
-  const [nameInputValue, setNameInputValue] = useState(productData.name);
-  const [categoryInputValue, setCategoryInputValue] = useState(
-    productData.category
-  );
+  const [productName, setProductName] = useState(productData.name);
+  const [productCategory, setProductCategory] = useState(productData.category);
 
   const requestUpdate = async (id) => {
     try {
       await axios.patch(
         `${API_BASE_URL}/products/${id}`,
         {
-          name: nameInputValue,
+          name: productName,
           imageUrl: productData.imageUrl,
-          category: categoryInputValue,
+          category: productCategory,
         },
         { headers: { Authorization: "Bearer " + accessToken } }
       );
@@ -44,35 +43,25 @@ const Product = ({ productData, accessToken, handleRefetch }) => {
     }
   };
 
-  const handleNameInputChange = (e) => {
-    setNameInputValue(e.target.value);
-  };
-
-  const handleCategoryInputChange = (e) => {
-    setCategoryInputValue(e.target.value);
+  const handleProductNameChange = (e) => {
+    setProductName(e.target.value);
   };
 
   return editMode ? (
     <div>
       <span>{productData.id} </span>
-      <input value={nameInputValue} onChange={handleNameInputChange} />
-      <select
-        defaultValue={categoryInputValue}
-        onChange={handleCategoryInputChange}
-      >
-        <option value="keyboard">키보드</option>
-        <option value="mouse">마우스</option>
-        <option value="monitor">모니터</option>
-        <option value="stand">스탠드</option>
-        <option value="software">소프트웨어</option>
-      </select>
+      <input value={productName} onChange={handleProductNameChange} />
+      <ProductCategorySelect
+        productCategory={productCategory}
+        setProductCategory={setProductCategory}
+      />
       <button onClick={() => requestUpdate(productData.id)}>완료</button>
     </div>
   ) : (
     <div>
       <span>{productData.id}</span>
-      <span>{nameInputValue} </span>
-      <span>{categoryInputValue} </span>
+      <span>{productName} </span>
+      <span>{productCategory} </span>
       <button onClick={onEditButtonClick}>수정</button>
       <button onClick={onDeleteButtonClick}>삭제</button>
     </div>
