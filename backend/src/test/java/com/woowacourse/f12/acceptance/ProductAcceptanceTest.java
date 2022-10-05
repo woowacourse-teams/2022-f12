@@ -13,6 +13,7 @@ import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTA
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.FRONTEND_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.MOBILE_CONSTANT;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.MONITOR_CONSTANT;
 import static com.woowacourse.f12.support.fixture.AcceptanceFixture.민초;
 import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
 import static com.woowacourse.f12.support.fixture.AcceptanceFixture.클레이;
@@ -28,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
-import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
@@ -301,7 +301,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
         // when
         ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyboard.url",
-                Category.KEYBOARD);
+                KEYBOARD_CONSTANT);
         ExtractableResponse<Response> response = 로그인된_상태로_POST_요청을_보낸다("/api/v1/products", loginToken,
                 productCreateRequest);
 
@@ -323,7 +323,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
         // when
         ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("updatedName", "updatedURL",
-                Category.MONITOR);
+                MONITOR_CONSTANT);
         ExtractableResponse<Response> response = 로그인된_상태로_PATCH_요청을_보낸다("/api/v1/products/" + savedProduct.getId(),
                 loginToken, productUpdateRequest);
 
