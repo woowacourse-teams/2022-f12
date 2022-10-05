@@ -13,7 +13,7 @@ function App() {
         path="/login"
         element={<Login setAccessToken={setAccessToken} />}
       />
-      <Route path="/main" element={<Main />} />
+      <Route path="/main" element={<Main accessToken={accessToken} />} />
     </Routes>
   );
 }
