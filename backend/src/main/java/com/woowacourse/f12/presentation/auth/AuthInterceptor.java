@@ -2,7 +2,7 @@ package com.woowacourse.f12.presentation.auth;
 
 import com.woowacourse.f12.application.auth.token.JwtProvider;
 import com.woowacourse.f12.application.auth.token.MemberPayload;
-import com.woowacourse.f12.exception.unauthorized.InaccessibleException;
+import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.unauthorized.TokenExpiredException;
 import com.woowacourse.f12.exception.unauthorized.TokenNotExistsException;
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +52,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     private void validateAdminRequired(final HttpServletRequest request, final Object handler) {
         Login auth = getLoginAnnotation(handler);
         if (auth != null && auth.admin() && isNotAdmin(request)) {
-            throw new InaccessibleException();
+            throw new NotAdminException();
         }
     }
 

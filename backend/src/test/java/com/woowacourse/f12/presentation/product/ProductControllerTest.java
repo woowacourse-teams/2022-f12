@@ -276,7 +276,7 @@ class ProductControllerTest extends PresentationTest {
                 .andDo(print());
 
         // then
-        resultActions.andExpect(status().isUnauthorized());
+        resultActions.andExpect(status().isForbidden());
     }
 
     @Test

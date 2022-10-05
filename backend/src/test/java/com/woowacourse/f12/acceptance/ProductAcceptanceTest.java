@@ -328,9 +328,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 loginToken, productUpdateRequest);
 
         // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value())
-        );
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -348,9 +346,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 loginToken);
 
         // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value())
-        );
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private Member 어드민을_저장한다(Member member) {
