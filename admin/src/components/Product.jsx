@@ -27,6 +27,18 @@ const Product = ({ productData, accessToken }) => {
     setEditMode(true);
   };
 
+  const onDeleteButtonClick = async (e) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/products/${productData.id}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      alert("삭제 성공!");
+    } catch (err) {
+      const response = err.response;
+      alert(`${response.status} error: ${response.data.message}`);
+    }
+  };
+
   const handleNameInputChange = (e) => {
     setNameInputValue(e.target.value);
   };
@@ -55,6 +67,7 @@ const Product = ({ productData, accessToken }) => {
       <span>{nameInputValue} </span>
       <span>{categoryInputValue} </span>
       <button onClick={onEditButtonClick}>수정</button>
+      <button onClick={onDeleteButtonClick}>삭제</button>
     </div>
   );
 };
