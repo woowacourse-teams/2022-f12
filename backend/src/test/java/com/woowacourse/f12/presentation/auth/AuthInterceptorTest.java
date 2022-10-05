@@ -1,5 +1,6 @@
 package com.woowacourse.f12.presentation.auth;
 
+import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -25,7 +26,6 @@ import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.presentation.PresentationTest;
-import com.woowacourse.f12.presentation.product.CategoryConstant;
 import com.woowacourse.f12.presentation.product.ProductController;
 import com.woowacourse.f12.presentation.review.ReviewController;
 import org.junit.jupiter.api.Test;
@@ -139,7 +139,7 @@ class AuthInterceptorTest extends PresentationTest {
                 .willReturn(new MemberPayload(1L, Role.USER));
 
         final ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyboardUrl",
-                CategoryConstant.KEYBOARD_CONSTANT);
+                KEYBOARD_CONSTANT);
 
         // when
         mockMvc.perform(
