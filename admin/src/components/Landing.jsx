@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { GITHUB_AUTH_URL } from '../constants/urls.js';
-import HeaderLogoImage from '../assets/HeaderLogo.svg';
+import { GITHUB_AUTH_URL } from "../constants/urls.js";
+import HeaderLogoImage from "../assets/HeaderLogo.svg";
 
 const HeaderLayOut = styled.div`
   width: 100vw;
@@ -10,7 +10,7 @@ const HeaderLayOut = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-`
+`;
 
 const LoginButton = styled.a`
   margin: 20px;
@@ -31,17 +31,15 @@ const LoginButton = styled.a`
     left: 2px;
     box-shadow: none;
   }
-`
+`;
 
 const Landing = () => {
   return (
     <HeaderLayOut>
       <HeaderLogoImage />
-      <LoginButton href={GITHUB_AUTH_URL}>
-        GitHub로 로그인
-      </LoginButton>
+      <LoginButton href={GITHUB_AUTH_URL}>GitHub로 로그인</LoginButton>
     </HeaderLayOut>
   );
-}
+};
 
 export default Landing;

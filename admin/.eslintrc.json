@@ -16,5 +16,9 @@
   "globals": {
     "__API_URL__": true,
     "__GITHUB_CLIENT_ID__": true
+  },
+  "rules": {
+    "react/prop-types": false,
+    "react-hooks/exhaustive-deps": false
   }
 }
