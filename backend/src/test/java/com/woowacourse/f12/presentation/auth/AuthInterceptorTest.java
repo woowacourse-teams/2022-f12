@@ -22,10 +22,10 @@ import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.domain.member.Role;
-import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.presentation.PresentationTest;
+import com.woowacourse.f12.presentation.product.CategoryConstant;
 import com.woowacourse.f12.presentation.product.ProductController;
 import com.woowacourse.f12.presentation.review.ReviewController;
 import org.junit.jupiter.api.Test;
@@ -139,7 +139,7 @@ class AuthInterceptorTest extends PresentationTest {
                 .willReturn(new MemberPayload(1L, Role.USER));
 
         final ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyboardUrl",
-                Category.KEYBOARD);
+                CategoryConstant.KEYBOARD_CONSTANT);
 
         // when
         mockMvc.perform(
