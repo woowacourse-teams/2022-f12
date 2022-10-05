@@ -154,7 +154,7 @@ class InventoryProductRepositoryTest {
         inventoryProductRepository.deleteByProduct(product);
 
         // then
-        final long count = inventoryProductRepository.count();
+        long count = inventoryProductRepository.count();
         assertThat(count).isZero();
     }
 

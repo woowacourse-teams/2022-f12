@@ -321,7 +321,7 @@ class ReviewRepositoryTest {
         reviewRepository.deleteByProduct(product);
 
         // then
-        final long count = reviewRepository.count();
+        long count = reviewRepository.count();
         assertThat(count).isZero();
     }
 

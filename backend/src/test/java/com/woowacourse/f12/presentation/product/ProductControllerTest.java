@@ -22,8 +22,8 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -228,18 +228,18 @@ class ProductControllerTest extends PresentationTest {
     @Test
     void 어드민_계정으로_로그인_하여_제품_추가_성공() throws Exception {
         // given
-        final String authorizationHeader = "Bearer token";
+        String authorizationHeader = "Bearer token";
         given(productService.save(any(ProductCreateRequest.class)))
                 .willReturn(1L);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(new MemberPayload(1L, Role.ADMIN));
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
-        final ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyborad.url",
+        ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyborad.url",
                 Category.KEYBOARD);
 
         // when
-        final ResultActions resultActions = mockMvc.perform(
+        ResultActions resultActions = mockMvc.perform(
                         post("/api/v1/products")
                                 .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -256,18 +256,18 @@ class ProductControllerTest extends PresentationTest {
     @Test
     void 어드민_계정으로_로그인_하여_제품_수정_성공() throws Exception {
         // given
-        final String authorizationHeader = "Bearer token";
+        String authorizationHeader = "Bearer token";
         willDoNothing().given(productService)
                 .update(anyLong(), any(ProductUpdateRequest.class));
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(new MemberPayload(1L, Role.ADMIN));
         given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(true);
-        final ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("updatedName", "updatedURL",
+        ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("updatedName", "updatedURL",
                 Category.MONITOR);
 
         // when
-        final ResultActions resultActions = mockMvc.perform(put("/api/v1/products/" + 1)
+        ResultActions resultActions = mockMvc.perform(patch("/api/v1/products/" + 1)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(productUpdateRequest))
@@ -282,7 +282,7 @@ class ProductControllerTest extends PresentationTest {
     @Test
     void 어드민_계정으로_로그인_하여_제품_삭제_성공() throws Exception {
         // given
-        final String authorizationHeader = "Bearer token";
+        String authorizationHeader = "Bearer token";
         willDoNothing().given(productService)
                 .delete(anyLong());
         given(jwtProvider.getPayload(authorizationHeader))
@@ -291,7 +291,7 @@ class ProductControllerTest extends PresentationTest {
                 .willReturn(true);
 
         // when
-        final ResultActions resultActions = mockMvc.perform(delete("/api/v1/products/" + 1)
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/products/" + 1)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                 )
                 .andDo(document("admin-products-delete"))
@@ -304,7 +304,7 @@ class ProductControllerTest extends PresentationTest {
     @Test
     void 어드민_계정으로_로그인_하여_존재하지_않는_제품_삭제_실패() throws Exception {
         // given
-        final String authorizationHeader = "Bearer token";
+        String authorizationHeader = "Bearer token";
         willThrow(new ProductNotFoundException()).given(productService)
                 .delete(anyLong());
         given(jwtProvider.getPayload(authorizationHeader))
@@ -313,7 +313,7 @@ class ProductControllerTest extends PresentationTest {
                 .willReturn(true);
 
         // when
-        final ResultActions resultActions = mockMvc.perform(delete("/api/v1/products/" + 1)
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/products/" + 1)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                 )
                 .andDo(print());
