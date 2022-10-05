@@ -3,6 +3,7 @@ package com.woowacourse.f12.presentation.auth;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -17,9 +18,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowacourse.f12.application.auth.token.JwtProvider;
+import com.woowacourse.f12.application.auth.token.MemberPayload;
+import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.application.review.ReviewService;
+import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.domain.product.Category;
+import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.presentation.PresentationTest;
+import com.woowacourse.f12.presentation.product.ProductController;
 import com.woowacourse.f12.presentation.review.ReviewController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +36,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(ReviewController.class)
+@WebMvcTest({ReviewController.class, ProductController.class})
 class AuthInterceptorTest extends PresentationTest {
 
     @Autowired
@@ -37,6 +44,9 @@ class AuthInterceptorTest extends PresentationTest {
 
     @MockBean
     private ReviewService reviewService;
+
+    @MockBean
+    private ProductService productService;
 
     @MockBean
     private JwtProvider jwtProvider;
@@ -116,6 +126,34 @@ class AuthInterceptorTest extends PresentationTest {
         assertAll(
                 () -> verify(jwtProvider, times(0)).isValidToken(any()),
                 () -> verify(reviewService, times(0)).delete(any(), any())
+        );
+    }
+
+    @Test
+    void 일반_계정으로_관리자_자원에_접근하면_예외_발생() throws Exception {
+        // given
+        String authorizationHeader = "Bearer token";
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(anyString()))
+                .willReturn(new MemberPayload(1L, Role.USER));
+
+        final ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyboardUrl",
+                Category.KEYBOARD);
+
+        // when
+        mockMvc.perform(
+                        post("/api/v1/products")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(objectMapper.writeValueAsString(productCreateRequest))
+                ).andExpect(status().isForbidden())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(anyString())
         );
     }
 }

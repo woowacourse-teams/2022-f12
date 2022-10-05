@@ -1,16 +1,23 @@
 package com.woowacourse.f12.presentation;
 
+import static com.woowacourse.f12.exception.ErrorCode.INTERNAL_SERVER_ERROR;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_REQUEST_BODY_TYPE;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
+import static com.woowacourse.f12.exception.ErrorCode.REQUEST_DUPLICATED;
+
 import com.woowacourse.f12.dto.response.ExceptionResponse;
 import com.woowacourse.f12.exception.CustomException;
 import com.woowacourse.f12.exception.UriTooLongException;
 import com.woowacourse.f12.exception.badrequest.InvalidValueException;
-import com.woowacourse.f12.exception.forbidden.ForbiddenMemberException;
+import com.woowacourse.f12.exception.forbidden.ForbiddenException;
 import com.woowacourse.f12.exception.internalserver.ExternalServerException;
 import com.woowacourse.f12.exception.internalserver.InternalServerException;
 import com.woowacourse.f12.exception.notfound.NotFoundException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
 import com.woowacourse.f12.presentation.auth.RefreshTokenCookieProvider;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -21,11 +28,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import static com.woowacourse.f12.exception.ErrorCode.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -100,8 +102,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ExceptionResponse.from(e));
     }
 
-    @ExceptionHandler(ForbiddenMemberException.class)
-    public ResponseEntity<ExceptionResponse> handleForbiddenMemberException(final ForbiddenMemberException e) {
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ExceptionResponse> handleForbiddenMemberException(final ForbiddenException e) {
         log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ExceptionResponse.from(e));
     }
