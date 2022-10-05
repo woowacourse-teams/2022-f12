@@ -5,7 +5,7 @@ import { API_BASE_URL } from "../constants/urls";
 
 const InsertProduct = ({ accessToken }) => {
   const [productName, setProductName] = useState();
-  const [productCategory, setProductCategory] = useState();
+  const [productCategory, setProductCategory] = useState("keyboard");
   const [productImageUrl, setProdcutImageURL] = useState();
   const navigate = useNavigate();
 
@@ -40,7 +40,7 @@ const InsertProduct = ({ accessToken }) => {
       <div>
         <label htmlFor="">카테고리</label>
         <select
-          defaultValue={"keyboard"}
+          defaultValue={productCategory}
           onChange={(e) => {
             setProductCategory(e.target.value);
           }}

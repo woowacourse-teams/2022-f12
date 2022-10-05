@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { API_BASE_URL } from "../constants/urls";
 
-const Product = ({ productData, accessToken }) => {
+const Product = ({ productData, accessToken, handleRefetch }) => {
   const [editMode, setEditMode] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(productData.name);
   const [categoryInputValue, setCategoryInputValue] = useState(
@@ -19,8 +19,8 @@ const Product = ({ productData, accessToken }) => {
       },
       { headers: { Authorization: "Bearer " + accessToken } }
     );
-    console.log(response);
     setEditMode(false);
+    handleRefetch();
   };
 
   const onEditButtonClick = () => {
@@ -33,6 +33,7 @@ const Product = ({ productData, accessToken }) => {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       alert("삭제 성공!");
+      handleRefetch();
     } catch (err) {
       const response = err.response;
       alert(`${response.status} error: ${response.data.message}`);

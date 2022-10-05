@@ -46,9 +46,9 @@ const Main = ({ accessToken }) => {
     const response = await axios.get(API_BASE_URL + "/products", {
       params: { page, size },
     });
-    console.log(response.data.items);
     setProducts(response.data.items);
   };
+
   useEffect(() => {
     getProducts();
   }, []);
@@ -69,6 +69,7 @@ const Main = ({ accessToken }) => {
             key={product.id}
             productData={product}
             accessToken={accessToken}
+            handleRefetch={getProducts}
           />
         );
       })}

@@ -11,7 +11,9 @@ const Login = ({ setAccessToken }) => {
     const response = await axios.get(API_BASE_URL + "/login", {
       params: { code },
     });
+    const accessToken = response.data.token;
     setAccessToken(response.data.token);
+    window.sessionStorage.setItem("accessToken", accessToken);
   };
   useEffect(() => {
     sendLoginRequest().then(() => {

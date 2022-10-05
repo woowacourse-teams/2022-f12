@@ -6,7 +6,8 @@ import Login from "./components/Login";
 import Main from "./components/Main";
 
 function App() {
-  const [accessToken, setAccessToken] = useState();
+  const initialToken = window.sessionStorage.getItem("accessToken");
+  const [accessToken, setAccessToken] = useState(initialToken || "");
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
