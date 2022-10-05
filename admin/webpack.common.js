@@ -22,6 +22,10 @@ module.exports = {
           filename: 'images/[hash][ext][query]',
         },
       },
+      {
+        test: /\.svg$/i,
+        use: ['@svgr/webpack'],
+      },
     ],
   },
   resolve: {
