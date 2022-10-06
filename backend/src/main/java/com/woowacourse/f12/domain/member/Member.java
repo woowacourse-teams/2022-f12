@@ -148,6 +148,10 @@ public class Member {
         this.inventoryProducts = new InventoryProducts(values);
     }
 
+    public boolean isAdmin() {
+        return this.role == Role.ADMIN;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
