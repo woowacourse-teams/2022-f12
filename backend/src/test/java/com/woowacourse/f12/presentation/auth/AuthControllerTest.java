@@ -1,24 +1,5 @@
 package com.woowacourse.f12.presentation.auth;
 
-import com.woowacourse.f12.application.auth.AuthService;
-import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
-import com.woowacourse.f12.dto.result.LoginResult;
-import com.woowacourse.f12.exception.ErrorCode;
-import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
-import com.woowacourse.f12.exception.internalserver.GitHubServerException;
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
-import com.woowacourse.f12.presentation.PresentationTest;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-
-import javax.servlet.http.Cookie;
-
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +10,30 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.woowacourse.f12.application.auth.AuthService;
+import com.woowacourse.f12.dto.response.auth.AdminLoginResponse;
+import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
+import com.woowacourse.f12.dto.response.auth.LoginResponse;
+import com.woowacourse.f12.dto.result.LoginResult;
+import com.woowacourse.f12.exception.ErrorCode;
+import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
+import com.woowacourse.f12.exception.forbidden.NotAdminException;
+import com.woowacourse.f12.exception.internalserver.GitHubServerException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
+import com.woowacourse.f12.presentation.PresentationTest;
+import javax.servlet.http.Cookie;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(AuthController.class)
 class AuthControllerTest extends PresentationTest {
@@ -126,6 +130,54 @@ class AuthControllerTest extends PresentationTest {
                 .andDo(print());
 
         verify(authService).login(code);
+    }
+
+    @Test
+    void 어드민_로그인_성공() throws Exception {
+        // given
+        String code = "code";
+        String token = "token";
+        AdminLoginResponse adminLoginResponse = new AdminLoginResponse(token);
+
+        given(authService.loginAdmin(code))
+                .willReturn(adminLoginResponse);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/login/admin?code=" + code)
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("auth-admin-login")
+                );
+
+        verify(authService).loginAdmin(code);
+    }
+
+    @Test
+    void 어드민_로그인_실패_어드민이_아닌_경우() throws Exception {
+        // given
+        String code = "code";
+        String token = "token";
+
+        given(authService.loginAdmin(code))
+                .willThrow(new NotAdminException());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/login/admin?code=" + code)
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isForbidden())
+                .andDo(print());
+
+        verify(authService).loginAdmin(code);
     }
 
     @Test

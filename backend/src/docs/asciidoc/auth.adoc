@@ -9,6 +9,14 @@
 
 operation::auth-login[snippets='http-request,http-response']
 
+=== 어드민 로그인
+
+==== 발생 가능 에러
+
+- 40300, 40410, 50000, 50001
+
+operation::auth-admin-login[snippets='http-request,http-response']
+
 === 액세스 토큰 발급
 
 ==== 발생 가능 에러
