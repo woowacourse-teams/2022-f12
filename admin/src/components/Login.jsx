@@ -9,12 +9,11 @@ const Login = ({ setAccessToken }) => {
   const code = params.get("code");
   const sendLoginRequest = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/login`, {
+      const response = await axios.get(`${API_BASE_URL}/login/admin`, {
         params: { code },
       });
       const accessToken = response.data.token;
       setAccessToken(response.data.token);
-      window.sessionStorage.setItem("accessToken", accessToken);
     } catch (err) {
       alert(`${response.status} error: ${response.data.message}`);
       navigate("/");
