@@ -6,6 +6,7 @@ import styled from "styled-components";
 import HeaderLayOut from "./HeaderLayOut";
 import { API_BASE_URL } from "../constants/urls";
 import Product from "./Product";
+import SearchBar from "./SearchBar";
 
 const Contents = styled.div`
   margin: 20px;
@@ -34,6 +35,7 @@ const Button = styled.div`
 
 const Main = ({ accessToken }) => {
   const [products, setProducts] = useState();
+  const [searchInput, setSearchInput] = useState();
   const navigate = useNavigate();
   const page = 0;
   const size = 10;
@@ -41,7 +43,7 @@ const Main = ({ accessToken }) => {
   const getProducts = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/products`, {
-        params: { page, size },
+        params: { page, size, query: searchInput },
       });
       setProducts(response.data.items);
     } catch (err) {
@@ -51,12 +53,13 @@ const Main = ({ accessToken }) => {
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [searchInput]);
 
   return (
     <>
       <HeaderLayOut />
       <Contents>
+        <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
         <Button
           onClick={() => {
             navigate("/insertProduct");
