@@ -4,6 +4,7 @@ import static com.woowacourse.f12.presentation.auth.RefreshTokenCookieProvider.R
 
 import com.woowacourse.f12.application.auth.AuthService;
 import com.woowacourse.f12.dto.response.AccessTokenResponse;
+import com.woowacourse.f12.dto.response.auth.AdminLoginResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
@@ -31,13 +32,17 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<LoginResponse> login(final HttpServletRequest request,
-                                               final HttpServletResponse response,
-                                               @RequestParam final String code) {
+    public ResponseEntity<LoginResponse> login(final HttpServletResponse response, @RequestParam final String code) {
         final LoginResult loginResult = authService.login(code);
         final String refreshToken = loginResult.getRefreshToken();
         refreshTokenCookieProvider.setCookie(response, refreshToken);
         return ResponseEntity.ok(LoginResponse.from(loginResult));
+    }
+
+    @GetMapping("/login/admin")
+    public ResponseEntity<AdminLoginResponse> loginAdmin(@RequestParam final String code) {
+        final AdminLoginResponse adminLoginResponse = authService.loginAdmin(code);
+        return ResponseEntity.ok(adminLoginResponse);
     }
 
     @GetMapping("/logout")
