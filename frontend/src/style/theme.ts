@@ -10,15 +10,16 @@ const colors = {
 };
 
 export const breakpoints = {
-  mobile: 320,
-  tablet: 768,
-  desktop: 1440,
+  mobile: 428,
+  tablet: 1024,
 };
 
 const device = {
-  mobile: `(min-width: ${breakpoints.mobile}px)`,
-  tablet: `(min-width: ${breakpoints.tablet}px)`,
-  desktop: `(min-width: ${breakpoints.desktop}px)`,
+  mobile: `(max-width: ${breakpoints.mobile}px)`,
+  tablet: `(min-width: ${breakpoints.mobile + 1}px) and (max-width: ${
+    breakpoints.tablet
+  }px)`,
+  desktop: `(min-width: ${breakpoints.tablet + 1}px)`,
 } as const;
 
 const theme: DefaultTheme = {

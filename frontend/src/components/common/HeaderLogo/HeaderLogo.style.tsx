@@ -7,24 +7,23 @@ export const Container = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.white};
 
-  ${({ theme: { device } }) => css`
-    @media screen and ${device.mobile} {
-      justify-content: flex-start;
-      height: 4rem;
+  justify-content: flex-start;
+  height: 4rem;
 
-      &::after {
-        position: absolute;
-        top: 4rem;
-        content: '';
-        height: 0.3rem;
-        width: 100%;
-        background: linear-gradient(
-          180deg,
-          rgba(60, 60, 60, 0.1) 0%,
-          rgba(60, 60, 60, 0) 100%
-        );
-      }
-    }
+  &::after {
+    position: absolute;
+    top: 4rem;
+    content: '';
+    height: 0.3rem;
+    width: 100%;
+    background: linear-gradient(
+      180deg,
+      rgba(60, 60, 60, 0.1) 0%,
+      rgba(60, 60, 60, 0) 100%
+    );
+  }
+
+  ${({ theme: { device } }) => css`
     @media screen and ${device.desktop} {
       justify-content: center;
       height: max-content;
@@ -41,13 +40,6 @@ export const Container = styled.div`
 `;
 
 export const LinkWrapper = styled(Link)`
-  ${({ theme: { device } }) => css`
-    padding: 1rem;
-    @media screen and ${device.mobile} {
-      width: 11rem;
-    }
-    @media screen and ${device.tablet} {
-      width: 10rem;
-    }
-  `}
+  padding: 1rem;
+  width: 11rem;
 `;

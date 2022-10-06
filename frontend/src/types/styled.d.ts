@@ -7,7 +7,10 @@ type Breakpoints = {
 };
 
 type Device = {
-  [Prop in keyof Breakpoints]: `(min-width: ${Breakpoints[Prop]}px)`;
+  [Prop in keyof Breakpoints]:
+    | `(min-width: ${Breakpoints[Prop]}px)`
+    | `(max-width: ${Breakpoints[Prop]}px)`
+    | `(min-width: ${Breakpoints[Prop]}px) and (max-width: ${Breakpoints[Prop]}px)`;
 };
 
 declare module 'styled-components' {

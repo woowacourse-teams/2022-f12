@@ -1,3 +1,4 @@
+import { Breakpoints } from '@/types/styled';
 import { Suspense, useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
@@ -44,15 +45,15 @@ function PageLayout() {
     }
   }, [isAuthenticated]);
 
-  const [currentDevice, setCurrentDevice] = useState<keyof typeof breakpoints>();
+  const [currentDevice, setCurrentDevice] = useState<keyof Breakpoints>();
 
   const handleWindowSize = () => {
     const { innerWidth } = window;
-    if (innerWidth >= breakpoints.desktop) {
+    if (innerWidth > breakpoints.tablet) {
       setCurrentDevice('desktop');
       return;
     }
-    if (innerWidth >= breakpoints.tablet) {
+    if (innerWidth > breakpoints.mobile) {
       setCurrentDevice('tablet');
       return;
     }

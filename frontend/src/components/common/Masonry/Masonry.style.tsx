@@ -3,15 +3,18 @@ import styled, { css } from 'styled-components';
 export const Container = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 1.5rem;
   overflow-y: hidden;
 
+  overflow-x: scroll;
   ${({ theme: { device } }) => css`
     @media screen and ${device.mobile} {
-      overflow-x: scroll;
     }
     @media screen and ${device.desktop} {
-      overflow-x: hidden;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
   `}
 `;
@@ -19,5 +22,4 @@ export const Container = styled.div`
 export const Column = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
 `;
