@@ -76,7 +76,8 @@ const Main = ({ accessToken, setAccessToken }) => {
           </Button>
           <Button
             onClick={() => {
-              sessionStorage.removeItem("accessToken");
+              // sessionStorage.removeItem("accessToken");
+              setAccessToken();
               navigate("/");
             }}
           >
