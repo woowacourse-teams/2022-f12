@@ -1,4 +1,3 @@
-import { Breakpoints } from '@/types/styled';
 import { Suspense, useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
@@ -11,8 +10,7 @@ import HeaderNav from '@/components/common/HeaderNav/HeaderNav';
 import Loading from '@/components/common/Loading/Loading';
 
 import useAuth from '@/hooks/useAuth';
-
-import { breakpoints } from '@/style/theme';
+import useDevice from '@/hooks/useDevice';
 
 function PageLayout() {
   const location = useLocation();
@@ -45,33 +43,12 @@ function PageLayout() {
     }
   }, [isAuthenticated]);
 
-  const [currentDevice, setCurrentDevice] = useState<keyof Breakpoints>();
-
-  const handleWindowSize = () => {
-    const { innerWidth } = window;
-    if (innerWidth > breakpoints.tablet) {
-      setCurrentDevice('desktop');
-      return;
-    }
-    if (innerWidth > breakpoints.mobile) {
-      setCurrentDevice('tablet');
-      return;
-    }
-    setCurrentDevice('mobile');
-  };
-
-  useEffect(() => {
-    handleWindowSize();
-    window.addEventListener('resize', handleWindowSize);
-    return () => {
-      window.removeEventListener('resize', handleWindowSize);
-    };
-  }, []);
+  const { device } = useDevice();
 
   return (
     <>
-      <HeaderLogo device={currentDevice} />
-      {currentDevice === 'desktop' && <HeaderNav />}
+      <HeaderLogo device={device} />
+      {device === 'desktop' && <HeaderNav />}
       <Suspense>
         <S.Main>
           <AsyncWrapper isReady={isReady} fallback={<Loading />}>
@@ -79,7 +56,7 @@ function PageLayout() {
           </AsyncWrapper>
         </S.Main>
       </Suspense>
-      {currentDevice !== 'desktop' && <BottomNavigation />}
+      {device !== 'desktop' && <BottomNavigation />}
     </>
   );
 }
