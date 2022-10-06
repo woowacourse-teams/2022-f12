@@ -15,7 +15,7 @@ const Product = ({ productData, accessToken, handleRefetch }) => {
         `${API_BASE_URL}/products/${id}`,
         {
           name: productName,
-          imageUrl: productData.imageUrl,
+          imageUrl: productImageUrl,
           category: productCategory,
         },
         { headers: { Authorization: "Bearer " + accessToken } }

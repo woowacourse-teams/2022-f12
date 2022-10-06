@@ -12,7 +12,7 @@ const Login = ({ setAccessToken }) => {
       const response = await axios.get(`${API_BASE_URL}/login/admin`, {
         params: { code },
       });
-      setAccessToken(response.data.token);
+      setAccessToken(response.data.accessToken);
     } catch (err) {
       alert(`${response.status} error: ${response.data.message}`);
       navigate("/");
