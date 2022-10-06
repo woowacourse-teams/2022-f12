@@ -4,6 +4,7 @@ import styled from "styled-components";
 import SearchImage from "../assets/search.svg";
 
 const Container = styled.div`
+  margin: 20px;
   width: 60%;
   display: flex;
   align-items: center;
