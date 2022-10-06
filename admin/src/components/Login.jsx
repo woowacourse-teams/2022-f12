@@ -12,7 +12,6 @@ const Login = ({ setAccessToken }) => {
       const response = await axios.get(`${API_BASE_URL}/login/admin`, {
         params: { code },
       });
-      const accessToken = response.data.token;
       setAccessToken(response.data.token);
     } catch (err) {
       alert(`${response.status} error: ${response.data.message}`);

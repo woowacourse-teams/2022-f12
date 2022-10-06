@@ -7,7 +7,7 @@ module.exports = merge(common, {
   plugins: [
     new DefinePlugin({
       __API_URL__: JSON.stringify('https://prod.f12.app/api/v1'),
-      __GITHUB_CLIENT_ID__: JSON.stringify('e77cbdeefd706dcff3f0'),
+      __GITHUB_CLIENT_ID__: JSON.stringify('c45b273e7f5682e0d6d5'),
     }),
   ],
 });
