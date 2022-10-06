@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../constants/urls";
+import HeaderLayOut from "./HeaderLayOut";
 import ProductCategorySelect from "./ProductCategorySelect";
 
 const InsertProduct = ({ accessToken }) => {
@@ -28,7 +29,8 @@ const InsertProduct = ({ accessToken }) => {
     }
   };
   return (
-    <div>
+    <>
+      <HeaderLayOut />
       <div>
         <label htmlFor="">제품명</label>
         <input
@@ -55,7 +57,7 @@ const InsertProduct = ({ accessToken }) => {
         />
       </div>
       <button onClick={requestInsertProduct}>제출</button>
-    </div>
+    </>
   );
 };
 

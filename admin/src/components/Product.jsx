@@ -30,7 +30,7 @@ const Product = ({ productData, accessToken, handleRefetch }) => {
     setEditMode(true);
   };
 
-  const onDeleteButtonClick = async (e) => {
+  const onDeleteButtonClick = async () => {
     try {
       await axios.delete(`${API_BASE_URL}/products/${productData.id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },

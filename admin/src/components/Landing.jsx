@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 import { GITHUB_AUTH_URL } from "../constants/urls.js";
-import HeaderLogoImage from "../assets/HeaderLogo.svg";
 import HeaderLayOut from "./HeaderLayOut.jsx";
 
 const LandingLayout = styled.div`
