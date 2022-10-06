@@ -15,7 +15,12 @@ function App() {
         path="/login"
         element={<Login setAccessToken={setAccessToken} />}
       />
-      <Route path="/main" element={<Main accessToken={accessToken} />} />
+      <Route
+        path="/main"
+        element={
+          <Main accessToken={accessToken} setAccessToken={setAccessToken} />
+        }
+      />
       <Route
         path="/insertProduct"
         element={<InsertProduct accessToken={accessToken} />}

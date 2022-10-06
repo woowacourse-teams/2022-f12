@@ -38,7 +38,7 @@ const Navigator = styled.section`
   justify-content: center;
 `;
 
-const Main = ({ accessToken }) => {
+const Main = ({ accessToken, setAccessToken }) => {
   const [products, setProducts] = useState();
   const [searchInput, setSearchInput] = useState();
   const [pageNumber, setPageNumber] = useState(0);
@@ -66,13 +66,23 @@ const Main = ({ accessToken }) => {
     <>
       <HeaderLayOut />
       <Contents>
-        <Button
-          onClick={() => {
-            navigate("/insertProduct");
-          }}
-        >
-          제품 추가
-        </Button>
+        <Navigator>
+          <Button
+            onClick={() => {
+              navigate("/insertProduct");
+            }}
+          >
+            제품 추가
+          </Button>
+          <Button
+            onClick={() => {
+              sessionStorage.removeItem("accessToken");
+              navigate("/");
+            }}
+          >
+            로그아웃
+          </Button>
+        </Navigator>
         <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
         {products?.map((product) => {
           return (
