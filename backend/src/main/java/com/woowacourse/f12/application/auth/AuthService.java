@@ -15,6 +15,7 @@ import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,16 +23,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AuthService {
 
-    private final GitHubOauthClient gitHubOauthClient;
+    private final GitHubOauthClient productionGitHubOauthClient;
+    private final GitHubOauthClient adminGitHubOauthClient;
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
     private final RefreshTokenProvider refreshTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public AuthService(final GitHubOauthClient gitHubOauthClient, final MemberRepository memberRepository,
+    public AuthService(@Qualifier("production") final GitHubOauthClient productionGitHubOauthClient,
+                       @Qualifier("admin") final GitHubOauthClient adminGitHubOauthClient,
+                       final MemberRepository memberRepository,
                        final JwtProvider jwtProvider, final RefreshTokenProvider refreshTokenProvider,
                        final RefreshTokenRepository refreshTokenRepository) {
-        this.gitHubOauthClient = gitHubOauthClient;
+        this.productionGitHubOauthClient = productionGitHubOauthClient;
+        this.adminGitHubOauthClient = adminGitHubOauthClient;
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
         this.refreshTokenProvider = refreshTokenProvider;
@@ -40,7 +45,7 @@ public class AuthService {
 
     @Transactional
     public LoginResult login(final String code) {
-        final GitHubProfileResponse gitHubProfileResponse = getGitHubProfileResponse(code);
+        final GitHubProfileResponse gitHubProfileResponse = getProductionGitHubProfileResponse(code);
         final Member member = addOrUpdateMember(gitHubProfileResponse);
         final Long memberId = member.getId();
         final String applicationAccessToken = jwtProvider.createAccessToken(memberId, member.getRole());
@@ -50,7 +55,7 @@ public class AuthService {
     }
 
     public AdminLoginResponse loginAdmin(final String code) {
-        final GitHubProfileResponse gitHubProfileResponse = getGitHubProfileResponse(code);
+        final GitHubProfileResponse gitHubProfileResponse = getAdminGitHubProfileResponse(code);
         final Member member = memberRepository.findByGitHubId(gitHubProfileResponse.getGitHubId())
                 .orElseThrow(MemberNotFoundException::new);
         if (!member.isAdmin()) {
@@ -60,9 +65,14 @@ public class AuthService {
         return new AdminLoginResponse(applicationAccessToken);
     }
 
-    private GitHubProfileResponse getGitHubProfileResponse(final String code) {
-        final String gitHubAccessToken = gitHubOauthClient.getAccessToken(code);
-        return gitHubOauthClient.getProfile(gitHubAccessToken);
+    private GitHubProfileResponse getProductionGitHubProfileResponse(final String code) {
+        final String gitHubAccessToken = productionGitHubOauthClient.getAccessToken(code);
+        return productionGitHubOauthClient.getProfile(gitHubAccessToken);
+    }
+
+    private GitHubProfileResponse getAdminGitHubProfileResponse(final String code) {
+        final String gitHubAccessToken = adminGitHubOauthClient.getAccessToken(code);
+        return adminGitHubOauthClient.getProfile(gitHubAccessToken);
     }
 
     private Member addOrUpdateMember(final GitHubProfileResponse gitHubProfileResponse) {

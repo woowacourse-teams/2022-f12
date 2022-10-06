@@ -19,13 +19,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 
-@Component
 public class GitHubOauthClient {
 
     private final String clientId;
@@ -40,10 +37,8 @@ public class GitHubOauthClient {
             .connectTimeout(Duration.ofSeconds(10))
             .build();
 
-    public GitHubOauthClient(@Value("${github.client.id}") final String clientId,
-                             @Value("${github.client.secret}") final String secret,
-                             @Value("${github.url.accessToken}") final String accessTokenUrl,
-                             @Value("${github.url.user}") final String profileUrl) {
+    public GitHubOauthClient(final String clientId, final String secret, final String accessTokenUrl,
+                             final String profileUrl) {
         this.clientId = clientId;
         this.secret = secret;
         this.accessTokenUrl = accessTokenUrl;
