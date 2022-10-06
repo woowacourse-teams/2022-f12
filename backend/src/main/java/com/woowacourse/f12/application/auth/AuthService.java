@@ -7,9 +7,11 @@ import com.woowacourse.f12.application.auth.token.RefreshTokenRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.dto.response.auth.AdminLoginResponse;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
+import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
@@ -45,6 +47,17 @@ public class AuthService {
         final RefreshToken refreshToken = refreshTokenProvider.createToken(memberId);
         refreshTokenRepository.save(refreshToken);
         return new LoginResult(refreshToken.getRefreshToken(), applicationAccessToken, member);
+    }
+
+    public AdminLoginResponse loginAdmin(final String code) {
+        final GitHubProfileResponse gitHubProfileResponse = getGitHubProfileResponse(code);
+        final Member member = memberRepository.findByGitHubId(gitHubProfileResponse.getGitHubId())
+                .orElseThrow(MemberNotFoundException::new);
+        if (!member.isAdmin()) {
+            throw new NotAdminException();
+        }
+        final String applicationAccessToken = jwtProvider.createAccessToken(member.getId(), member.getRole());
+        return new AdminLoginResponse(applicationAccessToken);
     }
 
     private GitHubProfileResponse getGitHubProfileResponse(final String code) {
