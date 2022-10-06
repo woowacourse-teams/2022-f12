@@ -13,6 +13,8 @@ github:
   client:
     id: clientId
     secret: secret
+    admin-id: adminId
+    admin-secret: adminSecret
   url:
     accessToken: http://localhost:8888/login/oauth/access_token
     user: http://localhost:8888/user

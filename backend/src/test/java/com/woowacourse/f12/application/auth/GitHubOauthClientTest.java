@@ -10,6 +10,7 @@ import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
 import com.woowacourse.f12.support.fixture.MemberFixture;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 class GitHubOauthClientTest {
 
     @Autowired
+    @Qualifier("production")
     private GitHubOauthClient gitHubOauthClient;
 
     @Test
