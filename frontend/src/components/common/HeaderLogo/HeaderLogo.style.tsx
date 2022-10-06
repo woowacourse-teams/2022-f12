@@ -12,11 +12,6 @@ export const Container = styled.div`
       justify-content: flex-start;
       height: 4rem;
 
-      position: sticky;
-      top: 0;
-      left: 0;
-      z-index: 1;
-
       &::after {
         position: absolute;
         top: 4rem;
