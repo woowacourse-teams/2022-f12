@@ -48,8 +48,6 @@ const Main = ({ accessToken, setAccessToken }) => {
 
   return (
     <>
-      {/* <HeaderLayOut /> */}
-      {/* <Contents> */}
       <Navigator>
         <Button
           onClick={() => {
@@ -76,7 +74,6 @@ const Main = ({ accessToken, setAccessToken }) => {
           />
         );
       })}
-      {/* </Contents> */}
       <Navigator>
         {pageNumber === 0 ? null : (
           <Button
