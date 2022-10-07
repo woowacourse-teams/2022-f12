@@ -1,9 +1,18 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { API_BASE_URL } from "../constants/urls";
-import HeaderLayOut from "./HeaderLayOut";
+import Button from "./Button";
 import ProductCategorySelect from "./ProductCategorySelect";
+
+const Contents = styled.section`
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
 
 const InsertProduct = ({ accessToken }) => {
   const [productName, setProductName] = useState();
@@ -30,7 +39,6 @@ const InsertProduct = ({ accessToken }) => {
   };
   return (
     <>
-      <HeaderLayOut />
       <div>
         <label htmlFor="">제품명</label>
         <input
@@ -56,7 +64,7 @@ const InsertProduct = ({ accessToken }) => {
           type="text"
         />
       </div>
-      <button onClick={requestInsertProduct}>제출</button>
+      <Button onClick={requestInsertProduct} text="제출"></Button>
     </>
   );
 };

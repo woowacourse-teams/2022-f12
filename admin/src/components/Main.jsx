@@ -7,30 +7,14 @@ import HeaderLayOut from "./HeaderLayOut";
 import { API_BASE_URL } from "../constants/urls";
 import Product from "./Product";
 import SearchBar from "./SearchBar";
+import Button from "./Button";
 
-const Contents = styled.div`
+const Contents = styled.section`
   margin: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-`;
-
-const Button = styled.div`
-  width: max-content;
-  margin: 20px;
-  padding: 10px;
-  background-color: #f6bebe;
-  border-radius: 10px;
-  border: none;
-  box-shadow: 2px 2px 2px gray;
-  color: black;
-  &:active {
-    position: relative;
-    top: 2px;
-    left: 2px;
-    box-shadow: none;
-  }
 `;
 
 const Navigator = styled.section`
@@ -64,56 +48,51 @@ const Main = ({ accessToken, setAccessToken }) => {
 
   return (
     <>
-      <HeaderLayOut />
-      <Contents>
-        <Navigator>
-          <Button
-            onClick={() => {
-              navigate("/insertProduct");
-            }}
-          >
-            제품 추가
-          </Button>
-          <Button
-            onClick={() => {
-              // sessionStorage.removeItem("accessToken");
-              setAccessToken();
-              navigate("/");
-            }}
-          >
-            로그아웃
-          </Button>
-        </Navigator>
-        <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
-        {products?.map((product) => {
-          return (
-            <Product
-              key={product.id}
-              productData={product}
-              accessToken={accessToken}
-              handleRefetch={getProducts}
-            />
-          );
-        })}
-      </Contents>
+      {/* <HeaderLayOut /> */}
+      {/* <Contents> */}
+      <Navigator>
+        <Button
+          onClick={() => {
+            navigate("/insertProduct");
+          }}
+          text="제품 추가"
+        />
+        <Button
+          onClick={() => {
+            setAccessToken();
+            navigate("/");
+          }}
+          text="로그아웃"
+        />
+      </Navigator>
+      <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
+      {products?.map((product) => {
+        return (
+          <Product
+            key={product.id}
+            productData={product}
+            accessToken={accessToken}
+            handleRefetch={getProducts}
+          />
+        );
+      })}
+      {/* </Contents> */}
       <Navigator>
         {pageNumber === 0 ? null : (
           <Button
             onClick={() => {
               setPageNumber(pageNumber - 1);
             }}
-          >
-            이전 페이지
-          </Button>
+            text="이전 페이지"
+          />
         )}
         {hasNext === false ? null : (
           <Button
             onClick={() => {
               setPageNumber(pageNumber + 1);
             }}
-          >
-            다음 페이지
-          </Button>
+            text="다음 페이지"
+          />
         )}
       </Navigator>
     </>
