@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.section<{ scrollOffset: number }>`
   position: absolute;
@@ -32,12 +32,21 @@ export const Backdrop = styled.div<{ animationTrigger: boolean }>`
 `;
 
 export const Content = styled.section<{ animationTrigger: boolean }>`
-  width: 30rem;
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      width: 20rem;
+    }
+    @media screen and ${device.tablet} {
+      width: 28rem;
+    }
+    @media screen and ${device.desktop} {
+      width: 36rem;
+    }
+  `}
+
   min-height: 10rem;
   padding: 1.5rem;
-
   position: relative;
-
   z-index: 15;
 
   display: flex;

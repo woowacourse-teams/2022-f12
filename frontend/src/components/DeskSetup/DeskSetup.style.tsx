@@ -1,16 +1,35 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
-  display: flex;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-`;
-export const CardWrapper = styled.div`
   width: 100%;
-  display: flex;
-  justify-content: center;
-  gap: 4rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  overflow-x: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      justify-items: start;
+      grid-column-gap: 1rem;
+    }
+    @media screen and ${device.tablet} {
+      padding-left: 0.3rem;
+      padding-right: 0.3rem;
+      justify-items: start;
+      grid-column-gap: 1rem;
+    }
+    @media screen and ${device.desktop} {
+      justify-items: center;
+      grid-column-gap: 0rem;
+    }
+  `}
 `;
 
 export const NoContents = styled.div`

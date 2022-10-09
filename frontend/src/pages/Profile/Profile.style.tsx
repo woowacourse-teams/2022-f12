@@ -47,8 +47,11 @@ export const EditDeskSetupButton = styled.button`
 `;
 
 export const DeskSetupSection = styled.section`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 25rem;
+  height: 22rem;
   background-color: ${({ theme }) => theme.colors.secondary};
 `;
 

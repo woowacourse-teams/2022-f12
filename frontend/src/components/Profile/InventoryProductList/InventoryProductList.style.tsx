@@ -1,9 +1,28 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-gap: 1rem;
+  grid-row-gap: 1rem;
+
+  overflow-x: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      grid-column-gap: 0.8rem;
+    }
+    @media screen and ${device.tablet} {
+      grid-column-gap: 1rem;
+    }
+    @media screen and ${device.desktop} {
+      grid-column-gap: 1rem;
+    }
+  `}
 `;
 
 export const CategoryTitle = styled.h2`
