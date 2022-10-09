@@ -40,42 +40,40 @@ function ProductListSection({
   const { device, displayWidth } = useDevice();
   const cardSize =
     displayType === 'flex' ? DEVICE_TO_SIZE[device] : device === 'tablet' ? 'm' : 'l';
-  const productList =
-    data.length === 0 ? (
-      <S.NoDataContainer>
-        <NoDataPlaceholder />
-      </S.NoDataContainer>
-    ) : (
-      <Masonry
-        columnCount={displayType === 'masonry' ? ROW_COUNT(displayWidth) : pageSize}
-      >
-        {data.map(({ id, imageUrl, name, rating, reviewCount }, index) => (
-          <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
-            <ProductCard
-              imageUrl={imageUrl}
-              name={name}
-              rating={rating}
-              reviewCount={reviewCount}
-              index={index % pageSize}
-              size={cardSize}
-            />
-          </Link>
-        ))}
-      </Masonry>
-    );
+
+  const productList = data.map(({ id, imageUrl, name, rating, reviewCount }, index) => (
+    <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
+      <ProductCard
+        imageUrl={imageUrl}
+        name={name}
+        rating={rating}
+        reviewCount={reviewCount}
+        index={index % pageSize}
+        size={cardSize}
+      />
+    </Link>
+  ));
 
   return (
     <S.Container aria-label={title}>
       <S.Wrapper>
-        {displayType === 'flex' ? (
-          productList
+        {data.length === 0 ? (
+          <S.NoDataContainer>
+            <NoDataPlaceholder />
+          </S.NoDataContainer>
+        ) : displayType === 'flex' ? (
+          <S.FlexWrapper>{productList}</S.FlexWrapper>
         ) : (
           <InfiniteScroll
             handleContentLoad={getNextPage}
             isLoading={isLoading}
             isError={isError}
           >
-            {productList}
+            <Masonry
+              columnCount={displayType === 'masonry' ? ROW_COUNT(displayWidth) : pageSize}
+            >
+              {productList}
+            </Masonry>
           </InfiniteScroll>
         )}
       </S.Wrapper>
