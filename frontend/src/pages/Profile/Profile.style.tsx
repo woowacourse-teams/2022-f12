@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
@@ -65,7 +65,6 @@ export const TabButtonWrapper = styled.div`
 export const TabButton = styled.button<{ selected: boolean }>`
   width: max-content;
   padding: 0.4rem 0.6rem;
-  font-size: 1.2rem;
   border-radius: 0.4rem;
   background-color: ${({ selected, theme }) =>
     selected ? theme.colors.primary : theme.colors.secondary};
@@ -75,4 +74,16 @@ export const TabButton = styled.button<{ selected: boolean }>`
     background-color: ${({ theme }) => theme.colors.primary};
     transition: 0.5s;
   }
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      font-size: 0.8rem;
+    }
+    @media screen and ${device.tablet} {
+      font-size: 1rem;
+    }
+    @media screen and ${device.desktop} {
+      font-size: 1.2rem;
+    }
+  `}
 `;

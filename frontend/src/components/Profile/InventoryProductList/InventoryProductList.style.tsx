@@ -35,6 +35,18 @@ export const EditDeskSetupButton = styled.button`
   border-radius: 0.4rem;
   box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
   width: max-content;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      font-size: 0.8rem;
+    }
+    @media screen and ${device.tablet} {
+      font-size: 1rem;
+    }
+    @media screen and ${device.desktop} {
+      font-size: 1.2rem;
+    }
+  `}
 `;
 
 export const FlexWrapper = styled.div`
