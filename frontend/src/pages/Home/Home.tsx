@@ -45,6 +45,7 @@ function Home() {
           isLoading={isProductLoading}
           isError={isProductError}
           pageSize={HOME_PRODUCT_SIZE}
+          displayType={'flex'}
         />
       </AsyncWrapper>
 

@@ -2,13 +2,11 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   overflow-y: hidden;
-
   overflow-x: scroll;
+
   ${({ theme: { device } }) => css`
-    @media screen and ${device.mobile} {
-    }
     @media screen and ${device.desktop} {
       -ms-overflow-style: none;
       scrollbar-width: none;

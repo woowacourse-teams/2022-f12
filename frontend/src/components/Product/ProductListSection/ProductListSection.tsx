@@ -7,14 +7,26 @@ import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlace
 import ProductCard from '@/components/Product/ProductCard/ProductCard';
 import * as S from '@/components/Product/ProductListSection/ProductListSection.style';
 
+import useDevice from '@/hooks/useDevice';
+
 import ROUTES from '@/constants/routes';
 
 type Props = Omit<DataFetchStatus, 'isReady'> & {
   title: string;
   data: Product[];
   getNextPage?: () => void;
+  displayType?: 'flex' | 'masonry';
   pageSize?: number;
 };
+
+const ROW_COUNT = (displayWidth: number) =>
+  displayWidth >= 1440 ? 4 : displayWidth >= 768 ? 3 : displayWidth >= 428 ? 2 : 1;
+
+const DEVICE_TO_SIZE = {
+  desktop: 'l',
+  tablet: 'm',
+  mobile: 's',
+} as const;
 
 function ProductListSection({
   title,
@@ -22,16 +34,21 @@ function ProductListSection({
   isLoading,
   isError,
   getNextPage,
+  displayType = 'masonry',
   pageSize = 12,
 }: Props) {
-  const isSinglePage = getNextPage === undefined;
+  const { device, displayWidth } = useDevice();
+  const cardSize =
+    displayType === 'flex' ? DEVICE_TO_SIZE[device] : device === 'tablet' ? 'm' : 'l';
   const productList =
     data.length === 0 ? (
       <S.NoDataContainer>
         <NoDataPlaceholder />
       </S.NoDataContainer>
     ) : (
-      <Masonry columnCount={4}>
+      <Masonry
+        columnCount={displayType === 'masonry' ? ROW_COUNT(displayWidth) : pageSize}
+      >
         {data.map(({ id, imageUrl, name, rating, reviewCount }, index) => (
           <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
             <ProductCard
@@ -40,6 +57,7 @@ function ProductListSection({
               rating={rating}
               reviewCount={reviewCount}
               index={index % pageSize}
+              size={cardSize}
             />
           </Link>
         ))}
@@ -49,7 +67,7 @@ function ProductListSection({
   return (
     <S.Container aria-label={title}>
       <S.Wrapper>
-        {isSinglePage ? (
+        {displayType === 'flex' ? (
           productList
         ) : (
           <InfiniteScroll

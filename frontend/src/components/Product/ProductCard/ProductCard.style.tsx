@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Container = styled.article<{ index: number }>`
+export const Container = styled.article<{ index: number; size: 's' | 'm' | 'l' }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -9,15 +9,7 @@ export const Container = styled.article<{ index: number }>`
   border-radius: 0.375rem;
   padding: 1rem;
   min-width: 13rem;
-
-  ${({ theme: { device } }) => css`
-    @media screen and ${device.tablet} {
-      width: 15rem;
-    }
-    @media screen and ${device.desktop} {
-      width: 19rem;
-    }
-  `}
+  width: ${({ size }) => (size === 'l' ? '19rem' : '15rem')};
 
   &:hover {
     img {
@@ -66,17 +58,13 @@ export const BottomWrapper = styled.div`
   justify-content: space-between;
 `;
 
-export const Name = styled.h2`
+const nameFontSize = {
+  s: '0.75rem',
+  m: '0.85rem',
+  l: '1rem',
+};
+
+export const Name = styled.h2<{ size: 's' | 'm' | 'l' }>`
   line-height: 1.3;
-  ${({ theme: { device } }) => css`
-    @media screen and ${device.mobile} {
-      font-size: 0.75rem;
-    }
-    @media screen and ${device.tablet} {
-      font-size: 0.85rem;
-    }
-    @media screen and ${device.desktop} {
-      font-size: 1rem;
-    }
-  `}
+  font-size: ${({ size }) => nameFontSize[size]};
 `;
