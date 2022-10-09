@@ -1,13 +1,23 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.section`
   display: flex;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
   max-width: 1320px;
   width: 100%;
   margin: auto;
   padding: 50px 0;
   gap: 3rem;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.desktop} {
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: flex-start;
+    }
+  `}
 `;
 
 export const ProductDetailWrapper = styled.div`
@@ -17,26 +27,23 @@ export const ProductDetailWrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 1rem;
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      width: 100%;
+    }
+  `}
 `;
 
-export const Wrapper = styled.div`
+export const ReviewListWrapper = styled.div`
   position: relative;
 
   display: flex;
   flex-direction: column;
   width: 600px;
   height: 100%;
-`;
-
-export const FloatingButton = styled.button`
-  position: fixed;
-  bottom: 50px;
-  right: 50px;
-
-  width: 45px;
-  height: 45px;
-
-  border-radius: 50%;
-
-  font-size: 2rem;
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      width: 100%;
+    }
+  `}
 `;

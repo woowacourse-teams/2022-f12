@@ -15,6 +15,7 @@ import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListS
 
 import useAnimation from '@/hooks/useAnimation';
 import useAuth from '@/hooks/useAuth';
+import useDevice from '@/hooks/useDevice';
 import useProduct from '@/hooks/useProduct';
 import useReviews from '@/hooks/useReviews';
 import useStatistics from '@/hooks/useStatistics';
@@ -29,6 +30,7 @@ function Product() {
   const { isLoggedIn } = useAuth();
   const { productId: id } = useParams();
   const productId = Number(id);
+  const { device } = useDevice();
 
   const [product, isProductReady, isProductError, refetchProduct] = useProduct({
     id: Number(productId),
@@ -67,28 +69,34 @@ function Product() {
   useEffect(() => {
     if (!isLoggedIn) toggleSheetOpen();
   }, [isLoggedIn]);
+  const ProductDetails = (
+    <S.ProductDetailWrapper>
+      <AsyncWrapper
+        fallback={<Loading />}
+        isReady={isProductReady}
+        isError={isProductError}
+      >
+        <ProductDetail product={product} />
+      </AsyncWrapper>
+      <AsyncWrapper
+        fallback={<Loading />}
+        isReady={isStatisticsReady}
+        isError={isStatisticsError}
+      >
+        <BarGraph statistics={statistics} />
+      </AsyncWrapper>
+    </S.ProductDetailWrapper>
+  );
 
   return (
     <S.Container>
-      <StickyWrapper>
-        <S.ProductDetailWrapper>
-          <AsyncWrapper
-            fallback={<Loading />}
-            isReady={isProductReady}
-            isError={isProductError}
-          >
-            <ProductDetail product={product} />
-          </AsyncWrapper>
-          <AsyncWrapper
-            fallback={<Loading />}
-            isReady={isStatisticsReady}
-            isError={isStatisticsError}
-          >
-            <BarGraph statistics={statistics} />
-          </AsyncWrapper>
-        </S.ProductDetailWrapper>
-      </StickyWrapper>
-      <S.Wrapper>
+      {device === 'desktop' ? (
+        <StickyWrapper>{ProductDetails}</StickyWrapper>
+      ) : (
+        ProductDetails
+      )}
+
+      <S.ReviewListWrapper>
         {isLoggedIn && (
           <FloatingButton clickHandler={toggleSheetOpen}>
             <Plus stroke={theme.colors.white} />
@@ -119,7 +127,7 @@ function Product() {
             isEdit={false}
           />
         )}
-      </S.Wrapper>
+      </S.ReviewListWrapper>
     </S.Container>
   );
 }
