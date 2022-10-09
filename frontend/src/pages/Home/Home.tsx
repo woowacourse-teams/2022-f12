@@ -1,3 +1,5 @@
+import * as S from '@/pages/Home/Home.style';
+
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
 import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
@@ -33,37 +35,40 @@ function Home() {
 
   return (
     <>
-      <SectionHeader title={TITLE.POPULAR_PRODUCT} />
-      <AsyncWrapper
-        fallback={<Loading />}
-        isReady={isProductReady}
-        isError={isProductError}
-      >
-        <ProductListSection
-          title={TITLE.POPULAR_PRODUCT}
-          data={products}
-          isLoading={isProductLoading}
+      <S.SectionWrapper>
+        <SectionHeader title={TITLE.POPULAR_PRODUCT} />
+        <AsyncWrapper
+          fallback={<Loading />}
+          isReady={isProductReady}
           isError={isProductError}
-          pageSize={HOME_PRODUCT_SIZE}
-          displayType={'flex'}
-        />
-      </AsyncWrapper>
-
-      <SectionHeader title={TITLE.RECENT_REVIEW} />
-      <AsyncWrapper
-        fallback={<Loading />}
-        isReady={isReviewReady}
-        isError={isReviewError}
-      >
-        <ReviewListSection
-          columns={2}
-          data={reviews}
-          getNextPage={getNextPage}
-          isLoading={isReviewLoading}
+        >
+          <ProductListSection
+            title={TITLE.POPULAR_PRODUCT}
+            data={products}
+            isLoading={isProductLoading}
+            isError={isProductError}
+            pageSize={HOME_PRODUCT_SIZE}
+            displayType={'flex'}
+          />
+        </AsyncWrapper>
+      </S.SectionWrapper>
+      <S.SectionWrapper>
+        <SectionHeader title={TITLE.RECENT_REVIEW} />
+        <AsyncWrapper
+          fallback={<Loading />}
+          isReady={isReviewReady}
           isError={isReviewError}
-          pageSize={HOME_REVIEW_SIZE}
-        />
-      </AsyncWrapper>
+        >
+          <ReviewListSection
+            columns={2}
+            data={reviews}
+            getNextPage={getNextPage}
+            isLoading={isReviewLoading}
+            isError={isReviewError}
+            pageSize={HOME_REVIEW_SIZE}
+          />
+        </AsyncWrapper>
+      </S.SectionWrapper>
     </>
   );
 }
