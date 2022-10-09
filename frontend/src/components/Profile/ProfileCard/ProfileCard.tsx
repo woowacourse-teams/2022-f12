@@ -120,8 +120,6 @@ function ProfileCard({
     }
   );
 
-  console.log(displayWidth);
-
   return (
     <S.Container index={index} displayWidth={displayWidth}>
       <S.LeftSection>
