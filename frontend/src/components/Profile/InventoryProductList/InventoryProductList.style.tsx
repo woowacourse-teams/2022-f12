@@ -20,7 +20,7 @@ export const Container = styled.div`
       grid-column-gap: 1rem;
     }
     @media screen and ${device.desktop} {
-      grid-column-gap: 1rem;
+      grid-column-gap: 0rem;
     }
   `}
 `;
