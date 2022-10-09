@@ -1,11 +1,23 @@
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-export const Container = styled.div<{ index: number }>`
+export const Container = styled.div<{ index: number; displayWidth: number }>`
   display: flex;
   background-color: white;
   padding: 1rem;
-  width: 380px;
+
+  ${({ theme: { device }, displayWidth }) => css`
+    @media screen and (max-width: ${displayWidth}px) {
+      width: 330px;
+    }
+    @media screen and ${device.tablet} {
+      width: 380px;
+    }
+    @media screen and ${device.desktop} {
+      width: 380px;
+    }
+  `}
+
   border-radius: 0.4rem;
   box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
   ${({ index }) => css`
@@ -39,13 +51,33 @@ export const RightSection = styled.div`
 
 export const ProfileImageWrapper = styled.div`
   position: absolute;
-  left: -6rem;
-  top: 1.6rem;
-  width: 9.5rem;
-  height: 9.5rem;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      left: -0.6rem;
+      top: 0.4rem;
+      width: 3.5rem;
+      height: 3.5rem;
+      box-shadow: 2px 2px 4px ${({ theme }) => theme.colors.secondary};
+    }
+    @media screen and ${device.tablet} {
+      left: -6rem;
+      top: 2rem;
+      width: 8.5rem;
+      height: 8.5rem;
+      box-shadow: 5px 5px 10px ${({ theme }) => theme.colors.secondary};
+    }
+    @media screen and ${device.desktop} {
+      left: -6rem;
+      top: 1.6rem;
+      width: 9.5rem;
+      height: 9.5rem;
+      box-shadow: 5px 5px 10px ${({ theme }) => theme.colors.secondary};
+    }
+  `}
+
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: 5px 5px 10px ${({ theme }) => theme.colors.secondary};
 `;
 
 export const ProfileImage = styled.img`

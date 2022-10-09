@@ -6,6 +6,7 @@ import Chip from '@/components/common/Chip/Chip';
 import * as S from '@/components/Profile/ProfileCard/ProfileCard.style';
 
 import useAuth from '@/hooks/useAuth';
+import useDevice from '@/hooks/useDevice';
 import useFollowing from '@/hooks/useFollowing';
 
 import TITLE from '@/constants/header';
@@ -56,6 +57,7 @@ function ProfileCard({
   const [followed, setFollowed] = useState(following);
   const [followerCount, setFollowerCount] = useState(initialFollowerCount);
   const { isLoggedIn } = useAuth();
+  const { displayWidth } = useDevice();
 
   const { followUser, unfollowUser } = useFollowing(id);
 
@@ -118,8 +120,10 @@ function ProfileCard({
     }
   );
 
+  console.log(displayWidth);
+
   return (
-    <S.Container index={index}>
+    <S.Container index={index} displayWidth={displayWidth}>
       <S.LeftSection>
         <S.ProfileImageWrapper>
           <S.ProfileImage src={`${imageUrl}${GITHUB_IMAGE_SIZE_SEARCH_PARAM.large}`} />

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
@@ -18,5 +18,22 @@ export const SearchWrapper = styled.div`
 
 export const SearchFilterWrapper = styled.div`
   display: flex;
-  gap: 1em;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+    @media screen and ${device.tablet} {
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+    @media screen and ${device.desktop} {
+      flex-direction: row;
+      gap: 1rem;
+      margin-bottom: 0.4rem;
+    }
+  `}
 `;
