@@ -4,7 +4,6 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3rem;
 `;
 
 export const ProfileSection = styled.section`
@@ -13,7 +12,7 @@ export const ProfileSection = styled.section`
   justify-content: center;
   align-items: center;
   width: 100%;
-  gap: 1rem;
+  margin-bottom: 2rem;
 `;
 
 export const InventorySection = styled.section`
@@ -53,6 +52,7 @@ export const DeskSetupSection = styled.section`
   width: 100%;
   height: 22rem;
   background-color: ${({ theme }) => theme.colors.secondary};
+  margin-bottom: 2rem;
 `;
 
 export const TabButtonWrapper = styled.div`
@@ -69,6 +69,7 @@ export const TabButton = styled.button<{ selected: boolean }>`
   background-color: ${({ selected, theme }) =>
     selected ? theme.colors.primary : theme.colors.secondary};
   transition: 0.5s;
+  margin-bottom: 0.5rem;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.primary};

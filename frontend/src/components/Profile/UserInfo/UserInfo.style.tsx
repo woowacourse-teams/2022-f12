@@ -54,6 +54,7 @@ export const FollowButton = styled.button<{ followed: boolean }>`
 
   background-color: ${({ theme, followed }) =>
     followed ? theme.colors.secondary : theme.colors.primary};
+  margin-top: 1rem;
 
   ${({ theme: { device } }) => css`
     @media screen and ${device.mobile} {
