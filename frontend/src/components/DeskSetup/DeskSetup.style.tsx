@@ -1,10 +1,8 @@
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
-  width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-
   overflow-x: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -14,18 +12,19 @@ export const Container = styled.div`
 
   ${({ theme: { device } }) => css`
     @media screen and ${device.mobile} {
-      padding-left: 1rem;
-      padding-right: 1rem;
+      width: 90%;
       justify-items: start;
-      grid-column-gap: 1rem;
+      grid-column-gap: 0.8rem;
     }
     @media screen and ${device.tablet} {
+      width: 100%;
       padding-left: 0.3rem;
       padding-right: 0.3rem;
       justify-items: start;
       grid-column-gap: 1rem;
     }
     @media screen and ${device.desktop} {
+      width: 100%;
       justify-items: center;
       grid-column-gap: 0rem;
     }
