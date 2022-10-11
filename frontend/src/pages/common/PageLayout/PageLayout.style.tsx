@@ -10,14 +10,13 @@ export const Main = styled.main`
 
   ${({ theme: { device } }) => css`
     @media screen and ${device.mobile} {
-      margin: 50px auto 72px;
+      margin: 10px auto 72px;
     }
-
     @media screen and ${device.tablet} {
-      margin: 50px auto 72px;
+      margin: 20px auto 72px;
     }
     @media screen and ${device.desktop} {
-      margin: 50px auto;
+      margin: 30px auto;
     }
   `}
 `;
