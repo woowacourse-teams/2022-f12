@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-export const Container = styled.div<{ index: number; displayWidth: number }>`
+export const Container = styled.div<{ index: number }>`
   display: flex;
   background-color: white;
   padding: 1rem;
 
-  ${({ theme: { device }, displayWidth }) => css`
-    @media screen and (max-width: ${displayWidth}px) {
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
       width: 330px;
     }
     @media screen and ${device.tablet} {
