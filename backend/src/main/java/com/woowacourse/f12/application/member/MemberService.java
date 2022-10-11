@@ -20,7 +20,6 @@ import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -60,7 +59,7 @@ public class MemberService {
     }
 
     private boolean isNotLoggedIn(final Long loggedInId) {
-        return Objects.isNull(loggedInId);
+        return loggedInId == null;
     }
 
     private boolean isFollowing(final Long followerId, final Long followingId) {
@@ -118,7 +117,7 @@ public class MemberService {
 
     private JobType parseJobType(final MemberSearchRequest memberSearchRequest) {
         final JobTypeConstant jobTypeConstant = memberSearchRequest.getJobType();
-        if (Objects.isNull(jobTypeConstant)) {
+        if (jobTypeConstant == null) {
             return null;
         }
         return jobTypeConstant.toJobType();
@@ -126,7 +125,7 @@ public class MemberService {
 
     private CareerLevel parseCareerLevel(final MemberSearchRequest memberSearchRequest) {
         final CareerLevelConstant careerLevelConstant = memberSearchRequest.getCareerLevel();
-        if (Objects.isNull(careerLevelConstant)) {
+        if (careerLevelConstant == null) {
             return null;
         }
         return careerLevelConstant.toCareerLevel();

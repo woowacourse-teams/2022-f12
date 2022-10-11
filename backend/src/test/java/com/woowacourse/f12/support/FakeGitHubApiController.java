@@ -14,7 +14,6 @@ import com.woowacourse.f12.dto.request.auth.GitHubTokenRequest;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.auth.GitHubTokenResponse;
 import java.util.Map;
-import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +60,7 @@ public class FakeGitHubApiController {
     @GetMapping("/user")
     public ResponseEntity<GitHubProfileResponse> showFakeProfile(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION) final String authorizationHeaderValue) {
-        if (Objects.isNull(authorizationHeaderValue)) {
+        if (authorizationHeaderValue == null) {
             return ResponseEntity.badRequest().build();
         }
         final String[] splitValue = authorizationHeaderValue.split(" ");
