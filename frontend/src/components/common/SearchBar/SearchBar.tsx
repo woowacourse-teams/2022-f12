@@ -17,12 +17,13 @@ function SearchBar({ searchInput, setSearchInput }: Props) {
   return (
     <S.Container>
       <S.Input
+        placeholder={'검색어를 입력해주세요'}
         maxLength={100}
         type="text"
         value={searchInput || ''}
         onChange={handleInputChange}
       />
-      <S.Button>
+      <S.Button aria-hidden={true}>
         <SearchImage />
       </S.Button>
     </S.Container>
