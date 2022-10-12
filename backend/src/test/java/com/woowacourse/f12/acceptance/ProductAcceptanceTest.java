@@ -34,6 +34,7 @@ import com.woowacourse.f12.domain.product.ProductRepository;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
+import com.woowacourse.f12.dto.response.PopularProductsResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
@@ -289,6 +290,38 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(productPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(productPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsExactly(ProductResponse.from(keyboard1))
+        );
+    }
+
+    @Test
+    void 인기_제품을_조회한다() {
+        // given
+        Product keyboard = 제품을_저장한다(KEYBOARD_1.생성());
+        Product mouse = 제품을_저장한다(MOUSE_1.생성());
+
+        MemberRequest corinneMemberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
+        String corinneToken = 코린.로그인을_한다().getToken();
+        코린.로그인한_상태로(corinneToken).추가정보를_입력한다(corinneMemberRequest);
+        코린.로그인한_상태로(corinneToken).리뷰를_작성한다(keyboard.getId(), REVIEW_RATING_5);
+        코린.로그인한_상태로(corinneToken).리뷰를_작성한다(mouse.getId(), REVIEW_RATING_5);
+
+        MemberRequest minchoMemberRequest = new MemberRequest(JUNIOR_CONSTANT, FRONTEND_CONSTANT);
+        String minchoToken = 민초.로그인을_한다().getToken();
+        민초.로그인한_상태로(minchoToken).추가정보를_입력한다(minchoMemberRequest);
+        민초.로그인한_상태로(minchoToken).리뷰를_작성한다(keyboard.getId(), REVIEW_RATING_5);
+        민초.로그인한_상태로(minchoToken).리뷰를_작성한다(mouse.getId(), REVIEW_RATING_5);
+
+        // when
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products/popular-list");
+        PopularProductsResponse popularProductsResponse = response.as(PopularProductsResponse.class);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(
+                        popularProductsResponse.getItems()).usingRecursiveFieldByFieldElementComparatorOnFields("name",
+                                "category", "imageUrl")
+                        .containsOnly(ProductResponse.from(keyboard), ProductResponse.from(mouse))
         );
     }
 

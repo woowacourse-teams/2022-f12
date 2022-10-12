@@ -4,6 +4,7 @@ import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
+import com.woowacourse.f12.dto.response.PopularProductsResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -70,5 +71,10 @@ public class ProductController {
     @GetMapping("/{id}/statistics")
     public ResponseEntity<ProductStatisticsResponse> showStatistics(@PathVariable final Long id) {
         return ResponseEntity.ok(productService.calculateMemberStatisticsById(id));
+    }
+
+    @GetMapping("/popular-list")
+    public ResponseEntity<PopularProductsResponse> showPopularProducts() {
+        return ResponseEntity.ok(productService.findPopularProducts());
     }
 }
