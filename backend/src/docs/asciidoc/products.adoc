@@ -45,6 +45,10 @@ operation::products-page-get[snippets='http-request,http-response']
 
 operation::products-member-statistics-get[snippets='http-request,http-response']
 
+=== 인기 상품 조회
+
+operation::products-popular-list-get[snippets='http-request,http-response']
+
 === 제품 추가(어드민)
 
 ==== 발생 가능 에러
