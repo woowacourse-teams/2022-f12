@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.section<{
   animationTrigger?: boolean;
@@ -8,15 +8,24 @@ export const Container = styled.section<{
   justify-content: flex-end;
 
   position: fixed;
-  bottom: 0;
-  right: 3rem;
 
-  width: 50%;
+  width: 90%;
+
+  right: 5%;
+  bottom: 0;
 
   transition: 200ms;
 
   ${({ animationTrigger }) =>
     !animationTrigger && 'transform: translateY(20rem); opacity: 0;'}
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.desktop} {
+      right: 3rem;
+
+      width: 50%;
+    }
+  `}
 `;
 
 export const Backdrop = styled.div`
@@ -35,4 +44,10 @@ export const Content = styled.section`
 
   filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.25));
   background-color: ${({ theme }) => theme.colors.white};
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      padding: 1.5rem;
+    }
+  `}
 `;

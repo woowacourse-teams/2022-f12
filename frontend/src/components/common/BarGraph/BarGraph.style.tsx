@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.section`
   display: flex;
@@ -9,6 +9,12 @@ export const Container = styled.section`
   width: 448px;
   padding: 3rem 1rem;
   background-color: #ffffff;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      width: 100%;
+    }
+  `}
 `;
 
 export const BarGraphTitleWrapper = styled.div`

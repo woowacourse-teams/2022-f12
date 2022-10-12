@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Button = styled.button`
   width: 3rem;
@@ -9,8 +9,14 @@ export const Button = styled.button`
   align-items: center;
 
   position: fixed;
-  bottom: 50px;
-  right: 50px;
+  bottom: 100px;
+  right: 30px;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.desktop} {
+      right: 50px;
+    }
+  `}
 
   color: ${({ theme }) => theme.colors.white};
   font-size: 2rem;

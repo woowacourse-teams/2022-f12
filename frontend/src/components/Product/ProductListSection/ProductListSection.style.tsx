@@ -16,6 +16,26 @@ export const Container = styled.section`
   `}
 `;
 
+export const FlexWrapper = styled.div`
+  display: flex;
+  overflow-y: hidden;
+  overflow-x: scroll;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      min-height: 20rem;
+    }
+    @media screen and ${device.desktop} {
+      min-height: 28rem;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  `}
+`;
+
 export const Title = styled.h1`
   font-size: 1.5rem;
 `;
