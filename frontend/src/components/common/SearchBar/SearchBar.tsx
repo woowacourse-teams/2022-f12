@@ -23,9 +23,9 @@ function SearchBar({ searchInput, setSearchInput }: Props) {
         value={searchInput || ''}
         onChange={handleInputChange}
       />
-      <S.Button aria-hidden={true}>
+      <S.IconContainer aria-hidden={true}>
         <SearchImage />
-      </S.Button>
+      </S.IconContainer>
     </S.Container>
   );
 }
