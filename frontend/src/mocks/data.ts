@@ -630,6 +630,45 @@ export const InventoryProducts: { items: InventoryProduct[] } = {
         category: 'software',
       },
     },
+    {
+      id: 10,
+      selected: false,
+      product: {
+        id: 10,
+        name: '키보드3',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
+        reviewCount: 0,
+        rating: 0.0,
+        category: 'keyboard',
+      },
+    },
+    {
+      id: 11,
+      selected: false,
+      product: {
+        id: 11,
+        name: '키보드4',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
+        reviewCount: 0,
+        rating: 0.0,
+        category: 'keyboard',
+      },
+    },
+    {
+      id: 12,
+      selected: false,
+      product: {
+        id: 12,
+        name: '키보드5',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
+        reviewCount: 0,
+        rating: 0.0,
+        category: 'keyboard',
+      },
+    },
   ],
 };
 

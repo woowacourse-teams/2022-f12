@@ -1,10 +1,9 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3rem;
 `;
 
 export const ProfileSection = styled.section`
@@ -13,7 +12,7 @@ export const ProfileSection = styled.section`
   justify-content: center;
   align-items: center;
   width: 100%;
-  gap: 1rem;
+  margin-bottom: 2rem;
 `;
 
 export const InventorySection = styled.section`
@@ -47,9 +46,13 @@ export const EditDeskSetupButton = styled.button`
 `;
 
 export const DeskSetupSection = styled.section`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 25rem;
+  height: 22rem;
   background-color: ${({ theme }) => theme.colors.secondary};
+  margin-bottom: 2rem;
 `;
 
 export const TabButtonWrapper = styled.div`
@@ -62,14 +65,26 @@ export const TabButtonWrapper = styled.div`
 export const TabButton = styled.button<{ selected: boolean }>`
   width: max-content;
   padding: 0.4rem 0.6rem;
-  font-size: 1.2rem;
   border-radius: 0.4rem;
   background-color: ${({ selected, theme }) =>
     selected ? theme.colors.primary : theme.colors.secondary};
   transition: 0.5s;
+  margin-bottom: 0.5rem;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.primary};
     transition: 0.5s;
   }
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      font-size: 0.8rem;
+    }
+    @media screen and ${device.tablet} {
+      font-size: 1rem;
+    }
+    @media screen and ${device.desktop} {
+      font-size: 1.2rem;
+    }
+  `}
 `;

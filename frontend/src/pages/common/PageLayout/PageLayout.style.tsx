@@ -9,9 +9,14 @@ export const Main = styled.main`
   padding: 1.2rem;
 
   ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      margin: 10px auto 72px;
+    }
+    @media screen and ${device.tablet} {
+      margin: 20px auto 72px;
+    }
     @media screen and ${device.desktop} {
-      margin: 50px auto;
-      gap: 3rem;
+      margin: 30px auto;
     }
   `}
 `;
