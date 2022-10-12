@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
@@ -54,4 +54,17 @@ export const FollowButton = styled.button<{ followed: boolean }>`
 
   background-color: ${({ theme, followed }) =>
     followed ? theme.colors.secondary : theme.colors.primary};
+  margin-top: 1rem;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      font-size: 0.8rem;
+    }
+    @media screen and ${device.tablet} {
+      font-size: 1rem;
+    }
+    @media screen and ${device.desktop} {
+      font-size: 1.2rem;
+    }
+  `}
 `;

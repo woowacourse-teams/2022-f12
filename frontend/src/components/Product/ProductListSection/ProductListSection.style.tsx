@@ -1,12 +1,39 @@
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.section`
   display: flex;
   flex-direction: column;
   gap: 1rem;
 
-  min-height: 28rem;
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      min-height: 20rem;
+    }
+    @media screen and ${device.desktop} {
+      min-height: 28rem;
+    }
+  `}
+`;
+
+export const FlexWrapper = styled.div`
+  display: flex;
+  overflow-y: hidden;
+  overflow-x: scroll;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      min-height: 20rem;
+    }
+    @media screen and ${device.desktop} {
+      min-height: 28rem;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  `}
 `;
 
 export const Title = styled.h1`

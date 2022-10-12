@@ -1,9 +1,16 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      gap: 0.2rem;
+    }
+    @media screen and ${device.desktop} {
+      gap: 0.4rem;
+    }
+  `}
 `;
 
 const sizeOptions = {

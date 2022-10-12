@@ -1,13 +1,15 @@
 import styled, { css } from 'styled-components';
 
-export const Container = styled.article<{ index: number }>`
+export const Container = styled.article<{ index: number; size: 's' | 'm' | 'l' }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 1rem;
-  width: 19rem;
+
   border-radius: 0.375rem;
   padding: 1rem;
+  min-width: 13rem;
+  width: ${({ size }) => (size === 'l' ? '19rem' : '15rem')};
 
   &:hover {
     img {
@@ -56,7 +58,13 @@ export const BottomWrapper = styled.div`
   justify-content: space-between;
 `;
 
-export const Name = styled.h2`
-  font-size: 1rem;
+const nameFontSize = {
+  s: '0.75rem',
+  m: '0.85rem',
+  l: '1rem',
+};
+
+export const Name = styled.h2<{ size: 's' | 'm' | 'l' }>`
   line-height: 1.3;
+  font-size: ${({ size }) => nameFontSize[size]};
 `;

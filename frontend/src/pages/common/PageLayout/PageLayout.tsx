@@ -4,11 +4,13 @@ import { Outlet, useLocation } from 'react-router-dom';
 import * as S from '@/pages/common/PageLayout/PageLayout.style';
 
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
+import BottomNavigation from '@/components/common/BottomNavigation/BottomNavigation';
 import HeaderLogo from '@/components/common/HeaderLogo/HeaderLogo';
 import HeaderNav from '@/components/common/HeaderNav/HeaderNav';
 import Loading from '@/components/common/Loading/Loading';
 
 import useAuth from '@/hooks/useAuth';
+import useDevice from '@/hooks/useDevice';
 
 function PageLayout() {
   const location = useLocation();
@@ -41,10 +43,12 @@ function PageLayout() {
     }
   }, [isAuthenticated]);
 
+  const { device } = useDevice();
+
   return (
     <>
-      <HeaderLogo />
-      <HeaderNav />
+      <HeaderLogo device={device} />
+      {device === 'desktop' && <HeaderNav />}
       <Suspense>
         <S.Main>
           <AsyncWrapper isReady={isReady} fallback={<Loading />}>
@@ -52,6 +56,7 @@ function PageLayout() {
           </AsyncWrapper>
         </S.Main>
       </Suspense>
+      {device !== 'desktop' && <BottomNavigation />}
     </>
   );
 }

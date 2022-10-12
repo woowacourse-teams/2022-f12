@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.header`
   display: flex;
@@ -7,5 +7,10 @@ export const Container = styled.header`
 `;
 
 export const Title = styled.h1`
-  font-size: 1.5rem;
+  ${({ theme: { device } }) => css`
+    font-size: 1.5rem;
+    @media screen and ${device.mobile} {
+      font-size: 1.2rem;
+    }
+  `}
 `;

@@ -1,7 +1,17 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
-  width: 60%;
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      width: 80%;
+    }
+    @media screen and ${device.tablet} {
+      width: 70%;
+    }
+    @media screen and ${device.desktop} {
+      width: 70%;
+    }
+  `}
   display: flex;
   align-items: center;
 `;
@@ -30,5 +40,3 @@ export const Button = styled.button`
   border: none;
   outline: none;
 `;
-
-export const Form = styled.form``;

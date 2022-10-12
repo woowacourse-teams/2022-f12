@@ -24,21 +24,19 @@ function DeskSetup({ inventoryList }: Props) {
   return (
     <>
       <S.Container>
-        <S.CardWrapper>
-          {deskSetupItems.length > 0 ? (
-            deskSetupItems.map((item: InventoryProduct, index) => (
-              <DeskSetupCard
-                key={index}
-                item={item}
-                size={'l'}
-                borderType={'default'}
-                index={index}
-              />
-            ))
-          ) : (
-            <S.NoContents>데스크 셋업에 추가한 제품이 없어요</S.NoContents>
-          )}
-        </S.CardWrapper>
+        {deskSetupItems.length > 0 ? (
+          deskSetupItems.map((item: InventoryProduct, index) => (
+            <DeskSetupCard
+              key={index}
+              item={item}
+              size={'l'}
+              borderType={'default'}
+              index={index}
+            />
+          ))
+        ) : (
+          <S.NoContents>데스크 셋업에 추가한 제품이 없어요</S.NoContents>
+        )}
       </S.Container>
     </>
   );
