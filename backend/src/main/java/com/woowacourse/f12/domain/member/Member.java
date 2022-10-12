@@ -91,25 +91,25 @@ public class Member {
     }
 
     private void updateName(final String name) {
-        if (Objects.nonNull(name)) {
+        if (name != null) {
             this.name = name;
         }
     }
 
     private void updateImageUrl(String imageUrl) {
-        if (Objects.nonNull(imageUrl)) {
+        if (imageUrl != null) {
             this.imageUrl = imageUrl;
         }
     }
 
     private void updateCareerLevel(final CareerLevel careerLevel) {
-        if (Objects.nonNull(careerLevel)) {
+        if (careerLevel != null) {
             this.careerLevel = careerLevel;
         }
     }
 
     private void updateJobType(final JobType jobType) {
-        if (Objects.nonNull(jobType)) {
+        if (jobType != null) {
             this.jobType = jobType;
         }
     }
