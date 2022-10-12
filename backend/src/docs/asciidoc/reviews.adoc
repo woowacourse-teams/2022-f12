@@ -3,39 +3,25 @@
 
 === 리뷰 작성
 
-==== 발생 가능 에러
-
-- 40030, 40031, 40032, 40033, 40060, 40100, 40101, 40102, 40103
-
-operation::reviews-create[snippets='http-request,http-response']
+operation::reviews-create[snippets='error-code-table,http-request,http-response']
 
 === 특정 제품의 리뷰 목록 페이지 조회
 
-==== 발생 가능 에러
-
-- 40001, 40430
-
 ==== sort 조건
 
 - `createdAt,desc`(최신순)
 - `rating,desc`(평점순)
 
-operation::reviews-by-product-page-get[snippets='http-request,http-response']
+operation::reviews-by-product-page-get[snippets='error-code-table,http-request,http-response']
 
 === 모든 리뷰 목록 페이지 조회
 
-==== 발생 가능 에러
-
-- 40001
-
 ==== sort 조건
 
 - `createdAt,desc`(최신순)
 - `rating,desc`(평점순)
 
-operation::reviews-page-get[snippets='http-request,http-response']
-
-결
+operation::reviews-page-get[snippets='error-code-table,http-request,http-response']
 
 === 내가 작성한 리뷰 목록 페이지 조회
 
@@ -44,7 +30,7 @@ operation::reviews-page-get[snippets='http-request,http-response']
 - `createdAt,desc`(최신순)
 - `rating,desc`(평점순)
 
-operation::reviews-page-get-own[snippets='http-request,http-response']
+operation::reviews-page-get-own[snippets='error-code-table,http-request,http-response']
 
 === 회원의 아이디로 리뷰 목록 페이지 조회
 
@@ -53,24 +39,16 @@ operation::reviews-page-get-own[snippets='http-request,http-response']
 - `createdAt,desc`(최신순)
 - `rating,desc`(평점순)
 
-operation::reviews-page-get-by-memberId[snippets='http-request,http-response']
+operation::reviews-page-get-by-memberId[snippets='error-code-table,http-request,http-response']
 
 === 인벤토리 아이디로 리뷰 조회
 
-operation::reviews-get-by-inventoryProductId[snippets='http-request,http-response']
+operation::reviews-get-by-inventoryProductId[snippets='error-code-table,http-request,http-response']
 
 === 리뷰 수정
 
-==== 발생 가능 에러
-
-- 40100, 40101, 40102, 40300, 40410, 40430
-
-operation::reviews-update[snippets='http-request,http-response']
+operation::reviews-update[snippets='error-code-table,http-request,http-response']
 
 === 리뷰 삭제
 
-==== 발생 가능 에러
-
-- 40100, 40101, 40102, 40300, 40410, 40430
-
-operation::reviews-delete[snippets='http-request,http-response']
+operation::reviews-delete[snippets='error-code-table,http-request,http-response']
