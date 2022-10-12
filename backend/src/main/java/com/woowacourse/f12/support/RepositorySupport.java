@@ -21,7 +21,7 @@ public class RepositorySupport {
     }
 
     public static BooleanExpression toContainsExpression(final StringPath stringPath, final String keyword) {
-        if (StringUtils.hasText(keyword)) {
+        if (!StringUtils.hasText(keyword)) {
             return null;
         }
         return stringPath.contains(keyword);
