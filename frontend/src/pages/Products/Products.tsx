@@ -68,7 +68,7 @@ function Products() {
 
   return (
     <>
-      <S.SearchBarWrapper>
+      <S.SearchBarWrapper aria-label={'제품 검색 영역'}>
         <SearchBar searchInput={keyword} setSearchInput={setKeyword} />
         <SearchFilter
           title={'카테고리'}
