@@ -25,7 +25,7 @@ import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -238,7 +238,7 @@ class AuthServiceTest {
 
         // when, then
         assertThatThrownBy(() -> authService.issueAccessToken("refreshToken"))
-                .isExactlyInstanceOf(RefreshTokenInvalidException.class);
+                .isExactlyInstanceOf(RefreshTokenNotFoundException.class);
     }
 
     @Test

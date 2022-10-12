@@ -1,5 +1,14 @@
 package com.woowacourse.f12.presentation.auth;
 
+import static com.woowacourse.f12.exception.ErrorCode.EXPIRED_REFRESH_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.EXTERNAL_SERVER_ERROR;
+import static com.woowacourse.f12.exception.ErrorCode.INTERNAL_SERVER_ERROR;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_LOGIN_CODE;
+import static com.woowacourse.f12.exception.ErrorCode.MEMBER_NOT_FOUND;
+import static com.woowacourse.f12.exception.ErrorCode.NOT_EXIST_REFRESH_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.PERMISSION_DENIED;
+import static com.woowacourse.f12.exception.ErrorCode.REQUEST_DUPLICATED;
+import static com.woowacourse.f12.presentation.ErrorCodeDocumentationSupport.makeErrorCodeSnippets;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,11 +29,10 @@ import com.woowacourse.f12.dto.response.auth.AdminLoginResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
-import com.woowacourse.f12.exception.ErrorCode;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
 import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.internalserver.GitHubServerException;
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
 import com.woowacourse.f12.presentation.PresentationTest;
 import javax.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
@@ -89,6 +97,10 @@ class AuthControllerTest extends PresentationTest {
         // then
         resultActions
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value(REQUEST_DUPLICATED.getValue()))
+                .andDo(document("auth-login-error",
+                        makeErrorCodeSnippets(REQUEST_DUPLICATED, INVALID_LOGIN_CODE, EXTERNAL_SERVER_ERROR,
+                                INTERNAL_SERVER_ERROR)))
                 .andDo(print());
 
         verify(authService).login(code);
@@ -108,6 +120,7 @@ class AuthControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value(INVALID_LOGIN_CODE.getValue()))
                 .andDo(print());
 
         verify(authService).login(code);
@@ -127,6 +140,7 @@ class AuthControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.errorCode").value(EXTERNAL_SERVER_ERROR.getValue()))
                 .andDo(print());
 
         verify(authService).login(code);
@@ -162,7 +176,6 @@ class AuthControllerTest extends PresentationTest {
     void 어드민_로그인_실패_어드민이_아닌_경우() throws Exception {
         // given
         String code = "code";
-        String token = "token";
 
         given(authService.loginAdmin(code))
                 .willThrow(new NotAdminException());
@@ -175,6 +188,10 @@ class AuthControllerTest extends PresentationTest {
         // then
         resultActions
                 .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.errorCode").value(PERMISSION_DENIED.getValue()))
+                .andDo(document("auth-admin-login-error",
+                        makeErrorCodeSnippets(INVALID_LOGIN_CODE, MEMBER_NOT_FOUND, INTERNAL_SERVER_ERROR,
+                                EXTERNAL_SERVER_ERROR, PERMISSION_DENIED, REQUEST_DUPLICATED)))
                 .andDo(print());
 
         verify(authService).loginAdmin(code);
@@ -218,7 +235,9 @@ class AuthControllerTest extends PresentationTest {
         );
 
         resultActions.andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.errorCode").value("40105"))
+                .andExpect(jsonPath("$.errorCode").value(NOT_EXIST_REFRESH_TOKEN.getValue()))
+                .andDo(document("auth-issue-access-token-error",
+                        makeErrorCodeSnippets(NOT_EXIST_REFRESH_TOKEN, EXPIRED_REFRESH_TOKEN, MEMBER_NOT_FOUND)))
                 .andDo(print());
 
         verify(authService, times(0)).issueAccessToken(any());
@@ -228,7 +247,7 @@ class AuthControllerTest extends PresentationTest {
     void 만료된_리프레시_토큰으로_액세스_토큰_발급하면_예외_발생() throws Exception {
         // given
         given(authService.issueAccessToken(any()))
-                .willThrow(new RefreshTokenInvalidException());
+                .willThrow(new RefreshTokenExpiredException());
         String expiredToken = "expiredToken";
 
         // when
@@ -238,7 +257,7 @@ class AuthControllerTest extends PresentationTest {
         );
 
         resultActions.andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.errorCode").value(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getValue()))
+                .andExpect(jsonPath("$.errorCode").value(EXPIRED_REFRESH_TOKEN.getValue()))
                 .andExpect(cookie().maxAge("refreshToken", 0))
                 .andDo(print());
 
@@ -265,6 +284,7 @@ class AuthControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.errorCode").value(ErrorCode.NOT_EXIST_REFRESH_TOKEN.getValue()));
+                .andExpect(jsonPath("$.errorCode").value(NOT_EXIST_REFRESH_TOKEN.getValue()))
+                .andDo(document("auth-logout-error", makeErrorCodeSnippets(NOT_EXIST_REFRESH_TOKEN)));
     }
 }
