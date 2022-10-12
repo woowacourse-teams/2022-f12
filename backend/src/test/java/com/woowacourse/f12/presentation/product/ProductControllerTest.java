@@ -8,6 +8,14 @@ import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.domain.member.JobType.ETC;
 import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
 import static com.woowacourse.f12.domain.member.JobType.MOBILE;
+import static com.woowacourse.f12.exception.ErrorCode.EXPIRED_ACCESS_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_PAGING_PARAM;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_REQUEST_BODY_TYPE;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_TOKEN_FORMAT;
+import static com.woowacourse.f12.exception.ErrorCode.NOT_EXIST_ACCESS_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.PERMISSION_DENIED;
+import static com.woowacourse.f12.exception.ErrorCode.PRODUCT_NOT_FOUND;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.MONITOR_CONSTANT;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
@@ -44,6 +52,7 @@ import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
+import com.woowacourse.f12.support.ErrorCodeSnippet;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -143,7 +152,8 @@ class ProductControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("products-page-get"))
+                .andDo(document("products-page-get",
+                        new ErrorCodeSnippet(INVALID_SEARCH_PARAM, INVALID_PAGING_PARAM)))
                 .andDo(print());
 
         verify(productService).findBySearchConditions(refEq(productSearchRequest), any(PageRequest.class));
@@ -164,7 +174,7 @@ class ProductControllerTest extends PresentationTest {
         resultActions.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
-                        document("products-get")
+                        document("products-get", new ErrorCodeSnippet(PRODUCT_NOT_FOUND))
                 );
 
         verify(productService).findById(1L);
@@ -203,7 +213,7 @@ class ProductControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("products-member-statistics-get"))
+                .andDo(document("products-member-statistics-get", new ErrorCodeSnippet(PRODUCT_NOT_FOUND)))
                 .andDo(print());
 
         verify(productService).calculateMemberStatisticsById(1L);
@@ -245,7 +255,9 @@ class ProductControllerTest extends PresentationTest {
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsString(productCreateRequest))
                 )
-                .andDo(document("admin-products-create"))
+                .andDo(document("admin-products-create",
+                        new ErrorCodeSnippet(INVALID_REQUEST_BODY_TYPE, NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN,
+                                INVALID_TOKEN_FORMAT, PERMISSION_DENIED)))
                 .andDo(print());
 
         // then
@@ -272,7 +284,9 @@ class ProductControllerTest extends PresentationTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(productUpdateRequest))
                 )
-                .andDo(document("admin-products-update"))
+                .andDo(document("admin-products-update",
+                        new ErrorCodeSnippet(INVALID_REQUEST_BODY_TYPE, NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN,
+                                INVALID_TOKEN_FORMAT, PERMISSION_DENIED)))
                 .andDo(print());
 
         // then
@@ -294,7 +308,9 @@ class ProductControllerTest extends PresentationTest {
         ResultActions resultActions = mockMvc.perform(delete("/api/v1/products/" + 1)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                 )
-                .andDo(document("admin-products-delete"))
+                .andDo(document("admin-products-delete",
+                        new ErrorCodeSnippet(NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN, INVALID_TOKEN_FORMAT,
+                                PERMISSION_DENIED, PRODUCT_NOT_FOUND)))
                 .andDo(print());
 
         // then
