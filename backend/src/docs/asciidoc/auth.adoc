@@ -3,32 +3,16 @@
 
 === 로그인
 
-==== 발생 가능 에러
-
-정operation::auth-login-error[snippets='response-fields']
-
-operation::auth-login[snippets='http-request,http-response']
+operation::auth-login[snippets='error-code-table,http-request,http-response']
 
 === 어드민 로그인
 
-==== 발생 가능 에러
-
-operation::auth-admin-login-error[snippets='response-fields']
-
-operation::auth-admin-login[snippets='http-request,http-response']
+operation::auth-admin-login[snippets='error-code-table,http-request,http-response']
 
 === 액세스 토큰 발급
 
-==== 발생 가능 에러
-
-operation::auth-issue-access-token-error[snippets='response-fields']
-
-operation::auth-issue-access-token[snippets='http-request,http-response']
+operation::auth-issue-access-token[snippets='error-code-table,http-request,http-response']
 
 === 로그아웃
 
-==== 발생 가능 에러
-
-operation::auth-logout-error[snippets='response-fields']
-
-operation::auth-logout[snippets='http-request,http-response']
+operation::auth-logout[snippets='error-code-table,http-request,http-response']

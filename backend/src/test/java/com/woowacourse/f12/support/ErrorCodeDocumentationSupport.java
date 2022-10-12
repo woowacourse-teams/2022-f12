@@ -1,4 +1,4 @@
-package com.woowacourse.f12.presentation;
+package com.woowacourse.f12.support;
 
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
