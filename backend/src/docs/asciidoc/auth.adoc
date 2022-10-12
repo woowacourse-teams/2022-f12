@@ -5,7 +5,7 @@
 
 ==== 발생 가능 에러
 
-- 40002, 40060, 50000, 50001
+정operation::auth-login-error[snippets='response-fields']
 
 operation::auth-login[snippets='http-request,http-response']
 
@@ -13,7 +13,7 @@ operation::auth-login[snippets='http-request,http-response']
 
 ==== 발생 가능 에러
 
-- 40300, 40410, 50000, 50001
+operation::auth-admin-login-error[snippets='response-fields']
 
 operation::auth-admin-login[snippets='http-request,http-response']
 
@@ -21,7 +21,7 @@ operation::auth-admin-login[snippets='http-request,http-response']
 
 ==== 발생 가능 에러
 
-- 40002, 40104, 40105, 50000, 50001
+operation::auth-issue-access-token-error[snippets='response-fields']
 
 operation::auth-issue-access-token[snippets='http-request,http-response']
 
@@ -29,6 +29,6 @@ operation::auth-issue-access-token[snippets='http-request,http-response']
 
 ==== 발생 가능 에러
 
-- 40105
+operation::auth-logout-error[snippets='response-fields']
 
 operation::auth-logout[snippets='http-request,http-response']
