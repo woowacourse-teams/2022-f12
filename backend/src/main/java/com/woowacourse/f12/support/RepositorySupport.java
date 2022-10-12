@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.StringUtils;
 
 public class RepositorySupport {
 
@@ -20,7 +21,7 @@ public class RepositorySupport {
     }
 
     public static BooleanExpression toContainsExpression(final StringPath stringPath, final String keyword) {
-        if (keyword == null || keyword.isBlank()) {
+        if (StringUtils.hasText(keyword)) {
             return null;
         }
         return stringPath.contains(keyword);
