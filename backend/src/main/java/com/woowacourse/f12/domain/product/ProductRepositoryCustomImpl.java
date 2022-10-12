@@ -9,6 +9,7 @@ import static com.woowacourse.f12.support.RepositorySupport.toSlice;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -53,5 +54,15 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                 .limit(pageable.getPageSize() + 1)
                 .orderBy(makeOrderSpecifiers(product, pageable));
         return toSlice(pageable, jpaQuery.fetch());
+    }
+
+    @Override
+    public List<Product> findByReviewCountAndRatingGreaterThanEqual(final int reviewCount, final double rating) {
+        return jpaQueryFactory.selectFrom(product)
+                .where(
+                        product.reviewCount.goe(reviewCount),
+                        product.rating.goe(rating)
+                )
+                .fetch();
     }
 }

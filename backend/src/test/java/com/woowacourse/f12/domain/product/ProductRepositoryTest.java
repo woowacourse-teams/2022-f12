@@ -191,7 +191,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void 카테고리와_리뷰_개수와_평점과_튜플_개수로_랜덤하게_제품을_조회한다() {
+    void 리뷰_개수와_평점으로_제품을_조회한다() {
         // given
         Product keyboard1 = 제품_저장(KEYBOARD_1.생성());
         Product keyboard2 = 제품_저장(KEYBOARD_2.생성());
@@ -205,8 +205,7 @@ class ProductRepositoryTest {
         리뷰_저장(REVIEW_RATING_5.작성(keyboard2, mincho));
 
         // when
-        List<Product> actual = productRepository.findPopularProductsByRandom(
-                KEYBOARD.name(), 2, 4.5, 2);
+        List<Product> actual = productRepository.findByReviewCountAndRatingGreaterThanEqual(2, 4.5);
 
         // then
         assertThat(actual).usingRecursiveFieldByFieldElementComparatorOnFields("name", "imageUrl", "category")
