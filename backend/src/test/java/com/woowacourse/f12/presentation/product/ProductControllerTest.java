@@ -44,9 +44,12 @@ import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.domain.product.Category;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
+import com.woowacourse.f12.dto.response.PopularProductsResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -233,6 +236,54 @@ class ProductControllerTest extends PresentationTest {
                 .andDo(print());
 
         verify(productService).calculateMemberStatisticsById(1L);
+    }
+
+    @Test
+    void 인기_제품을_조회힌다() throws Exception {
+        // given
+        Product keyboard = Product.builder()
+                .id(1L)
+                .name("키보드")
+                .imageUrl("이미지 주소")
+                .category(Category.KEYBOARD)
+                .rating(4.5)
+                .reviewCount(10)
+                .build();
+        Product mouse = Product.builder()
+                .id(2L)
+                .name("마우스")
+                .imageUrl("이미지 주소")
+                .category(Category.MOUSE)
+                .rating(5)
+                .reviewCount(3)
+                .build();
+        Product software = Product.builder()
+                .id(3L)
+                .name("소프트웨어")
+                .imageUrl("이미지 주소")
+                .category(Category.SOFTWARE)
+                .rating(5)
+                .reviewCount(2)
+                .build();
+        Product monitor = Product.builder()
+                .id(4L)
+                .name("모니터")
+                .imageUrl("이미지 주소")
+                .category(Category.MONITOR)
+                .rating(4.5)
+                .reviewCount(2)
+                .build();
+        given(productService.findPopularProducts())
+                .willReturn(PopularProductsResponse.from(List.of(keyboard, mouse, software, monitor)));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/products/popular-list"));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("products-popular-list-get"))
+                .andDo(print());
+        verify(productService).findPopularProducts();
     }
 
     @Test

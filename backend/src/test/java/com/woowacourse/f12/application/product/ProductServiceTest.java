@@ -63,6 +63,9 @@ class ProductServiceTest {
     @Mock
     private InventoryProductRepository inventoryProductRepository;
 
+    @Mock
+    private PopularProductStrategy popularProductStrategy;
+
     @InjectMocks
     private ProductService productService;
 
@@ -186,6 +189,19 @@ class ProductServiceTest {
                 () -> assertThat(productPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsExactly(ProductResponse.from(product))
         );
+    }
+
+    @Test
+    void 인기_상품을_조회한다() {
+        // given
+        given(popularProductStrategy.getResult(any()))
+                .willReturn(any());
+
+        // when
+        productService.findPopularProducts();
+
+        // then
+        verify(popularProductStrategy).getResult(any());
     }
 
     @Test

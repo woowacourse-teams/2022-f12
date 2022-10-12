@@ -13,6 +13,7 @@ import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
+import com.woowacourse.f12.dto.response.PopularProductsResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -32,12 +33,15 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
     private final InventoryProductRepository inventoryProductRepository;
+    private final PopularProductStrategy popularProductStrategy;
 
     public ProductService(final ProductRepository productRepository, final ReviewRepository reviewRepository,
-                          final InventoryProductRepository inventoryProductRepository) {
+                          final InventoryProductRepository inventoryProductRepository,
+                          final PopularProductStrategy popularProductStrategy) {
         this.productRepository = productRepository;
         this.reviewRepository = reviewRepository;
         this.inventoryProductRepository = inventoryProductRepository;
+        this.popularProductStrategy = popularProductStrategy;
     }
 
     @Transactional
@@ -111,5 +115,9 @@ public class ProductService {
         reviewRepository.deleteByProduct(target);
         inventoryProductRepository.deleteByProduct(target);
         productRepository.delete(target);
+    }
+
+    public PopularProductsResponse findPopularProducts() {
+        return popularProductStrategy.getResult(productRepository::findByReviewCountAndRatingGreaterThanEqual);
     }
 }
