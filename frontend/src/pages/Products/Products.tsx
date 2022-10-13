@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import * as S from '@/pages/Products/Products.style';
 
@@ -43,6 +43,8 @@ function Products() {
   const [keyword, setKeyword] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
   const [category, setCategory] = useUrlSyncState(SEARCH_PARAMS.CATEGORY);
   const [sort, setSort] = useUrlSyncState(SEARCH_PARAMS.SORT, DefaultSort.value);
+  const [currDataLength, setCurrDataLength] = useState(0);
+  const [loadedStateMessage, setLoadedStateMessage] = useState('');
   const debouncedKeyword = useDebounce<string>(keyword, 300);
 
   const {
@@ -66,6 +68,22 @@ function Products() {
     [category]
   );
 
+  const createLoadedMessage = (dataLength: number, prevDataLength: number) =>
+    `총 ${dataLength - prevDataLength}개의 상품이 ${
+      currDataLength !== 0 ? '추가로' : ''
+    }로딩되었습니다`;
+
+  useEffect(() => {
+    if (isReady) {
+      setLoadedStateMessage(createLoadedMessage(products.length, currDataLength));
+      setCurrDataLength(products.length);
+    }
+
+    setTimeout(() => {
+      setLoadedStateMessage('');
+    }, 1000);
+  }, [products]);
+
   return (
     <>
       <S.SearchBarWrapper aria-label={'제품 검색 영역'}>
@@ -80,6 +98,9 @@ function Products() {
       <SectionHeader title={title}>
         <Select value={sort} setValue={setSort} options={options} />
       </SectionHeader>
+      <S.SRMessageContainer role={'status'}>
+        {loadedStateMessage !== '' && loadedStateMessage}
+      </S.SRMessageContainer>
       <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
         <ProductListSection
           title={title}

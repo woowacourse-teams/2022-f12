@@ -15,3 +15,9 @@ export const SearchBarWrapper = styled.div`
   flex-direction: column;
   gap: 1rem;
 `;
+
+export const SRMessageContainer = styled.p`
+  opacity: 0;
+  height: 0;
+  width: 0;
+`;
