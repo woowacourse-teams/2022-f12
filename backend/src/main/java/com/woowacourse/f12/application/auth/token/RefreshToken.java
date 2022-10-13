@@ -2,9 +2,11 @@ package com.woowacourse.f12.application.auth.token;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class RefreshToken {
 
     private final String refreshToken;
