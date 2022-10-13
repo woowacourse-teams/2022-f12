@@ -47,6 +47,11 @@ export const Title = styled.h1`
 
 export const CustomLink = styled(Link)``;
 
+export const ProductLink = styled(Link)`
+  display: flex;
+  justify-content: center;
+`;
+
 export const Wrapper = styled.div`
   margin: 1rem auto 0 auto;
   width: 100%;
