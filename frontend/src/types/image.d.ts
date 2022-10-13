@@ -1,5 +1,5 @@
 declare module '*.svg' {
-  const value: React.FC<{ fill?: string; stroke?: string }>;
+  const value: React.FC<{ fill?: string; stroke?: string; transform?: string }>;
   export = value;
 }
 

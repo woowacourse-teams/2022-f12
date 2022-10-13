@@ -16,7 +16,6 @@ import ROUTES from '@/constants/routes';
 import Empty from '@/assets/empty.svg';
 import GithubIcon from '@/assets/github.svg';
 import NextSign from '@/assets/nextSign.svg';
-import PrevSign from '@/assets/prevSign.svg';
 
 const DISTANCE_DIFFERENCE = 116;
 
@@ -152,7 +151,7 @@ function ProfileCard({
         )}
         <S.InventoryWrapper>
           <S.LeftButton onClick={handleLeftButtonClick}>
-            <PrevSign />
+            <NextSign transform="rotate(-180)" />
           </S.LeftButton>
           <S.InventoryListWrapper>
             <S.InventoryList positionX={positionX}>
