@@ -36,6 +36,11 @@ export const FlexWrapper = styled.div`
   `}
 `;
 
+export const Grid = styled.div<{ columnCount: number }>`
+  display: grid;
+  grid-template-columns: repeat(${({ columnCount }) => columnCount}, 1fr);
+`;
+
 export const Title = styled.h1`
   font-size: 1.5rem;
 `;

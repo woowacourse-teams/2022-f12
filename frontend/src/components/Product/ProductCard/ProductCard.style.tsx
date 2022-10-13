@@ -41,6 +41,7 @@ export const Container = styled.article<{ index: number; size: 's' | 'm' | 'l' }
 `;
 export const ImageWrapper = styled.div`
   width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border: 1px solid ${({ theme }) => theme.colors.secondary};
   background-color: #fff;
