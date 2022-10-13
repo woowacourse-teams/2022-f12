@@ -169,7 +169,7 @@ export const ProfileViewButton = styled.button`
 
 export const InventoryListWrapper = styled.div`
   overflow: hidden;
-  height: 102px;
+  height: 104px;
 `;
 
 export const InventoryList = styled.div<{ positionX: number }>`
@@ -194,7 +194,7 @@ export const ProductImage = styled.img`
 `;
 
 export const ProductTitle = styled.p`
-  font-size: 0.3rem;
+  font-size: 0.7rem;
 `;
 
 export const ProductImageWrapper = styled.div`
