@@ -57,3 +57,18 @@ export const LoginLink = styled.a`
     width: 70%;
   }
 `;
+
+export const LogoutLink = styled.a`
+  width: 100%;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  font-size: 0.7rem;
+
+  svg {
+    width: 70%;
+  }
+`;
