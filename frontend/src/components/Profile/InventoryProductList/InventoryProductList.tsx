@@ -126,7 +126,7 @@ function InventoryProductList({
           </Fragment>
         ))
       ) : (
-        <S.NoContents>리뷰를 작성한 제품이 없어요</S.NoContents>
+        <S.NoContents>리뷰를 작성한 제품이 없어요!</S.NoContents>
       )}
     </>
   );
