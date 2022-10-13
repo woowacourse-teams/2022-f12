@@ -141,14 +141,14 @@ function ProfileCard({
             <Chip size="s">{JOB_TYPES[jobType]}</Chip>
             <Chip size="s">{CAREER_LEVELS[careerLevel]}</Chip>
           </S.UserCareer>
+          {isLoggedIn && (
+            <S.FollowingButtonWrapper>
+              <S.FollowingButton followed={followed} onClick={toggleFollow}>
+                {followed ? '팔로잉' : '팔로우'}
+              </S.FollowingButton>
+            </S.FollowingButtonWrapper>
+          )}
         </S.UserInfoWrapper>
-        {isLoggedIn && (
-          <S.FollowingButtonWrapper>
-            <S.FollowingButton followed={followed} onClick={toggleFollow}>
-              {followed ? '팔로잉' : '팔로우'}
-            </S.FollowingButton>
-          </S.FollowingButtonWrapper>
-        )}
         <S.InventoryWrapper>
           <S.LeftButton onClick={handleLeftButtonClick}>
             <NextSign transform="rotate(-180)" />

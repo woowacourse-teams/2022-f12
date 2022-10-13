@@ -56,6 +56,8 @@ export const LeftSection = styled.div`
 `;
 
 export const RightSection = styled.div`
+  position: relative;
+
   ${({ theme: { device } }) => css`
     @media screen and ${device.mobile} {
       width: 100%;
@@ -198,6 +200,7 @@ export const ProductTitle = styled.p`
 export const ProductImageWrapper = styled.div`
   width: 80px;
   height: 80px;
+  object-fit: cover;
 `;
 
 export const FollowerCountWrapper = styled.div`
