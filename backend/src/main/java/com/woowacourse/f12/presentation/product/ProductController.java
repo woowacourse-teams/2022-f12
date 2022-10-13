@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -74,7 +75,7 @@ public class ProductController {
     }
 
     @GetMapping("/popular-list")
-    public ResponseEntity<PopularProductsResponse> showPopularProducts() {
-        return ResponseEntity.ok(productService.findPopularProducts());
+    public ResponseEntity<PopularProductsResponse> showPopularProducts(@RequestParam final int size) {
+        return ResponseEntity.ok(productService.findPopularProducts(size));
     }
 }

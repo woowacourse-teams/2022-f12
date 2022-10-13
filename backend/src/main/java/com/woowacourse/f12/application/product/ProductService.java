@@ -33,15 +33,15 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
     private final InventoryProductRepository inventoryProductRepository;
-    private final PopularProductStrategy popularProductStrategy;
+    private final PopularProductsCreator popularProductCreator;
 
     public ProductService(final ProductRepository productRepository, final ReviewRepository reviewRepository,
                           final InventoryProductRepository inventoryProductRepository,
-                          final PopularProductStrategy popularProductStrategy) {
+                          final PopularProductsCreator popularProductCreator) {
         this.productRepository = productRepository;
         this.reviewRepository = reviewRepository;
         this.inventoryProductRepository = inventoryProductRepository;
-        this.popularProductStrategy = popularProductStrategy;
+        this.popularProductCreator = popularProductCreator;
     }
 
     @Transactional
@@ -117,7 +117,9 @@ public class ProductService {
         productRepository.delete(target);
     }
 
-    public PopularProductsResponse findPopularProducts() {
-        return popularProductStrategy.getResult(productRepository::findByReviewCountAndRatingGreaterThanEqual);
+    public PopularProductsResponse findPopularProducts(final int size) {
+        final List<Product> products = popularProductCreator.create(size,
+                productRepository::findByReviewCountAndRatingGreaterThanEqual);
+        return PopularProductsResponse.from(products);
     }
 }
