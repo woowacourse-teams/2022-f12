@@ -167,7 +167,18 @@ const deleteReviewByReviewId = (req, res, ctx) => {
 const handleLoginRequest = (req, res, ctx) => {
   return res(
     ctx.status(200),
-    ctx.json(myUserData),
+    ctx.json({
+      token: 'token',
+      registerCompleted: true,
+      userData: {
+        member: {
+          id: 1,
+          gitHubId: 'hamcheeseburger',
+          name: '유현지',
+          imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
+        },
+      },
+    }),
     ctx.delay(),
     ctx.cookie('shadowToken', 'true')
   );
