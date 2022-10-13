@@ -8,7 +8,6 @@ import static com.woowacourse.f12.exception.ErrorCode.INVALID_TOKEN_FORMAT;
 import static com.woowacourse.f12.exception.ErrorCode.INVENTORY_PRODUCT_NOT_FOUND;
 import static com.woowacourse.f12.exception.ErrorCode.MEMBER_NOT_FOUND;
 import static com.woowacourse.f12.exception.ErrorCode.NOT_EXIST_ACCESS_TOKEN;
-import static com.woowacourse.f12.support.ErrorCodeDocumentationSupport.makeErrorCodeSnippets;
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
@@ -250,7 +249,8 @@ class InventoryProductControllerTest extends PresentationTest {
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(document("inventoryProducts-get-own",
-                        new ErrorCodeSnippet(NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN, INVALID_TOKEN_FORMAT)))
+                        new ErrorCodeSnippet(NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN, INVALID_TOKEN_FORMAT,
+                                MEMBER_NOT_FOUND)))
                 .andDo(print());
 
         assertAll(
@@ -280,7 +280,6 @@ class InventoryProductControllerTest extends PresentationTest {
         // then
         resultActions.andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").value(MEMBER_NOT_FOUND.getValue()))
-                .andDo(document("inventoryProducts-get-own", makeErrorCodeSnippets(MEMBER_NOT_FOUND)))
                 .andDo(print());
     }
 
