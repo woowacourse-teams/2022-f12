@@ -1,6 +1,8 @@
 spring:
   config:
-    import: submodules/security-common.yml
+    import:
+      - submodules/security-common.yml
+      - popular-product-definition.yml
   profiles:
     group:
       main:
