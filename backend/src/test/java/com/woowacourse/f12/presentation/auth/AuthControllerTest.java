@@ -31,11 +31,13 @@ import com.woowacourse.f12.dto.response.auth.AdminLoginResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
+import com.woowacourse.f12.exception.ErrorCode;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
 import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.internalserver.GitHubServerException;
 import com.woowacourse.f12.exception.unauthorized.DuplicatedRefreshTokenSavedException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
+import com.woowacourse.f12.exception.unauthorized.TooManyRefreshTokenAffectedException;
 import com.woowacourse.f12.presentation.PresentationTest;
 import com.woowacourse.f12.support.ErrorCodeSnippet;
 import javax.servlet.http.Cookie;
@@ -279,6 +281,27 @@ class AuthControllerTest extends PresentationTest {
 
         resultActions.andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.errorCode").value(EXPIRED_REFRESH_TOKEN.getValue()))
+                .andExpect(cookie().maxAge("refreshToken", 0))
+                .andDo(print());
+
+        verify(authService).issueAccessToken(any());
+    }
+
+    @Test
+    void 액세스_토큰_발급_시_리프레시_토큰이_여러개_영향받으면_예외_발생() throws Exception {
+        // given
+        given(authService.issueAccessToken(any()))
+                .willThrow(new TooManyRefreshTokenAffectedException());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/accessToken")
+                        .cookie(new Cookie("refreshToken", "refreshTokenValue"))
+        );
+
+        // then
+        resultActions.andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorCode").value(ErrorCode.TOO_MANY_AFFECTED_REFRESH_TOKEN.getValue()))
                 .andExpect(cookie().maxAge("refreshToken", 0))
                 .andDo(print());
 

@@ -2,6 +2,7 @@ package com.woowacourse.f12.application.auth.token;
 
 import com.woowacourse.f12.exception.unauthorized.DuplicatedRefreshTokenSavedException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
+import com.woowacourse.f12.exception.unauthorized.TooManyRefreshTokenAffectedException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -56,7 +57,7 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
 
     private void validateAffectedRowCountIsOne(final int update) {
         if (update != 1) {
-            throw new IllegalArgumentException();
+            throw new TooManyRefreshTokenAffectedException();
         }
     }
 }

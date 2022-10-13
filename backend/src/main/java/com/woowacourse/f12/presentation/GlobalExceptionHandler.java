@@ -16,6 +16,7 @@ import com.woowacourse.f12.exception.notfound.NotFoundException;
 import com.woowacourse.f12.exception.unauthorized.DuplicatedRefreshTokenSavedException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
+import com.woowacourse.f12.exception.unauthorized.TooManyRefreshTokenAffectedException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
 import com.woowacourse.f12.presentation.auth.RefreshTokenCookieProvider;
 import javax.servlet.http.HttpServletRequest;
@@ -80,8 +81,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> handleValidationException(
-            final MethodArgumentNotValidException e) {
+    public ResponseEntity<ExceptionResponse> handleValidationException(final MethodArgumentNotValidException e) {
         log.info(LOG_FORMAT, e.getClass().getSimpleName(), INVALID_REQUEST_BODY_TYPE.getValue(), e.getMessage());
         final StringBuilder stringBuilder = new StringBuilder();
         e.getBindingResult().getAllErrors().forEach((error) -> stringBuilder.append(error.getDefaultMessage())
@@ -91,10 +91,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({RefreshTokenNotFoundException.class, DuplicatedRefreshTokenSavedException.class,
-            RefreshTokenExpiredException.class})
-    public ResponseEntity<ExceptionResponse> handleRefreshTokenNotFoundException(final UnauthorizedException e,
-                                                                                 final HttpServletRequest request,
-                                                                                 final HttpServletResponse response) {
+            RefreshTokenExpiredException.class, TooManyRefreshTokenAffectedException.class})
+    public ResponseEntity<ExceptionResponse> handleRefreshTokenException(final UnauthorizedException e,
+                                                                         final HttpServletRequest request,
+                                                                         final HttpServletResponse response) {
         refreshTokenCookieProvider.removeCookie(request, response);
         return handleUnauthorizedException(e);
     }

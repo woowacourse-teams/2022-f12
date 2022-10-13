@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 
 import com.woowacourse.f12.exception.unauthorized.DuplicatedRefreshTokenSavedException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
+import com.woowacourse.f12.exception.unauthorized.TooManyRefreshTokenAffectedException;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.test.context.jdbc.Sql;
 
 @JdbcTest
@@ -108,6 +110,45 @@ class RefreshTokenRepositoryImplTest {
                 () -> assertThatThrownBy(() -> refreshTokenRepositoryImpl.findToken(tokenValue))
                         .isExactlyInstanceOf(DuplicatedRefreshTokenSavedException.class),
                 () -> verify(mockedJdbcTemplate).queryForObject(anyString(), any(RowMapper.class), anyString())
+        );
+    }
+
+    @Test
+    void 여러_개의_리프레시_토큰이_등록될_경우_예외가_발생한다() {
+        // given
+        RefreshToken refreshToken = RefreshToken.builder()
+                .refreshToken("value")
+                .memberId(1L)
+                .expiredAt(LocalDateTime.now())
+                .build();
+        NamedParameterJdbcTemplate mockedNamedTemplate = mock(NamedParameterJdbcTemplate.class);
+        given(mockedNamedTemplate.update(anyString(), any(SqlParameterSource.class)))
+                .willReturn(2);
+        refreshTokenRepositoryImpl = new RefreshTokenRepositoryImpl(mockedNamedTemplate);
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> refreshTokenRepositoryImpl.save(refreshToken))
+                        .isExactlyInstanceOf(TooManyRefreshTokenAffectedException.class),
+                () -> verify(mockedNamedTemplate).update(anyString(), any(SqlParameterSource.class))
+        );
+    }
+
+    @Test
+    void 여러_개의_리프레시_토큰이_삭제될_경우_예외가_발생한다() {
+        // given
+        String tokenValue = "tokenValue";
+        JdbcTemplate mockedJdbcTemplate = mock(JdbcTemplate.class);
+        NamedParameterJdbcTemplate mockedNamedTemplate = new NamedParameterJdbcTemplate(mockedJdbcTemplate);
+        given(mockedJdbcTemplate.update(anyString(), anyString()))
+                .willReturn(2);
+        refreshTokenRepositoryImpl = new RefreshTokenRepositoryImpl(mockedNamedTemplate);
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> refreshTokenRepositoryImpl.delete(tokenValue))
+                        .isExactlyInstanceOf(TooManyRefreshTokenAffectedException.class),
+                () -> verify(mockedJdbcTemplate).update(anyString(), anyString())
         );
     }
 }
