@@ -3,24 +3,12 @@
 
 === 나의 로그인 정보로 인벤토리를 조회
 
-==== 발생 가능 에러
-
-- 40100, 40101, 40102
-
-operation::inventoryProducts-get-own[snippets='http-request,http-response']
+operation::inventoryProducts-get-own[snippets='error-code-table,http-request,http-response']
 
 === 멤버 아이디로 인벤토리를 조회
 
-==== 발생 가능 에러
-
-- 40440
-
-operation::inventoryProducts-get-by-memberId[snippets='http-request,http-response']
+operation::inventoryProducts-get-by-memberId[snippets='error-code-table,http-request,http-response']
 
 === 나의 대표 장비 수정
 
-==== 발생 가능 에러
-
-- 40040, 40041, 40042, 40043
-
-operation::inventoryProducts-update[snippets='http-request,http-response']
+operation::inventoryProducts-update[snippets='error-code-table,http-request,http-response']

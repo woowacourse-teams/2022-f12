@@ -1,5 +1,19 @@
 package com.woowacourse.f12.presentation.review;
 
+import static com.woowacourse.f12.exception.ErrorCode.ALREADY_WRITTEN_REVIEW;
+import static com.woowacourse.f12.exception.ErrorCode.BLANK_REVIEW_CONTENT;
+import static com.woowacourse.f12.exception.ErrorCode.EXPIRED_ACCESS_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_PAGING_PARAM;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_REVIEW_CONTENT_LENGTH;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_REVIEW_RATING;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_TOKEN_FORMAT;
+import static com.woowacourse.f12.exception.ErrorCode.INVENTORY_PRODUCT_NOT_FOUND;
+import static com.woowacourse.f12.exception.ErrorCode.MEMBER_NOT_FOUND;
+import static com.woowacourse.f12.exception.ErrorCode.NOT_EXIST_ACCESS_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.PERMISSION_DENIED;
+import static com.woowacourse.f12.exception.ErrorCode.REGISTER_NOT_COMPLETED;
+import static com.woowacourse.f12.exception.ErrorCode.REQUEST_DUPLICATED;
+import static com.woowacourse.f12.exception.ErrorCode.REVIEW_NOT_FOUND;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
@@ -47,6 +61,7 @@ import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
+import com.woowacourse.f12.support.ErrorCodeSnippet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,8 +123,11 @@ class ReviewControllerTest extends PresentationTest {
         resultActions.andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(
-                        document("reviews-create")
-                );
+                        document("reviews-create",
+                                new ErrorCodeSnippet(INVALID_REVIEW_RATING, BLANK_REVIEW_CONTENT,
+                                        INVALID_REVIEW_CONTENT_LENGTH, ALREADY_WRITTEN_REVIEW, REQUEST_DUPLICATED,
+                                        NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN, INVALID_TOKEN_FORMAT,
+                                        REGISTER_NOT_COMPLETED)));
 
         assertAll(
                 () -> verify(jwtProvider).isValidToken(authorizationHeader),
@@ -462,7 +480,8 @@ class ReviewControllerTest extends PresentationTest {
         resultActions.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
-                        document("reviews-page-get")
+                        document("reviews-page-get",
+                                new ErrorCodeSnippet(INVALID_PAGING_PARAM))
                 );
 
         verify(reviewService).findPage(PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
@@ -491,8 +510,8 @@ class ReviewControllerTest extends PresentationTest {
         resultActions.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
-                        document("reviews-by-product-page-get")
-                );
+                        document("reviews-by-product-page-get",
+                                new ErrorCodeSnippet(INVALID_PAGING_PARAM, REVIEW_NOT_FOUND)));
 
         verify(reviewService).findPageByProductId(product.getId(), null,
                 PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
@@ -583,8 +602,9 @@ class ReviewControllerTest extends PresentationTest {
         resultActions.andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(
-                        document("reviews-update")
-                );
+                        document("reviews-update",
+                                new ErrorCodeSnippet(NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN, INVALID_TOKEN_FORMAT,
+                                        PERMISSION_DENIED, MEMBER_NOT_FOUND, REVIEW_NOT_FOUND)));
 
         assertAll(
                 () -> verify(jwtProvider).isValidToken(authorizationHeader),
@@ -713,8 +733,9 @@ class ReviewControllerTest extends PresentationTest {
         resultActions.andExpect(status().isNoContent())
                 .andDo(print())
                 .andDo(
-                        document("reviews-delete")
-                );
+                        document("reviews-delete",
+                                new ErrorCodeSnippet(NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN, INVALID_TOKEN_FORMAT,
+                                        PERMISSION_DENIED, MEMBER_NOT_FOUND, REVIEW_NOT_FOUND)));
 
         assertAll(
                 () -> verify(jwtProvider).isValidToken(authorizationHeader),
@@ -832,7 +853,8 @@ class ReviewControllerTest extends PresentationTest {
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("reviews-page-get-by-memberId"));
+                .andDo(document("reviews-page-get-by-memberId",
+                        new ErrorCodeSnippet(MEMBER_NOT_FOUND, INVALID_PAGING_PARAM)));
         verify(reviewService).findPageByMemberId(memberId,
                 PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
     }
@@ -862,7 +884,9 @@ class ReviewControllerTest extends PresentationTest {
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("reviews-page-get-own"));
+                .andDo(document("reviews-page-get-own",
+                        new ErrorCodeSnippet(NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN, INVALID_TOKEN_FORMAT,
+                                MEMBER_NOT_FOUND, INVALID_PAGING_PARAM)));
         verify(reviewService).findPageByMemberId(memberId,
                 PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
     }
@@ -882,7 +906,8 @@ class ReviewControllerTest extends PresentationTest {
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("reviews-get-by-inventoryProductId"));
+                .andDo(document("reviews-get-by-inventoryProductId",
+                        new ErrorCodeSnippet(INVENTORY_PRODUCT_NOT_FOUND)));
         verify(reviewService).findByInventoryProductId(inventoryId);
     }
 }
