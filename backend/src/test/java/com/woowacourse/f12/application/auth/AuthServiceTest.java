@@ -25,7 +25,7 @@ import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -204,7 +204,7 @@ class AuthServiceTest {
         RefreshToken newRefreshToken = new RefreshToken(newRefreshTokenValue, memberId, expiredAt);
 
         given(refreshTokenRepository.findToken(refreshTokenValue))
-                .willReturn(Optional.of(refreshToken));
+                .willReturn(refreshToken);
         given(refreshTokenProvider.createToken(memberId))
                 .willReturn(newRefreshToken);
         given(refreshTokenRepository.save(eq(newRefreshToken)))
@@ -234,11 +234,11 @@ class AuthServiceTest {
     void 저장되어_있지않은_리프레시_토큰으로_액세스_토큰_발급하려할_경우_예외_발생() {
         // given
         given(refreshTokenRepository.findToken(any()))
-                .willReturn(Optional.empty());
+                .willThrow(new RefreshTokenNotFoundException());
 
         // when, then
         assertThatThrownBy(() -> authService.issueAccessToken("refreshToken"))
-                .isExactlyInstanceOf(RefreshTokenInvalidException.class);
+                .isExactlyInstanceOf(RefreshTokenNotFoundException.class);
     }
 
     @Test
@@ -247,7 +247,7 @@ class AuthServiceTest {
         String refreshTokenValue = "refreshToken";
         LocalDateTime expiredDate = LocalDateTime.now().minusDays(1);
         given(refreshTokenRepository.findToken(any()))
-                .willReturn(Optional.of(new RefreshToken(refreshTokenValue, memberId, expiredDate)));
+                .willReturn(new RefreshToken(refreshTokenValue, memberId, expiredDate));
         willDoNothing().given(refreshTokenRepository).delete(refreshTokenValue);
 
         // when, then
