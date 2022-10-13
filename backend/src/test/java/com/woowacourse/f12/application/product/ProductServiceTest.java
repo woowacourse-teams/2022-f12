@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -64,7 +65,7 @@ class ProductServiceTest {
     private InventoryProductRepository inventoryProductRepository;
 
     @Mock
-    private PopularProductStrategy popularProductStrategy;
+    private PopularProductsCreator popularProductsCreator;
 
     @InjectMocks
     private ProductService productService;
@@ -192,16 +193,16 @@ class ProductServiceTest {
     }
 
     @Test
-    void 인기_상품을_조회한다() {
+    void 인기_제품을_조회한다() {
         // given
-        given(popularProductStrategy.getResult(any()))
-                .willReturn(any());
+        given(popularProductsCreator.create(anyInt(), any()))
+                .willReturn(List.of());
 
         // when
-        productService.findPopularProducts();
+        productService.findPopularProducts(1);
 
         // then
-        verify(popularProductStrategy).getResult(any());
+        verify(popularProductsCreator).create(anyInt(), any());
     }
 
     @Test

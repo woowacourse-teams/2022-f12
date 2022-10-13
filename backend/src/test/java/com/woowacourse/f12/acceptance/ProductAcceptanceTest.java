@@ -312,7 +312,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         민초.로그인한_상태로(minchoToken).리뷰를_작성한다(mouse.getId(), REVIEW_RATING_5);
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products/popular-list");
+        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/products/popular-list?size=2");
         PopularProductsResponse popularProductsResponse = response.as(PopularProductsResponse.class);
 
         // then

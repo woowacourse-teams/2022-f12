@@ -263,17 +263,18 @@ class ProductControllerTest extends PresentationTest {
                 .rating(4.5)
                 .reviewCount(2)
                 .build();
-        given(productService.findPopularProducts())
+        int popularProductSize = 4;
+        given(productService.findPopularProducts(popularProductSize))
                 .willReturn(PopularProductsResponse.from(List.of(keyboard, mouse, software, monitor)));
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/products/popular-list"));
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/products/popular-list?size=" + popularProductSize));
 
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(document("products-popular-list-get"))
                 .andDo(print());
-        verify(productService).findPopularProducts();
+        verify(productService).findPopularProducts(popularProductSize);
     }
 
     @Test
