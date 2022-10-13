@@ -170,13 +170,11 @@ const handleLoginRequest = (req, res, ctx) => {
     ctx.json({
       token: 'token',
       registerCompleted: true,
-      userData: {
-        member: {
-          id: 1,
-          gitHubId: 'hamcheeseburger',
-          name: '유현지',
-          imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
-        },
+      member: {
+        id: 1,
+        gitHubId: 'hamcheeseburger',
+        name: '유현지',
+        imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
       },
     }),
     ctx.delay(),
