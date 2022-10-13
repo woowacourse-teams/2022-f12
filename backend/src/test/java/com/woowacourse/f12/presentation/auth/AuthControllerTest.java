@@ -7,6 +7,7 @@ import static com.woowacourse.f12.exception.ErrorCode.INVALID_LOGIN_CODE;
 import static com.woowacourse.f12.exception.ErrorCode.MEMBER_NOT_FOUND;
 import static com.woowacourse.f12.exception.ErrorCode.NOT_EXIST_REFRESH_TOKEN;
 import static com.woowacourse.f12.exception.ErrorCode.PERMISSION_DENIED;
+import static com.woowacourse.f12.exception.ErrorCode.REFRESH_TOKEN_NOT_FOUND;
 import static com.woowacourse.f12.exception.ErrorCode.REQUEST_DUPLICATED;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static org.hamcrest.Matchers.containsString;
@@ -167,7 +168,7 @@ class AuthControllerTest extends PresentationTest {
                 .andDo(
                         document("auth-admin-login",
                                 new ErrorCodeSnippet(INVALID_LOGIN_CODE, MEMBER_NOT_FOUND, INTERNAL_SERVER_ERROR,
-                                        EXTERNAL_SERVER_ERROR, PERMISSION_DENIED, REQUEST_DUPLICATED))
+                                        EXTERNAL_SERVER_ERROR, PERMISSION_DENIED))
                 );
 
         verify(authService).loginAdmin(code);
@@ -214,7 +215,7 @@ class AuthControllerTest extends PresentationTest {
                 .andExpect(cookie().value("refreshToken", newRefreshToken))
                 .andExpect(jsonPath("$.accessToken").value(newAccessToken))
                 .andDo(document("auth-issue-access-token",
-                        new ErrorCodeSnippet(NOT_EXIST_REFRESH_TOKEN, EXPIRED_REFRESH_TOKEN, MEMBER_NOT_FOUND)))
+                        new ErrorCodeSnippet(NOT_EXIST_REFRESH_TOKEN, EXPIRED_REFRESH_TOKEN, REFRESH_TOKEN_NOT_FOUND)))
                 .andDo(print());
 
         verify(authService).issueAccessToken(oldRefreshToken);
@@ -268,7 +269,7 @@ class AuthControllerTest extends PresentationTest {
         // then
         resultActions.andExpect(status().isNoContent())
                 .andExpect(cookie().maxAge("refreshToken", 0))
-                .andDo(document("auth-logout", new ErrorCodeSnippet(NOT_EXIST_REFRESH_TOKEN)))
+                .andDo(document("auth-logout", new ErrorCodeSnippet(NOT_EXIST_REFRESH_TOKEN, REFRESH_TOKEN_NOT_FOUND)))
                 .andDo(print());
     }
 
