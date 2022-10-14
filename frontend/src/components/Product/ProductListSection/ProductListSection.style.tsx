@@ -50,6 +50,8 @@ export const CustomLink = styled(Link)``;
 export const ProductLink = styled(Link)`
   display: flex;
   justify-content: center;
+  width: max-content;
+  margin: 0 auto;
 `;
 
 export const Wrapper = styled.div`
