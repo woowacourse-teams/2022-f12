@@ -234,7 +234,7 @@ class AuthServiceTest {
     void 저장되어_있지않은_리프레시_토큰으로_액세스_토큰_발급하려할_경우_예외_발생() {
         // given
         given(refreshTokenRepository.findToken(any()))
-                .willReturn(Optional.empty());
+                .willThrow(new RefreshTokenNotFoundException());
 
         // when, then
         assertThatThrownBy(() -> authService.issueAccessToken("refreshToken"))

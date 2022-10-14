@@ -22,7 +22,7 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
             .expiredAt(rs.getTimestamp("expired_at").toLocalDateTime())
             .memberId(rs.getLong("member_id"))
             .build();
-    
+
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public RefreshTokenRepositoryImpl(final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
