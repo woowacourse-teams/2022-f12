@@ -1,5 +1,6 @@
 package com.woowacourse.f12.presentation.auth;
 
+import static com.woowacourse.f12.exception.ErrorCode.DUPLICATED_REFRESH_TOKEN;
 import static com.woowacourse.f12.exception.ErrorCode.EXPIRED_REFRESH_TOKEN;
 import static com.woowacourse.f12.exception.ErrorCode.EXTERNAL_SERVER_ERROR;
 import static com.woowacourse.f12.exception.ErrorCode.INTERNAL_SERVER_ERROR;
@@ -9,9 +10,11 @@ import static com.woowacourse.f12.exception.ErrorCode.NOT_EXIST_REFRESH_TOKEN;
 import static com.woowacourse.f12.exception.ErrorCode.PERMISSION_DENIED;
 import static com.woowacourse.f12.exception.ErrorCode.REFRESH_TOKEN_NOT_FOUND;
 import static com.woowacourse.f12.exception.ErrorCode.REQUEST_DUPLICATED;
+import static com.woowacourse.f12.exception.ErrorCode.TOO_MANY_AFFECTED_REFRESH_TOKEN;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 import static org.mockito.Mockito.times;
@@ -29,10 +32,13 @@ import com.woowacourse.f12.dto.response.auth.AdminLoginResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
+import com.woowacourse.f12.exception.ErrorCode;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
 import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.internalserver.GitHubServerException;
+import com.woowacourse.f12.exception.unauthorized.DuplicatedRefreshTokenSavedException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
+import com.woowacourse.f12.exception.unauthorized.TooManyRefreshTokenAffectedException;
 import com.woowacourse.f12.presentation.PresentationTest;
 import com.woowacourse.f12.support.ErrorCodeSnippet;
 import javax.servlet.http.Cookie;
@@ -78,7 +84,7 @@ class AuthControllerTest extends PresentationTest {
                 .andDo(
                         document("auth-login",
                                 new ErrorCodeSnippet(REQUEST_DUPLICATED, INVALID_LOGIN_CODE, EXTERNAL_SERVER_ERROR,
-                                        INTERNAL_SERVER_ERROR))
+                                        INTERNAL_SERVER_ERROR, TOO_MANY_AFFECTED_REFRESH_TOKEN))
                 );
 
         verify(authService).login(code);
@@ -211,14 +217,37 @@ class AuthControllerTest extends PresentationTest {
                         .cookie(new Cookie("refreshToken", oldRefreshToken))
         );
 
+        // then
         resultActions.andExpect(status().isOk())
                 .andExpect(cookie().value("refreshToken", newRefreshToken))
                 .andExpect(jsonPath("$.accessToken").value(newAccessToken))
                 .andDo(document("auth-issue-access-token",
-                        new ErrorCodeSnippet(NOT_EXIST_REFRESH_TOKEN, EXPIRED_REFRESH_TOKEN, REFRESH_TOKEN_NOT_FOUND)))
+                        new ErrorCodeSnippet(NOT_EXIST_REFRESH_TOKEN, EXPIRED_REFRESH_TOKEN, REFRESH_TOKEN_NOT_FOUND,
+                                TOO_MANY_AFFECTED_REFRESH_TOKEN, DUPLICATED_REFRESH_TOKEN)))
                 .andDo(print());
 
         verify(authService).issueAccessToken(oldRefreshToken);
+    }
+
+    @Test
+    void 서버에_중복되어_저장된_리프레시_토큰으로_액세스_토큰을_발급하면_예외_발생() throws Exception {
+        // given
+        String refreshTokenValue = "refreshTokenValue";
+        given(authService.issueAccessToken(refreshTokenValue))
+                .willThrow(new DuplicatedRefreshTokenSavedException());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/accessToken")
+                        .cookie(new Cookie("refreshToken", refreshTokenValue))
+        );
+
+        // then
+        resultActions.andExpect(status().isUnauthorized())
+                .andExpect(cookie().maxAge("refreshToken", 0))
+                .andExpect(jsonPath("$.errorCode").value(DUPLICATED_REFRESH_TOKEN.getValue()))
+                .andDo(print());
+        verify(authService).issueAccessToken(anyString());
     }
 
     @Test
@@ -254,6 +283,27 @@ class AuthControllerTest extends PresentationTest {
 
         resultActions.andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.errorCode").value(EXPIRED_REFRESH_TOKEN.getValue()))
+                .andExpect(cookie().maxAge("refreshToken", 0))
+                .andDo(print());
+
+        verify(authService).issueAccessToken(any());
+    }
+
+    @Test
+    void 액세스_토큰_발급_시_리프레시_토큰이_여러개_영향받으면_예외_발생() throws Exception {
+        // given
+        given(authService.issueAccessToken(any()))
+                .willThrow(new TooManyRefreshTokenAffectedException());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/accessToken")
+                        .cookie(new Cookie("refreshToken", "refreshTokenValue"))
+        );
+
+        // then
+        resultActions.andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorCode").value(ErrorCode.TOO_MANY_AFFECTED_REFRESH_TOKEN.getValue()))
                 .andExpect(cookie().maxAge("refreshToken", 0))
                 .andDo(print());
 
