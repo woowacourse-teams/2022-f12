@@ -1,5 +1,18 @@
 package com.woowacourse.f12.presentation.member;
 
+import static com.woowacourse.f12.exception.ErrorCode.ALREADY_FOLLOWING;
+import static com.woowacourse.f12.exception.ErrorCode.EMPTY_MEMBER_INFO_VALUE;
+import static com.woowacourse.f12.exception.ErrorCode.EXPIRED_ACCESS_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_FOLLOWER_COUNT;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_MEMBER_INFO_VALUE;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_PAGING_PARAM;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_TOKEN_FORMAT;
+import static com.woowacourse.f12.exception.ErrorCode.MEMBER_NOT_FOUND;
+import static com.woowacourse.f12.exception.ErrorCode.NOT_EXIST_ACCESS_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.NOT_FOLLOWING;
+import static com.woowacourse.f12.exception.ErrorCode.REQUEST_DUPLICATED;
+import static com.woowacourse.f12.exception.ErrorCode.SELF_FOLLOW;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
 import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
 import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
@@ -44,6 +57,7 @@ import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.badrequest.SelfFollowException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
+import com.woowacourse.f12.support.ErrorCodeSnippet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +108,8 @@ class MemberControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("members-get-own"))
+                .andDo(document("members-get-own",
+                        new ErrorCodeSnippet(NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN, INVALID_TOKEN_FORMAT)))
                 .andDo(print());
 
         assertAll(
@@ -118,7 +133,8 @@ class MemberControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("members-get-by-memberId"))
+                .andDo(document("members-get-by-memberId",
+                        new ErrorCodeSnippet(MEMBER_NOT_FOUND)))
                 .andDo(print());
 
         verify(memberService).find(1L, null);
@@ -194,7 +210,9 @@ class MemberControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("members-update"))
+                .andDo(document("members-update",
+                        new ErrorCodeSnippet(INVALID_MEMBER_INFO_VALUE, EMPTY_MEMBER_INFO_VALUE, NOT_EXIST_ACCESS_TOKEN,
+                                EXPIRED_ACCESS_TOKEN, INVALID_TOKEN_FORMAT)))
                 .andDo(print());
 
         assertAll(
@@ -322,7 +340,8 @@ class MemberControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("members-search"))
+                .andDo(document("members-search",
+                        new ErrorCodeSnippet(INVALID_SEARCH_PARAM, INVALID_PAGING_PARAM)))
                 .andDo(print());
 
         verify(memberService).findBySearchConditions(isNull(), refEq(memberSearchRequest), refEq(pageable));
@@ -433,7 +452,8 @@ class MemberControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isNoContent())
-                .andDo(document("follow"))
+                .andDo(document("follow",
+                        new ErrorCodeSnippet(SELF_FOLLOW, ALREADY_FOLLOWING, REQUEST_DUPLICATED, MEMBER_NOT_FOUND)))
                 .andDo(print());
 
         verify(memberService).follow(followerId, followingId);
@@ -573,7 +593,8 @@ class MemberControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isNoContent())
-                .andDo(document("unfollow"))
+                .andDo(document("unfollow",
+                        new ErrorCodeSnippet(NOT_FOLLOWING, INVALID_FOLLOWER_COUNT, MEMBER_NOT_FOUND)))
                 .andDo(print());
 
         verify(memberService).unfollow(followerId, followingId);
@@ -690,7 +711,8 @@ class MemberControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("search-followings"))
+                .andDo(document("search-followings",
+                        new ErrorCodeSnippet(NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN, INVALID_TOKEN_FORMAT)))
                 .andDo(print());
 
         assertAll(
