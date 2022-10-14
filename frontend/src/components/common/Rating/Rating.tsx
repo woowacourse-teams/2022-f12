@@ -14,24 +14,29 @@ export type Props = {
 
 function Rating({ rating, type = '일반', size = 'small' }: Props) {
   const RatingUnit = (
-    <S.Unit size={size}>
+    <S.Unit size={size} aria-hidden={'true'}>
       <Heart fill={theme.colors.primary} stroke={theme.colors.primaryDark} />
     </S.Unit>
   );
 
   return (
-    <S.Container>
-      {type === '일반' ? (
-        <>
-          {RatingUnit}
-          <S.Value size={size}>{rating.toFixed(2)}</S.Value>
-        </>
-      ) : (
-        Array.from({ length: rating }).map((_, index) => (
-          <Fragment key={index}>{RatingUnit}</Fragment>
-        ))
-      )}
-    </S.Container>
+    <>
+      <S.Container aria-label={'평점'} aria-hidden={true}>
+        {type === '일반' ? (
+          <>
+            {RatingUnit}
+            <S.Value size={size}>{rating.toFixed(2)}</S.Value>
+          </>
+        ) : (
+          <>
+            {Array.from({ length: rating }).map((_, index) => (
+              <Fragment key={index}>{RatingUnit}</Fragment>
+            ))}
+          </>
+        )}
+      </S.Container>
+      <S.SROnly>{rating.toFixed(2)}점</S.SROnly>
+    </>
   );
 }
 

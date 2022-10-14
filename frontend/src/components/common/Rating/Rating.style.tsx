@@ -27,3 +27,9 @@ export const Unit = styled.div<{ size: 'small' | 'medium' | 'large' }>`
 export const Value = styled.div<{ size: 'small' | 'medium' | 'large' }>`
   font-size: ${({ size }) => sizeOptions[size].value}px;
 `;
+
+export const SROnly = styled.p`
+  opacity: 0;
+  height: 0;
+  width: 0;
+`;

@@ -9,11 +9,13 @@ type Props = {
 
 function ReviewCount({ reviewCount, size = 'small' }: Props) {
   return (
-    <S.Container>
-      <S.ReviewIconWrapper size={size}>
+    <S.Container aria-label={`리뷰 ${reviewCount}개`}>
+      <S.ReviewIconWrapper size={size} aria-hidden={'true'}>
         <ReviewIcon />
       </S.ReviewIconWrapper>
-      <S.Value size={size}>{reviewCount}</S.Value>
+      <S.Value size={size} aria-hidden={'true'}>
+        {reviewCount}
+      </S.Value>
     </S.Container>
   );
 }
