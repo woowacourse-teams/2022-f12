@@ -10,6 +10,7 @@ import static com.woowacourse.f12.exception.ErrorCode.NOT_EXIST_REFRESH_TOKEN;
 import static com.woowacourse.f12.exception.ErrorCode.PERMISSION_DENIED;
 import static com.woowacourse.f12.exception.ErrorCode.REFRESH_TOKEN_NOT_FOUND;
 import static com.woowacourse.f12.exception.ErrorCode.REQUEST_DUPLICATED;
+import static com.woowacourse.f12.exception.ErrorCode.TOO_MANY_AFFECTED_REFRESH_TOKEN;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -83,7 +84,7 @@ class AuthControllerTest extends PresentationTest {
                 .andDo(
                         document("auth-login",
                                 new ErrorCodeSnippet(REQUEST_DUPLICATED, INVALID_LOGIN_CODE, EXTERNAL_SERVER_ERROR,
-                                        INTERNAL_SERVER_ERROR))
+                                        INTERNAL_SERVER_ERROR, TOO_MANY_AFFECTED_REFRESH_TOKEN))
                 );
 
         verify(authService).login(code);
@@ -221,7 +222,8 @@ class AuthControllerTest extends PresentationTest {
                 .andExpect(cookie().value("refreshToken", newRefreshToken))
                 .andExpect(jsonPath("$.accessToken").value(newAccessToken))
                 .andDo(document("auth-issue-access-token",
-                        new ErrorCodeSnippet(NOT_EXIST_REFRESH_TOKEN, EXPIRED_REFRESH_TOKEN, REFRESH_TOKEN_NOT_FOUND)))
+                        new ErrorCodeSnippet(NOT_EXIST_REFRESH_TOKEN, EXPIRED_REFRESH_TOKEN, REFRESH_TOKEN_NOT_FOUND,
+                                TOO_MANY_AFFECTED_REFRESH_TOKEN, DUPLICATED_REFRESH_TOKEN)))
                 .andDo(print());
 
         verify(authService).issueAccessToken(oldRefreshToken);

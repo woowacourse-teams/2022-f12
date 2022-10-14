@@ -29,6 +29,7 @@
 |40105|NOT_EXIST_REFRESH_TOKEN|리프레시 토큰이 존재하지 않음.
 |40106|REFRESH_TOKEN_NOT_FOUND|리프레시 토큰이 서버에서 저장하지 않는 값임.
 |40107|DUPLICATED_REFRESH_TOKEN|리프레시 토큰이 서버에 중복으로 저장되어 있음.
+|40108|TOO_MANY_AFFECTED_REFRESH_TOKEN|요청에 의해 영향 받은 서버의 리프레시 토큰이 예상보다 많음.
 |40300|PERMISSION_DENIED|권한이 없는 요청임.
 |40410|MEMBER_NOT_FOUND|회원 정보가 존재하지 않음.
 |40420|PRODUCT_NOT_FOUND|제품 정보가 존재하지 않음.
