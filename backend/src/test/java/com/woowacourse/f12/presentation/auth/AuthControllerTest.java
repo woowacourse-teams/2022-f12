@@ -230,7 +230,7 @@ class AuthControllerTest extends PresentationTest {
     }
 
     @Test
-    void 서버에_중복되어_저장된_리프레시_토큰으로_액세서_토큰을_발급하면_예외_발생() throws Exception {
+    void 서버에_중복되어_저장된_리프레시_토큰으로_액세스_토큰을_발급하면_예외_발생() throws Exception {
         // given
         String refreshTokenValue = "refreshTokenValue";
         given(authService.issueAccessToken(refreshTokenValue))
