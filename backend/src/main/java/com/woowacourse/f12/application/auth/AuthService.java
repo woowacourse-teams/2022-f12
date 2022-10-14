@@ -14,6 +14,7 @@ import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,7 +84,8 @@ public class AuthService {
     }
 
     public IssuedTokensResponse issueAccessToken(final String refreshTokenValue) {
-        final RefreshToken refreshToken = refreshTokenRepository.findToken(refreshTokenValue);
+        final RefreshToken refreshToken = refreshTokenRepository.findToken(refreshTokenValue)
+                .orElseThrow(RefreshTokenNotFoundException::new);
         checkExpired(refreshTokenValue, refreshToken);
         final Long memberId = refreshToken.getMemberId();
         final Role memberRole = memberRepository.findById(memberId)

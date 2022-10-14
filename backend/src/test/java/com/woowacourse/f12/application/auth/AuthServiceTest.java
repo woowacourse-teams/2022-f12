@@ -55,8 +55,8 @@ class AuthServiceTest {
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
 
-    private LocalDateTime expiredAt = LocalDateTime.now().plusDays(14);
-    private Long memberId = 1L;
+    private final LocalDateTime expiredAt = LocalDateTime.now().plusDays(14);
+    private final Long memberId = 1L;
 
     @Test
     void 깃허브_코드가_들어왔을때_회원정보가_없으면_새로_저장하고_회원정보와_토큰을_반환한다() {
@@ -204,7 +204,7 @@ class AuthServiceTest {
         RefreshToken newRefreshToken = new RefreshToken(newRefreshTokenValue, memberId, expiredAt);
 
         given(refreshTokenRepository.findToken(refreshTokenValue))
-                .willReturn(refreshToken);
+                .willReturn(Optional.of(refreshToken));
         given(refreshTokenProvider.createToken(memberId))
                 .willReturn(newRefreshToken);
         given(refreshTokenRepository.save(eq(newRefreshToken)))
@@ -234,7 +234,7 @@ class AuthServiceTest {
     void 저장되어_있지않은_리프레시_토큰으로_액세스_토큰_발급하려할_경우_예외_발생() {
         // given
         given(refreshTokenRepository.findToken(any()))
-                .willThrow(new RefreshTokenNotFoundException());
+                .willReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> authService.issueAccessToken("refreshToken"))
@@ -247,7 +247,7 @@ class AuthServiceTest {
         String refreshTokenValue = "refreshToken";
         LocalDateTime expiredDate = LocalDateTime.now().minusDays(1);
         given(refreshTokenRepository.findToken(any()))
-                .willReturn(new RefreshToken(refreshTokenValue, memberId, expiredDate));
+                .willReturn(Optional.of(new RefreshToken(refreshTokenValue, memberId, expiredDate)));
         willDoNothing().given(refreshTokenRepository).delete(refreshTokenValue);
 
         // when, then

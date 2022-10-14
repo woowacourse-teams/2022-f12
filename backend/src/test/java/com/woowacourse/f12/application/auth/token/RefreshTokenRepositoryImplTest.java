@@ -10,13 +10,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.woowacourse.f12.exception.unauthorized.DuplicatedRefreshTokenSavedException;
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
 import com.woowacourse.f12.exception.unauthorized.TooManyRefreshTokenAffectedException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -63,10 +62,20 @@ class RefreshTokenRepositoryImplTest {
         refreshTokenRepositoryImpl.save(refreshToken);
 
         // when
-        RefreshToken actual = refreshTokenRepositoryImpl.findToken(tokenValue);
+        RefreshToken actual = refreshTokenRepositoryImpl.findToken(tokenValue)
+                .orElseThrow();
 
         // then
         assertThat(actual).isEqualTo(refreshToken);
+    }
+
+    @Test
+    void 존재하지_않는_리프레시_토큰을_조회한다() {
+        // given, when
+        Optional<RefreshToken> actual = refreshTokenRepositoryImpl.findToken(tokenValue);
+
+        // then
+        assertThat(actual).isEqualTo(Optional.empty());
     }
 
     @Test
@@ -83,16 +92,15 @@ class RefreshTokenRepositoryImplTest {
         refreshTokenRepositoryImpl.delete(tokenValue);
 
         // then
-        assertThatThrownBy(() -> refreshTokenRepositoryImpl.findToken(tokenValue))
-                .isExactlyInstanceOf(RefreshTokenNotFoundException.class);
+        assertThat(refreshTokenRepositoryImpl.findToken(tokenValue)).isEqualTo(Optional.empty());
     }
 
     @Test
     void 조회하려는_리프레시_토큰이_동일한_값의_리프레시_토큰이_여러개_존재하는_경우_예외가_발생한다() {
         // given
         NamedParameterJdbcTemplate mockedNamedTemplate = mock(NamedParameterJdbcTemplate.class);
-        given(mockedNamedTemplate.queryForObject(anyString(), any(SqlParameterSource.class), any(RowMapper.class)))
-                .willThrow(IncorrectResultSizeDataAccessException.class);
+        given(mockedNamedTemplate.query(anyString(), any(SqlParameterSource.class), any(RowMapper.class)))
+                .willThrow(DuplicatedRefreshTokenSavedException.class);
 
         refreshTokenRepositoryImpl = new RefreshTokenRepositoryImpl(mockedNamedTemplate);
 
@@ -101,7 +109,7 @@ class RefreshTokenRepositoryImplTest {
                 () -> assertThatThrownBy(() -> refreshTokenRepositoryImpl.findToken(tokenValue))
                         .isExactlyInstanceOf(DuplicatedRefreshTokenSavedException.class),
                 () -> verify(mockedNamedTemplate)
-                        .queryForObject(anyString(), any(SqlParameterSource.class), any(RowMapper.class))
+                        .query(anyString(), any(SqlParameterSource.class), any(RowMapper.class))
         );
     }
 
