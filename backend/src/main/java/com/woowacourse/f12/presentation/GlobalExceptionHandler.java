@@ -13,6 +13,7 @@ import com.woowacourse.f12.exception.forbidden.ForbiddenException;
 import com.woowacourse.f12.exception.internalserver.ExternalServerException;
 import com.woowacourse.f12.exception.internalserver.InternalServerException;
 import com.woowacourse.f12.exception.notfound.NotFoundException;
+import com.woowacourse.f12.exception.unauthorized.DuplicatedRefreshTokenSavedException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
@@ -89,7 +90,8 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse.from(stringBuilder.toString(), INVALID_REQUEST_BODY_TYPE));
     }
 
-    @ExceptionHandler({RefreshTokenNotFoundException.class, RefreshTokenExpiredException.class})
+    @ExceptionHandler({RefreshTokenNotFoundException.class, DuplicatedRefreshTokenSavedException.class,
+            RefreshTokenExpiredException.class})
     public ResponseEntity<ExceptionResponse> handleRefreshTokenNotFoundException(final UnauthorizedException e,
                                                                                  final HttpServletRequest request,
                                                                                  final HttpServletResponse response) {
