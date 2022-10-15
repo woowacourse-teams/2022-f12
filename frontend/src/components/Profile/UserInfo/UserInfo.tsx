@@ -79,7 +79,7 @@ function UserInfo({ userData, isOwnProfile }: Props) {
           <S.FollowerCount>{followerCount}명이 팔로우함</S.FollowerCount>
           {isOwnProfile && (
             <S.ButtonContainer>
-              <S.FollowerLink to={ROUTES.FOLLOWING}>팔로워 보기</S.FollowerLink>
+              <S.FollowerLink to={ROUTES.FOLLOWING}>팔로잉 보기</S.FollowerLink>
               <S.FollowerLink as={'button'} onClick={logout}>
                 로그아웃
               </S.FollowerLink>
