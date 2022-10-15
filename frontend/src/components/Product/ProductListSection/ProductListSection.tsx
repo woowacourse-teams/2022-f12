@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
 import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlaceholder';
 
@@ -40,7 +42,12 @@ function ProductListSection({
 
   const productList = data.map(({ id, imageUrl, name, rating, reviewCount }, index) => (
     <li key={id}>
-      <S.ProductLink to={`${ROUTES.PRODUCT}/${id}`}>
+      <Link
+        to={`${ROUTES.PRODUCT}/${id}`}
+        key={id}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <ProductCard
           imageUrl={imageUrl}
           name={name}
@@ -49,7 +56,7 @@ function ProductListSection({
           index={index % pageSize}
           size={cardSize}
         />
-      </S.ProductLink>
+      </Link>
     </li>
   ));
 
