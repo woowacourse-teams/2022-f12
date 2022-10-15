@@ -256,7 +256,8 @@ class ProductControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("products-popular-list-get"))
+                .andDo(document("products-popular-list-get",
+                        new ErrorCodeSnippet(INVALID_SEARCH_PARAM)))
                 .andDo(print());
         verify(productService).findPopularProducts(popularProductSize);
     }
