@@ -83,6 +83,7 @@ public class AuthService {
         return member;
     }
 
+    @Transactional
     public IssuedTokensResponse issueAccessToken(final String refreshTokenValue) {
         final RefreshToken refreshToken = refreshTokenRepository.findToken(refreshTokenValue)
                 .orElseThrow(RefreshTokenNotFoundException::new);
