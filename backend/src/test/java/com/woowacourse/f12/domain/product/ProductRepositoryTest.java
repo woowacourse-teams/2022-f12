@@ -198,18 +198,18 @@ class ProductRepositoryTest {
 
         Member corinne = memberRepository.save(CORINNE.생성());
         리뷰_저장(REVIEW_RATING_5.작성(keyboard1, corinne));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard2, corinne));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard2, corinne));
 
         Member mincho = memberRepository.save(MINCHO.생성());
         리뷰_저장(REVIEW_RATING_5.작성(keyboard1, mincho));
-        리뷰_저장(REVIEW_RATING_5.작성(keyboard2, mincho));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard2, mincho));
 
         // when
-        List<Product> actual = productRepository.findByReviewCountAndRatingGreaterThanEqual(2, 4.5);
+        List<Product> actual = productRepository.findByReviewCountGreaterThanEqualAndRatingGreaterThanEqual(2, 4.5);
 
         // then
         assertThat(actual).usingRecursiveFieldByFieldElementComparatorOnFields("name", "imageUrl", "category")
-                .containsOnly(keyboard1, keyboard2);
+                .containsOnly(keyboard1);
     }
 
     private Product 제품_저장(Product product) {

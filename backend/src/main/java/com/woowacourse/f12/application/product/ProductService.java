@@ -119,7 +119,7 @@ public class ProductService {
 
     public PopularProductsResponse findPopularProducts(final int size) {
         final List<Product> products = popularProductCreator.create(size,
-                productRepository::findByReviewCountAndRatingGreaterThanEqual);
+                productRepository::findByReviewCountGreaterThanEqualAndRatingGreaterThanEqual);
         return PopularProductsResponse.from(products);
     }
 }
