@@ -164,18 +164,20 @@ function ProfileCard({
                           <S.ProductImage src={equipment.imageUrl as string} />
                         </Link>
                       ) : (
-                        <Empty />
+                        <S.EmptyWrapper>
+                          <Empty />
+                        </S.EmptyWrapper>
                       )}
-                      <S.ProductTitle>
-                        {equipment.id ? (
-                          <Link to={`${ROUTES.PRODUCT}/${equipment.id as string}`}>
-                            {equipment.name}
-                          </Link>
-                        ) : (
-                          `${TITLE.DESK_SETUP}에 추가한 ${equipment.name}가 없어요`
-                        )}
-                      </S.ProductTitle>
                     </S.ProductImageWrapper>
+                    <S.ProductTitle>
+                      {equipment.id ? (
+                        <Link to={`${ROUTES.PRODUCT}/${equipment.id as string}`}>
+                          {equipment.name}
+                        </Link>
+                      ) : (
+                        `${TITLE.DESK_SETUP}에 추가한 ${equipment.name}가 없어요`
+                      )}
+                    </S.ProductTitle>
                   </S.InventoryItem>
                 );
               })}

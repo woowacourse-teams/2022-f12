@@ -105,7 +105,6 @@ export const ProfileImageWrapper = styled.div`
 export const ProfileImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
 `;
 
 export const UserInfoWrapper = styled.div`
@@ -141,6 +140,7 @@ export const InventoryWrapper = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
+  margin-top: 1.5rem;
   height: 7rem;
 `;
 
@@ -162,7 +162,7 @@ export const ProfileViewButton = styled.button`
   border: none;
   width: 100%;
   height: 1.8rem;
-  margin-top: 0.2rem;
+  margin-top: 0.8rem;
   border-radius: 0.25rem;
   background-color: ${({ theme }) => theme.colors.primary};
 `;
@@ -190,17 +190,24 @@ export const InventoryItem = styled.div`
 export const ProductImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
 `;
 
 export const ProductTitle = styled.p`
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 `;
 
 export const ProductImageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 80px;
   height: 80px;
-  object-fit: cover;
+`;
+
+export const EmptyWrapper = styled.div`
+  display: flex;
+  width: 60px;
+  height: 80px;
 `;
 
 export const FollowerCountWrapper = styled.div`
