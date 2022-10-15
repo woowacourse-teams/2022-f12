@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
@@ -42,8 +43,22 @@ export const ChipWrapper = styled.div`
   gap: 1rem;
 `;
 
-export const FollowerCount = styled.div`
+export const FollowerCount = styled.p`
   font-size: 0.95rem;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+export const FollowerLink = styled(Link)`
+  font-size: 0.95rem;
+  background-color: ${({ theme }) => theme.colors.primary};
+  padding: 0.3rem 0.5rem;
+  width: max-content;
+  border-radius: 0.3rem;
+  line-height: 1;
 `;
 
 export const FollowButton = styled.button<{ followed: boolean }>`

@@ -10,6 +10,7 @@ import useFollowing from '@/hooks/useFollowing';
 
 import { GITHUB_IMAGE_SIZE_SEARCH_PARAM } from '@/constants/link';
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
+import ROUTES from '@/constants/routes';
 
 type Props = {
   userData: Member;
@@ -25,7 +26,7 @@ function UserInfo({ userData, isOwnProfile }: Props) {
     followerCount: initialFollowerCount,
     following,
   } = userData;
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
 
   const loginUserData = useContext(UserDataContext);
   const loginUserGitHubId = loginUserData && loginUserData.member.gitHubId;
@@ -76,6 +77,14 @@ function UserInfo({ userData, isOwnProfile }: Props) {
             {`의 데스크 셋업`}
           </S.UserNameWrapper>
           <S.FollowerCount>{followerCount}명이 팔로우함</S.FollowerCount>
+          {isOwnProfile && (
+            <S.ButtonContainer>
+              <S.FollowerLink to={ROUTES.FOLLOWING}>팔로잉 보기</S.FollowerLink>
+              <S.FollowerLink as={'button'} onClick={logout}>
+                로그아웃
+              </S.FollowerLink>
+            </S.ButtonContainer>
+          )}
         </S.InfoWrapper>
       </S.Container>
       {isLoggedIn && otherProfilePage && (

@@ -47,8 +47,14 @@ function PageLayout() {
 
   return (
     <>
-      <HeaderLogo device={device} />
-      {device === 'desktop' && <HeaderNav />}
+      {device !== 'desktop' && <HeaderLogo.Mobile />}
+
+      {device === 'desktop' && (
+        <>
+          <HeaderLogo />
+          <HeaderNav />
+        </>
+      )}
       <Suspense>
         <S.Main>
           <AsyncWrapper isReady={isReady} fallback={<Loading />}>

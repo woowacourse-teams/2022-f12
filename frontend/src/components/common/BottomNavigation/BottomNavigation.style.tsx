@@ -1,74 +1,49 @@
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.nav`
   position: fixed;
-  bottom: 0;
-  left: 0;
-  height: 5.5rem;
-  width: 100%;
+  bottom: 1.5rem;
+  left: 5%;
+  height: 4rem;
+  width: 90%;
   background-color: ${({ theme }) => theme.colors.white};
-
-  &::after {
-    position: absolute;
-    bottom: 5.5rem;
-    left: 0;
-    content: '';
-    height: 0.3rem;
-    width: 100%;
-    background: linear-gradient(
-      180deg,
-      rgba(60, 60, 60, 0) 0%,
-      rgba(60, 60, 60, 0.1) 100%
-    );
-  }
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-radius: 1.5rem;
 
   display: flex;
   justify-content: space-around;
-  padding: 0 0.8rem 1rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.tablet} {
+      width: 50%;
+      left: 25%;
+    }
+  `}
 `;
 
-export const NavButton = styled(Link)`
-  width: 100%;
-  padding: 0.5rem;
+export const NavButton = styled(NavLink)`
+  width: max-content;
+  padding: 0.8rem 1.4rem;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
 
-  font-size: 0.7rem;
+  font-size: 0.9rem;
+  font-weight: 500;
 
-  svg {
-    width: 70%;
-  }
-`;
+  border-radius: 1.1rem;
 
-export const LoginLink = styled.a`
-  width: 100%;
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+  transition: background-color 100ms, font-weight 100ms, box-shadow 100ms;
 
-  font-size: 0.7rem;
-
-  svg {
-    width: 70%;
-  }
-`;
-
-export const LogoutLink = styled.a`
-  width: 100%;
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-
-  font-size: 0.7rem;
-
-  svg {
-    width: 70%;
+  &.active {
+    font-weight: 700;
+    background-color: ${({ theme }) => theme.colors.primary};
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.15);
   }
 `;
