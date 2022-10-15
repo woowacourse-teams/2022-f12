@@ -17,6 +17,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-end;
+  gap: 0.5rem;
 `;
 
 export const Name = styled.p`
@@ -29,4 +30,10 @@ export const Details = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+`;
+
+export const SearchLink = styled.a`
+  align-self: flex-start;
+  text-decoration: underline;
+  font-weight: 500;
 `;
