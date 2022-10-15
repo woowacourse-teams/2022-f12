@@ -175,7 +175,7 @@ function ProfileCard({
                           {equipment.name}
                         </Link>
                       ) : (
-                        `${TITLE.DESK_SETUP}에 추가한 ${equipment.name}가 없어요`
+                        `${TITLE.DESK_SETUP}에 ${equipment.name}가 없어요.`
                       )}
                     </S.ProductTitle>
                   </S.InventoryItem>
