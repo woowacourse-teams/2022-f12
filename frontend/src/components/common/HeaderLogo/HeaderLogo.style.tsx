@@ -3,12 +3,16 @@ import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.white};
 
-  justify-content: flex-start;
+  justify-content: space-between;
   height: 4rem;
+
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1;
 
   &::after {
     position: absolute;
@@ -39,7 +43,18 @@ export const Container = styled.div`
   `};
 `;
 
-export const LinkWrapper = styled(Link)`
+export const LogoLink = styled(Link)`
   padding: 1rem;
   width: 11rem;
+`;
+
+export const CustomLink = styled(Link)`
+  padding: 1rem;
+  width: 5rem;
+
+  text-align: center;
+
+  svg {
+    width: 2em;
+  }
 `;
