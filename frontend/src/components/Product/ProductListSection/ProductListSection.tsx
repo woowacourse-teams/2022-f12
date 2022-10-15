@@ -1,15 +1,24 @@
 import { Link } from 'react-router-dom';
 
+
+
 import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
 import Masonry from '@/components/common/Masonry/Masonry';
 import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlaceholder';
 
+
+
 import ProductCard from '@/components/Product/ProductCard/ProductCard';
 import * as S from '@/components/Product/ProductListSection/ProductListSection.style';
 
+
+
 import useDevice from '@/hooks/useDevice';
 
+
+
 import ROUTES from '@/constants/routes';
+
 
 type Props = Omit<DataFetchStatus, 'isReady'> & {
   title: string;
@@ -42,7 +51,12 @@ function ProductListSection({
     displayType === 'flex' ? DEVICE_TO_SIZE[device] : device === 'tablet' ? 'm' : 'l';
 
   const productList = data.map(({ id, imageUrl, name, rating, reviewCount }, index) => (
-    <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
+    <Link
+      to={`${ROUTES.PRODUCT}/${id}`}
+      key={id}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       <ProductCard
         imageUrl={imageUrl}
         name={name}
