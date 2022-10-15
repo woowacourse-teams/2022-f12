@@ -41,12 +41,34 @@ export const Container = styled.div<{ index: number }>`
 
 export const LeftSection = styled.div`
   position: relative;
-  width: 20%;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      width: 0%;
+    }
+    @media screen and ${device.tablet} {
+      width: 20%;
+    }
+    @media screen and ${device.desktop} {
+      width: 20%;
+    }
+  `}
 `;
 
 export const RightSection = styled.div`
   position: relative;
-  width: 80%;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      width: 100%;
+    }
+    @media screen and ${device.tablet} {
+      width: 80%;
+    }
+    @media screen and ${device.desktop} {
+      width: 80%;
+    }
+  `}
 `;
 
 export const ProfileImageWrapper = styled.div`
@@ -54,7 +76,7 @@ export const ProfileImageWrapper = styled.div`
 
   ${({ theme: { device } }) => css`
     @media screen and ${device.mobile} {
-      left: -0.6rem;
+      left: 0rem;
       top: 0.4rem;
       width: 3.5rem;
       height: 3.5rem;
@@ -63,13 +85,13 @@ export const ProfileImageWrapper = styled.div`
     @media screen and ${device.tablet} {
       left: -6rem;
       top: 2rem;
-      width: 8.5rem;
-      height: 8.5rem;
+      width: 9.5rem;
+      height: 9.5rem;
       box-shadow: 5px 5px 10px ${({ theme }) => theme.colors.secondary};
     }
     @media screen and ${device.desktop} {
       left: -6rem;
-      top: 1.6rem;
+      top: 2rem;
       width: 9.5rem;
       height: 9.5rem;
       box-shadow: 5px 5px 10px ${({ theme }) => theme.colors.secondary};
@@ -83,7 +105,6 @@ export const ProfileImageWrapper = styled.div`
 export const ProfileImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
 `;
 
 export const UserInfoWrapper = styled.div`
@@ -92,6 +113,12 @@ export const UserInfoWrapper = styled.div`
   justify-content: space-between;
   margin-bottom: 0.9rem;
   gap: 0.1rem;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      margin-left: 25%;
+    }
+  `}
 `;
 
 export const UserNameWrapper = styled.div`
@@ -111,7 +138,9 @@ export const UserName = styled.span``;
 
 export const InventoryWrapper = styled.div`
   display: flex;
+  width: 100%;
   justify-content: space-between;
+  margin-top: 1.5rem;
   height: 7rem;
 `;
 
@@ -133,14 +162,14 @@ export const ProfileViewButton = styled.button`
   border: none;
   width: 100%;
   height: 1.8rem;
-  margin-top: 0.2rem;
+  margin-top: 0.8rem;
   border-radius: 0.25rem;
   background-color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const InventoryListWrapper = styled.div`
   overflow: hidden;
-  height: 102px;
+  height: 104px;
 `;
 
 export const InventoryList = styled.div<{ positionX: number }>`
@@ -161,15 +190,24 @@ export const InventoryItem = styled.div`
 export const ProductImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  aspect-ratio: 1 / 1;
 `;
 
 export const ProductTitle = styled.p`
-  font-size: 0.3rem;
+  font-size: 0.75rem;
 `;
 
 export const ProductImageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 80px;
+  height: 80px;
+`;
+
+export const EmptyWrapper = styled.div`
+  display: flex;
+  width: 60px;
   height: 80px;
 `;
 

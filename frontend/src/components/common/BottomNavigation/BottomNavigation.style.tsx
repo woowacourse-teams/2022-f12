@@ -5,13 +5,13 @@ export const Container = styled.nav`
   position: fixed;
   bottom: 0;
   left: 0;
-  height: 4.5rem;
+  height: 5.5rem;
   width: 100%;
   background-color: ${({ theme }) => theme.colors.white};
 
   &::after {
     position: absolute;
-    bottom: 4.5rem;
+    bottom: 5.5rem;
     left: 0;
     content: '';
     height: 0.3rem;
@@ -25,7 +25,7 @@ export const Container = styled.nav`
 
   display: flex;
   justify-content: space-around;
-  padding: 0 0.8rem;
+  padding: 0 0.8rem 1rem;
 `;
 
 export const NavButton = styled(Link)`
@@ -44,6 +44,21 @@ export const NavButton = styled(Link)`
 `;
 
 export const LoginLink = styled.a`
+  width: 100%;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  font-size: 0.7rem;
+
+  svg {
+    width: 70%;
+  }
+`;
+
+export const LogoutLink = styled.a`
   width: 100%;
   padding: 0.5rem;
   display: flex;

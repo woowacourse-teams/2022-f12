@@ -16,7 +16,6 @@ import ROUTES from '@/constants/routes';
 import Empty from '@/assets/empty.svg';
 import GithubIcon from '@/assets/github.svg';
 import NextSign from '@/assets/nextSign.svg';
-import PrevSign from '@/assets/prevSign.svg';
 
 const DISTANCE_DIFFERENCE = 116;
 
@@ -142,17 +141,17 @@ function ProfileCard({
             <Chip size="s">{JOB_TYPES[jobType]}</Chip>
             <Chip size="s">{CAREER_LEVELS[careerLevel]}</Chip>
           </S.UserCareer>
+          {isLoggedIn && (
+            <S.FollowingButtonWrapper>
+              <S.FollowingButton followed={followed} onClick={toggleFollow}>
+                {followed ? '팔로잉' : '팔로우'}
+              </S.FollowingButton>
+            </S.FollowingButtonWrapper>
+          )}
         </S.UserInfoWrapper>
-        {isLoggedIn && (
-          <S.FollowingButtonWrapper>
-            <S.FollowingButton followed={followed} onClick={toggleFollow}>
-              {followed ? '팔로잉' : '팔로우'}
-            </S.FollowingButton>
-          </S.FollowingButtonWrapper>
-        )}
         <S.InventoryWrapper>
           <S.LeftButton onClick={handleLeftButtonClick}>
-            <PrevSign />
+            <NextSign transform="rotate(-180)" />
           </S.LeftButton>
           <S.InventoryListWrapper>
             <S.InventoryList positionX={positionX}>
@@ -165,18 +164,20 @@ function ProfileCard({
                           <S.ProductImage src={equipment.imageUrl as string} />
                         </Link>
                       ) : (
-                        <Empty />
+                        <S.EmptyWrapper>
+                          <Empty />
+                        </S.EmptyWrapper>
                       )}
-                      <S.ProductTitle>
-                        {equipment.id ? (
-                          <Link to={`${ROUTES.PRODUCT}/${equipment.id as string}`}>
-                            {equipment.name}
-                          </Link>
-                        ) : (
-                          `${TITLE.DESK_SETUP}에 추가한 ${equipment.name}가 없어요`
-                        )}
-                      </S.ProductTitle>
                     </S.ProductImageWrapper>
+                    <S.ProductTitle>
+                      {equipment.id ? (
+                        <Link to={`${ROUTES.PRODUCT}/${equipment.id as string}`}>
+                          {equipment.name}
+                        </Link>
+                      ) : (
+                        `${TITLE.DESK_SETUP}에 ${equipment.name}가 없어요.`
+                      )}
+                    </S.ProductTitle>
                   </S.InventoryItem>
                 );
               })}

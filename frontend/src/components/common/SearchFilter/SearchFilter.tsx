@@ -26,7 +26,7 @@ function SearchFilter({ title, value, setValue, options }: Props) {
           return (
             <ChipFilter
               key={index}
-              fontSize={14}
+              fontSize={13}
               value={key}
               filter={value}
               handleClick={handleFilterClick}

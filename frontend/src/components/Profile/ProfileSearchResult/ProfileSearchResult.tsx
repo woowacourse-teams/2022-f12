@@ -32,19 +32,18 @@ function ProfileSearchResult({
       index
     ) => {
       return (
-        <S.CardWrapper key={id}>
-          <ProfileCard
-            id={id}
-            gitHubId={gitHubId}
-            imageUrl={imageUrl}
-            careerLevel={careerLevel}
-            jobType={jobType}
-            profileProducts={profileProducts}
-            followerCount={followerCount}
-            following={following}
-            index={index % PROFILE_SEARCH_SIZE}
-          />
-        </S.CardWrapper>
+        <ProfileCard
+          key={id}
+          id={id}
+          gitHubId={gitHubId}
+          imageUrl={imageUrl}
+          careerLevel={careerLevel}
+          jobType={jobType}
+          profileProducts={profileProducts}
+          followerCount={followerCount}
+          following={following}
+          index={index % PROFILE_SEARCH_SIZE}
+        />
       );
     }
   );

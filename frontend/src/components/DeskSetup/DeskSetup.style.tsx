@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
+export const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   overflow-x: scroll;
@@ -34,6 +34,6 @@ export const Container = styled.div`
 export const NoContents = styled.div`
   display: flex;
   justify-content: center;
-  width: 100%;
-  font-size: 1.5rem;
+  width: 80%;
+  font-size: 1.3rem;
 `;
