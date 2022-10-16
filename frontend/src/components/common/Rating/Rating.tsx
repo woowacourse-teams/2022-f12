@@ -24,7 +24,10 @@ function Rating({ rating, type = '일반', size = 'small' }: Props) {
       {type === '일반' ? (
         <>
           {RatingUnit}
-          <S.Value size={size}>{rating.toFixed(2)}</S.Value>
+          <S.Value size={size}>
+            <S.UnreadableValue aria-hidden="true">{rating.toFixed(2)}</S.UnreadableValue>
+            <S.ReadableValue>{`평점 ${rating.toFixed(2)}점`}</S.ReadableValue>
+          </S.Value>
         </>
       ) : (
         Array.from({ length: rating }).map((_, index) => (
