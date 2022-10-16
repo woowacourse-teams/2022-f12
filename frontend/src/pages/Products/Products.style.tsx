@@ -17,7 +17,13 @@ export const SearchBarWrapper = styled.div`
 `;
 
 export const SRMessageContainer = styled.p`
-  opacity: 0;
-  height: 0;
-  width: 0;
+  overflow: hidden;
+  white-space: no-wrap;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
 `;
