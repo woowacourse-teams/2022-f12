@@ -69,9 +69,9 @@ function Products() {
   );
 
   const createLoadedMessage = (dataLength: number, prevDataLength: number) =>
-    `총 ${dataLength - prevDataLength}개의 상품이 ${
+    `총 ${dataLength - prevDataLength}개의 제품이 ${
       currDataLength !== 0 ? '추가로' : ''
-    }로딩되었습니다`;
+    } 로딩되었습니다`;
 
   useEffect(() => {
     if (isReady) {
@@ -83,6 +83,10 @@ function Products() {
       setLoadedStateMessage('');
     }, 1000);
   }, [products]);
+
+  useEffect(() => {
+    setCurrDataLength(0);
+  }, [sort, category, keyword]);
 
   return (
     <>
