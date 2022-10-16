@@ -15,7 +15,8 @@ import ROUTES from '@/constants/routes';
 
 import Empty from '@/assets/empty.svg';
 import GithubIcon from '@/assets/github.svg';
-import NextSign from '@/assets/nextSign.svg';
+import LeftArrow from '@/assets/left_arrow.svg';
+import RightArrow from '@/assets/right_arrow.svg';
 
 const DISTANCE_DIFFERENCE = 116;
 
@@ -151,7 +152,7 @@ function ProfileCard({
         </S.UserInfoWrapper>
         <S.InventoryWrapper>
           <S.LeftButton onClick={handleLeftButtonClick}>
-            <NextSign transform="rotate(-180)" />
+            <LeftArrow />
           </S.LeftButton>
           <S.InventoryListWrapper>
             <S.InventoryList positionX={positionX}>
@@ -184,7 +185,7 @@ function ProfileCard({
             </S.InventoryList>
           </S.InventoryListWrapper>
           <S.RightButton onClick={handleRightButtonClick}>
-            <NextSign />
+            <RightArrow />
           </S.RightButton>
         </S.InventoryWrapper>
         <S.LinkWrapper to={`${ROUTES.PROFILE}/${id}`}>
