@@ -36,7 +36,7 @@ export const FlexWrapper = styled.div`
   `}
 `;
 
-export const Grid = styled.div<{ columnCount: number }>`
+export const Grid = styled.ul<{ columnCount: number }>`
   display: grid;
   grid-template-columns: repeat(${({ columnCount }) => columnCount}, 1fr);
 `;

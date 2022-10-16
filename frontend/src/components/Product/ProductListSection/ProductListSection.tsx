@@ -39,16 +39,18 @@ function ProductListSection({
     displayType === 'flex' ? DEVICE_TO_SIZE[device] : device === 'tablet' ? 'm' : 'l';
 
   const productList = data.map(({ id, imageUrl, name, rating, reviewCount }, index) => (
-    <S.ProductLink to={`${ROUTES.PRODUCT}/${id}`} key={id}>
-      <ProductCard
-        imageUrl={imageUrl}
-        name={name}
-        rating={rating}
-        reviewCount={reviewCount}
-        index={index % pageSize}
-        size={cardSize}
-      />
-    </S.ProductLink>
+    <li key={id}>
+      <S.ProductLink to={`${ROUTES.PRODUCT}/${id}`}>
+        <ProductCard
+          imageUrl={imageUrl}
+          name={name}
+          rating={rating}
+          reviewCount={reviewCount}
+          index={index % pageSize}
+          size={cardSize}
+        />
+      </S.ProductLink>
+    </li>
   ));
 
   return (
