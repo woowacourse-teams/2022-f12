@@ -22,18 +22,22 @@ function BarGraph({ statistics }: Prop) {
     {
       color: theme.colors.primary,
       percent: Math.round((isJobType ? jobType.frontend : careerLevel.none) * 100),
+      label: isJobType ? jobTypeList[0] : careerLevelList[0],
     },
     {
       color: theme.colors.primaryDark,
       percent: Math.round((isJobType ? jobType.backend : careerLevel.junior) * 100),
+      label: isJobType ? jobTypeList[1] : careerLevelList[1],
     },
     {
       color: theme.colors.secondary,
       percent: Math.round((isJobType ? jobType.mobile : careerLevel.midlevel) * 100),
+      label: isJobType ? jobTypeList[2] : careerLevelList[2],
     },
     {
       color: theme.colors.black,
       percent: Math.round((isJobType ? jobType.etc : careerLevel.senior) * 100),
+      label: isJobType ? jobTypeList[3] : careerLevelList[3],
     },
   ];
 
@@ -43,19 +47,37 @@ function BarGraph({ statistics }: Prop) {
 
   return (
     <S.Container aria-label="통계 정보">
+      <S.BarGraphTitleWrapper>
+        <S.BarGraphTitle>{isJobType ? '직군별 통계' : '연차별 통계'}</S.BarGraphTitle>
+        <S.BarGraphToggleButton onClick={toggleGraph}>
+          <S.UnreadableValue aria-hidden="true">
+            {isJobType ? '연차별 통계 보기' : '직군별 통계 보기'}
+          </S.UnreadableValue>
+          <S.ReadableValue>
+            {isJobType
+              ? '연차별 통계 보기 버튼. 연차별 통계를 보려면 클릭하시고, 직군별 통계를 보려면 다음으로 탭 하세요.'
+              : '직군별 통계 보기 버튼. 직군별 통계를 보려면 클릭하시고, 연차별 통계를 보려면 다음으로 탭 하세요.'}
+          </S.ReadableValue>
+        </S.BarGraphToggleButton>
+      </S.BarGraphTitleWrapper>
       <S.DataWrapper>
         {statisticsData.map((data, index) => {
           return (
             <S.BarWrapper key={index}>
               <S.Bar key={Math.random()} color={data.color} height={data.percent} />
               <S.PercentWrapper>
-                <S.Percent>{data.percent}%</S.Percent>
+                <S.Percent aria-hidden="true">{`${data.percent}%`}</S.Percent>
+                <S.ReadableValue>{`전체 ${isJobType ? '직군' : '연차'} 중 ${
+                  data.percent
+                }%의 ${
+                  data.label
+                } 개발자가 이 제품을 사용하고 있습니다.`}</S.ReadableValue>
               </S.PercentWrapper>
             </S.BarWrapper>
           );
         })}
       </S.DataWrapper>
-      <S.JobTypeWrapper>
+      <S.JobTypeWrapper aria-hidden="true">
         {isJobType
           ? jobTypeList.map((title, index) => {
               return <S.JobType key={index}>{title}</S.JobType>;
@@ -64,12 +86,6 @@ function BarGraph({ statistics }: Prop) {
               return <S.JobType key={index}>{title}</S.JobType>;
             })}
       </S.JobTypeWrapper>
-      <S.BarGraphTitleWrapper>
-        <S.BarGraphTitle>{isJobType ? '직군별 통계' : '연차별 통계'}</S.BarGraphTitle>
-        <S.BarGraphToggleButton onClick={toggleGraph}>
-          {isJobType ? '연차별 통계 보기' : '직군별 통계 보기'}
-        </S.BarGraphToggleButton>
-      </S.BarGraphTitleWrapper>
     </S.Container>
   );
 }
