@@ -13,7 +13,10 @@ function ReviewCount({ reviewCount, size = 'small' }: Props) {
       <S.ReviewIconWrapper size={size}>
         <ReviewIcon />
       </S.ReviewIconWrapper>
-      <S.Value size={size}>{reviewCount}</S.Value>
+      <S.Value size={size}>
+        <S.UnreadableValue aria-hidden="true">{reviewCount}</S.UnreadableValue>
+        <S.ReadableValue>{`${reviewCount}개의 리뷰`}</S.ReadableValue>
+      </S.Value>
     </S.Container>
   );
 }

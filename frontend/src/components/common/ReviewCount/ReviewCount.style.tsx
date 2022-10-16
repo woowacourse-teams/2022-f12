@@ -14,3 +14,16 @@ export const ReviewIconWrapper = styled.div<{ size: 'small' | 'large' }>`
 export const Value = styled.p<{ size: 'small' | 'large' }>`
   font-size: ${({ size }) => (size === 'small' ? '14px' : '24px')};
 `;
+
+export const UnreadableValue = styled.span``;
+
+export const ReadableValue = styled.span`
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+`;
