@@ -10,7 +10,9 @@ export const Container = styled.nav`
   background-color: ${({ theme }) => theme.colors.white};
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   border-radius: 1.5rem;
+`;
 
+export const NavList = styled.ul`
   display: flex;
   justify-content: space-around;
   align-items: center;
