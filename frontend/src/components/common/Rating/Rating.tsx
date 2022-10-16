@@ -21,7 +21,7 @@ function Rating({ rating, type = '일반', size = 'small' }: Props) {
 
   return (
     <>
-      <S.Container aria-label={'평점'} aria-hidden={true}>
+      <S.Container aria-hidden={true}>
         {type === '일반' ? (
           <>
             {RatingUnit}
@@ -35,7 +35,7 @@ function Rating({ rating, type = '일반', size = 'small' }: Props) {
           </>
         )}
       </S.Container>
-      <S.SROnly>{rating.toFixed(2)}점</S.SROnly>
+      <S.SROnly>평점 {rating.toFixed(2)}점</S.SROnly>
     </>
   );
 }
