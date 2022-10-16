@@ -31,8 +31,8 @@ interface ProductSortOption extends Option {
 }
 
 const options: ProductSortOption[] = [
-  { value: 'rating,desc', text: '평점 높은 순' },
   { value: 'reviewCount,desc', text: '리뷰 많은 순' },
+  { value: 'rating,desc', text: '평점 높은 순' },
 ];
 
 const DefaultSort = options[1];
