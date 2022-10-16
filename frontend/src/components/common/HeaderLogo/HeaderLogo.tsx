@@ -27,7 +27,7 @@ function Mobile() {
         <HeaderLogoImageHorizontal />
       </S.LogoLink>
       {isLoggedIn ? (
-        <S.CustomLink to={ROUTES.MY_PROFILE}>
+        <S.CustomLink to={ROUTES.MY_PROFILE} aria-label={'내 프로필 보기'}>
           <Profile />
         </S.CustomLink>
       ) : (
