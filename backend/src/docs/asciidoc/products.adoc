@@ -33,6 +33,10 @@ operation::products-page-get[snippets='error-code-table,http-request,http-respon
 
 operation::products-member-statistics-get[snippets='error-code-table,http-request,http-response']
 
+=== 인기 상품 조회
+
+operation::products-popular-list-get[snippets='error-code-table,http-request,http-response']
+
 === 제품 추가(어드민)
 
 operation::admin-products-create[snippets='error-code-table,http-request,http-response']

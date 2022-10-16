@@ -4,6 +4,7 @@ import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
+import com.woowacourse.f12.dto.response.PopularProductsResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -70,5 +72,10 @@ public class ProductController {
     @GetMapping("/{id}/statistics")
     public ResponseEntity<ProductStatisticsResponse> showStatistics(@PathVariable final Long id) {
         return ResponseEntity.ok(productService.calculateMemberStatisticsById(id));
+    }
+
+    @GetMapping("/popular-list")
+    public ResponseEntity<PopularProductsResponse> showPopularProducts(@RequestParam final int size) {
+        return ResponseEntity.ok(productService.findPopularProducts(size));
     }
 }

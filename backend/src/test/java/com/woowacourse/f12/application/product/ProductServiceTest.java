@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -62,6 +63,9 @@ class ProductServiceTest {
 
     @Mock
     private InventoryProductRepository inventoryProductRepository;
+
+    @Mock
+    private PopularProductsCreator popularProductsCreator;
 
     @InjectMocks
     private ProductService productService;
@@ -186,6 +190,19 @@ class ProductServiceTest {
                 () -> assertThat(productPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsExactly(ProductResponse.from(product))
         );
+    }
+
+    @Test
+    void 인기_제품을_조회한다() {
+        // given
+        given(popularProductsCreator.create(anyInt(), any()))
+                .willReturn(List.of());
+
+        // when
+        productService.findPopularProducts(1);
+
+        // then
+        verify(popularProductsCreator).create(anyInt(), any());
     }
 
     @Test

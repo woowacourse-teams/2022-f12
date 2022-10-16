@@ -19,6 +19,7 @@ import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -187,6 +188,28 @@ class ProductRepositoryTest {
                 () -> assertThat(page.hasNext()).isTrue(),
                 () -> assertThat(page.getContent()).containsOnly(keyboard1)
         );
+    }
+
+    @Test
+    void 리뷰_개수와_평점으로_제품을_조회한다() {
+        // given
+        Product keyboard1 = 제품_저장(KEYBOARD_1.생성());
+        Product keyboard2 = 제품_저장(KEYBOARD_2.생성());
+
+        Member corinne = memberRepository.save(CORINNE.생성());
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1, corinne));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard2, corinne));
+
+        Member mincho = memberRepository.save(MINCHO.생성());
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1, mincho));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard2, mincho));
+
+        // when
+        List<Product> actual = productRepository.findByReviewCountGreaterThanEqualAndRatingGreaterThanEqual(2, 4.5);
+
+        // then
+        assertThat(actual).usingRecursiveFieldByFieldElementComparatorOnFields("name", "imageUrl", "category")
+                .containsOnly(keyboard1);
     }
 
     private Product 제품_저장(Product product) {

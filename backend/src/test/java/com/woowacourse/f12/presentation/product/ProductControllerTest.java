@@ -19,6 +19,9 @@ import static com.woowacourse.f12.exception.ErrorCode.PRODUCT_NOT_FOUND;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.MONITOR_CONSTANT;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.MONITOR_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.MOUSE_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.SOFTWARE_1;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
@@ -44,9 +47,11 @@ import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
+import com.woowacourse.f12.dto.response.PopularProductsResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -233,6 +238,28 @@ class ProductControllerTest extends PresentationTest {
                 .andDo(print());
 
         verify(productService).calculateMemberStatisticsById(1L);
+    }
+
+    @Test
+    void 인기_제품을_조회힌다() throws Exception {
+        // given
+        Product keyboard = KEYBOARD_1.생성(1L, 4.5, 10);
+        Product mouse = MOUSE_1.생성(2L, 5, 3);
+        Product software = SOFTWARE_1.생성(3L, 5, 2);
+        Product monitor = MONITOR_1.생성(4L, 4.5, 2);
+        int popularProductSize = 4;
+        given(productService.findPopularProducts(popularProductSize))
+                .willReturn(PopularProductsResponse.from(List.of(keyboard, mouse, software, monitor)));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/products/popular-list?size=" + popularProductSize));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("products-popular-list-get",
+                        new ErrorCodeSnippet(INVALID_SEARCH_PARAM)))
+                .andDo(print());
+        verify(productService).findPopularProducts(popularProductSize);
     }
 
     @Test

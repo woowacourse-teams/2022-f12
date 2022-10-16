@@ -28,3 +28,7 @@ security:
 
 logging:
   config: classpath:log4j2/log4j2-local.xml
+
+review-count: 2
+rating: 4.5
+products-maximum-size: 100
