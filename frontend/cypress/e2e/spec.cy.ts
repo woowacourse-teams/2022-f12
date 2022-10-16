@@ -16,7 +16,7 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.wait('@productsRequest');
 
       cy.findByRole('region', { name: /제품/ })
-        .findAllByRole('article')
+        .findAllByRole('link')
         .should('be.visible');
     });
 
@@ -24,7 +24,7 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.wait('@reviewsRequest');
 
       cy.findByRole('region', { name: /후기/ })
-        .findAllByRole('article')
+        .findAllByRole('link')
         .should('be.visible');
     });
 
@@ -33,9 +33,11 @@ describe('비회원 사용자 기본 플로우', () => {
         cy.findByRole('region', { name: /후기/ }).isCardImageLoadDone();
       });
 
-      cy.findByRole('region', {
-        name: '무한스크롤 목록 끝 지표',
-      }).scrollIntoView();
+      cy.findByRole('region', { name: /후기/ })
+        .findAllByRole('link')
+        .should('be.visible')
+        .last()
+        .scrollIntoView();
 
       cy.wait('@reviewsRequest').then((res) => {
         const page = new URL(res.request.url).searchParams.get('page');
@@ -52,7 +54,7 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.wait('@productsRequest');
 
       cy.findByRole('region', { name: /키보드/ })
-        .findAllByRole('article')
+        .findAllByRole('link')
         .should('be.visible');
     });
 
@@ -63,7 +65,7 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.wait('@productsRequest');
 
       cy.findByRole('region', { name: /마우스/ })
-        .findAllByRole('article')
+        .findAllByRole('link')
         .should('be.visible');
     });
 
@@ -74,7 +76,7 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.wait('@productsRequest');
 
       cy.findByRole('region', { name: /모니터/ })
-        .findAllByRole('article')
+        .findAllByRole('link')
         .should('be.visible');
     });
 
@@ -85,7 +87,7 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.wait('@productsRequest');
 
       cy.findByRole('region', { name: /거치대/ })
-        .findAllByRole('article')
+        .findAllByRole('link')
         .should('be.visible');
     });
 
@@ -95,7 +97,7 @@ describe('비회원 사용자 기본 플로우', () => {
 
       cy.wait('@productsRequest');
       cy.findByRole('region', { name: /소프트웨어/ })
-        .findAllByRole('article')
+        .findAllByRole('link')
         .should('be.visible');
     });
 
@@ -103,14 +105,14 @@ describe('비회원 사용자 기본 플로우', () => {
       cy.wait('@productsRequest');
 
       cy.findByRole('region', { name: '인기 있는 제품' })
-        .findAllByRole('article')
+        .findAllByRole('link')
         .first()
         // .findByRole('img')
         .click({ force: true });
 
       // 후기는 없는 제품이 있을 수도 있기 때문에 삭제하거나 빈 데이터 이미지 표시 필요
       // cy.findByRole('region', { name: '최근 후기' })
-      //   .findAllByRole('article')
+      //   .findAllByRole('link')
       //   .should('be.visible');
       cy.wait('@productRequest');
 
