@@ -41,7 +41,7 @@ const PRODUCT_SEARCH_SIZE = 12;
 
 function Products() {
   const [keyword, setKeyword] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
-  const [category, setCategory] = useUrlSyncState(SEARCH_PARAMS.CATEGORY);
+  const [category, setCategory] = useUrlSyncState(SEARCH_PARAMS.CATEGORY, '');
   const [sort, setSort] = useUrlSyncState(SEARCH_PARAMS.SORT, DefaultSort.value);
   const [currDataLength, setCurrDataLength] = useState(0);
   const [loadedStateMessage, setLoadedStateMessage] = useState('');
@@ -64,8 +64,13 @@ function Products() {
   });
 
   const title = useMemo(
-    () => (category in CATEGORIES ? CATEGORIES[category as Category] : TITLE.ALL_PRODUCT),
-    [category]
+    () =>
+      keyword === ''
+        ? category in CATEGORIES
+          ? CATEGORIES[category as Category]
+          : TITLE.ALL_PRODUCT
+        : `${keyword} 검색 결과`,
+    [category, keyword]
   );
 
   const createLoadedMessage = (dataLength: number, prevDataLength: number) =>
