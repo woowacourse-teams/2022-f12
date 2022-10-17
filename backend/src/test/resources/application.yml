@@ -10,7 +10,6 @@ spring:
     password:
   flyway:
     enabled: true
-    baseline-on-migrate: true
 
 server:
   port: 8888
