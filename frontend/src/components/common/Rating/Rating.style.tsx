@@ -27,17 +27,3 @@ export const Unit = styled.div<{ size: 'small' | 'medium' | 'large' }>`
 export const Value = styled.div<{ size: 'small' | 'medium' | 'large' }>`
   font-size: ${({ size }) => sizeOptions[size].value}px;
 `;
-
-export const SROnly = styled.p`
-  overflow: hidden;
-  white-space: no-wrap;
-  clip: rect(1px, 1px, 1px, 1px);
-  clip-path: inset(50%);
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  border: 0;
-  top: 0;
-  left: 0;
-`;

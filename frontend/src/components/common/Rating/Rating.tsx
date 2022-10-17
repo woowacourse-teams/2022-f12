@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 
 import * as S from '@/components/common/Rating/Rating.style';
 
+import { SROnly } from '@/style/GlobalStyles';
 import theme from '@/style/theme';
 
 import Heart from '@/assets/heart.svg';
@@ -35,7 +36,7 @@ function Rating({ rating, type = '일반', size = 'small' }: Props) {
           </>
         )}
       </S.Container>
-      <S.SROnly>평점 {rating.toFixed(2)}점</S.SROnly>
+      <SROnly>평점 {rating.toFixed(2)}점</SROnly>
     </>
   );
 }

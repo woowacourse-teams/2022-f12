@@ -20,6 +20,8 @@ import TITLE from '@/constants/header';
 import { CATEGORIES } from '@/constants/product';
 import SEARCH_PARAMS from '@/constants/searchParams';
 
+import { SROnly } from '@/style/GlobalStyles';
+
 type Option = { value: string; text: string };
 
 type Sort = 'rating,desc' | 'reviewCount,desc';
@@ -107,9 +109,7 @@ function Products() {
       <SectionHeader title={title}>
         <Select value={sort} setValue={setSort} options={options} />
       </SectionHeader>
-      <S.SRMessageContainer role={'status'}>
-        {loadedStateMessage !== '' && loadedStateMessage}
-      </S.SRMessageContainer>
+      <SROnly role={'status'}>{loadedStateMessage !== '' && loadedStateMessage}</SROnly>
       <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
         <ProductListSection
           title={title}

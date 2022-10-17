@@ -15,17 +15,3 @@ export const SearchBarWrapper = styled.section`
   flex-direction: column;
   gap: 1rem;
 `;
-
-export const SRMessageContainer = styled.p`
-  overflow: hidden;
-  white-space: no-wrap;
-  clip: rect(1px, 1px, 1px, 1px);
-  clip-path: inset(50%);
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  border: 0;
-  top: 0;
-  left: 0;
-`;
