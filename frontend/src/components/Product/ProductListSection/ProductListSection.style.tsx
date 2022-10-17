@@ -27,6 +27,7 @@ export const FlexWrapper = styled.div`
     }
     @media screen and ${device.desktop} {
       min-height: 28rem;
+      justify-content: space-between;
       -ms-overflow-style: none;
       scrollbar-width: none;
       &::-webkit-scrollbar {
@@ -36,11 +37,23 @@ export const FlexWrapper = styled.div`
   `}
 `;
 
+export const Grid = styled.ul<{ columnCount: number }>`
+  display: grid;
+  grid-template-columns: repeat(${({ columnCount }) => columnCount}, 1fr);
+`;
+
 export const Title = styled.h1`
   font-size: 1.5rem;
 `;
 
 export const CustomLink = styled(Link)``;
+
+export const ProductLink = styled(Link)`
+  display: flex;
+  justify-content: center;
+  width: max-content;
+  margin: 0 auto;
+`;
 
 export const Wrapper = styled.div`
   margin: 1rem auto 0 auto;

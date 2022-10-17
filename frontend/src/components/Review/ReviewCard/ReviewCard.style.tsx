@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-export const Container = styled.article<{ index: number }>`
+export const Container = styled.div<{ index: number }>`
   display: flex;
   gap: 1rem;
   border-radius: 0.375rem;

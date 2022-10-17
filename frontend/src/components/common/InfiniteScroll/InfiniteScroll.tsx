@@ -34,11 +34,17 @@ function InfiniteScroll({
   }, [isError]);
 
   return (
-    <>
+    <section role={'feed'} aria-busy={!isLoading}>
       {children}
       {isLoading && <Loading />}
-      <section ref={endRef} aria-label="무한스크롤 목록 끝 지표" />
-    </>
+      <section
+        aria-hidden={'true'}
+        aria-label={'무한스크롤 목록 끝 지표'}
+        tabIndex={0}
+        ref={endRef}
+        style={{ transform: 'translateY(-200px)' }}
+      />
+    </section>
   );
 }
 
