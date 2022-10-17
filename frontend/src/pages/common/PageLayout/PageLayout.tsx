@@ -47,7 +47,7 @@ function PageLayout() {
 
   return (
     <>
-      {device !== 'desktop' && <HeaderLogo.Mobile />}
+      {device !== 'desktop' && <HeaderNav.Mobile />}
 
       {device === 'desktop' && (
         <>
