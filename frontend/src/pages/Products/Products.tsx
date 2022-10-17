@@ -52,6 +52,7 @@ function Products() {
   const {
     result: products,
     getNextPage,
+    hasNextPage,
     isLoading,
     isReady,
     isError,
@@ -78,7 +79,11 @@ function Products() {
   const createLoadedMessage = (dataLength: number, prevDataLength: number) =>
     `총 ${dataLength - prevDataLength}개의 제품이 ${
       currDataLength !== 0 ? '추가로' : ''
-    } 로딩되었습니다`;
+    } 로딩되었습니다. ${
+      currDataLength === 0 && hasNextPage
+        ? '추가로 로딩할 수 있습니다. 마지막까지 탐색하면 자동으로 로딩됩니다.'
+        : ''
+    }`;
 
   useEffect(() => {
     if (isReady) {
