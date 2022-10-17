@@ -30,8 +30,17 @@ function Modal({
 
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const closeOnEscape = (e: KeyboardEvent) => {
+    if (e.code !== 'Escape') return;
+    handleClose();
+  };
+
   useEffect(() => {
     modalRef.current.focus();
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape);
+    };
   }, []);
 
   return createPortal(
