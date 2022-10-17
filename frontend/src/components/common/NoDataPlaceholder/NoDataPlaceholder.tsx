@@ -4,7 +4,9 @@ function NoDataPlaceholder() {
   return (
     <div style={{ width: '200px' }}>
       <Empty />
-      <div style={{ width: '100%', textAlign: 'center' }}>아무것도 찾지 못했어요..</div>
+      <div style={{ width: '100%', textAlign: 'center', marginTop: '1rem' }} role="alert">
+        아무것도 찾지 못했어요..
+      </div>
     </div>
   );
 }
