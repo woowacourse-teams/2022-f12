@@ -14,7 +14,7 @@ public class FollowerCountBatchScheduler {
         this.batchService = batchService;
     }
 
-    @Scheduled(cron = "0 0 0/1 1/1 * ? *")
+    @Scheduled(cron = "0 0 0/1 1/1 * ?")
     public void execute() {
         try {
             batchService.updateFollowerCount();
