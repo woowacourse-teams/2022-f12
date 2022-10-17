@@ -78,35 +78,40 @@ function ReviewForm({
   }, []);
 
   return (
-    <S.Container>
-      <S.Title tabIndex={0} ref={modalRef}>
-        {isEdit ? '리뷰 수정하기' : '리뷰 작성하기'}
-      </S.Title>
-      <S.Form onSubmit={submitForm} onChange={handleFormChange}>
-        <S.Label isInvalid={isFormInvalid && isRatingEmpty}>
-          <p>평점을 입력해주세요</p>
-          <RatingInput rating={rating} setRating={setRating} />
-        </S.Label>
-        <S.Label isInvalid={isFormInvalid && isContentEmpty}>
-          <S.LabelTop>
-            <p>총평을 입력해주세요</p>
-            <p>{content.length} / 1000</p>
-          </S.LabelTop>
-          <S.Textarea
-            value={content}
-            onChange={handleContentChange}
-            required
-            maxLength={1000}
-          />
-        </S.Label>
-        <S.Footer>
-          <S.SubmitButton>{isEdit ? '리뷰 수정' : '리뷰 추가'}</S.SubmitButton>
-          {isFormInvalid && (
-            <S.ErrorMessage>{VALIDATION_ERROR_MESSAGES.FORM_INCOMPLETE}</S.ErrorMessage>
-          )}
-        </S.Footer>
-      </S.Form>
-    </S.Container>
+    <>
+      <S.ReadableValue aria-live="assertive">
+        {content.length === 1000 && '리뷰는 1000자까지 입력 가능합니다'}
+      </S.ReadableValue>
+      <S.Container>
+        <S.Title tabIndex={0} ref={modalRef}>
+          {isEdit ? '리뷰 수정하기' : '리뷰 작성하기'}
+        </S.Title>
+        <S.Form onSubmit={submitForm} onChange={handleFormChange}>
+          <S.Label isInvalid={isFormInvalid && isRatingEmpty}>
+            <p>평점을 입력해주세요</p>
+            <RatingInput rating={rating} setRating={setRating} />
+          </S.Label>
+          <S.Label isInvalid={isFormInvalid && isContentEmpty}>
+            <S.LabelTop>
+              <p>총평을 입력해주세요</p>
+              <p aria-hidden="true">{content.length} / 1000</p>
+            </S.LabelTop>
+            <S.Textarea
+              value={content}
+              onChange={handleContentChange}
+              required
+              maxLength={1000}
+            />
+          </S.Label>
+          <S.Footer>
+            <S.SubmitButton>{isEdit ? '리뷰 수정' : '리뷰 추가'}</S.SubmitButton>
+            {isFormInvalid && (
+              <S.ErrorMessage>{VALIDATION_ERROR_MESSAGES.FORM_INCOMPLETE}</S.ErrorMessage>
+            )}
+          </S.Footer>
+        </S.Form>
+      </S.Container>
+    </>
   );
 }
 
