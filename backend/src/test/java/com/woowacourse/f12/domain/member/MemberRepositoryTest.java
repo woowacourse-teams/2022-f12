@@ -315,4 +315,27 @@ class MemberRepositoryTest {
         assertThatThrownBy(() -> memberRepository.save(member2))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
+
+    @Test
+    void 회원의_팔로워_수의_정합성을_맞춘다() {
+        // given
+        Member member = CORINNE.생성();
+        Member follower = MINCHO.생성();
+        memberRepository.save(member);
+        memberRepository.save(follower);
+        Following following = Following.builder()
+                .followerId(follower.getId())
+                .followingId(member.getId())
+                .build();
+        followingRepository.save(following);
+
+        // when
+        memberRepository.updateFollowerCountBatch();
+
+        // then
+        Member actual = memberRepository.findById(member.getId())
+                .orElseThrow();
+
+        assertThat(actual.getFollowerCount()).isOne();
+    }
 }
