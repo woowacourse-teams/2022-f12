@@ -9,7 +9,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 
     List<Product> findByReviewCountGreaterThanEqualAndRatingGreaterThanEqual(int reviewCount, double rating);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "update Product p "
             + "set p.rating = (p.totalRating + :reviewRating) / cast((p.reviewCount + 1) as double), "
             + "p.reviewCount = p.reviewCount + 1, "
@@ -17,7 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
             + "where p.id = :productId")
     void updateProductStatisticsForReviewInsert(Long productId, int reviewRating);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "update Product p "
             + "set p.rating = case p.reviewCount when 1 then 0 "
             + "else ((p.totalRating - :reviewRating) / cast((p.reviewCount - 1) as double)) end , "
@@ -26,7 +26,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
             + "where p.id = :productId")
     void updateProductStatisticsForReviewDelete(Long productId, int reviewRating);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "update Product p "
             + "set p.rating = (p.totalRating + :ratingGap) / cast(p.reviewCount as double), "
             + "p.totalRating = p.totalRating + :ratingGap "

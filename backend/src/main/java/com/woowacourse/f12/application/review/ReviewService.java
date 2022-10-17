@@ -113,7 +113,6 @@ public class ReviewService {
         final Review updateReview = updateRequest.toReview(target.getProduct(), target.getMember());
         int ratingGap = updateReview.getRating() - target.getRating();
         target.update(updateReview);
-        reviewRepository.flush();
         productRepository.updateProductStatisticsForReviewUpdate(target.getProduct().getId(), ratingGap);
     }
 
@@ -125,8 +124,6 @@ public class ReviewService {
                 .orElseThrow(InventoryProductNotFoundException::new);
         inventoryProductRepository.delete(inventoryProduct);
         reviewRepository.delete(review);
-//        inventoryProductRepository.flush();
-        reviewRepository.flush();
         productRepository.updateProductStatisticsForReviewDelete(review.getProduct().getId(), review.getRating());
     }
 
