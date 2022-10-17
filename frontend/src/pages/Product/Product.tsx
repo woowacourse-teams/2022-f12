@@ -60,7 +60,7 @@ function Product() {
   const reviewRef = useRef<HTMLDivElement>(null);
 
   const handleFocus = () => {
-    reviewRef.current.focus();
+    reviewRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const [isSheetOpen, toggleSheetOpen] = useReducer((isSheetOpen: boolean) => {
@@ -112,7 +112,7 @@ function Product() {
           isReady={isReviewReady}
           isError={isReviewError}
         >
-          <S.ReviewListContainer tabIndex={0} ref={reviewRef} aria-label="최근 후기">
+          <div ref={reviewRef}>
             <ReviewListSection
               columns={1}
               data={reviews}
@@ -124,7 +124,7 @@ function Product() {
               isError={isReviewError}
               pageSize={PRODUCT_PAGE_REVIEW_SIZE}
             />
-          </S.ReviewListContainer>
+          </div>
         </AsyncWrapper>
         {shouldSheetRender && (
           <ReviewBottomSheet

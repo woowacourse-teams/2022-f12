@@ -27,7 +27,7 @@ function ReviewListSection({
   handleFocus,
 }: Props) {
   return (
-    <>
+    <S.Container aria-label="최근 후기">
       <InfiniteScroll
         handleContentLoad={getNextPage}
         isLoading={isLoading}
@@ -48,7 +48,7 @@ function ReviewListSection({
           ))}
         </S.Wrapper>
       </InfiniteScroll>
-    </>
+    </S.Container>
   );
 }
 

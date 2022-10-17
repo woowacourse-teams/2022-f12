@@ -116,7 +116,8 @@ describe('비회원 사용자 기본 플로우', () => {
       //   .should('be.visible');
       cy.wait('@productRequest');
 
-      expect(cy.findByRole('img', { name: '제품 이미지' })).to.exist;
+      expect(cy.findByRole('region', { name: '제품 상세 정보' }).findByRole('img')).to
+        .exist;
 
       cy.findByRole('region', { name: '통계 정보' })
         .scrollIntoView()

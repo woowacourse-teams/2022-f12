@@ -11,8 +11,8 @@ function ProductDetail({ product }: Props) {
   const { imageUrl, name, rating, reviewCount } = product;
 
   return (
-    <S.Container>
-      <S.Image src={imageUrl} aria-label={`${name} 이미지`} />
+    <S.Container aria-label="제품 상세 정보">
+      <S.Image src={imageUrl} alt={''} />
       <S.Wrapper>
         <S.Name>{name}</S.Name>
         <S.Details>
