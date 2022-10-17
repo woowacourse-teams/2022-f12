@@ -27,6 +27,7 @@ export const FlexWrapper = styled.div`
     }
     @media screen and ${device.desktop} {
       min-height: 28rem;
+      justify-content: space-between;
       -ms-overflow-style: none;
       scrollbar-width: none;
       &::-webkit-scrollbar {
