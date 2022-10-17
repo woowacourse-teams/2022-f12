@@ -63,3 +63,16 @@ export const SubmitButton = styled.button`
 export const ErrorMessage = styled.p`
   color: red;
 `;
+
+export const ReadableValue = styled.div`
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  top: 0;
+  left: 0;
+`;

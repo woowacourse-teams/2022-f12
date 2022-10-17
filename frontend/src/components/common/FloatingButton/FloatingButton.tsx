@@ -7,7 +7,11 @@ type Props = {
 };
 
 function FloatingButton({ clickHandler, children }: PropsWithChildren<Props>) {
-  return <S.Button onClick={clickHandler}>{children}</S.Button>;
+  return (
+    <S.Button aria-label="리뷰 작성하기" onClick={clickHandler}>
+      {children}
+    </S.Button>
+  );
 }
 
 export default FloatingButton;

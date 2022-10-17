@@ -47,3 +47,12 @@ export const ReviewListWrapper = styled.div`
     }
   `}
 `;
+
+export const ReviewListContainer = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+
+  min-height: 10rem;
+`;

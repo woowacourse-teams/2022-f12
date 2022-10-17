@@ -17,7 +17,11 @@ function BottomSheet({
   animationTrigger,
 }: PropsWithChildren<Props>) {
   return createPortal(
-    <S.Container onTransitionEnd={handleUnmount} animationTrigger={animationTrigger}>
+    <S.Container
+      role="dialog"
+      onTransitionEnd={handleUnmount}
+      animationTrigger={animationTrigger}
+    >
       <S.Backdrop onClick={handleClose} />
       <S.Content>{children}</S.Content>
     </S.Container>,

@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 import * as S from '@/components/common/Modal/Modal.style';
@@ -28,10 +28,16 @@ function Modal({
     };
   }, []);
 
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    modalRef.current.focus();
+  }, []);
+
   return createPortal(
     <S.Container scrollOffset={scrollOffset} onTransitionEnd={handleUnmount}>
       <S.Backdrop onClick={handleClose} animationTrigger={animationTrigger} />
-      <S.Content animationTrigger={animationTrigger}>
+      <S.Content tabIndex={0} ref={modalRef} animationTrigger={animationTrigger}>
         {children}
         <ActionButtons handleClose={handleClose} handleConfirm={handleConfirm} />
       </S.Content>

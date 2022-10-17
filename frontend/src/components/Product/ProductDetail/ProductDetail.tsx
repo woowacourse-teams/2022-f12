@@ -12,7 +12,7 @@ function ProductDetail({ product }: Props) {
 
   return (
     <S.Container>
-      <S.Image src={imageUrl} aria-label="제품 이미지" />
+      <S.Image src={imageUrl} aria-label={`${name} 이미지`} />
       <S.Wrapper>
         <S.Name>{name}</S.Name>
         <S.Details>

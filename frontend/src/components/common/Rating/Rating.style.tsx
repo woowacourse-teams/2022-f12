@@ -27,3 +27,18 @@ export const Unit = styled.div<{ size: 'small' | 'medium' | 'large' }>`
 export const Value = styled.div<{ size: 'small' | 'medium' | 'large' }>`
   font-size: ${({ size }) => sizeOptions[size].value}px;
 `;
+
+export const UnreadableValue = styled.span``;
+
+export const ReadableValue = styled.span`
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  top: 0;
+  left: 0;
+`;
