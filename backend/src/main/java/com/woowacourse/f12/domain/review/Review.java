@@ -88,25 +88,13 @@ public class Review {
         }
     }
 
-    public void reflectToProductWhenWritten() {
-        product.increaseReviewCount();
-        product.increaseRating(rating);
-    }
-
-    public void reflectToProductBeforeDelete() {
-        product.decreaseReviewCount();
-        product.decreaseRating(rating);
-    }
-
     public boolean isWrittenBy(final Member member) {
         return this.member.equals(member);
     }
 
     public void update(final Review updateReview) {
-        product.decreaseRating(rating);
         content = updateReview.getContent();
         rating = updateReview.getRating();
-        product.increaseRating(rating);
     }
 
     @Override

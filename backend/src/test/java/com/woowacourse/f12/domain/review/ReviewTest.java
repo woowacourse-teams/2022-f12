@@ -126,7 +126,6 @@ class ReviewTest {
                 .rating(5)
                 .product(product)
                 .build();
-        review.reflectToProductWhenWritten();
 
         Review updateReview = Review.builder()
                 .id(2L)
@@ -143,57 +142,7 @@ class ReviewTest {
                 () -> assertThat(review.getId()).isEqualTo(1L),
                 () -> assertThat(review).usingRecursiveComparison()
                         .ignoringFields("id", "product")
-                        .isEqualTo(updateReview),
-                () -> assertThat(review.getProduct().getReviewCount()).isOne(),
-                () -> assertThat(review.getProduct().getTotalRating()).isEqualTo(4),
-                () -> assertThat(review.getProduct().getRating()).isEqualTo(4.0)
-        );
-    }
-
-    @Test
-    void 리뷰_작성_시_리뷰_대상_제품의_리뷰_개수와_평점을_증가시킨다() {
-        // given
-        Product product = Product.builder()
-                .build();
-
-        Review review = Review.builder()
-                .content("내용")
-                .rating(5)
-                .product(product)
-                .build();
-
-        // when
-        review.reflectToProductWhenWritten();
-
-        // then
-        assertAll(
-                () -> assertThat(product.getReviewCount()).isOne(),
-                () -> assertThat(product.getTotalRating()).isEqualTo(5),
-                () -> assertThat(product.getRating()).isEqualTo(5.0)
-        );
-    }
-
-    @Test
-    void 리뷰_삭제_전에_리뷰_대상_제품의_리뷰_개수와_평점을_감소시킨다() {
-        // given
-        Product product = Product.builder()
-                .build();
-
-        Review review = Review.builder()
-                .content("내용")
-                .rating(5)
-                .product(product)
-                .build();
-        review.reflectToProductWhenWritten();
-
-        // when
-        review.reflectToProductBeforeDelete();
-
-        // then
-        assertAll(
-                () -> assertThat(product.getReviewCount()).isZero(),
-                () -> assertThat(product.getTotalRating()).isEqualTo(0),
-                () -> assertThat(product.getRating()).isEqualTo(0)
+                        .isEqualTo(updateReview)
         );
     }
 }
