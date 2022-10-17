@@ -15,14 +15,15 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.test.context.jdbc.Sql;
 
 @JdbcTest
-@Sql("classpath:refreshTokenDDL.sql")
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 class RefreshTokenRepositoryImplTest {
 
     private final String tokenValue = "tokenValue";

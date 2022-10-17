@@ -33,6 +33,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
     implementation 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3'
 
+    implementation 'org.flywaydb:flyway-core:8.2.2'
+    
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
 
