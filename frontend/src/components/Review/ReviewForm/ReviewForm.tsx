@@ -6,6 +6,8 @@ import * as S from '@/components/Review/ReviewForm/ReviewForm.style';
 
 import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
 
+import { SROnly } from '@/style/GlobalStyles';
+
 type Props = {
   handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
   isEdit: boolean;
@@ -79,9 +81,9 @@ function ReviewForm({
 
   return (
     <>
-      <S.ReadableValue aria-live="assertive">
+      <SROnly aria-live="assertive">
         {content.length === 1000 && '리뷰는 1000자까지 입력 가능합니다'}
-      </S.ReadableValue>
+      </SROnly>
       <S.Container>
         <S.Title tabIndex={0} ref={modalRef}>
           {isEdit ? '리뷰 수정하기' : '리뷰 작성하기'}

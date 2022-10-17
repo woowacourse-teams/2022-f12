@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import * as S from '@/components/common/BarGraph/BarGraph.style';
 
+import { SROnly } from '@/style/GlobalStyles';
 import theme from '@/style/theme';
 
 type Prop = {
@@ -50,14 +51,14 @@ function BarGraph({ statistics }: Prop) {
       <S.BarGraphTitleWrapper>
         <S.BarGraphTitle>{isJobType ? '직군별 통계' : '연차별 통계'}</S.BarGraphTitle>
         <S.BarGraphToggleButton onClick={toggleGraph}>
-          <S.UnreadableValue aria-hidden="true">
+          <span aria-hidden={'true'}>
             {isJobType ? '연차별 통계 보기' : '직군별 통계 보기'}
-          </S.UnreadableValue>
-          <S.ReadableValue>
+          </span>
+          <SROnly>
             {isJobType
               ? '연차별 통계 보기 버튼. 연차별 통계를 보려면 클릭하시고, 직군별 통계를 보려면 다음으로 탭 하세요.'
               : '직군별 통계 보기 버튼. 직군별 통계를 보려면 클릭하시고, 연차별 통계를 보려면 다음으로 탭 하세요.'}
-          </S.ReadableValue>
+          </SROnly>
         </S.BarGraphToggleButton>
       </S.BarGraphTitleWrapper>
       <S.DataWrapper>
@@ -67,11 +68,9 @@ function BarGraph({ statistics }: Prop) {
               <S.Bar key={Math.random()} color={data.color} height={data.percent} />
               <S.PercentWrapper>
                 <S.Percent aria-hidden="true">{`${data.percent}%`}</S.Percent>
-                <S.ReadableValue>{`전체 ${isJobType ? '직군' : '연차'} 중 ${
-                  data.percent
-                }%의 ${
+                <SROnly>{`전체 ${isJobType ? '직군' : '연차'} 중 ${data.percent}%의 ${
                   data.label
-                } 개발자가 이 제품을 사용하고 있습니다.`}</S.ReadableValue>
+                } 개발자가 이 제품을 사용하고 있습니다.`}</SROnly>
               </S.PercentWrapper>
             </S.BarWrapper>
           );
