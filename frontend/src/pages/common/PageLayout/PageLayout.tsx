@@ -61,6 +61,10 @@ function PageLayout() {
     divRef.current?.focus();
 
     setPathName(location.pathname.split('/')[1]);
+
+    setTimeout(() => {
+      setPathName(null);
+    }, 3000);
   }, [location.pathname]);
 
   const pathNames = {
