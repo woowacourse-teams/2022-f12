@@ -29,6 +29,12 @@ function RatingInput({ rating = null, setRating }: Props) {
     setHoverRating(null);
   };
 
+  const handleClickWithKeyboard: (ratingIndex: number) => React.KeyboardEventHandler =
+    (ratingIndex) => (e) => {
+      if (e.code !== 'Space' && e.code !== 'Enter') return;
+      setRating(ratingIndex);
+    };
+
   return (
     <S.Container>
       {Array.from({ length: MAX_RATING }).map((_, index) => {
@@ -41,6 +47,7 @@ function RatingInput({ rating = null, setRating }: Props) {
             onMouseUp={handleClick(ratingIndex)}
             onMouseEnter={handleHover(ratingIndex)}
             onMouseLeave={resetHover}
+            onKeyDown={handleClickWithKeyboard(ratingIndex)}
           >
             {ratingIndex > (hoverRating ?? rating) ? (
               <Heart stroke={theme.colors.primaryDark} />
