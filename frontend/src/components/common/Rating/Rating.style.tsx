@@ -39,4 +39,6 @@ export const ReadableValue = styled.span`
   margin: -1px;
   padding: 0;
   border: 0;
+  top: 0;
+  left: 0;
 `;
