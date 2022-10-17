@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 import * as S from '@/pages/Product/Product.style';
@@ -57,6 +57,12 @@ function Product() {
     },
   });
 
+  const reviewRef = useRef<HTMLDivElement>(null);
+
+  const handleFocus = () => {
+    reviewRef.current.focus();
+  };
+
   const [isSheetOpen, toggleSheetOpen] = useReducer((isSheetOpen: boolean) => {
     if (!isLoggedIn) return false;
 
@@ -95,7 +101,6 @@ function Product() {
       ) : (
         ProductDetails
       )}
-
       <S.ReviewListWrapper>
         {isLoggedIn && (
           <FloatingButton clickHandler={toggleSheetOpen}>
@@ -107,24 +112,27 @@ function Product() {
           isReady={isReviewReady}
           isError={isReviewError}
         >
-          <ReviewListSection
-            columns={1}
-            data={reviews}
-            getNextPage={getNextPage}
-            handleDelete={handleReviewDelete}
-            handleEdit={handleReviewEdit}
-            isLoading={isReviewLoading}
-            isError={isReviewError}
-            pageSize={PRODUCT_PAGE_REVIEW_SIZE}
-          />
+          <S.ReviewListContainer tabIndex={0} ref={reviewRef} aria-label="최근 후기">
+            <ReviewListSection
+              columns={1}
+              data={reviews}
+              getNextPage={getNextPage}
+              handleDelete={handleReviewDelete}
+              handleEdit={handleReviewEdit}
+              handleFocus={handleFocus}
+              isLoading={isReviewLoading}
+              isError={isReviewError}
+              pageSize={PRODUCT_PAGE_REVIEW_SIZE}
+            />
+          </S.ReviewListContainer>
         </AsyncWrapper>
         {shouldSheetRender && (
           <ReviewBottomSheet
-            isSheetOpen={isSheetOpen}
             handleClose={toggleSheetOpen}
             handleSubmit={handleReviewSubmit}
             handleUnmount={handleSheetUnmount}
             animationTrigger={sheetAnimationTrigger}
+            handleFocus={handleFocus}
             isEdit={false}
           />
         )}
