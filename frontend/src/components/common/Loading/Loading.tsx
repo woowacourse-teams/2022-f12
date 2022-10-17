@@ -17,7 +17,7 @@ const Container = styled.section`
 
 function Loading() {
   return (
-    <Container aria-label={'loading-indicator'}>
+    <Container aria-label={'로딩 중'}>
       <picture>
         <source srcSet={loadingWebp} type="image/webP" />
         <img src={loadingGif} alt="" />
