@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 import * as S from '@/pages/Product/Product.style';
@@ -57,6 +57,12 @@ function Product() {
     },
   });
 
+  const reviewRef = useRef<HTMLDivElement>(null);
+
+  const handleFocus = () => {
+    reviewRef.current.focus();
+  };
+
   const [isSheetOpen, toggleSheetOpen] = useReducer((isSheetOpen: boolean) => {
     if (!isLoggedIn) return false;
 
@@ -95,10 +101,9 @@ function Product() {
       ) : (
         ProductDetails
       )}
-
-      <S.ReviewListWrapper>
+      <S.ReviewListWrapper tabIndex={0} ref={reviewRef}>
         {isLoggedIn && (
-          <FloatingButton clickHandler={toggleSheetOpen}>
+          <FloatingButton label={'리뷰 작성하기'} clickHandler={toggleSheetOpen}>
             <Plus stroke={theme.colors.white} />
           </FloatingButton>
         )}
@@ -113,6 +118,7 @@ function Product() {
             getNextPage={getNextPage}
             handleDelete={handleReviewDelete}
             handleEdit={handleReviewEdit}
+            handleFocus={handleFocus}
             isLoading={isReviewLoading}
             isError={isReviewError}
             pageSize={PRODUCT_PAGE_REVIEW_SIZE}
@@ -124,6 +130,7 @@ function Product() {
             handleSubmit={handleReviewSubmit}
             handleUnmount={handleSheetUnmount}
             animationTrigger={sheetAnimationTrigger}
+            handleFocus={handleFocus}
             isEdit={false}
           />
         )}

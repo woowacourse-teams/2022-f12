@@ -11,18 +11,20 @@ export const Container = styled.nav`
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   border-radius: 1.5rem;
 
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1rem;
-
   ${({ theme: { device } }) => css`
     @media screen and ${device.tablet} {
       width: 50%;
       left: 25%;
     }
   `}
+`;
+
+export const NavList = styled.ul`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
 `;
 
 export const NavButton = styled(NavLink)`

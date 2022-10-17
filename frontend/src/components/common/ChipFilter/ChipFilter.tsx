@@ -9,12 +9,15 @@ type Props = {
 };
 
 function ChipFilter({ fontSize, value, children, filter, handleClick }: Props) {
+  const isChecked = filter === value;
   return (
     <S.Button
       fontSize={fontSize}
-      clicked={filter === value}
+      clicked={isChecked}
       value={value}
       onClick={handleClick}
+      role="radio"
+      aria-checked={filter === value}
     >
       {children}
     </S.Button>

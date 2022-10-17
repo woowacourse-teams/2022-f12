@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Container = styled.article<{ index: number; size: 's' | 'm' | 'l' }>`
+export const Container = styled.div<{ index: number; size: 's' | 'm' | 'l' }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -15,9 +15,6 @@ export const Container = styled.article<{ index: number; size: 's' | 'm' | 'l' }
     img {
       transform: scale(1.03);
       transition: 0.2s;
-    }
-    h2 {
-      text-decoration: underline;
     }
   }
 
@@ -41,6 +38,7 @@ export const Container = styled.article<{ index: number; size: 's' | 'm' | 'l' }
 `;
 export const ImageWrapper = styled.div`
   width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border: 1px solid ${({ theme }) => theme.colors.secondary};
   background-color: #fff;
@@ -64,7 +62,12 @@ const nameFontSize = {
   l: '1rem',
 };
 
-export const Name = styled.h2<{ size: 's' | 'm' | 'l' }>`
+export const Name = styled.p<{ size: 's' | 'm' | 'l' }>`
   line-height: 1.3;
+  font-weight: 500;
   font-size: ${({ size }) => nameFontSize[size]};
+
+  ${Container}:hover & {
+    text-decoration: underline;
+  }
 `;

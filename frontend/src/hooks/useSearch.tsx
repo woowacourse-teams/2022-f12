@@ -14,12 +14,14 @@ type Return<T> = DataFetchStatus & {
   result: T[];
   getNextPage: () => void;
   refetch: () => void;
+  hasNextPage: boolean;
 };
 
 function useSearch<T>({ url, query, filter, size, headers }: Props): Return<T> {
   const params = { query, ...filter, size };
   const {
     data: result,
+    hasNextPage,
     getNextPage,
     refetch,
     isLoading,
@@ -31,7 +33,7 @@ function useSearch<T>({ url, query, filter, size, headers }: Props): Return<T> {
     headers,
   });
 
-  return { result, refetch, getNextPage, isLoading, isReady, isError };
+  return { result, refetch, hasNextPage, getNextPage, isLoading, isReady, isError };
 }
 
 export default useSearch;

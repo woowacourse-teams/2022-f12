@@ -1,7 +1,4 @@
-import { Link } from 'react-router-dom';
-
 import InfiniteScroll from '@/components/common/InfiniteScroll/InfiniteScroll';
-import Masonry from '@/components/common/Masonry/Masonry';
 import NoDataPlaceholder from '@/components/common/NoDataPlaceholder/NoDataPlaceholder';
 
 import ProductCard from '@/components/Product/ProductCard/ProductCard';
@@ -42,16 +39,18 @@ function ProductListSection({
     displayType === 'flex' ? DEVICE_TO_SIZE[device] : device === 'tablet' ? 'm' : 'l';
 
   const productList = data.map(({ id, imageUrl, name, rating, reviewCount }, index) => (
-    <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
-      <ProductCard
-        imageUrl={imageUrl}
-        name={name}
-        rating={rating}
-        reviewCount={reviewCount}
-        index={index % pageSize}
-        size={cardSize}
-      />
-    </Link>
+    <li key={id}>
+      <S.ProductLink to={`${ROUTES.PRODUCT}/${id}`}>
+        <ProductCard
+          imageUrl={imageUrl}
+          name={name}
+          rating={rating}
+          reviewCount={reviewCount}
+          index={index % pageSize}
+          size={cardSize}
+        />
+      </S.ProductLink>
+    </li>
   ));
 
   return (
@@ -69,11 +68,11 @@ function ProductListSection({
             isLoading={isLoading}
             isError={isError}
           >
-            <Masonry
+            <S.Grid
               columnCount={displayType === 'masonry' ? ROW_COUNT(displayWidth) : pageSize}
             >
               {productList}
-            </Masonry>
+            </S.Grid>
           </InfiniteScroll>
         )}
       </S.Wrapper>
