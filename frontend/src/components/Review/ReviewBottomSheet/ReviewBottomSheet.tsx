@@ -4,6 +4,7 @@ import * as S from '@/components/Review/ReviewBottomSheet/ReviewBottomSheet.styl
 import ReviewForm from '@/components/Review/ReviewForm/ReviewForm';
 
 type Props = Partial<Pick<Review, 'id' | 'rating' | 'content'>> & {
+  isSheetOpen: boolean;
   handleClose: () => void;
   handleSubmit?: (reviewInput: ReviewInput) => Promise<void>;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
@@ -13,6 +14,7 @@ type Props = Partial<Pick<Review, 'id' | 'rating' | 'content'>> & {
 };
 
 function ReviewBottomSheet({
+  isSheetOpen,
   handleClose,
   handleSubmit,
   handleEdit,
@@ -35,19 +37,21 @@ function ReviewBottomSheet({
       console.log(error);
     }
   };
+
   return (
     <BottomSheet
       handleClose={handleClose}
       handleUnmount={handleUnmount}
       animationTrigger={animationTrigger}
     >
-      <S.Button onClick={handleClose}>닫기</S.Button>
       <ReviewForm
+        isSheetOpen={isSheetOpen}
         handleSubmit={handleCloseWithSubmit}
         isEdit={isEdit ? true : false}
         rating={rating}
         content={content}
       />
+      <S.Button onClick={handleClose}>닫기</S.Button>
     </BottomSheet>
   );
 }

@@ -120,6 +120,7 @@ function Product() {
         </AsyncWrapper>
         {shouldSheetRender && (
           <ReviewBottomSheet
+            isSheetOpen={isSheetOpen}
             handleClose={toggleSheetOpen}
             handleSubmit={handleReviewSubmit}
             handleUnmount={handleSheetUnmount}

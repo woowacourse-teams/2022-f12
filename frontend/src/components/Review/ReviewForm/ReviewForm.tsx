@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import RatingInput from '@/components/common/RatingInput/RatingInput';
 
@@ -7,6 +7,7 @@ import * as S from '@/components/Review/ReviewForm/ReviewForm.style';
 import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
 
 type Props = {
+  isSheetOpen: boolean;
   handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
   isEdit: boolean;
   rating?: Review['rating'];
@@ -19,6 +20,7 @@ const initialState = {
 };
 
 function ReviewForm({
+  isSheetOpen,
   handleSubmit,
   isEdit,
   rating: savedRating,
@@ -71,10 +73,21 @@ function ReviewForm({
   const isRatingEmpty = rating === 0;
   const isContentEmpty = content.trim() === '';
 
+  const modalRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (isSheetOpen) modalRef.current.focus();
+  }, [isSheetOpen]);
+
   return (
     <S.Container>
       <S.Title>{isEdit ? '리뷰 수정하기' : '리뷰 작성하기'}</S.Title>
-      <S.Form onSubmit={submitForm} onChange={handleFormChange}>
+      <S.Form
+        tabIndex={0}
+        ref={modalRef}
+        onSubmit={submitForm}
+        onChange={handleFormChange}
+      >
         <S.Label isInvalid={isFormInvalid && isRatingEmpty}>
           <p>평점을 입력해주세요</p>
           <RatingInput rating={rating} setRating={setRating} />
