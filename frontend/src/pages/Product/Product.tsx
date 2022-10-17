@@ -103,7 +103,7 @@ function Product() {
       )}
       <S.ReviewListWrapper tabIndex={0} ref={reviewRef}>
         {isLoggedIn && (
-          <FloatingButton clickHandler={toggleSheetOpen}>
+          <FloatingButton label={'리뷰 작성하기'} clickHandler={toggleSheetOpen}>
             <Plus stroke={theme.colors.white} />
           </FloatingButton>
         )}
