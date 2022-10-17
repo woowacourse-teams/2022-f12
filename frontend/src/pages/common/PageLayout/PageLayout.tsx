@@ -14,6 +14,25 @@ import useDevice from '@/hooks/useDevice';
 
 import { SROnly } from '@/style/GlobalStyles';
 
+const pathKoreanNames = {
+  '': '홈 페이지',
+  products: '제품 검색 페이지',
+  product: '제품 상세 페이지',
+  profiles: '프로필 검색 페이지',
+  profile: '프로필 상세 페이지',
+} as const;
+
+const pathNameAlertMessage = {
+  '': `${pathKoreanNames['']}로 이동합니다.`,
+  products: `${pathKoreanNames.products}로 이동합니다.`,
+  product: `${pathKoreanNames.product}로 이동합니다.`,
+  profiles: `${pathKoreanNames.profiles}로 이동합니다.`,
+  profile: `${pathKoreanNames.profile}로 이동합니다.`,
+} as const;
+
+const isValidPath = (input: string): input is keyof typeof pathKoreanNames =>
+  input in pathKoreanNames;
+
 function PageLayout() {
   const location = useLocation();
 
@@ -50,34 +69,31 @@ function PageLayout() {
   const divRef = useRef<HTMLDivElement>(null);
   const isInitialRender = useRef<boolean>(true);
 
-  const [pathName, setPathName] = useState<string>('');
+  const [pathName, setPathName] = useState<keyof typeof pathKoreanNames>(null);
+  const [pathNameNotice, setPathNameNotice] = useState('');
+
+  useLayoutEffect(() => {
+    const tempPathName = location.pathname.split('/')[1];
+    if (!isValidPath(tempPathName)) {
+      setPathName(null);
+      return;
+    }
+
+    setPathName(tempPathName);
+  }, [location.pathname]);
 
   useLayoutEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
       return;
     }
-
     divRef.current?.focus();
-
-    setPathName(location.pathname.split('/')[1]);
-
-    setTimeout(() => {
-      setPathName(null);
-    }, 3000);
-  }, [location.pathname]);
-
-  const pathNames = {
-    '': '홈 페이지로 이동합니다.',
-    products: '제품 검색 페이지로 이동합니다.',
-    product: '제품 상세 페이지로 이동합니다.',
-    profiles: '프로필 검색 페이지로 이동합니다.',
-    profile: '프로필 상세 페이지로 이동합니다.',
-  };
+    setPathNameNotice(pathNameAlertMessage[pathName]);
+  }, [pathName]);
 
   return (
     <div tabIndex={-1} ref={divRef}>
-      <SROnly aria-live="assertive">{pathNames[pathName]}</SROnly>
+      <SROnly aria-live="assertive">{pathName && pathNameNotice}</SROnly>
       {device !== 'desktop' && <HeaderNav.Mobile />}
 
       {device === 'desktop' && (
@@ -87,7 +103,7 @@ function PageLayout() {
         </>
       )}
       <Suspense>
-        <S.Main>
+        <S.Main aria-label={pathKoreanNames[pathName]}>
           <AsyncWrapper isReady={isReady} fallback={<Loading />}>
             <Outlet />
           </AsyncWrapper>
