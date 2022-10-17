@@ -19,30 +19,49 @@ function Modal({
 }: PropsWithChildren<Props>) {
   const [scrollOffset, setScrollOffset] = useState(0);
 
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  const closeOnEscape = (e: KeyboardEvent) => {
+    if (e.code !== 'Escape') return;
+    handleClose();
+  };
+
+  const handleFocusRemove = () => {
+    const root = document.querySelector<HTMLElement>('#root');
+    root.setAttribute('aria-hidden', 'true');
+  };
+
+  const handleFocusRetrieve = () => {
+    const root = document.querySelector<HTMLElement>('#root');
+    root.removeAttribute('aria-hidden');
+  };
+
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     setScrollOffset(window.scrollY);
+    handleFocusRemove();
+    window.addEventListener('keydown', closeOnEscape);
 
     return () => {
       document.body.style.overflow = 'auto';
+      handleFocusRetrieve();
+      window.removeEventListener('keydown', closeOnEscape);
     };
   }, []);
 
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    modalRef.current.focus();
-  }, []);
-
   return createPortal(
-    <S.Container scrollOffset={scrollOffset} onTransitionEnd={handleUnmount}>
+    <S.Container
+      scrollOffset={scrollOffset}
+      onTransitionEnd={handleUnmount}
+      role="dialog"
+    >
       <S.Backdrop onClick={handleClose} animationTrigger={animationTrigger} />
       <S.Content tabIndex={0} ref={modalRef} animationTrigger={animationTrigger}>
         {children}
         <ActionButtons handleClose={handleClose} handleConfirm={handleConfirm} />
       </S.Content>
     </S.Container>,
-    document.querySelector('#root')
+    document.querySelector('body')
   );
 }
 

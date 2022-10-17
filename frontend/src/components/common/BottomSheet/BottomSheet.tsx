@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 import * as S from '@/components/common/BottomSheet/BottomSheet.style';
@@ -16,6 +16,17 @@ function BottomSheet({
   handleUnmount,
   animationTrigger,
 }: PropsWithChildren<Props>) {
+  const closeOnEscape = (e: KeyboardEvent) => {
+    if (e.code !== 'Escape') return;
+    handleClose();
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, []);
   return createPortal(
     <S.Container
       role="dialog"
