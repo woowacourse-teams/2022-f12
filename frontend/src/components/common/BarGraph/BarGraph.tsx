@@ -50,15 +50,11 @@ function BarGraph({ statistics }: Prop) {
     <S.Container aria-label="통계 정보">
       <S.BarGraphTitleWrapper>
         <S.BarGraphTitle>{isJobType ? '직군별 통계' : '연차별 통계'}</S.BarGraphTitle>
-        <S.BarGraphToggleButton onClick={toggleGraph}>
-          <span aria-hidden={'true'}>
-            {isJobType ? '연차별 통계 보기' : '직군별 통계 보기'}
-          </span>
-          <SROnly>
-            {isJobType
-              ? '연차별 통계 보기 버튼. 연차별 통계를 보려면 클릭하시고, 직군별 통계를 보려면 다음으로 탭 하세요.'
-              : '직군별 통계 보기 버튼. 직군별 통계를 보려면 클릭하시고, 연차별 통계를 보려면 다음으로 탭 하세요.'}
-          </SROnly>
+        <S.BarGraphToggleButton
+          onClick={toggleGraph}
+          aria-label={isJobType ? '연차별 통계로 보기 변경' : '직군별 통계로 보기 변경'}
+        >
+          {isJobType ? '연차별 통계 보기' : '직군별 통계 보기'}
         </S.BarGraphToggleButton>
       </S.BarGraphTitleWrapper>
       <S.DataWrapper>
@@ -68,9 +64,7 @@ function BarGraph({ statistics }: Prop) {
               <S.Bar key={Math.random()} color={data.color} height={data.percent} />
               <S.PercentWrapper>
                 <S.Percent aria-hidden="true">{`${data.percent}%`}</S.Percent>
-                <SROnly>{`전체 ${isJobType ? '직군' : '연차'} 중 ${data.percent}%의 ${
-                  data.label
-                } 개발자가 이 제품을 사용하고 있습니다.`}</SROnly>
+                <SROnly>{`${data.label} 개발자 ${data.percent}%가 사용중`}</SROnly>
               </S.PercentWrapper>
             </S.BarWrapper>
           );
