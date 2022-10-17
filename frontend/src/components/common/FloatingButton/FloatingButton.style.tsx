@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
 
+export const Container = styled.section``;
+
 export const Button = styled.button`
   width: 3rem;
   height: 3rem;

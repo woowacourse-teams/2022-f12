@@ -60,7 +60,7 @@ function Product() {
   const reviewRef = useRef<HTMLDivElement>(null);
 
   const handleFocus = () => {
-    reviewRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    reviewRef.current.focus();
   };
 
   const [isSheetOpen, toggleSheetOpen] = useReducer((isSheetOpen: boolean) => {
@@ -101,7 +101,7 @@ function Product() {
       ) : (
         ProductDetails
       )}
-      <S.ReviewListWrapper>
+      <S.ReviewListWrapper tabIndex={0} ref={reviewRef}>
         {isLoggedIn && (
           <FloatingButton clickHandler={toggleSheetOpen}>
             <Plus stroke={theme.colors.white} />
@@ -112,19 +112,17 @@ function Product() {
           isReady={isReviewReady}
           isError={isReviewError}
         >
-          <div ref={reviewRef}>
-            <ReviewListSection
-              columns={1}
-              data={reviews}
-              getNextPage={getNextPage}
-              handleDelete={handleReviewDelete}
-              handleEdit={handleReviewEdit}
-              handleFocus={handleFocus}
-              isLoading={isReviewLoading}
-              isError={isReviewError}
-              pageSize={PRODUCT_PAGE_REVIEW_SIZE}
-            />
-          </div>
+          <ReviewListSection
+            columns={1}
+            data={reviews}
+            getNextPage={getNextPage}
+            handleDelete={handleReviewDelete}
+            handleEdit={handleReviewEdit}
+            handleFocus={handleFocus}
+            isLoading={isReviewLoading}
+            isError={isReviewError}
+            pageSize={PRODUCT_PAGE_REVIEW_SIZE}
+          />
         </AsyncWrapper>
         {shouldSheetRender && (
           <ReviewBottomSheet

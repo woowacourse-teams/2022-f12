@@ -8,9 +8,11 @@ type Props = {
 
 function FloatingButton({ clickHandler, children }: PropsWithChildren<Props>) {
   return (
-    <S.Button aria-label="리뷰 작성하기" onClick={clickHandler}>
-      {children}
-    </S.Button>
+    <S.Container>
+      <S.Button aria-label="리뷰 작성하기" onClick={clickHandler}>
+        {children}
+      </S.Button>
+    </S.Container>
   );
 }
 
