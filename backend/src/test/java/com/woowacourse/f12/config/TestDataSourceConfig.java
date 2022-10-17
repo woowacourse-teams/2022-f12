@@ -27,7 +27,7 @@ public class TestDataSourceConfig {
     public DataSource masterDataSource() {
         return DataSourceBuilder.create()
                 .type(HikariDataSource.class)
-                .url("jdbc:h2:~/master")
+                .url("jdbc:h2:mem:master;MODE=MySQL;")
                 .username("sa")
                 .password("")
                 .build();
@@ -37,7 +37,7 @@ public class TestDataSourceConfig {
     public DataSource slaveDataSource() {
         return DataSourceBuilder.create()
                 .type(HikariDataSource.class)
-                .url("jdbc:h2:~/slave")
+                .url("jdbc:h2:mem:slave;MODE=MySQL;")
                 .username("sa")
                 .password("")
                 .build();

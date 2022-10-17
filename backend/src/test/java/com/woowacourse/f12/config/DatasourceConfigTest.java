@@ -19,13 +19,13 @@ class DatasourceConfigTest {
     void transaction이_readOnly라면_slave_datasource를_선택한다() throws SQLException {
         String url = transactionTestService.readOnly();
 
-        assertThat(url).isEqualTo("jdbc:h2:~/slave");
+        assertThat(url).isEqualTo("jdbc:h2:mem:slave");
     }
 
     @Test
     void transaction에_readOnly가_없으면_master_datasource를_선택한다() throws SQLException {
         String url = transactionTestService.notReadOnly();
 
-        assertThat(url).isEqualTo("jdbc:h2:~/master");
+        assertThat(url).isEqualTo("jdbc:h2:mem:master");
     }
 }
