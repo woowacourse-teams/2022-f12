@@ -18,9 +18,9 @@ function ProductCard({
   size = 'l',
 }: Props) {
   return (
-    <S.Container aria-label={name} index={index} size={size}>
+    <S.Container index={index} size={size}>
       <S.ImageWrapper>
-        <LazyImage src={imageUrl} />
+        <LazyImage src={imageUrl} alt={''} />
       </S.ImageWrapper>
       <S.Name size={size}>{name}</S.Name>
       <S.BottomWrapper>

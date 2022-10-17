@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import * as S from '@/pages/Products/Products.style';
 
@@ -20,6 +20,8 @@ import TITLE from '@/constants/header';
 import { CATEGORIES } from '@/constants/product';
 import SEARCH_PARAMS from '@/constants/searchParams';
 
+import { SROnly } from '@/style/GlobalStyles';
+
 type Option = { value: string; text: string };
 
 type Sort = 'rating,desc' | 'reviewCount,desc';
@@ -31,8 +33,8 @@ interface ProductSortOption extends Option {
 }
 
 const options: ProductSortOption[] = [
-  { value: 'rating,desc', text: '평점 높은 순' },
   { value: 'reviewCount,desc', text: '리뷰 많은 순' },
+  { value: 'rating,desc', text: '평점 높은 순' },
 ];
 
 const DefaultSort = options[1];
@@ -43,6 +45,8 @@ function Products() {
   const [keyword, setKeyword] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
   const [category, setCategory] = useUrlSyncState(SEARCH_PARAMS.CATEGORY);
   const [sort, setSort] = useUrlSyncState(SEARCH_PARAMS.SORT, DefaultSort.value);
+  const [currDataLength, setCurrDataLength] = useState(0);
+  const [loadedStateMessage, setLoadedStateMessage] = useState('');
   const debouncedKeyword = useDebounce<string>(keyword, 300);
 
   const {
@@ -62,13 +66,38 @@ function Products() {
   });
 
   const title = useMemo(
-    () => (category in CATEGORIES ? CATEGORIES[category as Category] : TITLE.ALL_PRODUCT),
-    [category]
+    () =>
+      keyword === null
+        ? category in CATEGORIES
+          ? CATEGORIES[category as Category]
+          : TITLE.ALL_PRODUCT
+        : `${keyword} 검색 결과`,
+    [category, keyword]
   );
+
+  const createLoadedMessage = (dataLength: number, prevDataLength: number) =>
+    `총 ${dataLength - prevDataLength}개의 제품이 ${
+      currDataLength !== 0 ? '추가로' : ''
+    } 로딩되었습니다`;
+
+  useEffect(() => {
+    if (isReady) {
+      setLoadedStateMessage(createLoadedMessage(products.length, currDataLength));
+      setCurrDataLength(products.length);
+    }
+
+    setTimeout(() => {
+      setLoadedStateMessage('');
+    }, 1000);
+  }, [products]);
+
+  useEffect(() => {
+    setCurrDataLength(0);
+  }, [sort, category, keyword]);
 
   return (
     <>
-      <S.SearchBarWrapper>
+      <S.SearchBarWrapper aria-label={'제품 검색 영역'}>
         <SearchBar searchInput={keyword} setSearchInput={setKeyword} />
         <SearchFilter
           title={'카테고리'}
@@ -80,6 +109,7 @@ function Products() {
       <SectionHeader title={title}>
         <Select value={sort} setValue={setSort} options={options} />
       </SectionHeader>
+      <SROnly role={'status'}>{loadedStateMessage !== '' && loadedStateMessage}</SROnly>
       <AsyncWrapper fallback={<Loading />} isReady={isReady} isError={isError}>
         <ProductListSection
           title={title}

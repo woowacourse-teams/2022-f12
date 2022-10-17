@@ -1,5 +1,7 @@
 import * as S from '@/components/common/ReviewCount/ReviewCount.style';
 
+import { SROnly } from '@/style/GlobalStyles';
+
 import ReviewIcon from '@/assets/review.svg';
 
 type Props = {
@@ -9,15 +11,15 @@ type Props = {
 
 function ReviewCount({ reviewCount, size = 'small' }: Props) {
   return (
-    <S.Container>
-      <S.ReviewIconWrapper size={size}>
-        <ReviewIcon />
-      </S.ReviewIconWrapper>
-      <S.Value size={size}>
-        <S.UnreadableValue aria-hidden="true">{reviewCount}</S.UnreadableValue>
-        <S.ReadableValue>{`${reviewCount}개의 리뷰`}</S.ReadableValue>
-      </S.Value>
-    </S.Container>
+    <>
+      <S.Container aria-hidden={'true'}>
+        <S.ReviewIconWrapper size={size}>
+          <ReviewIcon />
+        </S.ReviewIconWrapper>
+        <S.Value size={size}>{reviewCount}</S.Value>
+      </S.Container>
+      <SROnly>리뷰 {reviewCount}개</SROnly>
+    </>
   );
 }
 

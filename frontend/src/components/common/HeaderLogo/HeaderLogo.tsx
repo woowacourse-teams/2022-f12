@@ -12,7 +12,7 @@ import Profile from '@/assets/profile.svg';
 function HeaderLogo() {
   return (
     <S.Container>
-      <S.LogoLink to={ROUTES.HOME}>
+      <S.LogoLink to={ROUTES.HOME} aria-label={'F12 홈으로'}>
         <HeaderLogoImage />
       </S.LogoLink>
     </S.Container>

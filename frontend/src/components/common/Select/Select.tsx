@@ -26,7 +26,7 @@ function Select({ value, setValue, options }: Props) {
   );
 
   return (
-    <S.Container value={value} onChange={handleOptionChange}>
+    <S.Container value={value} onChange={handleOptionChange} aria-label={'정렬 기준'}>
       {optionComponents}
     </S.Container>
   );

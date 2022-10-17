@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 
 import * as S from '@/components/common/Rating/Rating.style';
 
+import { SROnly } from '@/style/GlobalStyles';
 import theme from '@/style/theme';
 
 import Heart from '@/assets/heart.svg';
@@ -14,27 +15,29 @@ export type Props = {
 
 function Rating({ rating, type = '일반', size = 'small' }: Props) {
   const RatingUnit = (
-    <S.Unit size={size}>
+    <S.Unit size={size} aria-hidden={'true'}>
       <Heart fill={theme.colors.primary} stroke={theme.colors.primaryDark} />
     </S.Unit>
   );
 
   return (
-    <S.Container>
-      <S.ReadableValue>{`평점 ${rating.toFixed(2)}점`}</S.ReadableValue>
-      {type === '일반' ? (
-        <>
-          {RatingUnit}
-          <S.Value size={size}>
-            <S.UnreadableValue aria-hidden="true">{rating.toFixed(2)}</S.UnreadableValue>
-          </S.Value>
-        </>
-      ) : (
-        Array.from({ length: rating }).map((_, index) => (
-          <Fragment key={index}>{RatingUnit}</Fragment>
-        ))
-      )}
-    </S.Container>
+    <>
+      <S.Container aria-hidden={true}>
+        {type === '일반' ? (
+          <>
+            {RatingUnit}
+            <S.Value size={size}>{rating.toFixed(2)}</S.Value>
+          </>
+        ) : (
+          <>
+            {Array.from({ length: rating }).map((_, index) => (
+              <Fragment key={index}>{RatingUnit}</Fragment>
+            ))}
+          </>
+        )}
+      </S.Container>
+      <SROnly>평점 {rating.toFixed(2)}점</SROnly>
+    </>
   );
 }
 

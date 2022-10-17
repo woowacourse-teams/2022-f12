@@ -32,7 +32,10 @@ export const Input = styled.input`
   }
 `;
 
-export const Button = styled.button`
+export const IconContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 3.5rem;
   height: 2.8rem;
   margin-left: -3.5rem;
