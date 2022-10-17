@@ -52,6 +52,7 @@ public class ReviewService {
                 .orElseThrow(ProductNotFoundException::new);
         final Long reviewId = saveReview(reviewRequest, member, product);
         saveInventoryProduct(member, product);
+        productRepository.updateProductStatisticsForReviewInsert(product.getId(), reviewRequest.getRating());
         return reviewId;
     }
 
@@ -64,7 +65,6 @@ public class ReviewService {
     private Long saveReview(final ReviewRequest reviewRequest, final Member member, final Product product) {
         validateNotWritten(member, product);
         final Review review = reviewRequest.toReview(product, member);
-        review.reflectToProductWhenWritten();
         return reviewRepository.save(review)
                 .getId();
     }
@@ -111,18 +111,23 @@ public class ReviewService {
     public void update(final Long reviewId, final Long memberId, final ReviewRequest updateRequest) {
         final Review target = findTarget(reviewId, memberId);
         final Review updateReview = updateRequest.toReview(target.getProduct(), target.getMember());
+        int ratingGap = updateReview.getRating() - target.getRating();
         target.update(updateReview);
+        reviewRepository.flush();
+        productRepository.updateProductStatisticsForReviewUpdate(target.getProduct().getId(), ratingGap);
     }
 
     @Transactional
     public void delete(final Long reviewId, final Long memberId) {
         final Review review = findTarget(reviewId, memberId);
-        review.reflectToProductBeforeDelete();
-        reviewRepository.delete(review);
         final InventoryProduct inventoryProduct = inventoryProductRepository.findWithProductByMemberAndProduct(
                         review.getMember(), review.getProduct())
                 .orElseThrow(InventoryProductNotFoundException::new);
         inventoryProductRepository.delete(inventoryProduct);
+        reviewRepository.delete(review);
+//        inventoryProductRepository.flush();
+        reviewRepository.flush();
+        productRepository.updateProductStatisticsForReviewDelete(review.getProduct().getId(), review.getRating());
     }
 
     private Review findTarget(final Long reviewId, final Long memberId) {
