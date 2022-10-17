@@ -212,6 +212,87 @@ class ProductRepositoryTest {
                 .containsOnly(keyboard1);
     }
 
+    @Test
+    void 리뷰_작성에_맞게_제품_정합성을_맞춘다() {
+        // given
+        Long productId = 제품_저장(KEYBOARD_1.생성()).getId();
+
+        // when
+        productRepository.updateProductStatisticsForReviewInsert(productId, 1);
+        productRepository.updateProductStatisticsForReviewInsert(productId, 2);
+
+        // then
+        Product actual = productRepository.findById(productId)
+                .orElseThrow();
+
+        assertAll(
+                () -> assertThat(actual.getReviewCount()).isEqualTo(2),
+                () -> assertThat(actual.getRating()).isEqualTo(1.5),
+                () -> assertThat(actual.getTotalRating()).isEqualTo(3)
+        );
+    }
+
+    @Test
+    void 리뷰_삭제에_맞게_제품_정합성을_맞춘다() {
+        // given
+        Long productId = 제품_저장(KEYBOARD_1.생성()).getId();
+        productRepository.updateProductStatisticsForReviewInsert(productId, 1);
+        productRepository.updateProductStatisticsForReviewInsert(productId, 2);
+
+        // when
+        productRepository.updateProductStatisticsForReviewDelete(productId, 1);
+
+        // then
+        Product actual = productRepository.findById(productId)
+                .orElseThrow();
+
+        assertAll(
+                () -> assertThat(actual.getReviewCount()).isOne(),
+                () -> assertThat(actual.getRating()).isEqualTo(2.0),
+                () -> assertThat(actual.getTotalRating()).isEqualTo(2)
+        );
+    }
+
+    @Test
+    void 리뷰_삭제로_리뷰_개수가_0개일_때_제품_정합성을_맞춘다() {
+        // given
+        Long productId = 제품_저장(KEYBOARD_1.생성()).getId();
+        productRepository.updateProductStatisticsForReviewInsert(productId, 1);
+
+        // when
+        productRepository.updateProductStatisticsForReviewDelete(productId, 1);
+
+        // then
+        Product actual = productRepository.findById(productId)
+                .orElseThrow();
+
+        assertAll(
+                () -> assertThat(actual.getReviewCount()).isZero(),
+                () -> assertThat(actual.getRating()).isEqualTo(0.0),
+                () -> assertThat(actual.getTotalRating()).isEqualTo(0)
+        );
+    }
+
+    @Test
+    void 리뷰_수정에_맞게_제품_정합성을_맞춘다() {
+        // given
+        Long productId = 제품_저장(KEYBOARD_1.생성()).getId();
+        productRepository.updateProductStatisticsForReviewInsert(productId, 5);
+
+        // when
+        productRepository.updateProductStatisticsForReviewUpdate(productId, -2);
+
+        // then
+        Product actual = productRepository.findById(productId)
+                .orElseThrow();
+
+        assertAll(
+                () -> assertThat(actual.getReviewCount()).isOne(),
+                () -> assertThat(actual.getRating()).isEqualTo(3.0),
+                () -> assertThat(actual.getTotalRating()).isEqualTo(3)
+        );
+    }
+
     private Product 제품_저장(Product product) {
         return productRepository.save(product);
     }
