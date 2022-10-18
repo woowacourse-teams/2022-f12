@@ -68,7 +68,7 @@ function Mobile() {
   const { isLoggedIn } = useAuth();
   return (
     <S.Nav aria-label={'상단 메뉴바'}>
-      <S.LogoLink to={ROUTES.HOME}>
+      <S.LogoLink aria-label={'F12 홈으로'} to={ROUTES.HOME}>
         <HeaderLogoImageHorizontal />
       </S.LogoLink>
       {isLoggedIn ? (
