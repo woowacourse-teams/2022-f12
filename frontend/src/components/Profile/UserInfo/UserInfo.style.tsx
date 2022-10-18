@@ -59,6 +59,11 @@ export const FollowerLink = styled(Link)`
   width: max-content;
   border-radius: 0.3rem;
   line-height: 1;
+  box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
+
+  &:hover {
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.25));
+  }
 `;
 
 export const FollowButton = styled.button<{ followed: boolean }>`
@@ -70,6 +75,10 @@ export const FollowButton = styled.button<{ followed: boolean }>`
   background-color: ${({ theme, followed }) =>
     followed ? theme.colors.secondary : theme.colors.primary};
   margin-top: 1rem;
+
+  &:hover {
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.25));
+  }
 
   ${({ theme: { device } }) => css`
     @media screen and ${device.mobile} {
