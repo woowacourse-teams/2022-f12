@@ -131,22 +131,20 @@ const getReviewsByProductId = (req, res, ctx) => {
 
 // 리뷰 작성
 const postReviewByProductId = (req, res, ctx) => {
-  const userData: UserData | null =
-    JSON.parse(window.sessionStorage.getItem('userData')) || null;
+  const { shadowToken } = req.cookies;
 
-  if (!userData || !userData.token) {
+  if (!shadowToken) {
     return res(ctx.status(403));
   }
 
   return res(ctx.status(201));
 };
 
-// 리뷰 수정 기능
+// 리뷰 수정
 const updateReviewByReviewId = (req, res, ctx) => {
-  const userData: UserData | null =
-    JSON.parse(window.sessionStorage.getItem('userData')) || null;
+  const { shadowToken } = req.cookies;
 
-  if (!userData || !userData.token) {
+  if (!shadowToken) {
     return res(ctx.status(403));
   }
   return res(ctx.status(204));
@@ -154,10 +152,9 @@ const updateReviewByReviewId = (req, res, ctx) => {
 
 // 리뷰 삭제
 const deleteReviewByReviewId = (req, res, ctx) => {
-  const userData: UserData | null =
-    JSON.parse(window.sessionStorage.getItem('userData')) || null;
+  const { shadowToken } = req.cookies;
 
-  if (!userData || !userData.token) {
+  if (!shadowToken) {
     return res(ctx.status(403));
   }
   return res(ctx.status(204));
