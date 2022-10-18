@@ -3,7 +3,6 @@ package com.woowacourse.f12.presentation.member;
 import static com.woowacourse.f12.exception.ErrorCode.ALREADY_FOLLOWING;
 import static com.woowacourse.f12.exception.ErrorCode.EMPTY_MEMBER_INFO_VALUE;
 import static com.woowacourse.f12.exception.ErrorCode.EXPIRED_ACCESS_TOKEN;
-import static com.woowacourse.f12.exception.ErrorCode.INVALID_FOLLOWER_COUNT;
 import static com.woowacourse.f12.exception.ErrorCode.INVALID_MEMBER_INFO_VALUE;
 import static com.woowacourse.f12.exception.ErrorCode.INVALID_PAGING_PARAM;
 import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
@@ -52,7 +51,6 @@ import com.woowacourse.f12.dto.response.member.LoggedInMemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
-import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
 import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.badrequest.SelfFollowException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
@@ -594,7 +592,7 @@ class MemberControllerTest extends PresentationTest {
         // then
         resultActions.andExpect(status().isNoContent())
                 .andDo(document("unfollow",
-                        new ErrorCodeSnippet(NOT_FOLLOWING, INVALID_FOLLOWER_COUNT, MEMBER_NOT_FOUND)))
+                        new ErrorCodeSnippet(NOT_FOLLOWING, MEMBER_NOT_FOUND)))
                 .andDo(print());
 
         verify(memberService).unfollow(followerId, followingId);
@@ -640,34 +638,6 @@ class MemberControllerTest extends PresentationTest {
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(new MemberPayload(followerId, Role.USER));
         willThrow(new NotFollowingException())
-                .given(memberService)
-                .unfollow(followerId, followingId);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(
-                delete("/api/v1/members/" + followingId + "/following")
-                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-        );
-
-        // then
-        resultActions.andExpect(status().isBadRequest())
-                .andDo(print());
-
-        verify(memberService).unfollow(followerId, followingId);
-    }
-
-    @Test
-    void 언팔로우_실패_대상의_팔로워_수가_0_이하인_경우() throws Exception {
-        // given
-        Long followerId = 1L;
-        Long followingId = 2L;
-
-        String authorizationHeader = "Bearer Token";
-        given(jwtProvider.isValidToken(authorizationHeader))
-                .willReturn(true);
-        given(jwtProvider.getPayload(authorizationHeader))
-                .willReturn(new MemberPayload(followerId, Role.USER));
-        willThrow(new InvalidFollowerCountException())
                 .given(memberService)
                 .unfollow(followerId, followingId);
 
