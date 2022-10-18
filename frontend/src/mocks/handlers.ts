@@ -18,7 +18,7 @@ import {
 // 인기 제품 목록 조회
 const getPopularKeyboards = (req, res, ctx) => {
   const response = {
-    items: products.sort((a, b) => Math.random() - 0.5).slice(0, 3),
+    items: products.sort((a, b) => Math.random() - 0.5).slice(0, 4),
   };
 
   return res(ctx.status(200), ctx.json(response), ctx.delay());
