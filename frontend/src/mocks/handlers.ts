@@ -15,6 +15,15 @@ import {
 
 // let errorCall = 0;
 
+// 인기 제품 목록 조회
+const getPopularKeyboards = (req, res, ctx) => {
+  const response = {
+    items: products.sort((a, b) => Math.random() - 0.5).slice(0, 3),
+  };
+
+  return res(ctx.status(200), ctx.json(response), ctx.delay());
+};
+
 // 제품 목록 조회
 const getKeyboards = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
@@ -304,6 +313,8 @@ export const handlers = [
     getOtherMemberInventory
   ),
 
+  rest.get(`${BASE_URL}${ENDPOINTS.POPULAR_PRODUCTS}`, getPopularKeyboards),
+  // 순서 주의! 이 핸들러가 아래에 위치하면 products/:id'로 연결됩니다.
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}/statistics`, getStatistics),
