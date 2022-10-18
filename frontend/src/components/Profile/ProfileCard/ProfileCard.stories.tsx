@@ -15,6 +15,6 @@ const Template: ComponentStory<typeof ProfileCard> = (args) => (
   </div>
 );
 
-const defaultArgs = members[2];
+const defaultArgs = { profileSearchResult: members[2] };
 
 export const Default = () => <Template {...defaultArgs} />;
