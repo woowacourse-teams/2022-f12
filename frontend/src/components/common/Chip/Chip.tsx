@@ -1,11 +1,12 @@
+import { PropsWithChildren } from 'react';
+
 import * as S from '@/components/common/Chip/Chip.style';
 
 type Props = {
   size: 's' | 'l';
-  children: React.ReactNode;
 };
 
-function Chip({ size, children }: Props) {
+function Chip({ size, children }: PropsWithChildren<Props>) {
   return <S.Container size={size}>{children}</S.Container>;
 }
 

@@ -27,8 +27,10 @@ type Props = {
 };
 
 function ProfileSearch({ type = 'default' }: Props) {
-  const [careerLevel, setCareerLevel] = useUrlSyncState(SEARCH_PARAMS.CAREER_LEVEL);
-  const [jobType, setJobType] = useUrlSyncState(SEARCH_PARAMS.JOB_TYPE);
+  const [careerLevel, setCareerLevel] = useUrlSyncState<CareerLevel>(
+    SEARCH_PARAMS.CAREER_LEVEL
+  );
+  const [jobType, setJobType] = useUrlSyncState<JobType>(SEARCH_PARAMS.JOB_TYPE);
   const [searchInput, setSearchInput] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
   const debouncedSearchInput = useDebounce<string>(searchInput, 300);
 

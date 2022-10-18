@@ -43,8 +43,8 @@ const PRODUCT_SEARCH_SIZE = 12;
 
 function Products() {
   const [keyword, setKeyword] = useUrlSyncState(SEARCH_PARAMS.KEYWORD);
-  const [category, setCategory] = useUrlSyncState(SEARCH_PARAMS.CATEGORY);
-  const [sort, setSort] = useUrlSyncState(SEARCH_PARAMS.SORT, DefaultSort.value);
+  const [category, setCategory] = useUrlSyncState<Category>(SEARCH_PARAMS.CATEGORY);
+  const [sort, setSort] = useUrlSyncState<Sort>(SEARCH_PARAMS.SORT, DefaultSort.value);
   const [currDataLength, setCurrDataLength] = useState(0);
   const [loadedStateMessage, setLoadedStateMessage] = useState('');
   const debouncedKeyword = useDebounce<string>(keyword, 300);
@@ -70,7 +70,7 @@ function Products() {
     () =>
       keyword === null
         ? category in CATEGORIES
-          ? CATEGORIES[category as Category]
+          ? CATEGORIES[category]
           : TITLE.ALL_PRODUCT
         : `${keyword} 검색 결과`,
     [category, keyword]
