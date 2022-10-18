@@ -1,4 +1,4 @@
-declare type Review = {
+type Review = {
   id: number;
   author: Pick<Member, 'id' | 'gitHubId' | 'imageUrl'>;
   product?: Pick<Product, 'id' | 'name' | 'imageUrl'>;
@@ -9,12 +9,12 @@ declare type Review = {
   authorMatch: boolean;
 };
 
-declare type ReviewInput = {
+type ReviewInput = {
   content: string;
   rating: number;
 };
 
-declare type InventoryReview = {
+type InventoryReview = {
   id: number;
   product: Product;
   content: string;
