@@ -15,19 +15,14 @@ import useDevice from '@/hooks/useDevice';
 import { SROnly } from '@/style/GlobalStyles';
 
 const pathKoreanNames = {
-  '': '홈 페이지',
-  products: '제품 검색 페이지',
-  product: '제품 상세 페이지',
-  profiles: '프로필 검색 페이지',
-  profile: '프로필 상세 페이지',
-} as const;
-
-const pathNameAlertMessage = {
-  '': `${pathKoreanNames['']}로 이동합니다.`,
-  products: `${pathKoreanNames.products}로 이동합니다.`,
-  product: `${pathKoreanNames.product}로 이동합니다.`,
-  profiles: `${pathKoreanNames.profiles}로 이동합니다.`,
-  profile: `${pathKoreanNames.profile}로 이동합니다.`,
+  '': '홈',
+  products: '제품 검색',
+  product: '제품 상세',
+  profiles: '프로필 검색',
+  profile: '프로필 상세',
+  me: '내 정보',
+  login: '로그인',
+  register: '추가 정보 입력',
 } as const;
 
 const isValidPath = (input: string): input is keyof typeof pathKoreanNames =>
@@ -88,7 +83,11 @@ function PageLayout() {
       return;
     }
     divRef.current?.focus();
-    setPathNameNotice(pathNameAlertMessage[pathName]);
+    setPathNameNotice(`${pathKoreanNames[pathName]} 페이지로 이동합니다.`);
+  }, [pathName]);
+
+  useEffect(() => {
+    document.title = `${pathKoreanNames[pathName]} | F12: 개발자의 모든 도구`;
   }, [pathName]);
 
   return (
@@ -103,7 +102,7 @@ function PageLayout() {
         </>
       )}
       <Suspense>
-        <S.Main aria-label={pathKoreanNames[pathName]}>
+        <S.Main aria-label={`${pathKoreanNames[pathName]} 페이지`}>
           <AsyncWrapper isReady={isReady} fallback={<Loading />}>
             <Outlet />
           </AsyncWrapper>
