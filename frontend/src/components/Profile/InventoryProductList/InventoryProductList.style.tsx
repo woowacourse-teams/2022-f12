@@ -33,11 +33,10 @@ export const EditDeskSetupButton = styled.button`
   padding: 0.4rem 1.4rem;
   background-color: ${({ theme }) => theme.colors.primary};
   border-radius: 0.4rem;
-  box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
   width: max-content;
 
   &:hover {
-    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.25));
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.25));
   }
 
   ${({ theme: { device } }) => css`

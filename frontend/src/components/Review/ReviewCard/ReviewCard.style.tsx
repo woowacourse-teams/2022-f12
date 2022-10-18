@@ -129,7 +129,6 @@ export const ReviewModifyButton = styled.button`
   padding: 0.3rem 0.5rem;
   font-size: 0.8rem;
   background-color: ${({ theme }) => theme.colors.secondary};
-  box-shadow: 2px 2px 4px ${({ theme }) => theme.colors.secondary};
 
   &:hover {
     filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.25));
