@@ -34,7 +34,7 @@ function InfiniteScroll({
   }, [isError]);
 
   return (
-    <section style={{ marginTop: '1rem' }} role={'feed'} aria-busy={!isLoading}>
+    <section role={'feed'} aria-busy={!isLoading}>
       {children}
       {isLoading && <Loading />}
       <section

@@ -5,6 +5,7 @@ export const Container = styled.header`
   justify-content: space-between;
   align-items: center;
   margin-left: 1rem;
+  padding: 1rem 0;
 `;
 
 export const Title = styled.h1`
