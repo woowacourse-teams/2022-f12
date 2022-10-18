@@ -9,6 +9,7 @@ export const GOOGLE_SEARCH_URL = 'https://www.google.com/search?q=';
 
 export const ENDPOINTS = {
   PRODUCTS: '/products',
+  POPULAR_PRODUCTS: '/products/popular-list',
   PRODUCT: (id: number | ':id') => `/products/${id}`,
   REVIEWS: '/reviews',
   REVIEWS_BY_PRODUCT_ID: (id: number | ':id') => `/products/${id}/reviews`,
