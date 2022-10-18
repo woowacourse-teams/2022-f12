@@ -88,7 +88,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
     setPage(0);
     setHasNextPage(true);
     setData(null);
-    removeCache(`${url}${searchParams.toString()}`);
+    removeCache(`${url}?${searchParams.toString()}`);
   };
 
   const getCurrentParamString = () =>

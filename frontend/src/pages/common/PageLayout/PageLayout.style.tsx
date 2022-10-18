@@ -20,3 +20,9 @@ export const Main = styled.main`
     }
   `}
 `;
+
+export const SRFocusElement = styled.div`
+  &:focus {
+    outline: none;
+  }
+`;

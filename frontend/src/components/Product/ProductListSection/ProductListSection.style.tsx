@@ -56,7 +56,7 @@ export const ProductLink = styled(Link)`
 `;
 
 export const Wrapper = styled.div`
-  margin: 1rem auto 0 auto;
+  margin: 0 auto;
   width: 100%;
 `;
 
