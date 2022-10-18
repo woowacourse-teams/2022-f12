@@ -48,9 +48,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.increaseFollowerCount();
-        entityManager.flush();
-        entityManager.clear();
+        memberRepository.increaseFollowerCount(mincho.getId());
 
         // when
         Member savedMincho = memberRepository.findById(mincho.getId())
@@ -174,9 +172,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.increaseFollowerCount();
-        entityManager.flush();
-        entityManager.clear();
+        memberRepository.increaseFollowerCount(mincho.getId());
 
         Member expected = Member.builder()
                 .id(mincho.getId())
@@ -212,9 +208,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.increaseFollowerCount();
-        entityManager.flush();
-        entityManager.clear();
+        memberRepository.increaseFollowerCount(mincho.getId());
 
         Member expected = Member.builder()
                 .id(mincho.getId())
@@ -250,9 +244,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.increaseFollowerCount();
-        entityManager.flush();
-        entityManager.clear();
+        memberRepository.increaseFollowerCount(mincho.getId());
 
         Member expected = Member.builder()
                 .id(mincho.getId())
@@ -337,5 +329,38 @@ class MemberRepositoryTest {
                 .orElseThrow();
 
         assertThat(actual.getFollowerCount()).isOne();
+    }
+
+    @Test
+    void 팔로워_수를_증가시킨다() {
+        // given
+        Member member = CORINNE.생성();
+        memberRepository.save(member);
+
+        // when
+        memberRepository.increaseFollowerCount(member.getId());
+
+        // then
+        Member actual = memberRepository.findById(member.getId())
+                .orElseThrow();
+
+        assertThat(actual.getFollowerCount()).isOne();
+    }
+
+    @Test
+    void 팔로워_수를_감소시킨다() {
+        // given
+        Member member = CORINNE.생성();
+        memberRepository.save(member);
+        memberRepository.increaseFollowerCount(member.getId());
+
+        // when
+        memberRepository.decreaseFollowerCount(member.getId());
+
+        // then
+        Member actual = memberRepository.findById(member.getId())
+                .orElseThrow();
+
+        assertThat(actual.getFollowerCount()).isZero();
     }
 }

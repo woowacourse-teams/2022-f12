@@ -12,4 +12,13 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "update Member m set m.followerCount = (select count(f) from Following f where f.followingId = m.id)")
     void updateFollowerCountBatch();
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "update Member m set m.followerCount = m.followerCount + 1 where m.id = :followingMemberId")
+    void increaseFollowerCount(Long followingMemberId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "update Member m set m.followerCount = case m.followerCount when 0 then 0 "
+            + "else (m.followerCount - 1) end where m.id = :followingMemberId")
+    void decreaseFollowerCount(Long followingMemberId);
 }

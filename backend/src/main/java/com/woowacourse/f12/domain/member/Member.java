@@ -2,7 +2,6 @@ package com.woowacourse.f12.domain.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
-import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -112,17 +111,6 @@ public class Member {
         if (jobType != null) {
             this.jobType = jobType;
         }
-    }
-
-    public void increaseFollowerCount() {
-        this.followerCount += 1;
-    }
-
-    public void decreaseFollowerCount() {
-        if (this.followerCount == 0) {
-            throw new InvalidFollowerCountException();
-        }
-        this.followerCount -= 1;
     }
 
     private void updateRegistered(final boolean registered) {
