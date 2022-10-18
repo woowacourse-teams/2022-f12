@@ -21,9 +21,11 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.test.context.jdbc.Sql;
 
 @JdbcTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
+@Sql("classpath:refreshTokenDDL.sql")
 class RefreshTokenRepositoryImplTest {
 
     private final String tokenValue = "tokenValue";
