@@ -1,7 +1,8 @@
-import { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { useContext } from 'react';
 
 import {
+  AddCacheArrayContext,
   AddCacheContext,
   GetCacheContext,
   RemoveCacheContext,
@@ -17,7 +18,32 @@ type getWithCacheParams = {
 function useCache() {
   const getCache = useContext(GetCacheContext);
   const addCache = useContext(AddCacheContext);
+  const addCacheArray = useContext(AddCacheArrayContext);
   const removeCache = useContext(RemoveCacheContext);
+
+  const getCachedResponse = (cacheKey: string, page?: number) => {
+    const cachedResponse = getCache(cacheKey, page);
+    const isCacheArray = cachedResponse instanceof Array;
+    if (isCacheArray && cachedResponse[page] !== undefined) {
+      return cachedResponse[page];
+    }
+    if (!isCacheArray && cachedResponse) {
+      return cachedResponse;
+    }
+  };
+
+  const saveCacheResponse = (
+    cacheKey: string,
+    response: AxiosResponse,
+    maxAge: number,
+    page?: number
+  ) => {
+    if (page !== undefined || page !== null) {
+      addCacheArray(cacheKey, page, response, maxAge);
+    } else {
+      addCache(cacheKey, response, maxAge);
+    }
+  };
 
   const getWithCache = async ({
     axiosInstance,
@@ -26,17 +52,18 @@ function useCache() {
     maxAge,
   }: getWithCacheParams) => {
     const searchParams = new URLSearchParams(config.params as Record<string, string>);
-    const completeUrl = `${url}${searchParams.toString()}`;
+    const page = Number(searchParams.get('page'));
+    searchParams.delete('page');
+    const cacheKey = `${url}?${searchParams.toString()}`;
 
-    const cachedResponse = getCache(completeUrl);
-
+    const cachedResponse = getCachedResponse(cacheKey, page);
     if (cachedResponse) {
       return cachedResponse;
     }
 
     const response = await axiosInstance.get(url, config);
-    addCache(completeUrl, response, maxAge);
 
+    saveCacheResponse(cacheKey, response, maxAge, page);
     return response;
   };
 

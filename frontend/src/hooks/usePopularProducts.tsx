@@ -11,8 +11,6 @@ type Return = DataFetchStatus & {
 };
 
 function usePopularProducts({ size }: Props): Return {
-  const params = { size, page: null };
-
   const {
     data: products,
     isLoading,
@@ -20,7 +18,9 @@ function usePopularProducts({ size }: Props): Return {
     isError,
   } = useGetMany<Product>({
     url: `${ENDPOINTS.POPULAR_PRODUCTS}`,
-    params,
+    params: {
+      size,
+    },
   });
 
   return { products, isLoading, isReady, isError };
