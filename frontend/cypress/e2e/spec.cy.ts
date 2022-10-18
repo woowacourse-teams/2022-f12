@@ -100,28 +100,19 @@ describe('비회원 사용자 기본 플로우', () => {
         .findAllByRole('link')
         .should('be.visible');
     });
+  });
+  it.only('제품 상세 페이지에 진입하면, 제품 사진과 리뷰와 통계정보를 볼 수 있다.', () => {
+    cy.visit('/product/1');
 
-    it('제품 상세 페이지에 진입하면, 제품 사진과 리뷰와 통계정보를 볼 수 있다.', () => {
-      cy.wait('@productsRequest');
+    // 후기는 없는 제품이 있을 수도 있기 때문에 삭제하거나 빈 데이터 이미지 표시 필요
+    // cy.findByRole('region', { name: '최근 후기' })
+    //   .findAllByRole('link')
+    //   .should('be.visible');
+    cy.wait('@productRequest');
 
-      cy.findByRole('region', { name: '인기 있는 제품' })
-        .findAllByRole('link')
-        .first()
-        // .findByRole('img')
-        .click({ force: true });
+    expect(cy.findByRole('region', { name: '제품 상세 정보' }).findByRole('img')).to
+      .exist;
 
-      // 후기는 없는 제품이 있을 수도 있기 때문에 삭제하거나 빈 데이터 이미지 표시 필요
-      // cy.findByRole('region', { name: '최근 후기' })
-      //   .findAllByRole('link')
-      //   .should('be.visible');
-      cy.wait('@productRequest');
-
-      expect(cy.findByRole('region', { name: '제품 상세 정보' }).findByRole('img')).to
-        .exist;
-
-      cy.findByRole('region', { name: '통계 정보' })
-        .scrollIntoView()
-        .should('be.visible');
-    });
+    cy.findByRole('region', { name: '통계 정보' }).scrollIntoView().should('be.visible');
   });
 });
