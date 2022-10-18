@@ -10,10 +10,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     Optional<Member> findByGitHubId(String gitHubId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query(value = "update Member m set m.followerCount = (select count(f) from Following f where f.followingId = m.id)")
-    void updateFollowerCountBatch();
-
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "update Member m set m.followerCount = m.followerCount + 1 where m.id = :followingMemberId")
     void increaseFollowerCount(Long followingMemberId);
 
