@@ -7,7 +7,7 @@ import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 import ProductListSection from '@/components/Product/ProductListSection/ProductListSection';
 import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListSection';
 
-import useProducts from '@/hooks/useProducts';
+import usePopularProducts from '@/hooks/usePopularProducts';
 import useReviews from '@/hooks/useReviews';
 
 import TITLE from '@/constants/header';
@@ -18,12 +18,11 @@ const HOME_REVIEW_SIZE = 6;
 function Home() {
   const {
     products,
-    isError: isProductError,
-    isLoading: isProductLoading,
-    isReady: isProductReady,
-  } = useProducts({
+    isError: isPopularProductError,
+    isLoading: isPopularProductLoading,
+    isReady: isPopularProductReady,
+  } = usePopularProducts({
     size: String(HOME_PRODUCT_SIZE),
-    sort: 'rating,desc',
   });
   const {
     reviews,
@@ -39,14 +38,14 @@ function Home() {
         <SectionHeader title={TITLE.POPULAR_PRODUCT} />
         <AsyncWrapper
           fallback={<Loading />}
-          isReady={isProductReady}
-          isError={isProductError}
+          isReady={isPopularProductReady}
+          isError={isPopularProductError}
         >
           <ProductListSection
             title={TITLE.POPULAR_PRODUCT}
             data={products}
-            isLoading={isProductLoading}
-            isError={isProductError}
+            isLoading={isPopularProductLoading}
+            isError={isPopularProductError}
             pageSize={HOME_PRODUCT_SIZE}
             displayType={'flex'}
           />
