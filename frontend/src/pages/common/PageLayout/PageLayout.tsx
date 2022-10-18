@@ -92,7 +92,7 @@ function PageLayout() {
   }, [pathName]);
 
   return (
-    <div tabIndex={-1} ref={divRef}>
+    <S.SRFocusElement tabIndex={-1} ref={divRef}>
       <SROnly aria-live="assertive">{pathName && pathNameNotice}</SROnly>
       {device !== 'desktop' && <HeaderNav.Mobile />}
 
@@ -110,7 +110,7 @@ function PageLayout() {
         </S.Main>
       </Suspense>
       {device !== 'desktop' && <BottomNavigation />}
-    </div>
+    </S.SRFocusElement>
   );
 }
 
