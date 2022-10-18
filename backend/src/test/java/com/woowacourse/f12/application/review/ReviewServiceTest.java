@@ -94,6 +94,8 @@ class ReviewServiceTest {
                 .willReturn(inventoryProduct);
         given(reviewRepository.save(any(Review.class)))
                 .willReturn(REVIEW_RATING_5.작성(1L, product, member));
+        willDoNothing().given(productRepository)
+                .updateProductStatisticsForReviewInsert(productId, reviewRequest.getRating());
 
         // when
         Long reviewId = reviewService.saveReviewAndInventoryProduct(productId, memberId, reviewRequest);
@@ -103,11 +105,11 @@ class ReviewServiceTest {
                 () -> assertThat(reviewId).isEqualTo(1L),
                 () -> verify(productRepository).findById(productId),
                 () -> verify(memberRepository).findById(memberId),
-                () -> verify(productRepository).updateProductStatisticsForReviewInsert(productId,
-                        reviewRequest.getRating()),
                 () -> verify(reviewRepository).save(any(Review.class)),
                 () -> verify(inventoryProductRepository).existsByMemberAndProduct(member, product),
-                () -> verify(inventoryProductRepository).save(inventoryProduct)
+                () -> verify(inventoryProductRepository).save(inventoryProduct),
+                () -> verify(productRepository).updateProductStatisticsForReviewInsert(productId,
+                        reviewRequest.getRating())
         );
     }
 
@@ -342,11 +344,14 @@ class ReviewServiceTest {
         Product product = KEYBOARD_1.생성(1L);
         Review review = REVIEW_RATING_5.작성(reviewId, product, member);
         ReviewRequest updateRequest = new ReviewRequest("수정할 내용", 4);
+        int ratingGap = updateRequest.getRating() - review.getRating();
 
         given(memberRepository.findById(memberId))
                 .willReturn(Optional.of(member));
         given(reviewRepository.findById(reviewId))
                 .willReturn(Optional.of(review));
+        willDoNothing().given(productRepository)
+                .updateProductStatisticsForReviewUpdate(product.getId(), ratingGap);
 
         // when
         reviewService.update(reviewId, memberId, updateRequest);
@@ -358,7 +363,7 @@ class ReviewServiceTest {
                         .isEqualTo(updateRequest.toReview(product, member)),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId),
-                () -> verify(productRepository).updateProductStatisticsForReviewUpdate(product.getId(), -1)
+                () -> verify(productRepository).updateProductStatisticsForReviewUpdate(product.getId(), ratingGap)
         );
     }
 
@@ -450,6 +455,8 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(inventoryProduct));
         willDoNothing().given(inventoryProductRepository)
                 .delete(any(InventoryProduct.class));
+        willDoNothing().given(productRepository)
+                .updateProductStatisticsForReviewDelete(productId, review.getRating());
 
         // when, then
         assertAll(

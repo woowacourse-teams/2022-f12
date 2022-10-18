@@ -48,7 +48,7 @@ class ProductRepositoryTest {
         Member member2 = memberRepository.save(MINCHO.생성());
         Review review1 = REVIEW_RATING_4.작성(product, member1);
         Review review2 = REVIEW_RATING_5.작성(product, member2);
-        
+
         리뷰_저장(review1);
         리뷰_저장(review2);
 
@@ -268,8 +268,8 @@ class ProductRepositoryTest {
 
         assertAll(
                 () -> assertThat(actual.getReviewCount()).isZero(),
-                () -> assertThat(actual.getRating()).isEqualTo(0.0),
-                () -> assertThat(actual.getTotalRating()).isEqualTo(0)
+                () -> assertThat(actual.getRating()).isZero(),
+                () -> assertThat(actual.getTotalRating()).isZero()
         );
     }
 
