@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS `following`
 (
     `id`           bigint    NOT NULL AUTO_INCREMENT,
-    `created_at`   TIMESTAMP NOT NULL,
-    `follower_id`  bigint,
-    `following_id` bigint    NOT NULL,
+    `created_at`   TIMESTAMP NOT NULL DEFAULT NULL,
+    `follower_id`  bigint    NOT NULL DEFAULT NULL,
+    `following_id` bigint             DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `following_following_id_follower_id_unique` (`follower_id`, `following_id`)
 ) ENGINE = InnoDB
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `member`
     `job_type`       varchar(255)            DEFAULT NULL,
     `name`           varchar(255)            DEFAULT NULL,
     `registered`     TINYINT(1)     NOT NULL DEFAULT 0,
-    `role`           varchar(255)    NOT NULL DEFAULT 'USER',
+    `role`           varchar(255)   NOT NULL DEFAULT 'USER',
     PRIMARY KEY (`id`),
     UNIQUE KEY `github_id_unique` (`github_id`)
 ) ENGINE = InnoDB
