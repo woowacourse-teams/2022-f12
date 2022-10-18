@@ -4,6 +4,7 @@ export const Container = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-left: 1rem;
 `;
 
 export const Title = styled.h1`
