@@ -99,21 +99,23 @@ function ProfileCard({ profileSearchResult, index = 0 }: Props) {
         <Link to={`${ROUTES.PRODUCT}/${id}`}>
           <S.ProductImage src={imageUrl} />
         </Link>
-        <S.ProductTitle>
-          <Link to={`${ROUTES.PRODUCT}/${id}`}>{name}</Link>
-        </S.ProductTitle>
       </S.ProductImageWrapper>
+      <S.ProductTitle>
+        <Link to={`${ROUTES.PRODUCT}/${id}`}>{name}</Link>
+      </S.ProductTitle>
     </S.InventoryItem>
   );
 
   const emptyDeskSetupProduct = (categoryName: ProfileProductCategories) => (
     <S.InventoryItem key={categoryName}>
       <S.ProductImageWrapper>
-        <Empty />
-        <S.ProductTitle>
-          {TITLE.DESK_SETUP}에 추가한 {CATEGORIES[categoryName]}가 없어요
-        </S.ProductTitle>
+        <S.EmptyWrapper>
+          <Empty />
+        </S.EmptyWrapper>
       </S.ProductImageWrapper>
+      <S.ProductTitle>
+        {TITLE.DESK_SETUP}에 {CATEGORIES[categoryName]}가 없어요.
+      </S.ProductTitle>
     </S.InventoryItem>
   );
 

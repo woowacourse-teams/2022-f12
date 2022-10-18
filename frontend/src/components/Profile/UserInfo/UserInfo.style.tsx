@@ -59,17 +59,24 @@ export const FollowerLink = styled(Link)`
   width: max-content;
   border-radius: 0.3rem;
   line-height: 1;
+
+  &:hover {
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.25));
+  }
 `;
 
 export const FollowButton = styled.button<{ followed: boolean }>`
   padding: 0.4rem 1.4rem;
   background-color: ${({ theme }) => theme.colors.primary};
   border-radius: 0.4rem;
-  box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
 
   background-color: ${({ theme, followed }) =>
     followed ? theme.colors.secondary : theme.colors.primary};
   margin-top: 1rem;
+
+  &:hover {
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.25));
+  }
 
   ${({ theme: { device } }) => css`
     @media screen and ${device.mobile} {

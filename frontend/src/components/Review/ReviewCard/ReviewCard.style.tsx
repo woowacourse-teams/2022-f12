@@ -129,6 +129,10 @@ export const ReviewModifyButton = styled.button`
   padding: 0.3rem 0.5rem;
   font-size: 0.8rem;
   background-color: ${({ theme }) => theme.colors.secondary};
+
+  &:hover {
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.25));
+  }
 `;
 
 export const Content = styled.p`

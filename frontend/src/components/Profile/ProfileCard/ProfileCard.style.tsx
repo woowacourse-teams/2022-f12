@@ -148,11 +148,19 @@ export const LeftButton = styled.button`
   border: none;
   background: none;
   font-size: 1.5rem;
+
+  &:hover {
+    filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.25));
+  }
 `;
 export const RightButton = styled.button`
   border: none;
   background: none;
   font-size: 1.5rem;
+
+  &:hover {
+    filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.25));
+  }
 `;
 
 export const OuterLinkWrapper = styled.a``;
@@ -165,6 +173,10 @@ export const ProfileViewButton = styled.button`
   margin-top: 0.8rem;
   border-radius: 0.25rem;
   background-color: ${({ theme }) => theme.colors.primary};
+
+  &:hover {
+    filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.25));
+  }
 `;
 
 export const InventoryListWrapper = styled.div`
@@ -199,6 +211,7 @@ export const ProductTitle = styled.p`
 
 export const ProductImageWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 80px;
@@ -227,8 +240,10 @@ export const FollowingButton = styled.button<{ followed: boolean }>`
   padding: 0.3rem 0.6rem;
   font-size: 0.8rem;
   border-radius: 0.25rem;
-  box-shadow: 2px 2px 6px ${({ theme }) => theme.colors.secondary};
-  transition: linear 0.3s;
+
+  &:hover {
+    filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.25));
+  }
 
   background-color: ${({ theme, followed }) =>
     followed ? theme.colors.secondary : theme.colors.primary};
