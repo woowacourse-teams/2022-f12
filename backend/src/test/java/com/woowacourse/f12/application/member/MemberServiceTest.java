@@ -35,7 +35,6 @@ import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.dto.response.member.MemberWithProfileProductResponse;
 import com.woowacourse.f12.exception.badrequest.AlreadyFollowingException;
-import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
 import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import java.util.Collections;
@@ -298,7 +297,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void 다른_회원을_팔로우한다_팔로우에_성공하면_팔로잉_멤버의_팔로워_카운트가_증가한다() {
+    void 다른_회원을_팔로우한다_팔로우에_성공하면_팔로잉_멤버의_팔로워_카운트가_증가하는_쿼리를_실행한다() {
         // given
         Long followerId = 1L;
         Long followingId = 2L;
@@ -306,11 +305,10 @@ class MemberServiceTest {
                 .followerId(followerId)
                 .followingId(followingId)
                 .build();
-        Member followingMember = CORINNE.생성();
 
-        given(memberRepository.findById(followingId))
-                .willReturn(Optional.of(followingMember));
         given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followingId))
                 .willReturn(true);
         given(followingRepository.save(following)).willReturn(following);
 
@@ -319,11 +317,11 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(followingMember.getFollowerCount()).isEqualTo(1),
-                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followingId),
                 () -> verify(followingRepository).existsByFollowerIdAndFollowingId(followerId, followingId),
-                () -> verify(followingRepository).save(following)
+                () -> verify(followingRepository).save(following),
+                () -> verify(memberRepository).increaseFollowerCount(followingId)
         );
     }
 
@@ -332,8 +330,6 @@ class MemberServiceTest {
         // given
         Long followerId = 1L;
         Long followingId = 2L;
-        given(memberRepository.findById(followingId))
-                .willReturn(Optional.of(CORINNE.생성()));
         given(memberRepository.existsById(followerId))
                 .willReturn(false);
 
@@ -341,11 +337,12 @@ class MemberServiceTest {
         assertAll(
                 () -> assertThatThrownBy(() -> memberService.follow(followerId, followingId))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
-                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository, times(0)).existsById(followingId),
                 () -> verify(followingRepository, times(0))
                         .existsByFollowerIdAndFollowingId(followerId, followingId),
-                () -> verify(followingRepository, times(0)).save(any(Following.class))
+                () -> verify(followingRepository, times(0)).save(any(Following.class)),
+                () -> verify(memberRepository, times(0)).increaseFollowerCount(anyLong())
         );
     }
 
@@ -355,18 +352,21 @@ class MemberServiceTest {
         Long followerId = 1L;
         Long followingId = 2L;
 
-        given(memberRepository.findById(followingId))
-                .willReturn(Optional.empty());
+        given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followingId))
+                .willReturn(false);
 
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> memberService.follow(followerId, followingId))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
-                () -> verify(memberRepository).findById(followingId),
-                () -> verify(memberRepository, times(0)).existsById(followerId),
+                () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followingId),
                 () -> verify(followingRepository, times(0))
                         .existsByFollowerIdAndFollowingId(followerId, followingId),
-                () -> verify(followingRepository, times(0)).save(any(Following.class))
+                () -> verify(followingRepository, times(0)).save(any(Following.class)),
+                () -> verify(memberRepository, times(0)).increaseFollowerCount(anyLong())
         );
     }
 
@@ -375,9 +375,9 @@ class MemberServiceTest {
         // given
         Long followerId = 1L;
         Long followingId = 2L;
-        given(memberRepository.findById(followingId))
-                .willReturn(Optional.of(CORINNE.생성(followingId)));
         given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followingId))
                 .willReturn(true);
         given(followingRepository.existsByFollowerIdAndFollowingId(followerId, followingId))
                 .willReturn(true);
@@ -386,15 +386,16 @@ class MemberServiceTest {
         assertAll(
                 () -> assertThatThrownBy(() -> memberService.follow(followerId, followingId))
                         .isExactlyInstanceOf(AlreadyFollowingException.class),
-                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followingId),
                 () -> verify(followingRepository).existsByFollowerIdAndFollowingId(followerId, followingId),
-                () -> verify(followingRepository, times(0)).save(any(Following.class))
+                () -> verify(followingRepository, times(0)).save(any(Following.class)),
+                () -> verify(memberRepository, times(0)).increaseFollowerCount(anyLong())
         );
     }
 
     @Test
-    void 다른_회원을_언팔로우한다_성공하면_팔로잉_멤버의_팔로워_카운트를_감소시킨다() {
+    void 다른_회원을_언팔로우한다_성공하면_팔로잉_멤버의_팔로워_카운트를_감소시키는_쿼리를_호출한다() {
         // given
         Long followerId = 1L;
         Long followingId = 2L;
@@ -402,11 +403,10 @@ class MemberServiceTest {
                 .followerId(followerId)
                 .followingId(followingId)
                 .build();
-        Member followingMember = CORINNE.팔로워_카운트를_입력하여_생성(5);
 
-        given(memberRepository.findById(followingId))
-                .willReturn(Optional.of(followingMember));
         given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followingId))
                 .willReturn(true);
         given(followingRepository.findByFollowerIdAndFollowingId(followerId, followingId))
                 .willReturn(Optional.of(following));
@@ -418,11 +418,11 @@ class MemberServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(followingMember.getFollowerCount()).isEqualTo(4),
-                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followingId),
                 () -> verify(followingRepository).findByFollowerIdAndFollowingId(followerId, followingId),
-                () -> verify(followingRepository).delete(following)
+                () -> verify(followingRepository).delete(following),
+                () -> verify(memberRepository).decreaseFollowerCount(anyLong())
         );
     }
 
@@ -436,8 +436,6 @@ class MemberServiceTest {
                 .followingId(followingId)
                 .build();
 
-        given(memberRepository.findById(followingId))
-                .willReturn(Optional.of(CORINNE.생성(followingId)));
         given(memberRepository.existsById(followerId))
                 .willReturn(false);
 
@@ -445,36 +443,36 @@ class MemberServiceTest {
         assertAll(
                 () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followingId))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
-                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository, times(0)).existsById(followingId),
                 () -> verify(followingRepository, times(0))
                         .findByFollowerIdAndFollowingId(followerId, followingId),
-                () -> verify(followingRepository, times(0)).delete(following)
+                () -> verify(followingRepository, times(0)).delete(following),
+                () -> verify(memberRepository, times(0)).decreaseFollowerCount(anyLong())
         );
     }
 
     @Test
-    void 다른_회원을_언팔로우할_때_팔로이가_존재하지_않으면_예외를_반환한다() {
+    void 다른_회원을_언팔로우할_때_팔로우_대상이_존재하지_않으면_예외를_반환한다() {
         // given
         Long followerId = 1L;
         Long followingId = 2L;
-        Following following = Following.builder()
-                .followerId(followerId)
-                .followingId(followingId)
-                .build();
 
-        given(memberRepository.findById(followingId))
-                .willReturn(Optional.empty());
+        given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followingId))
+                .willReturn(false);
 
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followingId))
                         .isExactlyInstanceOf(MemberNotFoundException.class),
-                () -> verify(memberRepository).findById(followingId),
-                () -> verify(memberRepository, times(0)).existsById(followerId),
+                () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followingId),
                 () -> verify(followingRepository, times(0))
                         .findByFollowerIdAndFollowingId(followerId, followingId),
-                () -> verify(followingRepository, times(0)).delete(following)
+                () -> verify(followingRepository, times(0)).delete(any(Following.class)),
+                () -> verify(memberRepository, times(0)).decreaseFollowerCount(anyLong())
         );
     }
 
@@ -488,9 +486,9 @@ class MemberServiceTest {
                 .followingId(followingId)
                 .build();
 
-        given(memberRepository.findById(followingId))
-                .willReturn(Optional.of(CORINNE.생성(followingId)));
         given(memberRepository.existsById(followerId))
+                .willReturn(true);
+        given(memberRepository.existsById(followingId))
                 .willReturn(true);
         given(followingRepository.findByFollowerIdAndFollowingId(followerId, followingId))
                 .willReturn(Optional.empty());
@@ -499,41 +497,10 @@ class MemberServiceTest {
         assertAll(
                 () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followingId))
                         .isExactlyInstanceOf(NotFollowingException.class),
-                () -> verify(memberRepository).findById(followingId),
                 () -> verify(memberRepository).existsById(followerId),
+                () -> verify(memberRepository).existsById(followingId),
                 () -> verify(followingRepository).findByFollowerIdAndFollowingId(followerId, followingId),
                 () -> verify(followingRepository, times(0)).delete(following)
-        );
-    }
-
-    @Test
-    void 다른_회원을_언팔로우할때_팔로잉_멤버의_팔로우_카운트가_0이면_예외가_발생한다() {
-        // given
-        Long followerId = 1L;
-        Long followingId = 2L;
-        Following following = Following.builder()
-                .followerId(followerId)
-                .followingId(followingId)
-                .build();
-        Member followingMember = CORINNE.팔로워_카운트를_입력하여_생성(0);
-
-        given(memberRepository.findById(followingId))
-                .willReturn(Optional.of(followingMember));
-        given(memberRepository.existsById(followerId))
-                .willReturn(true);
-        given(followingRepository.findByFollowerIdAndFollowingId(followerId, followingId))
-                .willReturn(Optional.of(following));
-        willDoNothing().given(followingRepository)
-                .delete(following);
-
-        // when, then
-        assertAll(
-                () -> assertThatThrownBy(() -> memberService.unfollow(followerId, followingId))
-                        .isExactlyInstanceOf(InvalidFollowerCountException.class),
-                () -> verify(memberRepository).findById(followingId),
-                () -> verify(memberRepository).existsById(followerId),
-                () -> verify(followingRepository).findByFollowerIdAndFollowingId(followerId, followingId),
-                () -> verify(followingRepository).delete(following)
         );
     }
 

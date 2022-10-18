@@ -48,9 +48,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.increaseFollowerCount();
-        entityManager.flush();
-        entityManager.clear();
+        memberRepository.increaseFollowerCount(mincho.getId());
 
         // when
         Member savedMincho = memberRepository.findById(mincho.getId())
@@ -174,9 +172,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.increaseFollowerCount();
-        entityManager.flush();
-        entityManager.clear();
+        memberRepository.increaseFollowerCount(mincho.getId());
 
         Member expected = Member.builder()
                 .id(mincho.getId())
@@ -212,9 +208,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.increaseFollowerCount();
-        entityManager.flush();
-        entityManager.clear();
+        memberRepository.increaseFollowerCount(mincho.getId());
 
         Member expected = Member.builder()
                 .id(mincho.getId())
@@ -250,9 +244,7 @@ class MemberRepositoryTest {
                 .followerId(corinne.getId())
                 .followingId(mincho.getId())
                 .build());
-        mincho.increaseFollowerCount();
-        entityManager.flush();
-        entityManager.clear();
+        memberRepository.increaseFollowerCount(mincho.getId());
 
         Member expected = Member.builder()
                 .id(mincho.getId())

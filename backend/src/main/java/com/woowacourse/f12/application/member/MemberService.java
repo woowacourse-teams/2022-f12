@@ -139,20 +139,19 @@ public class MemberService {
 
     @Transactional
     public void follow(final Long followerId, final Long followingId) {
-        final Member targetMember = memberRepository.findById(followingId)
-                .orElseThrow(MemberNotFoundException::new);
-        validateFollowingMembersExist(followerId);
+        validateMemberExists(followerId);
+        validateMemberExists(followingId);
         validateNotFollowing(followerId, followingId);
         final Following following = Following.builder()
                 .followerId(followerId)
                 .followingId(followingId)
                 .build();
         followingRepository.save(following);
-        targetMember.increaseFollowerCount();
+        memberRepository.increaseFollowerCount(followingId);
     }
 
-    private void validateFollowingMembersExist(final Long followerId) {
-        if (!memberRepository.existsById(followerId)) {
+    private void validateMemberExists(final Long memberId) {
+        if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException();
         }
     }
@@ -165,12 +164,11 @@ public class MemberService {
 
     @Transactional
     public void unfollow(final Long followerId, final Long followingId) {
-        final Member targetMember = memberRepository.findById(followingId)
-                .orElseThrow(MemberNotFoundException::new);
-        validateFollowingMembersExist(followerId);
+        validateMemberExists(followerId);
+        validateMemberExists(followingId);
         final Following following = findFollowingRelation(followerId, followingId);
         followingRepository.delete(following);
-        targetMember.decreaseFollowerCount();
+        memberRepository.decreaseFollowerCount(followingId);
     }
 
     private Following findFollowingRelation(final Long followerId, final Long followingId) {
