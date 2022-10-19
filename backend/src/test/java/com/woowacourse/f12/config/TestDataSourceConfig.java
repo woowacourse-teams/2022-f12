@@ -5,7 +5,6 @@ import static com.woowacourse.f12.support.DataSourceType.SLAVE;
 
 import com.woowacourse.f12.support.ReplicationRoutingDataSource;
 import com.zaxxer.hikari.HikariDataSource;
-import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -23,11 +22,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 @TestConfiguration
 public class TestDataSourceConfig {
 
+    private static final String MASTER_URL = "jdbc:h2:mem:master;MODE=MySQL;";
+    private static final String SLAVE_URL = "jdbc:h2:mem:slave;MODE=MySQL;";
+
     @Bean(name = "masterDataSource")
     public DataSource masterDataSource() {
         return DataSourceBuilder.create()
                 .type(HikariDataSource.class)
-                .url("jdbc:h2:mem:master;MODE=MySQL;")
+                .url(MASTER_URL)
                 .username("sa")
                 .password("")
                 .build();
@@ -37,7 +39,7 @@ public class TestDataSourceConfig {
     public DataSource slaveDataSource() {
         return DataSourceBuilder.create()
                 .type(HikariDataSource.class)
-                .url("jdbc:h2:mem:slave;MODE=MySQL;")
+                .url(SLAVE_URL)
                 .username("sa")
                 .password("")
                 .build();
@@ -66,8 +68,7 @@ public class TestDataSourceConfig {
         bean.setPackagesToScan("com.woowacourse.f12");
         final HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
         bean.setJpaVendorAdapter(hibernateJpaVendorAdapter);
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.format_sql", true);
+        Map<String, Object> properties = Map.of("hibernate.format_sql", true);
         bean.setJpaPropertyMap(properties);
         return bean;
     }
