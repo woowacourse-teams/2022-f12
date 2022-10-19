@@ -14,6 +14,8 @@ export const Container = styled.section<{
   right: 5%;
   bottom: 0;
 
+  z-index: 2;
+
   transition: 200ms;
 
   ${({ animationTrigger }) =>
