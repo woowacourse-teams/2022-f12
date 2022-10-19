@@ -15,7 +15,7 @@ const jobTypeList = Object.values(JOB_TYPES);
 const careerLevelList = Object.values(CAREER_LEVELS);
 
 function BarGraph({ statistics }: Prop) {
-  const [animationTrigger, setAnimationTrigger] = useState(1);
+  const [animationTrigger, setAnimationTrigger] = useState<number>(1);
   const [isJobType, setIsJobType] = useState(true);
   const { careerLevel, jobType } = statistics;
 
