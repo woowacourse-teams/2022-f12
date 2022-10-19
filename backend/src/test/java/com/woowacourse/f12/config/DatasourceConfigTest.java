@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
 class DatasourceConfigTest {
 
     @Autowired
-    TransactionTestService transactionTestService;
+    private TransactionTestService transactionTestService;
 
     @Test
     void transaction이_readOnly라면_slave_datasource를_선택한다() throws SQLException {

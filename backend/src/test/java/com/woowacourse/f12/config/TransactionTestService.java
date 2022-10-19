@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TransactionTestService {
 
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Transactional(readOnly = true)
     public String readOnly() throws SQLException {
