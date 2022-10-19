@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Aspect
-public class ApiQueryCounterAop {
+public class ApiQueryCounterAspect {
 
     private final ApiQueryCounter apiQueryCounter;
 
-    public ApiQueryCounterAop(final ApiQueryCounter apiQueryCounter) {
+    public ApiQueryCounterAspect(final ApiQueryCounter apiQueryCounter) {
         this.apiQueryCounter = apiQueryCounter;
     }
 
