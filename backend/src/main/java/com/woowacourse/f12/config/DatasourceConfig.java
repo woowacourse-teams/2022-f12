@@ -66,8 +66,6 @@ public class DatasourceConfig {
         bean.setPackagesToScan("com.woowacourse.f12");
         final HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
         bean.setJpaVendorAdapter(hibernateJpaVendorAdapter);
-        final Map<String, Object> properties = Map.of("hibernate.format_sql", formatSqlValue);
-        bean.setJpaPropertyMap(properties);
         return bean;
     }
 
