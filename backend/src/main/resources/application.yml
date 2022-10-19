@@ -13,6 +13,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+
   flyway:
     enabled: true
     baseline-on-migrate: true
