@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useState, useRef } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import * as S from '@/components/common/Modal/Modal.style';
@@ -19,8 +19,6 @@ function Modal({
 }: PropsWithChildren<Props>) {
   const [scrollOffset, setScrollOffset] = useState(0);
 
-  const modalRef = useRef<HTMLDivElement>(null);
-
   const closeOnEscape = (e: KeyboardEvent) => {
     if (e.code !== 'Escape') return;
     handleClose();
@@ -32,12 +30,12 @@ function Modal({
 
   const handleFocusRemove = () => {
     const root = document.querySelector<HTMLElement>('#root');
-    root.setAttribute('aria-hidden', 'true');
+    root.setAttribute('inert', 'true');
   };
 
   const handleFocusRetrieve = () => {
     const root = document.querySelector<HTMLElement>('#root');
-    root.removeAttribute('aria-hidden');
+    root.removeAttribute('inert');
   };
 
   useEffect(() => {
@@ -63,7 +61,7 @@ function Modal({
       role="dialog"
     >
       <S.Backdrop onClick={handleClose} animationTrigger={animationTrigger} />
-      <S.Content tabIndex={0} ref={modalRef} animationTrigger={animationTrigger}>
+      <S.Content tabIndex={0} animationTrigger={animationTrigger}>
         {children}
         <ActionButtons handleClose={handleClose} handleConfirm={handleConfirm} />
       </S.Content>
