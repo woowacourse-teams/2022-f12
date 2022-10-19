@@ -26,6 +26,10 @@ function Modal({
     handleClose();
   };
 
+  const preventScroll = (scrollY: number) => () => {
+    window.scrollTo(0, scrollY);
+  };
+
   const handleFocusRemove = () => {
     const root = document.querySelector<HTMLElement>('#root');
     root.setAttribute('aria-hidden', 'true');
@@ -37,15 +41,18 @@ function Modal({
   };
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    setScrollOffset(window.scrollY);
+    const scrollY = window.scrollY;
+    setScrollOffset(scrollY);
+    const preventScrollHandler = preventScroll(scrollY);
+
     handleFocusRemove();
     window.addEventListener('keydown', closeOnEscape);
+    window.addEventListener('scroll', preventScrollHandler);
 
     return () => {
-      document.body.style.overflow = 'auto';
       handleFocusRetrieve();
       window.removeEventListener('keydown', closeOnEscape);
+      window.removeEventListener('scroll', preventScrollHandler);
     };
   }, []);
 

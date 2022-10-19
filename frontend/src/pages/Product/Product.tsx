@@ -16,13 +16,12 @@ import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListS
 import useAnimation from '@/hooks/useAnimation';
 import useAuth from '@/hooks/useAuth';
 import useDevice from '@/hooks/useDevice';
+import useModal from '@/hooks/useModal';
 import useProduct from '@/hooks/useProduct';
 import useReviews from '@/hooks/useReviews';
 import useStatistics from '@/hooks/useStatistics';
 
-import theme from '@/style/theme';
-
-import Plus from '@/assets/plus.svg';
+import Writing from '@/assets/writing.svg';
 
 export const PRODUCT_PAGE_REVIEW_SIZE = 6;
 
@@ -72,6 +71,12 @@ function Product() {
   const [shouldSheetRender, handleSheetUnmount, sheetAnimationTrigger] =
     useAnimation(isSheetOpen);
 
+  const { showAlert } = useModal();
+
+  const showAlertHandler = async () => {
+    await showAlert('리뷰를 작성하려면 로그인 해주세요.');
+  };
+
   useEffect(() => {
     if (!isLoggedIn) toggleSheetOpen();
   }, [isLoggedIn]);
@@ -102,11 +107,12 @@ function Product() {
         ProductDetails
       )}
       <S.ReviewListWrapper tabIndex={0} ref={reviewRef}>
-        {isLoggedIn && (
-          <FloatingButton label={'리뷰 작성하기'} clickHandler={toggleSheetOpen}>
-            <Plus stroke={theme.colors.white} />
-          </FloatingButton>
-        )}
+        <FloatingButton
+          label={'리뷰 작성하기'}
+          clickHandler={isLoggedIn ? toggleSheetOpen : showAlertHandler}
+        >
+          <Writing />
+        </FloatingButton>
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isReviewReady}
