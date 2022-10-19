@@ -13,10 +13,10 @@ public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
     @Override
     protected Object determineCurrentLookupKey() {
         final String transactionName = TransactionSynchronizationManager.getCurrentTransactionName();
-        final boolean readOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
         if (transactionName == null) {
             return MASTER;
         }
+        final boolean readOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
         if (readOnly) {
             log.info("TRANSACTION_NAME : {}, DATASOURCE : {}", transactionName, SLAVE);
             return SLAVE;
