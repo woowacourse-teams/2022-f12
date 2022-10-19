@@ -1,1 +1,1 @@
-alter table product modify column category varchar(15) not null default null;
+alter table product modify column category varchar(15) not null;
