@@ -65,3 +65,8 @@ export const NoDataContainer = styled.div`
   display: flex;
   justify-content: center;
 `;
+
+export const ProductCardLi = styled.li`
+  width: max-content;
+  margin: 0 auto;
+`;
