@@ -1,8 +1,6 @@
 import * as S from '@/components/Profile/ProductBar/ProductBar.style';
 
-import theme from '@/style/theme';
-
-import Plus from '@/assets/plus.svg';
+// import Plus from '@/assets/plus.svg';
 
 type BarType = 'default' | 'selected' | 'add';
 
@@ -23,7 +21,7 @@ function ProductBar({ name, barType, handleClick }: Props) {
 function AddButton({ handleClick }: Pick<Props, 'handleClick'>) {
   return (
     <S.AddContainer barType={'add'} onClick={handleClick}>
-      <Plus stroke={theme.colors.gray} />
+      {/* <Plus stroke={theme.colors.gray} /> */}
     </S.AddContainer>
   );
 }
