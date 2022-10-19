@@ -5,7 +5,6 @@ import static com.woowacourse.f12.support.DataSourceType.SLAVE;
 
 import com.woowacourse.f12.support.ReplicationRoutingDataSource;
 import com.zaxxer.hikari.HikariDataSource;
-import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -67,8 +66,7 @@ public class DatasourceConfig {
         bean.setPackagesToScan("com.woowacourse.f12");
         final HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
         bean.setJpaVendorAdapter(hibernateJpaVendorAdapter);
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.format_sql", formatSqlValue);
+        final Map<String, Object> properties = Map.of("hibernate.format_sql", formatSqlValue);
         bean.setJpaPropertyMap(properties);
         return bean;
     }
