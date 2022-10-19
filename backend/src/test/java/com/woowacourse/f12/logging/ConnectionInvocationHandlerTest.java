@@ -24,7 +24,7 @@ class ConnectionInvocationHandlerTest {
     @Test
     void 실행시킬_메서드가_prepareStatement_메서드일_경우_프록시_객체를_반환한다() throws Exception {
         // given
-        try (Connection connection = DriverManager.getConnection("jdbc:h2:./test")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:h2:mem:test")) {
             ConnectionInvocationHandler connectionInvocationHandler = new ConnectionInvocationHandler(connection,
                     apiQueryCounter);
             Method prepareStatementMethod = connection.getClass().getMethod("prepareStatement", String.class);
@@ -41,7 +41,7 @@ class ConnectionInvocationHandlerTest {
     @Test
     void 실행시킬_메서드가_prepareStatement_메서드가_아닐_경우_기존_객체를_반환한다() throws Exception {
         // given
-        try (Connection connection = DriverManager.getConnection("jdbc:h2:./test")) {
+        try (Connection connection = DriverManager.getConnection("jdbc:h2:mem:test")) {
             ConnectionInvocationHandler connectionInvocationHandler = new ConnectionInvocationHandler(connection,
                     apiQueryCounter);
             Method method = connection.getClass().getMethod("isReadOnly");
