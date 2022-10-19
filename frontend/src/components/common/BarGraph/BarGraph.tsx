@@ -15,6 +15,7 @@ const jobTypeList = Object.values(JOB_TYPES);
 const careerLevelList = Object.values(CAREER_LEVELS);
 
 function BarGraph({ statistics }: Prop) {
+  const [animationTrigger, setAnimationTrigger] = useState<number>(1);
   const [isJobType, setIsJobType] = useState(true);
   const { careerLevel, jobType } = statistics;
 
@@ -43,6 +44,7 @@ function BarGraph({ statistics }: Prop) {
 
   const toggleGraph = () => {
     setIsJobType((state) => !state);
+    setAnimationTrigger((prev) => prev + 1);
   };
 
   return (
@@ -60,7 +62,11 @@ function BarGraph({ statistics }: Prop) {
         {statisticsData.map((data, index) => {
           return (
             <S.BarWrapper key={index}>
-              <S.Bar key={Math.random()} color={data.color} height={data.percent} />
+              <S.Bar
+                key={index + animationTrigger}
+                color={data.color}
+                height={data.percent}
+              />
               <S.PercentWrapper>
                 <S.Percent aria-hidden="true">{`${data.percent}%`}</S.Percent>
                 <SROnly>{`${data.label} 개발자 ${data.percent}%가 사용중`}</SROnly>
