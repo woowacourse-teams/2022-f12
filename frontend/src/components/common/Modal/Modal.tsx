@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useState, useRef } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import * as S from '@/components/common/Modal/Modal.style';
