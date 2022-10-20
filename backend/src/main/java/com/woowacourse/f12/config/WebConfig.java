@@ -17,6 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
     private static final String MAIN_SERVER_WWW_DOMAIN = "https://www.f12.app";
     private static final String TEST_SERVER_DOMAIN = "https://test.f12.app";
     private static final String FRONTEND_LOCALHOST = "http://localhost:3000";
+    private static final String ADMIN_PAGE = "https://admin.f12.app";
 
     private final List<HandlerInterceptor> interceptors;
     private final List<HandlerMethodArgumentResolver> resolvers;
@@ -35,7 +36,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/api/**")
                 .allowedMethods(CORS_ALLOWED_METHODS.split(","))
-                .allowedOrigins(MAIN_SERVER_DOMAIN, MAIN_SERVER_WWW_DOMAIN, TEST_SERVER_DOMAIN, FRONTEND_LOCALHOST)
+                .allowedOrigins(MAIN_SERVER_DOMAIN, MAIN_SERVER_WWW_DOMAIN, TEST_SERVER_DOMAIN, FRONTEND_LOCALHOST,
+                        ADMIN_PAGE)
                 .allowCredentials(true)
                 .exposedHeaders(HttpHeaders.LOCATION, HttpHeaders.SET_COOKIE);
     }
