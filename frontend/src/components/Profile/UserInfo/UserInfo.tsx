@@ -74,7 +74,6 @@ function UserInfo({ userData, isOwnProfile }: Props) {
             >
               {`@${gitHubId}`}
             </S.GitHubId>
-            {`의 데스크 셋업`}
           </S.UserNameWrapper>
           <S.FollowerCount>{followerCount}명이 팔로우함</S.FollowerCount>
           {isOwnProfile && (

@@ -89,3 +89,8 @@ export const TabButton = styled.button<{ selected: boolean }>`
     }
   `}
 `;
+
+export const SectionHeaderWrapper = styled.div`
+  margin-left: -1rem;
+  align-self: flex-start;
+`;

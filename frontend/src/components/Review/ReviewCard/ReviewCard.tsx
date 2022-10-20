@@ -89,8 +89,10 @@ function ReviewCard({
               </S.ReviewModifyButtonWrapper>
             )}
           </S.UserWrapper>
-          <Rating type="정수" rating={rating} />
         </S.Wrapper>
+        <div style={{ alignSelf: 'flex-end' }}>
+          <Rating type="정수" rating={rating} />
+        </div>
         <S.CreatedAt>{formattedDate}</S.CreatedAt>
         <S.Content>{content}</S.Content>
       </S.ReviewArea>
