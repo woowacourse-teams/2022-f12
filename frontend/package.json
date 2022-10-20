@@ -1,6 +1,6 @@
 {
   "name": "f12",
-  "version": "0.3.1",
+  "version": "1.2.0",
   "description": "개발자의 모든 도구 - F12",
   "main": "index.js",
   "scripts": {
