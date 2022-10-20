@@ -5,6 +5,7 @@ import * as S from '@/pages/Profile/Profile.style';
 
 import AsyncWrapper from '@/components/common/AsyncWrapper/AsyncWrapper';
 import Loading from '@/components/common/Loading/Loading';
+import SectionHeader from '@/components/common/SectionHeader/SectionHeader';
 
 import DeskSetup from '@/components/DeskSetup/DeskSetup';
 import InventoryProductList from '@/components/Profile/InventoryProductList/InventoryProductList';
@@ -72,6 +73,9 @@ function Profile() {
           <UserInfo userData={userInfo} isOwnProfile={isOwnProfile} />
         </AsyncWrapper>
       </S.ProfileSection>
+      <S.SectionHeaderWrapper>
+        <SectionHeader title={'데스크 셋업'} />
+      </S.SectionHeaderWrapper>
       <S.DeskSetupSection>
         <AsyncWrapper
           fallback={<Loading />}
