@@ -894,8 +894,7 @@ export const reviewsWithProduct: Review[] = [
     product: {
       id: 5,
       name: '키보드5',
-      imageUrl:
-        'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
+      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Homebrew_logo.svg',
     },
     content:
       '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
