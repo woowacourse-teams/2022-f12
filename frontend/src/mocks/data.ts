@@ -167,8 +167,7 @@ export const products: Product[] = [
   {
     id: 3,
     name: '레오폴드 FC900RBT PD 그레이 블루 한글 (저소음 적축)',
-    imageUrl:
-      'http://img.danawa.com/prod_img/500000/833/414/img/15414833_1.jpg?shrink=330:330&_v=20211013110445',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Homebrew_logo.svg',
     rating: 0.0,
     reviewCount: 3,
     category: 'keyboard',
