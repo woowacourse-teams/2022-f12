@@ -25,7 +25,8 @@ class WebConfigTest {
     private MockMvc mockMvc;
 
     @ParameterizedTest
-    @ValueSource(strings = {"https://f12.app", "https://www.f12.app", "https://test.f12.app", "http://localhost:3000"})
+    @ValueSource(strings = {"https://f12.app", "https://www.f12.app", "https://test.f12.app", "http://localhost:3000",
+            "https://admin.f12.app"})
     void 특정_Origin에_CORS가_허용되어있다(String origin) throws Exception {
         mockMvc.perform(
                         options("/api/v1/products")
