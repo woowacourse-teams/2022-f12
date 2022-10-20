@@ -29,7 +29,8 @@ public class TransactionTestService {
     private String getDataSourceUrl() throws SQLException {
         final EntityManagerFactoryInfo entityManagerFactory = (EntityManagerFactoryInfo) entityManager.getEntityManagerFactory();
         final DataSource dataSource = entityManagerFactory.getDataSource();
-        final Connection connection = Objects.requireNonNull(dataSource).getConnection();
-        return connection.getMetaData().getURL();
+        try (Connection connection = Objects.requireNonNull(dataSource).getConnection()) {
+            return connection.getMetaData().getURL();
+        }
     }
 }
