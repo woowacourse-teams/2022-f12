@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Chip from '@/components/common/Chip/Chip';
@@ -10,48 +10,46 @@ import useFollowing from '@/hooks/useFollowing';
 
 import TITLE from '@/constants/header';
 import { GITHUB_IMAGE_SIZE_SEARCH_PARAM, GITHUB_URL } from '@/constants/link';
+import { CATEGORIES } from '@/constants/product';
 import { CAREER_LEVELS, JOB_TYPES } from '@/constants/profile';
 import ROUTES from '@/constants/routes';
 
 import Empty from '@/assets/empty.svg';
 import GithubIcon from '@/assets/github.svg';
-import NextSign from '@/assets/nextSign.svg';
-import PrevSign from '@/assets/prevSign.svg';
+import LeftArrow from '@/assets/left_arrow.svg';
+import RightArrow from '@/assets/right_arrow.svg';
 
 const DISTANCE_DIFFERENCE = 116;
 
-type ProfileProduct = {
-  id: number;
-  name: string;
-  imageUrl: string;
-  reviewCount: number;
-  rating: number;
-  category: string;
-};
+type DeskSetupProduct = Pick<Product, 'id' | 'name' | 'imageUrl'>;
+type ProfileProductCategories = Exclude<Category, 'software'>;
+
+const profileCategories: ProfileProductCategories[] = [
+  'keyboard',
+  'mouse',
+  'monitor',
+  'stand',
+];
+
+type ProfileSearchResult = Member & { profileProducts: Product[] };
 
 type Props = {
-  id: number;
-  gitHubId: string;
-  imageUrl: string;
-  careerLevel: string;
-  jobType: string;
-  profileProducts: ProfileProduct[];
-  followerCount: number;
-  following: boolean;
+  profileSearchResult: ProfileSearchResult;
   index?: number;
 };
 
-function ProfileCard({
-  id,
-  gitHubId,
-  imageUrl,
-  careerLevel,
-  jobType,
-  profileProducts,
-  followerCount: initialFollowerCount,
-  following,
-  index = 0,
-}: Props) {
+function ProfileCard({ profileSearchResult, index = 0 }: Props) {
+  const {
+    id,
+    gitHubId,
+    imageUrl,
+    careerLevel,
+    jobType,
+    profileProducts,
+    followerCount: initialFollowerCount,
+    following,
+  } = profileSearchResult;
+
   const [positionX, setPositionX] = useState(0);
   const [followed, setFollowed] = useState(following);
   const [followerCount, setFollowerCount] = useState(initialFollowerCount);
@@ -92,31 +90,54 @@ function ProfileCard({
     }
   };
 
-  const keyboard = profileProducts.find((product) => product.category === 'keyboard') || {
-    id: null,
-    imageUrl: null,
-    name: '키보드',
-  };
-  const mouse = profileProducts.find((product) => product.category === 'mouse') || {
-    id: null,
-    imageUrl: null,
-    name: '마우스',
-  };
-  const monitor = profileProducts.find((product) => product.category === 'monitor') || {
-    id: null,
-    imageUrl: null,
-    name: '모니터',
-  };
-  const stand = profileProducts.find((product) => product.category === 'stand') || {
-    id: null,
-    imageUrl: null,
-    name: '거치대',
-  };
-  const representativeEquipments = [keyboard, mouse, monitor, stand].sort(
-    (prevEquipment, nextEquipment) => {
-      return nextEquipment?.name.length - prevEquipment?.name.length;
-    }
+  const getProductByCategory = (categoryName: ProfileProductCategories) =>
+    profileProducts.find((product) => product.category === categoryName);
+
+  const deskSetupProduct = ({ id, name, imageUrl }: DeskSetupProduct) => (
+    <S.InventoryItem key={id}>
+      <S.ProductImageWrapper>
+        <Link to={`${ROUTES.PRODUCT}/${id}`}>
+          <S.ProductImage src={imageUrl} />
+        </Link>
+      </S.ProductImageWrapper>
+      <S.ProductTitle>
+        <Link to={`${ROUTES.PRODUCT}/${id}`}>{name}</Link>
+      </S.ProductTitle>
+    </S.InventoryItem>
   );
+
+  const emptyDeskSetupProduct = (categoryName: ProfileProductCategories) => (
+    <S.InventoryItem key={categoryName}>
+      <S.ProductImageWrapper>
+        <S.EmptyWrapper>
+          <Empty />
+        </S.EmptyWrapper>
+      </S.ProductImageWrapper>
+      <S.ProductTitle>
+        {TITLE.DESK_SETUP}에 {CATEGORIES[categoryName]}가 없어요.
+      </S.ProductTitle>
+    </S.InventoryItem>
+  );
+
+  const deskSetupProducts = useMemo(() => {
+    const result: JSX.Element[] = [];
+    const noProductQueue: ProfileProductCategories[] = [];
+
+    profileCategories.forEach((category) => {
+      const product = getProductByCategory(category);
+      if (product === undefined) {
+        noProductQueue.push(category);
+      } else {
+        result.push(deskSetupProduct(product));
+      }
+    });
+
+    result.push(
+      ...noProductQueue.map((categoryName) => emptyDeskSetupProduct(categoryName))
+    );
+
+    return result;
+  }, []);
 
   return (
     <S.Container index={index}>
@@ -142,48 +163,23 @@ function ProfileCard({
             <Chip size="s">{JOB_TYPES[jobType]}</Chip>
             <Chip size="s">{CAREER_LEVELS[careerLevel]}</Chip>
           </S.UserCareer>
+          {isLoggedIn && (
+            <S.FollowingButtonWrapper>
+              <S.FollowingButton followed={followed} onClick={toggleFollow}>
+                {followed ? '팔로잉' : '팔로우'}
+              </S.FollowingButton>
+            </S.FollowingButtonWrapper>
+          )}
         </S.UserInfoWrapper>
-        {isLoggedIn && (
-          <S.FollowingButtonWrapper>
-            <S.FollowingButton followed={followed} onClick={toggleFollow}>
-              {followed ? '팔로잉' : '팔로우'}
-            </S.FollowingButton>
-          </S.FollowingButtonWrapper>
-        )}
         <S.InventoryWrapper>
           <S.LeftButton onClick={handleLeftButtonClick}>
-            <PrevSign />
+            <LeftArrow />
           </S.LeftButton>
           <S.InventoryListWrapper>
-            <S.InventoryList positionX={positionX}>
-              {representativeEquipments.map((equipment, index) => {
-                return (
-                  <S.InventoryItem key={index}>
-                    <S.ProductImageWrapper>
-                      {equipment.id ? (
-                        <Link to={`${ROUTES.PRODUCT}/${equipment.id as string}`}>
-                          <S.ProductImage src={equipment.imageUrl as string} />
-                        </Link>
-                      ) : (
-                        <Empty />
-                      )}
-                      <S.ProductTitle>
-                        {equipment.id ? (
-                          <Link to={`${ROUTES.PRODUCT}/${equipment.id as string}`}>
-                            {equipment.name}
-                          </Link>
-                        ) : (
-                          `${TITLE.DESK_SETUP}에 추가한 ${equipment.name}가 없어요`
-                        )}
-                      </S.ProductTitle>
-                    </S.ProductImageWrapper>
-                  </S.InventoryItem>
-                );
-              })}
-            </S.InventoryList>
+            <S.InventoryList positionX={positionX}>{deskSetupProducts}</S.InventoryList>
           </S.InventoryListWrapper>
           <S.RightButton onClick={handleRightButtonClick}>
-            <NextSign />
+            <RightArrow />
           </S.RightButton>
         </S.InventoryWrapper>
         <S.LinkWrapper to={`${ROUTES.PROFILE}/${id}`}>

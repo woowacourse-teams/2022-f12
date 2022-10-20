@@ -1,8 +1,6 @@
 package com.woowacourse.f12.presentation.auth;
 
-import com.woowacourse.f12.application.auth.JwtProvider;
-import com.woowacourse.f12.exception.unauthorized.TokenInvalidFormatException;
-import java.util.Objects;
+import com.woowacourse.f12.application.auth.token.JwtProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -29,14 +27,9 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
                                   final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         final String authorizationHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        if (Objects.isNull(authorizationHeader)) {
+        if (authorizationHeader == null) {
             return null;
         }
-        final String payload = jwtProvider.getPayload(authorizationHeader);
-        try {
-            return Long.parseLong(payload);
-        } catch (NumberFormatException e) {
-            throw new TokenInvalidFormatException();
-        }
+        return jwtProvider.getPayload(authorizationHeader);
     }
 }

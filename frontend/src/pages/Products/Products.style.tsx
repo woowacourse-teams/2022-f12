@@ -9,7 +9,7 @@ export const Main = styled.main`
   gap: 3rem;
 `;
 
-export const SearchBarWrapper = styled.div`
+export const SearchBarWrapper = styled.section`
   display: flex;
   align-items: center;
   flex-direction: column;

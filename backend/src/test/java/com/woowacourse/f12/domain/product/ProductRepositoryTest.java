@@ -2,9 +2,11 @@ package com.woowacourse.f12.domain.product;
 
 import static com.woowacourse.f12.domain.product.Category.KEYBOARD;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
 import static com.woowacourse.f12.support.fixture.ProductFixture.MOUSE_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.MOUSE_2;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_1;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_2;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_4;
@@ -12,23 +14,21 @@ import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.woowacourse.f12.config.JpaConfig;
+import com.woowacourse.f12.domain.RepositoryTest;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 
-@DataJpaTest
-@Import(JpaConfig.class)
+@RepositoryTest
 class ProductRepositoryTest {
 
     @Autowired
@@ -44,9 +44,10 @@ class ProductRepositoryTest {
     void 제품을_단일_조회_한다() {
         // given
         Product product = 제품_저장(KEYBOARD_1.생성());
-        Member member = memberRepository.save(CORINNE.생성());
-        Review review1 = REVIEW_RATING_4.작성(product, member);
-        Review review2 = REVIEW_RATING_5.작성(product, member);
+        Member member1 = memberRepository.save(CORINNE.생성());
+        Member member2 = memberRepository.save(MINCHO.생성());
+        Review review1 = REVIEW_RATING_4.작성(product, member1);
+        Review review2 = REVIEW_RATING_5.작성(product, member2);
 
         리뷰_저장(review1);
         리뷰_저장(review2);
@@ -84,11 +85,12 @@ class ProductRepositoryTest {
         // given
         Product product1 = 제품_저장(KEYBOARD_1.생성());
         Product product2 = 제품_저장(KEYBOARD_2.생성());
-        Member member = memberRepository.save(CORINNE.생성());
+        Member member1 = memberRepository.save(CORINNE.생성());
+        Member member2 = memberRepository.save(MINCHO.생성());
 
-        Review review1 = REVIEW_RATING_5.작성(product1, member);
-        Review review2 = REVIEW_RATING_5.작성(product2, member);
-        Review review3 = REVIEW_RATING_5.작성(product2, member);
+        Review review1 = REVIEW_RATING_5.작성(product1, member1);
+        Review review2 = REVIEW_RATING_5.작성(product2, member1);
+        Review review3 = REVIEW_RATING_5.작성(product2, member2);
 
         리뷰_저장(review1);
         리뷰_저장(review2);
@@ -109,14 +111,16 @@ class ProductRepositoryTest {
     @Test
     void 키보드_전체_목록을_평균_평점_순으로_페이징하여_조회한다() {
         // given
-        Product product2 = 제품_저장(KEYBOARD_1.생성());
-        Product product1 = 제품_저장(KEYBOARD_2.생성());
+        Product product1 = 제품_저장(KEYBOARD_1.생성());
+        Product product2 = 제품_저장(KEYBOARD_2.생성());
+        Product product3 = 제품_저장(MOUSE_1.생성());
+        Product product4 = 제품_저장(MOUSE_2.생성());
         Member member = memberRepository.save(CORINNE.생성());
 
         리뷰_저장(REVIEW_RATING_2.작성(product1, member));
-        리뷰_저장(REVIEW_RATING_1.작성(product1, member));
-        리뷰_저장(REVIEW_RATING_5.작성(product2, member));
-        리뷰_저장(REVIEW_RATING_4.작성(product2, member));
+        리뷰_저장(REVIEW_RATING_1.작성(product2, member));
+        리뷰_저장(REVIEW_RATING_5.작성(product3, member));
+        리뷰_저장(REVIEW_RATING_4.작성(product4, member));
 
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Order.desc("rating")));
 
@@ -126,7 +130,7 @@ class ProductRepositoryTest {
         // then
         assertAll(
                 () -> assertThat(slice.hasNext()).isTrue(),
-                () -> assertThat(slice.getContent()).containsExactly(product2)
+                () -> assertThat(slice.getContent()).containsExactly(product1)
         );
     }
 
@@ -186,12 +190,115 @@ class ProductRepositoryTest {
         );
     }
 
+    @Test
+    void 리뷰_개수와_평점으로_제품을_조회한다() {
+        // given
+        Product keyboard1 = 제품_저장(KEYBOARD_1.생성());
+        Product keyboard2 = 제품_저장(KEYBOARD_2.생성());
+
+        Member corinne = memberRepository.save(CORINNE.생성());
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1, corinne));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard2, corinne));
+
+        Member mincho = memberRepository.save(MINCHO.생성());
+        리뷰_저장(REVIEW_RATING_5.작성(keyboard1, mincho));
+        리뷰_저장(REVIEW_RATING_4.작성(keyboard2, mincho));
+
+        // when
+        List<Product> actual = productRepository.findByReviewCountGreaterThanEqualAndRatingGreaterThanEqual(2, 4.5);
+
+        // then
+        assertThat(actual).usingRecursiveFieldByFieldElementComparatorOnFields("name", "imageUrl", "category")
+                .containsOnly(keyboard1);
+    }
+
+    @Test
+    void 리뷰_작성에_맞게_제품_정합성을_맞춘다() {
+        // given
+        Long productId = 제품_저장(KEYBOARD_1.생성()).getId();
+
+        // when
+        productRepository.updateProductStatisticsForReviewInsert(productId, 1);
+        productRepository.updateProductStatisticsForReviewInsert(productId, 2);
+
+        // then
+        Product actual = productRepository.findById(productId)
+                .orElseThrow();
+
+        assertAll(
+                () -> assertThat(actual.getReviewCount()).isEqualTo(2),
+                () -> assertThat(actual.getRating()).isEqualTo(1.5),
+                () -> assertThat(actual.getTotalRating()).isEqualTo(3)
+        );
+    }
+
+    @Test
+    void 리뷰_삭제에_맞게_제품_정합성을_맞춘다() {
+        // given
+        Long productId = 제품_저장(KEYBOARD_1.생성()).getId();
+        productRepository.updateProductStatisticsForReviewInsert(productId, 1);
+        productRepository.updateProductStatisticsForReviewInsert(productId, 2);
+
+        // when
+        productRepository.updateProductStatisticsForReviewDelete(productId, 1);
+
+        // then
+        Product actual = productRepository.findById(productId)
+                .orElseThrow();
+
+        assertAll(
+                () -> assertThat(actual.getReviewCount()).isOne(),
+                () -> assertThat(actual.getRating()).isEqualTo(2.0),
+                () -> assertThat(actual.getTotalRating()).isEqualTo(2)
+        );
+    }
+
+    @Test
+    void 리뷰_삭제로_리뷰_개수가_0개일_때_제품_정합성을_맞춘다() {
+        // given
+        Long productId = 제품_저장(KEYBOARD_1.생성()).getId();
+        productRepository.updateProductStatisticsForReviewInsert(productId, 1);
+
+        // when
+        productRepository.updateProductStatisticsForReviewDelete(productId, 1);
+
+        // then
+        Product actual = productRepository.findById(productId)
+                .orElseThrow();
+
+        assertAll(
+                () -> assertThat(actual.getReviewCount()).isZero(),
+                () -> assertThat(actual.getRating()).isZero(),
+                () -> assertThat(actual.getTotalRating()).isZero()
+        );
+    }
+
+    @Test
+    void 리뷰_수정에_맞게_제품_정합성을_맞춘다() {
+        // given
+        Long productId = 제품_저장(KEYBOARD_1.생성()).getId();
+        productRepository.updateProductStatisticsForReviewInsert(productId, 5);
+
+        // when
+        productRepository.updateProductStatisticsForReviewUpdate(productId, -2);
+
+        // then
+        Product actual = productRepository.findById(productId)
+                .orElseThrow();
+
+        assertAll(
+                () -> assertThat(actual.getReviewCount()).isOne(),
+                () -> assertThat(actual.getRating()).isEqualTo(3.0),
+                () -> assertThat(actual.getTotalRating()).isEqualTo(3)
+        );
+    }
+
     private Product 제품_저장(Product product) {
         return productRepository.save(product);
     }
 
     private Review 리뷰_저장(Review review) {
-        review.reflectToProductWhenWritten();
+        productRepository.updateProductStatisticsForReviewInsert(review.getProduct().getId(), review.getRating());
         return reviewRepository.save(review);
     }
 }

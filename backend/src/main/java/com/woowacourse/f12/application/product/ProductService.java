@@ -1,5 +1,6 @@
 package com.woowacourse.f12.application.product;
 
+import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.product.Category;
@@ -9,7 +10,10 @@ import com.woowacourse.f12.domain.review.CareerLevelCount;
 import com.woowacourse.f12.domain.review.JobTypeCount;
 import com.woowacourse.f12.domain.review.MemberInfoStatistics;
 import com.woowacourse.f12.domain.review.ReviewRepository;
+import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
+import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
+import com.woowacourse.f12.dto.response.PopularProductsResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
@@ -17,7 +21,6 @@ import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.presentation.product.CategoryConstant;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -29,10 +32,22 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
+    private final InventoryProductRepository inventoryProductRepository;
+    private final PopularProductsCreator popularProductCreator;
 
-    public ProductService(final ProductRepository productRepository, final ReviewRepository reviewRepository) {
+    public ProductService(final ProductRepository productRepository, final ReviewRepository reviewRepository,
+                          final InventoryProductRepository inventoryProductRepository,
+                          final PopularProductsCreator popularProductCreator) {
         this.productRepository = productRepository;
         this.reviewRepository = reviewRepository;
+        this.inventoryProductRepository = inventoryProductRepository;
+        this.popularProductCreator = popularProductCreator;
+    }
+
+    @Transactional
+    public Long save(final ProductCreateRequest productCreateRequest) {
+        return productRepository.save(productCreateRequest.toProduct())
+                .getId();
     }
 
     public ProductResponse findById(final Long id) {
@@ -58,7 +73,7 @@ public class ProductService {
 
     private Category parseCategory(final ProductSearchRequest productSearchRequest) {
         final CategoryConstant categoryConstant = productSearchRequest.getCategory();
-        if (Objects.isNull(categoryConstant)) {
+        if (categoryConstant == null) {
             return null;
         }
         return categoryConstant.toCategory();
@@ -84,5 +99,27 @@ public class ProductService {
         final List<JobTypeCount> jobTypeCounts = reviewRepository.findJobTypeCountByProductId(productId);
         final MemberInfoStatistics<JobTypeCount, JobType> jobTypeStatistics = new MemberInfoStatistics<>(jobTypeCounts);
         return jobTypeStatistics.calculateStatistics(JobType.values());
+    }
+
+    @Transactional
+    public void update(final Long productId, final ProductUpdateRequest productUpdateRequest) {
+        final Product target = productRepository.findById(productId)
+                .orElseThrow(ProductNotFoundException::new);
+        target.update(productUpdateRequest.toProduct());
+    }
+
+    @Transactional
+    public void delete(final Long productId) {
+        final Product target = productRepository.findById(productId)
+                .orElseThrow(ProductNotFoundException::new);
+        reviewRepository.deleteByProduct(target);
+        inventoryProductRepository.deleteByProduct(target);
+        productRepository.delete(target);
+    }
+
+    public PopularProductsResponse findPopularProducts(final int size) {
+        final List<Product> products = popularProductCreator.create(size,
+                productRepository::findByReviewCountGreaterThanEqualAndRatingGreaterThanEqual);
+        return PopularProductsResponse.from(products);
     }
 }

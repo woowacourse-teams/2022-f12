@@ -1,21 +1,20 @@
 import styled, { css } from 'styled-components';
 
-export const Container = styled.article<{ index: number }>`
+export const Container = styled.div<{ index: number; size: 's' | 'm' | 'l' }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 1rem;
-  width: 19rem;
+
   border-radius: 0.375rem;
   padding: 1rem;
+  min-width: 13rem;
+  width: ${({ size }) => (size === 'l' ? '19rem' : '15rem')};
 
   &:hover {
     img {
       transform: scale(1.03);
       transition: 0.2s;
-    }
-    h2 {
-      text-decoration: underline;
     }
   }
 
@@ -39,6 +38,7 @@ export const Container = styled.article<{ index: number }>`
 `;
 export const ImageWrapper = styled.div`
   width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border: 1px solid ${({ theme }) => theme.colors.secondary};
   background-color: #fff;
@@ -56,7 +56,18 @@ export const BottomWrapper = styled.div`
   justify-content: space-between;
 `;
 
-export const Name = styled.h2`
-  font-size: 1rem;
+const nameFontSize = {
+  s: '0.75rem',
+  m: '0.85rem',
+  l: '1rem',
+};
+
+export const Name = styled.p<{ size: 's' | 'm' | 'l' }>`
   line-height: 1.3;
+  font-weight: 500;
+  font-size: ${({ size }) => nameFontSize[size]};
+
+  ${Container}:hover & {
+    text-decoration: underline;
+  }
 `;

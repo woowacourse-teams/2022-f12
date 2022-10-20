@@ -7,9 +7,9 @@ import HeaderLogoImage from '@/assets/HeaderLogo.svg';
 function HeaderLogo() {
   return (
     <S.Container>
-      <S.LinkWrapper to={ROUTES.HOME}>
+      <S.LogoLink to={ROUTES.HOME} aria-label={'F12 홈으로'}>
         <HeaderLogoImage />
-      </S.LinkWrapper>
+      </S.LogoLink>
     </S.Container>
   );
 }

@@ -8,29 +8,56 @@ import static com.woowacourse.f12.domain.member.JobType.BACKEND;
 import static com.woowacourse.f12.domain.member.JobType.ETC;
 import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
 import static com.woowacourse.f12.domain.member.JobType.MOBILE;
+import static com.woowacourse.f12.exception.ErrorCode.EXPIRED_ACCESS_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_PAGING_PARAM;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_REQUEST_BODY_TYPE;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_SEARCH_PARAM;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_TOKEN_FORMAT;
+import static com.woowacourse.f12.exception.ErrorCode.NOT_EXIST_ACCESS_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.PERMISSION_DENIED;
+import static com.woowacourse.f12.exception.ErrorCode.PRODUCT_NOT_FOUND;
 import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
+import static com.woowacourse.f12.presentation.product.CategoryConstant.MONITOR_CONSTANT;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.MONITOR_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.MOUSE_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.SOFTWARE_1;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.woowacourse.f12.application.auth.token.JwtProvider;
+import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
+import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
+import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
+import com.woowacourse.f12.dto.response.PopularProductsResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
+import com.woowacourse.f12.support.ErrorCodeSnippet;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -41,6 +68,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -52,6 +81,10 @@ class ProductControllerTest extends PresentationTest {
 
     @MockBean
     private ProductService productService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    @MockBean
+    private JwtProvider jwtProvider;
 
     @Test
     void 키보드_목록_페이지_조회_성공() throws Exception {
@@ -124,7 +157,8 @@ class ProductControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("products-page-get"))
+                .andDo(document("products-page-get",
+                        new ErrorCodeSnippet(INVALID_SEARCH_PARAM, INVALID_PAGING_PARAM)))
                 .andDo(print());
 
         verify(productService).findBySearchConditions(refEq(productSearchRequest), any(PageRequest.class));
@@ -145,7 +179,7 @@ class ProductControllerTest extends PresentationTest {
         resultActions.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(
-                        document("products-get")
+                        document("products-get", new ErrorCodeSnippet(PRODUCT_NOT_FOUND))
                 );
 
         verify(productService).findById(1L);
@@ -184,7 +218,7 @@ class ProductControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(document("products-member-statistics-get"))
+                .andDo(document("products-member-statistics-get", new ErrorCodeSnippet(PRODUCT_NOT_FOUND)))
                 .andDo(print());
 
         verify(productService).calculateMemberStatisticsById(1L);
@@ -204,5 +238,130 @@ class ProductControllerTest extends PresentationTest {
                 .andDo(print());
 
         verify(productService).calculateMemberStatisticsById(1L);
+    }
+
+    @Test
+    void 인기_제품을_조회힌다() throws Exception {
+        // given
+        Product keyboard = KEYBOARD_1.생성(1L, 4.5, 10);
+        Product mouse = MOUSE_1.생성(2L, 5, 3);
+        Product software = SOFTWARE_1.생성(3L, 5, 2);
+        Product monitor = MONITOR_1.생성(4L, 4.5, 2);
+        int popularProductSize = 4;
+        given(productService.findPopularProducts(popularProductSize))
+                .willReturn(PopularProductsResponse.from(List.of(keyboard, mouse, software, monitor)));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/products/popular-list?size=" + popularProductSize));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("products-popular-list-get",
+                        new ErrorCodeSnippet(INVALID_SEARCH_PARAM)))
+                .andDo(print());
+        verify(productService).findPopularProducts(popularProductSize);
+    }
+
+    @Test
+    void 어드민_계정으로_로그인_하여_제품_추가_성공() throws Exception {
+        // given
+        String authorizationHeader = "Bearer token";
+        given(productService.save(any(ProductCreateRequest.class)))
+                .willReturn(1L);
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.ADMIN));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+        ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyborad.url",
+                KEYBOARD_CONSTANT);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                        post("/api/v1/products")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(objectMapper.writeValueAsString(productCreateRequest))
+                )
+                .andDo(document("admin-products-create",
+                        new ErrorCodeSnippet(INVALID_REQUEST_BODY_TYPE, NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN,
+                                INVALID_TOKEN_FORMAT, PERMISSION_DENIED)))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isCreated())
+                .andExpect(header().string(HttpHeaders.LOCATION, "/api/v1/products/1"));
+    }
+
+    @Test
+    void 어드민_계정으로_로그인_하여_제품_수정_성공() throws Exception {
+        // given
+        String authorizationHeader = "Bearer token";
+        willDoNothing().given(productService)
+                .update(anyLong(), any(ProductUpdateRequest.class));
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.ADMIN));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+        ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("updatedName", "updatedURL",
+                MONITOR_CONSTANT);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(patch("/api/v1/products/" + 1)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(productUpdateRequest))
+                )
+                .andDo(document("admin-products-update",
+                        new ErrorCodeSnippet(INVALID_REQUEST_BODY_TYPE, NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN,
+                                INVALID_TOKEN_FORMAT, PERMISSION_DENIED)))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isNoContent());
+    }
+
+    @Test
+    void 어드민_계정으로_로그인_하여_제품_삭제_성공() throws Exception {
+        // given
+        String authorizationHeader = "Bearer token";
+        willDoNothing().given(productService)
+                .delete(anyLong());
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.ADMIN));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/products/" + 1)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                )
+                .andDo(document("admin-products-delete",
+                        new ErrorCodeSnippet(NOT_EXIST_ACCESS_TOKEN, EXPIRED_ACCESS_TOKEN, INVALID_TOKEN_FORMAT,
+                                PERMISSION_DENIED, PRODUCT_NOT_FOUND)))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isNoContent());
+    }
+
+    @Test
+    void 어드민_계정으로_로그인_하여_존재하지_않는_제품_삭제_실패() throws Exception {
+        // given
+        String authorizationHeader = "Bearer token";
+        willThrow(new ProductNotFoundException()).given(productService)
+                .delete(anyLong());
+        given(jwtProvider.getPayload(authorizationHeader))
+                .willReturn(new MemberPayload(1L, Role.ADMIN));
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/products/" + 1)
+                        .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                )
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isNotFound());
     }
 }

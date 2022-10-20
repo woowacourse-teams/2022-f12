@@ -9,7 +9,11 @@ import useAuth from '@/hooks/useAuth';
 
 import { GITHUB_AUTH_URL } from '@/constants/api';
 import ROUTES from '@/constants/routes';
+
 import { CustomNavLink } from '@/style/GlobalStyles';
+
+import HeaderLogoImageHorizontal from '@/assets/HeaderLogoHorizontal.svg';
+import ProfileImage from '@/assets/profile.svg';
 
 function HeaderNav() {
   const [categoryOpen, setCategoryOpen] = useState(false);
@@ -29,7 +33,7 @@ function HeaderNav() {
   }, [location.key]);
 
   return (
-    <S.Nav>
+    <S.Nav aria-label={'상단 메뉴바'}>
       <S.Wrapper>
         <S.FlexLeftWrapper>
           <S.TransparentButton onClick={handleCategoryToggle} aria-label="카테고리">
@@ -59,5 +63,27 @@ function HeaderNav() {
     </S.Nav>
   );
 }
+
+function Mobile() {
+  const { isLoggedIn } = useAuth();
+  return (
+    <S.Nav aria-label={'상단 메뉴바'}>
+      <S.LogoLink aria-label={'F12 홈으로'} to={ROUTES.HOME}>
+        <HeaderLogoImageHorizontal />
+      </S.LogoLink>
+      {isLoggedIn ? (
+        <S.CustomLink to={ROUTES.MY_PROFILE} aria-label={'내 프로필 보기'}>
+          <ProfileImage />
+        </S.CustomLink>
+      ) : (
+        <S.CustomLink as={'a'} href={GITHUB_AUTH_URL}>
+          로그인
+        </S.CustomLink>
+      )}
+    </S.Nav>
+  );
+}
+
+HeaderNav.Mobile = Mobile;
 
 export default HeaderNav;

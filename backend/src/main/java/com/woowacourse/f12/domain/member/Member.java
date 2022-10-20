@@ -2,17 +2,26 @@ package com.woowacourse.f12.domain.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
-import com.woowacourse.f12.exception.badrequest.InvalidFollowerCountException;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
-
 @Entity
-@Table(name = "member")
+@Table(name = "member",
+        uniqueConstraints = {@UniqueConstraint(name = "member_github_id_unique", columnNames = {"github_id"})})
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter
@@ -49,11 +58,17 @@ public class Member {
     @Embedded
     private InventoryProducts inventoryProducts = new InventoryProducts();
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role = Role.USER;
+
     protected Member() {
     }
 
-    private Member(final Long id, final String gitHubId, final String name, final String imageUrl, final boolean registered, final CareerLevel careerLevel,
-                   final JobType jobType, final int followerCount, final InventoryProducts inventoryProducts) {
+    private Member(final Long id, final String gitHubId, final String name, final String imageUrl,
+                   final boolean registered, final CareerLevel careerLevel, final JobType jobType,
+                   final int followerCount, final InventoryProducts inventoryProducts, final Role role) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
@@ -61,8 +76,9 @@ public class Member {
         this.registered = registered;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
-        this.inventoryProducts = inventoryProducts;
         this.followerCount = followerCount;
+        this.inventoryProducts = inventoryProducts;
+        this.role = role;
     }
 
     public void update(final Member updateMember) {
@@ -74,38 +90,27 @@ public class Member {
     }
 
     private void updateName(final String name) {
-        if (Objects.nonNull(name)) {
+        if (name != null) {
             this.name = name;
         }
     }
 
     private void updateImageUrl(String imageUrl) {
-        if (Objects.nonNull(imageUrl)) {
+        if (imageUrl != null) {
             this.imageUrl = imageUrl;
         }
     }
 
     private void updateCareerLevel(final CareerLevel careerLevel) {
-        if (Objects.nonNull(careerLevel)) {
+        if (careerLevel != null) {
             this.careerLevel = careerLevel;
         }
     }
 
     private void updateJobType(final JobType jobType) {
-        if (Objects.nonNull(jobType)) {
+        if (jobType != null) {
             this.jobType = jobType;
         }
-    }
-
-    public void increaseFollowerCount() {
-        this.followerCount += 1;
-    }
-
-    public void decreaseFollowerCount() {
-        if (this.followerCount == 0) {
-            throw new InvalidFollowerCountException();
-        }
-        this.followerCount -= 1;
     }
 
     private void updateRegistered(final boolean registered) {
@@ -129,6 +134,10 @@ public class Member {
 
     public void updateInventoryProducts(final List<InventoryProduct> values) {
         this.inventoryProducts = new InventoryProducts(values);
+    }
+
+    public boolean isAdmin() {
+        return this.role == Role.ADMIN;
     }
 
     @Override

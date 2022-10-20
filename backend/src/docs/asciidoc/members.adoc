@@ -3,11 +3,7 @@
 
 === 로그인된 상태로 나의 회원 정보 조회
 
-==== 발생 가능 에러
-
-- 40100, 40101, 40102
-
-operation::members-get-own[snippets='http-request,http-response']
+operation::members-get-own[snippets='error-code-table,http-request,http-response']
 
 === 회원 정보 조회
 
@@ -15,19 +11,11 @@ operation::members-get-own[snippets='http-request,http-response']
 - 로그인 시 회원 정보를 조회하려면 헤더에 토큰 정보가 필요
 `Authorization: Bearer Token`
 
-==== 발생 가능 에러
-
-- 40410
-
-operation::members-get-by-memberId[snippets='http-request,http-response']
+operation::members-get-by-memberId[snippets='error-code-table,http-request,http-response']
 
 === 로그인된 상태로 나의 회원 정보 수정
 
-==== 발생 가능 에러
-
-- 40010, 40011, 40100, 40101, 40102
-
-operation::members-update[snippets='http-request,http-response']
+operation::members-update[snippets='error-code-table,http-request,http-response']
 
 === 회원 검색
 
@@ -60,27 +48,15 @@ operation::members-update[snippets='http-request,http-response']
 - 로그인 시 회원 정보를 조회하려면 헤더에 토큰 정보가 필요
 `Authorization: Bearer Token`
 
-==== 발생 가능 에러
-
-- 40000, 40001
-
-operation::members-search[snippets='http-request,http-response']
+operation::members-search[snippets='error-code-table,http-request,http-response']
 
 === 다른 회원 팔로우
 
-==== 발생 가능 에러
-
-- 40050, 40051, 40410
-
-operation::follow[snippets='http-request,http-response']
+operation::follow[snippets='error-code-table,http-request,http-response']
 
 === 다른 회원 언팔로우
 
-==== 발생 가능 에러
-
-- 40052, 40053, 40410
-
-operation::unfollow[snippets='http-request,http-response']
+operation::unfollow[snippets='error-code-table,http-request,http-response']
 
 === 팔로우하는 회원 검색
 
@@ -109,8 +85,4 @@ operation::unfollow[snippets='http-request,http-response']
 - `followerCount,desc`(팔로워 수 순)
 - 없을 경우 등록 순서
 
-==== 발생 가능 에러
-
-- 40100, 40101, 40102
-
-operation::search-followings[snippets='http-request,http-response']
+operation::search-followings[snippets='error-code-table,http-request,http-response']

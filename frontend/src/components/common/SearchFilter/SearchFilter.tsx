@@ -20,13 +20,13 @@ function SearchFilter({ title, value, setValue, options }: Props) {
 
   return (
     <S.Container>
-      <S.Wrapper>
-        <S.FilterTitle>{title}</S.FilterTitle>
+      <S.Wrapper role={'radiogroup'} aria-label={'카테고리 선택하기'}>
+        <S.FilterTitle aria-hidden={true}>{title}</S.FilterTitle>
         {Object.entries(options).map(([key, content], index: number) => {
           return (
             <ChipFilter
               key={index}
-              fontSize={14}
+              fontSize={13}
               value={key}
               filter={value}
               handleClick={handleFilterClick}

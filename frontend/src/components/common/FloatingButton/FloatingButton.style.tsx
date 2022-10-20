@@ -1,22 +1,32 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+export const Container = styled.section`
+  position: fixed;
+  bottom: 120px;
+  right: 30px;
+  z-index: 1;
+`;
 
 export const Button = styled.button`
-  width: 3rem;
+  display: flex;
+  width: max-width;
+  padding: 0 1rem;
   height: 3rem;
 
-  display: flex;
   justify-content: center;
   align-items: center;
 
-  position: fixed;
-  bottom: 50px;
-  right: 50px;
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.desktop} {
+      right: 50px;
+    }
+  `}
 
   color: ${({ theme }) => theme.colors.white};
   font-size: 2rem;
   font-weight: 600;
 
-  border-radius: 50%;
+  border-radius: 50px;
   border: none;
 
   background-color: ${({ theme }) => theme.colors.primary};

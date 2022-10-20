@@ -1,17 +1,15 @@
 package com.woowacourse.f12.domain.member;
 
-import com.woowacourse.f12.config.JpaConfig;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.woowacourse.f12.domain.RepositoryTest;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@DataJpaTest
-@Import(JpaConfig.class)
+@RepositoryTest
 class FollowingRepositoryTest {
 
     @Autowired
@@ -72,5 +70,23 @@ class FollowingRepositoryTest {
         // then
         assertThat(followings).hasSize(1)
                 .containsExactly(following1);
+    }
+
+    @Test
+    void 동일_회원을_중복_팔로우_할_수_없다() {
+        // given
+        Following following1 = Following.builder()
+                .followerId(1L)
+                .followingId(2L)
+                .build();
+        Following following2 = Following.builder()
+                .followerId(1L)
+                .followingId(2L)
+                .build();
+        followingRepository.save(following1);
+
+        // when, then
+        assertThatThrownBy(() -> followingRepository.save(following2))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 }

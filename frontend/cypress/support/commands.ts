@@ -5,7 +5,7 @@ Cypress.Commands.add(
   { prevSubject: true },
   (card: Cypress.Chainable<JQuery<HTMLElement>>) => {
     cy.wrap(card)
-      .findAllByRole('article')
+      .findAllByRole('link')
       .each((element) => {
         cy.wrap(element).get('img').should('be.visible');
       });
@@ -16,8 +16,6 @@ Cypress.Commands.add(
   'isNotLoading',
   { prevSubject: true },
   (container: Cypress.Chainable<JQuery<HTMLElement>>) => {
-    cy.wrap(container)
-      .findByRole('region', { name: 'loading' })
-      .should('not.exist');
+    cy.wrap(container).findByRole('region', { name: 'loading' }).should('not.exist');
   }
 );

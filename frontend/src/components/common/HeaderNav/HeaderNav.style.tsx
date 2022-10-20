@@ -1,17 +1,14 @@
-import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.div`
   max-width: 1320px;
-  width: 100%;
+  width: 93%;
   margin: 0 auto;
   display: flex;
 `;
 
 export const Nav = styled.nav`
-  width: 100%;
-  height: 3rem;
-  display: flex;
-
   position: sticky;
   top: 0;
   left: 0;
@@ -20,7 +17,7 @@ export const Nav = styled.nav`
 
   &::after {
     position: absolute;
-    top: 3rem;
+    top: 4rem;
     content: '';
     height: 0.3rem;
     width: 100%;
@@ -30,6 +27,21 @@ export const Nav = styled.nav`
       rgba(60, 60, 60, 0) 100%
     );
   }
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 4rem;
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.desktop} {
+      width: 100%;
+      height: 3rem;
+      &::after {
+        top: 3rem;
+      }
+    }
+  `}
 `;
 
 export const FlexLeftWrapper = styled.ul`
@@ -51,4 +63,20 @@ export const TransparentButton = styled.button`
   background-color: transparent;
   border: none;
   font-size: 1rem;
+`;
+
+export const LogoLink = styled(Link)`
+  padding: 1rem;
+  width: 11rem;
+`;
+
+export const CustomLink = styled(Link)`
+  padding: 1rem;
+  width: 5rem;
+
+  text-align: center;
+
+  svg {
+    width: 2em;
+  }
 `;

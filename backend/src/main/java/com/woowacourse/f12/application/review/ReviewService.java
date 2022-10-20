@@ -20,7 +20,6 @@ import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
-import java.util.Objects;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -53,6 +52,7 @@ public class ReviewService {
                 .orElseThrow(ProductNotFoundException::new);
         final Long reviewId = saveReview(reviewRequest, member, product);
         saveInventoryProduct(member, product);
+        productRepository.updateProductStatisticsForReviewInsert(product.getId(), reviewRequest.getRating());
         return reviewId;
     }
 
@@ -65,7 +65,6 @@ public class ReviewService {
     private Long saveReview(final ReviewRequest reviewRequest, final Member member, final Product product) {
         validateNotWritten(member, product);
         final Review review = reviewRequest.toReview(product, member);
-        review.reflectToProductWhenWritten();
         return reviewRepository.save(review)
                 .getId();
     }
@@ -91,7 +90,7 @@ public class ReviewService {
                                                             final Pageable pageable) {
         validateKeyboardExists(productId);
         final Slice<Review> page = reviewRepository.findPageByProductId(productId, pageable);
-        if (Objects.isNull(memberId)) {
+        if (memberId == null) {
             return ReviewWithAuthorPageResponse.from(page);
         }
         return ReviewWithAuthorPageResponse.of(page, memberId);
@@ -112,18 +111,20 @@ public class ReviewService {
     public void update(final Long reviewId, final Long memberId, final ReviewRequest updateRequest) {
         final Review target = findTarget(reviewId, memberId);
         final Review updateReview = updateRequest.toReview(target.getProduct(), target.getMember());
+        int ratingGap = updateReview.getRating() - target.getRating();
         target.update(updateReview);
+        productRepository.updateProductStatisticsForReviewUpdate(target.getProduct().getId(), ratingGap);
     }
 
     @Transactional
     public void delete(final Long reviewId, final Long memberId) {
         final Review review = findTarget(reviewId, memberId);
-        review.reflectToProductBeforeDelete();
-        reviewRepository.delete(review);
         final InventoryProduct inventoryProduct = inventoryProductRepository.findWithProductByMemberAndProduct(
                         review.getMember(), review.getProduct())
                 .orElseThrow(InventoryProductNotFoundException::new);
         inventoryProductRepository.delete(inventoryProduct);
+        reviewRepository.delete(review);
+        productRepository.updateProductStatisticsForReviewDelete(review.getProduct().getId(), review.getRating());
     }
 
     private Review findTarget(final Long reviewId, final Long memberId) {

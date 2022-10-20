@@ -1,8 +1,20 @@
 package com.woowacourse.f12.presentation.auth;
 
+import static com.woowacourse.f12.exception.ErrorCode.DUPLICATED_REFRESH_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.EXPIRED_REFRESH_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.EXTERNAL_SERVER_ERROR;
+import static com.woowacourse.f12.exception.ErrorCode.INTERNAL_SERVER_ERROR;
+import static com.woowacourse.f12.exception.ErrorCode.INVALID_LOGIN_CODE;
+import static com.woowacourse.f12.exception.ErrorCode.MEMBER_NOT_FOUND;
+import static com.woowacourse.f12.exception.ErrorCode.NOT_EXIST_REFRESH_TOKEN;
+import static com.woowacourse.f12.exception.ErrorCode.PERMISSION_DENIED;
+import static com.woowacourse.f12.exception.ErrorCode.REFRESH_TOKEN_NOT_FOUND;
+import static com.woowacourse.f12.exception.ErrorCode.REQUEST_DUPLICATED;
+import static com.woowacourse.f12.exception.ErrorCode.TOO_MANY_AFFECTED_REFRESH_TOKEN;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 import static org.mockito.Mockito.times;
@@ -16,19 +28,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.woowacourse.f12.application.auth.AuthService;
+import com.woowacourse.f12.dto.response.auth.AdminLoginResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.ErrorCode;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
+import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.internalserver.GitHubServerException;
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
+import com.woowacourse.f12.exception.unauthorized.DuplicatedRefreshTokenSavedException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
+import com.woowacourse.f12.exception.unauthorized.TooManyRefreshTokenAffectedException;
 import com.woowacourse.f12.presentation.PresentationTest;
+import com.woowacourse.f12.support.ErrorCodeSnippet;
 import javax.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -64,8 +82,32 @@ class AuthControllerTest extends PresentationTest {
                 .andExpect(header().string("Set-cookie", containsString("refreshToken=" + refreshToken)))
                 .andDo(print())
                 .andDo(
-                        document("auth-login")
+                        document("auth-login",
+                                new ErrorCodeSnippet(REQUEST_DUPLICATED, INVALID_LOGIN_CODE, EXTERNAL_SERVER_ERROR,
+                                        INTERNAL_SERVER_ERROR, TOO_MANY_AFFECTED_REFRESH_TOKEN))
                 );
+
+        verify(authService).login(code);
+    }
+
+    @Test
+    void 로그인_실패_github_아이디가_중복되어_등록됨() throws Exception {
+        // given
+        String code = "code";
+
+        given(authService.login(code))
+                .willThrow(DataIntegrityViolationException.class);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/login?code=" + code)
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value(REQUEST_DUPLICATED.getValue()))
+                .andDo(print());
 
         verify(authService).login(code);
     }
@@ -84,6 +126,7 @@ class AuthControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value(INVALID_LOGIN_CODE.getValue()))
                 .andDo(print());
 
         verify(authService).login(code);
@@ -103,9 +146,60 @@ class AuthControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.errorCode").value(EXTERNAL_SERVER_ERROR.getValue()))
                 .andDo(print());
 
         verify(authService).login(code);
+    }
+
+    @Test
+    void 어드민_로그인_성공() throws Exception {
+        // given
+        String code = "code";
+        String token = "token";
+        AdminLoginResponse adminLoginResponse = new AdminLoginResponse(token);
+
+        given(authService.loginAdmin(code))
+                .willReturn(adminLoginResponse);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/login/admin?code=" + code)
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(
+                        document("auth-admin-login",
+                                new ErrorCodeSnippet(INVALID_LOGIN_CODE, MEMBER_NOT_FOUND, INTERNAL_SERVER_ERROR,
+                                        EXTERNAL_SERVER_ERROR, PERMISSION_DENIED))
+                );
+
+        verify(authService).loginAdmin(code);
+    }
+
+    @Test
+    void 어드민_로그인_실패_어드민이_아닌_경우() throws Exception {
+        // given
+        String code = "code";
+
+        given(authService.loginAdmin(code))
+                .willThrow(new NotAdminException());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/login/admin?code=" + code)
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.errorCode").value(PERMISSION_DENIED.getValue()))
+                .andDo(print());
+
+        verify(authService).loginAdmin(code);
     }
 
     @Test
@@ -123,15 +217,37 @@ class AuthControllerTest extends PresentationTest {
                         .cookie(new Cookie("refreshToken", oldRefreshToken))
         );
 
+        // then
         resultActions.andExpect(status().isOk())
                 .andExpect(cookie().value("refreshToken", newRefreshToken))
                 .andExpect(jsonPath("$.accessToken").value(newAccessToken))
-                .andDo(
-                        document("auth-issue-access-token")
-                )
+                .andDo(document("auth-issue-access-token",
+                        new ErrorCodeSnippet(NOT_EXIST_REFRESH_TOKEN, EXPIRED_REFRESH_TOKEN, REFRESH_TOKEN_NOT_FOUND,
+                                TOO_MANY_AFFECTED_REFRESH_TOKEN, DUPLICATED_REFRESH_TOKEN)))
                 .andDo(print());
 
         verify(authService).issueAccessToken(oldRefreshToken);
+    }
+
+    @Test
+    void 서버에_중복되어_저장된_리프레시_토큰으로_액세스_토큰을_발급하면_예외_발생() throws Exception {
+        // given
+        String refreshTokenValue = "refreshTokenValue";
+        given(authService.issueAccessToken(refreshTokenValue))
+                .willThrow(new DuplicatedRefreshTokenSavedException());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/accessToken")
+                        .cookie(new Cookie("refreshToken", refreshTokenValue))
+        );
+
+        // then
+        resultActions.andExpect(status().isUnauthorized())
+                .andExpect(cookie().maxAge("refreshToken", 0))
+                .andExpect(jsonPath("$.errorCode").value(DUPLICATED_REFRESH_TOKEN.getValue()))
+                .andDo(print());
+        verify(authService).issueAccessToken(anyString());
     }
 
     @Test
@@ -146,7 +262,7 @@ class AuthControllerTest extends PresentationTest {
         );
 
         resultActions.andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.errorCode").value("40105"))
+                .andExpect(jsonPath("$.errorCode").value(NOT_EXIST_REFRESH_TOKEN.getValue()))
                 .andDo(print());
 
         verify(authService, times(0)).issueAccessToken(any());
@@ -156,7 +272,7 @@ class AuthControllerTest extends PresentationTest {
     void 만료된_리프레시_토큰으로_액세스_토큰_발급하면_예외_발생() throws Exception {
         // given
         given(authService.issueAccessToken(any()))
-                .willThrow(new RefreshTokenInvalidException());
+                .willThrow(new RefreshTokenExpiredException());
         String expiredToken = "expiredToken";
 
         // when
@@ -166,7 +282,28 @@ class AuthControllerTest extends PresentationTest {
         );
 
         resultActions.andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.errorCode").value(ErrorCode.REFRESH_TOKEN_NOT_FOUND.getValue()))
+                .andExpect(jsonPath("$.errorCode").value(EXPIRED_REFRESH_TOKEN.getValue()))
+                .andExpect(cookie().maxAge("refreshToken", 0))
+                .andDo(print());
+
+        verify(authService).issueAccessToken(any());
+    }
+
+    @Test
+    void 액세스_토큰_발급_시_리프레시_토큰이_여러개_영향받으면_예외_발생() throws Exception {
+        // given
+        given(authService.issueAccessToken(any()))
+                .willThrow(new TooManyRefreshTokenAffectedException());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/accessToken")
+                        .cookie(new Cookie("refreshToken", "refreshTokenValue"))
+        );
+
+        // then
+        resultActions.andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorCode").value(ErrorCode.TOO_MANY_AFFECTED_REFRESH_TOKEN.getValue()))
                 .andExpect(cookie().maxAge("refreshToken", 0))
                 .andDo(print());
 
@@ -182,7 +319,7 @@ class AuthControllerTest extends PresentationTest {
         // then
         resultActions.andExpect(status().isNoContent())
                 .andExpect(cookie().maxAge("refreshToken", 0))
-                .andDo(document("auth-logout"))
+                .andDo(document("auth-logout", new ErrorCodeSnippet(NOT_EXIST_REFRESH_TOKEN, REFRESH_TOKEN_NOT_FOUND)))
                 .andDo(print());
     }
 
@@ -193,6 +330,7 @@ class AuthControllerTest extends PresentationTest {
 
         // then
         resultActions.andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.errorCode").value(ErrorCode.NOT_EXIST_REFRESH_TOKEN.getValue()));
+                .andExpect(jsonPath("$.errorCode").value(NOT_EXIST_REFRESH_TOKEN.getValue()))
+                .andDo(print());
     }
 }

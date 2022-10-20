@@ -1,6 +1,6 @@
 {
   "name": "f12",
-  "version": "0.3.1",
+  "version": "1.2.0",
   "description": "개발자의 모든 도구 - F12",
   "main": "index.js",
   "scripts": {
@@ -60,14 +60,11 @@
     "@types/styled-components": "^5.1.25",
     "axios": "^0.27.2",
     "babel-loader": "^8.2.5",
-    "css-loader": "^6.7.1",
+    "copy-webpack-plugin": "^11.0.0",
     "html-webpack-plugin": "^5.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "sass": "^1.53.0",
-    "sass-loader": "^13.0.2",
-    "style-loader": "^3.3.1",
     "styled-components": "^5.3.5",
     "typescript": "^4.7.4",
     "webpack": "^5.73.0",

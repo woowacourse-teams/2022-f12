@@ -17,13 +17,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "review")
+@Table(name = "review",
+        uniqueConstraints = {@UniqueConstraint(name = "review_product_id_member_id_unique",
+                columnNames = {"product_id", "member_id"})})
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Getter
@@ -85,26 +88,13 @@ public class Review {
         }
     }
 
-    public void reflectToProductWhenWritten() {
-        product.increaseReviewCount();
-        product.increaseRating(rating);
-    }
-
-    public void reflectToProductBeforeDelete() {
-        product.decreaseReviewCount();
-        ;
-        product.decreaseRating(rating);
-    }
-
     public boolean isWrittenBy(final Member member) {
         return this.member.equals(member);
     }
 
     public void update(final Review updateReview) {
-        product.decreaseRating(rating);
         content = updateReview.getContent();
         rating = updateReview.getRating();
-        product.increaseRating(rating);
     }
 
     @Override

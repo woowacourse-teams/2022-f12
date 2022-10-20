@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 import * as S from '@/pages/Product/Product.style';
@@ -15,13 +15,13 @@ import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListS
 
 import useAnimation from '@/hooks/useAnimation';
 import useAuth from '@/hooks/useAuth';
+import useDevice from '@/hooks/useDevice';
+import useModal from '@/hooks/useModal';
 import useProduct from '@/hooks/useProduct';
 import useReviews from '@/hooks/useReviews';
 import useStatistics from '@/hooks/useStatistics';
 
-import theme from '@/style/theme';
-
-import Plus from '@/assets/plus.svg';
+import Writing from '@/assets/writing.svg';
 
 export const PRODUCT_PAGE_REVIEW_SIZE = 6;
 
@@ -29,6 +29,7 @@ function Product() {
   const { isLoggedIn } = useAuth();
   const { productId: id } = useParams();
   const productId = Number(id);
+  const { device } = useDevice();
 
   const [product, isProductReady, isProductError, refetchProduct] = useProduct({
     id: Number(productId),
@@ -55,6 +56,12 @@ function Product() {
     },
   });
 
+  const reviewRef = useRef<HTMLDivElement>(null);
+
+  const handleFocus = () => {
+    reviewRef.current.focus();
+  };
+
   const [isSheetOpen, toggleSheetOpen] = useReducer((isSheetOpen: boolean) => {
     if (!isLoggedIn) return false;
 
@@ -64,36 +71,48 @@ function Product() {
   const [shouldSheetRender, handleSheetUnmount, sheetAnimationTrigger] =
     useAnimation(isSheetOpen);
 
+  const { showAlert } = useModal();
+
+  const showAlertHandler = async () => {
+    await showAlert('리뷰를 작성하려면 로그인 해주세요.');
+  };
+
   useEffect(() => {
     if (!isLoggedIn) toggleSheetOpen();
   }, [isLoggedIn]);
+  const ProductDetails = (
+    <S.ProductDetailWrapper>
+      <AsyncWrapper
+        fallback={<Loading />}
+        isReady={isProductReady}
+        isError={isProductError}
+      >
+        <ProductDetail product={product} />
+      </AsyncWrapper>
+      <AsyncWrapper
+        fallback={<Loading />}
+        isReady={isStatisticsReady}
+        isError={isStatisticsError}
+      >
+        <BarGraph statistics={statistics} />
+      </AsyncWrapper>
+    </S.ProductDetailWrapper>
+  );
 
   return (
     <S.Container>
-      <StickyWrapper>
-        <S.ProductDetailWrapper>
-          <AsyncWrapper
-            fallback={<Loading />}
-            isReady={isProductReady}
-            isError={isProductError}
-          >
-            <ProductDetail product={product} />
-          </AsyncWrapper>
-          <AsyncWrapper
-            fallback={<Loading />}
-            isReady={isStatisticsReady}
-            isError={isStatisticsError}
-          >
-            <BarGraph statistics={statistics} />
-          </AsyncWrapper>
-        </S.ProductDetailWrapper>
-      </StickyWrapper>
-      <S.Wrapper>
-        {isLoggedIn && (
-          <FloatingButton clickHandler={toggleSheetOpen}>
-            <Plus stroke={theme.colors.white} />
-          </FloatingButton>
-        )}
+      {device === 'desktop' ? (
+        <StickyWrapper>{ProductDetails}</StickyWrapper>
+      ) : (
+        ProductDetails
+      )}
+      <S.ReviewListWrapper tabIndex={0} ref={reviewRef}>
+        <FloatingButton
+          label={'리뷰 작성하기'}
+          clickHandler={isLoggedIn ? toggleSheetOpen : showAlertHandler}
+        >
+          <Writing />
+        </FloatingButton>
         <AsyncWrapper
           fallback={<Loading />}
           isReady={isReviewReady}
@@ -105,6 +124,7 @@ function Product() {
             getNextPage={getNextPage}
             handleDelete={handleReviewDelete}
             handleEdit={handleReviewEdit}
+            handleFocus={handleFocus}
             isLoading={isReviewLoading}
             isError={isReviewError}
             pageSize={PRODUCT_PAGE_REVIEW_SIZE}
@@ -116,10 +136,11 @@ function Product() {
             handleSubmit={handleReviewSubmit}
             handleUnmount={handleSheetUnmount}
             animationTrigger={sheetAnimationTrigger}
+            handleFocus={handleFocus}
             isEdit={false}
           />
         )}
-      </S.Wrapper>
+      </S.ReviewListWrapper>
     </S.Container>
   );
 }

@@ -1,10 +1,9 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3rem;
 `;
 
 export const ProfileSection = styled.section`
@@ -13,7 +12,7 @@ export const ProfileSection = styled.section`
   justify-content: center;
   align-items: center;
   width: 100%;
-  gap: 1rem;
+  margin-bottom: 2rem;
 `;
 
 export const InventorySection = styled.section`
@@ -43,33 +42,55 @@ export const EditDeskSetupButton = styled.button`
   padding: 0.4rem 1.4rem;
   background-color: ${({ theme }) => theme.colors.primary};
   border-radius: 0.4rem;
-  box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
+  &:hover {
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.25));
+  }
 `;
 
 export const DeskSetupSection = styled.section`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 25rem;
+  height: 22rem;
   background-color: ${({ theme }) => theme.colors.secondary};
+  margin-bottom: 2rem;
 `;
 
 export const TabButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: start;
-  gap: 0.2rem;
+  gap: 0.4rem;
 `;
 
 export const TabButton = styled.button<{ selected: boolean }>`
   width: max-content;
   padding: 0.4rem 0.6rem;
-  font-size: 1.2rem;
   border-radius: 0.4rem;
   background-color: ${({ selected, theme }) =>
     selected ? theme.colors.primary : theme.colors.secondary};
-  transition: 0.5s;
+  margin-bottom: 0.5rem;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.primary};
-    transition: 0.5s;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.25));
   }
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      font-size: 0.8rem;
+    }
+    @media screen and ${device.tablet} {
+      font-size: 1rem;
+    }
+    @media screen and ${device.desktop} {
+      font-size: 1.2rem;
+    }
+  `}
+`;
+
+export const SectionHeaderWrapper = styled.div`
+  margin-left: -1rem;
+  align-self: flex-start;
 `;

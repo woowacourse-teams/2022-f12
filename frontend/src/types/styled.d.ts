@@ -1,5 +1,18 @@
 import 'styled-components';
 
+type Breakpoints = {
+  mobile: number;
+  tablet: number;
+  desktop: number;
+};
+
+type Device = {
+  [Prop in keyof Breakpoints]:
+    | `(min-width: ${Breakpoints[Prop]}px)`
+    | `(max-width: ${Breakpoints[Prop]}px)`
+    | `(min-width: ${Breakpoints[Prop]}px) and (max-width: ${Breakpoints[Prop]}px)`;
+};
+
 declare module 'styled-components' {
   export interface DefaultTheme {
     headerHeight: string;
@@ -12,5 +25,7 @@ declare module 'styled-components' {
       white: string;
       gray: string;
     };
+
+    device: Device;
   }
 }

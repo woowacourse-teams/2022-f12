@@ -28,6 +28,7 @@ type Return<T> = DataFetchStatus & {
   data: T[];
   getNextPage: () => void;
   refetch: () => void;
+  hasNextPage: boolean;
 };
 
 function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
@@ -87,7 +88,7 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
     setPage(0);
     setHasNextPage(true);
     setData(null);
-    removeCache(`${url}${searchParams.toString()}`);
+    removeCache(`${url}?${searchParams.toString()}`);
   };
 
   const getCurrentParamString = () =>
@@ -115,6 +116,6 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
 
   const isReady = !!data;
 
-  return { data, getNextPage, refetch, isLoading, isReady, isError };
+  return { data, hasNextPage, getNextPage, refetch, isLoading, isReady, isError };
 }
 export default useGetMany;

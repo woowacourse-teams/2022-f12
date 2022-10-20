@@ -17,6 +17,7 @@ type Props = {
   reviewData: Omit<Review, 'id'>;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
+  handleFocus?: () => void;
   index?: number;
   userNameVisible?: boolean;
 };
@@ -25,6 +26,7 @@ function ReviewCard({
   reviewId,
   handleDelete,
   handleEdit,
+  handleFocus,
   reviewData,
   index = 0,
   userNameVisible = true,
@@ -52,6 +54,7 @@ function ReviewCard({
 
   const handleDeleteClick = () => {
     handleDelete(reviewId);
+    handleFocus();
   };
 
   return (
@@ -86,8 +89,10 @@ function ReviewCard({
               </S.ReviewModifyButtonWrapper>
             )}
           </S.UserWrapper>
-          <Rating type="정수" rating={rating} />
         </S.Wrapper>
+        <div style={{ alignSelf: 'flex-end' }}>
+          <Rating type="정수" rating={rating} />
+        </div>
         <S.CreatedAt>{formattedDate}</S.CreatedAt>
         <S.Content>{content}</S.Content>
       </S.ReviewArea>

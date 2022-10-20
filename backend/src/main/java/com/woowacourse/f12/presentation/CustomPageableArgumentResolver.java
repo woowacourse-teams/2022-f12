@@ -3,7 +3,6 @@ package com.woowacourse.f12.presentation;
 import com.woowacourse.f12.exception.badrequest.InvalidPageNumberFormatException;
 import com.woowacourse.f12.exception.badrequest.InvalidPageSizeException;
 import com.woowacourse.f12.exception.badrequest.InvalidPageSizeFormatException;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
@@ -69,7 +68,7 @@ public class CustomPageableArgumentResolver extends PageableHandlerMethodArgumen
     }
 
     private void validatePage(final String pageArgument) {
-        if (Objects.isNull(pageArgument)) {
+        if (pageArgument == null) {
             return;
         }
         final Matcher matcher = NUMBER_PATTERN.matcher(pageArgument);
@@ -79,7 +78,7 @@ public class CustomPageableArgumentResolver extends PageableHandlerMethodArgumen
     }
 
     private void validateSize(final String sizeArgument) {
-        if (Objects.isNull(sizeArgument)) {
+        if (sizeArgument == null) {
             return;
         }
         final Matcher matcher = NUMBER_PATTERN.matcher(sizeArgument);

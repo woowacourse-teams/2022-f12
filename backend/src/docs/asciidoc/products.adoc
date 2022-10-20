@@ -3,17 +3,9 @@
 
 === 제품 단일 제품 조회
 
-==== 발생 가능 에러
-
-- 40420
-
-operation::products-get[snippets='http-request,http-response']
+operation::products-get[snippets='error-code-table,http-request,http-response']
 
 === 제품 목록 페이지 조회
-
-==== 발생 가능 에러
-
-- 40000, 40001
 
 ==== 검색 조건
 
@@ -35,12 +27,24 @@ operation::products-get[snippets='http-request,http-response']
 - `reviewCount,desc`(리뷰 많은순)
 - 없을 경우 등록 순서
 
-operation::products-page-get[snippets='http-request,http-response']
+operation::products-page-get[snippets='error-code-table,http-request,http-response']
 
 === 특정 제품의 사용자 통계를 조회
 
-==== 발생 가능 에러
+operation::products-member-statistics-get[snippets='error-code-table,http-request,http-response']
 
-- 40420
+=== 인기 상품 조회
 
-operation::products-member-statistics-get[snippets='http-request,http-response']
+operation::products-popular-list-get[snippets='error-code-table,http-request,http-response']
+
+=== 제품 추가(어드민)
+
+operation::admin-products-create[snippets='error-code-table,http-request,http-response']
+
+=== 제품 수정(어드민)
+
+operation::admin-products-update[snippets='error-code-table,http-request,http-response']
+
+=== 제품 삭제(어드민)
+
+operation::admin-products-delete[snippets='error-code-table,http-request,http-response']

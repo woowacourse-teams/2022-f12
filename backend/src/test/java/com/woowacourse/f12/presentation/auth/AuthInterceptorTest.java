@@ -1,8 +1,10 @@
 package com.woowacourse.f12.presentation.auth;
 
+import static com.woowacourse.f12.presentation.product.CategoryConstant.KEYBOARD_CONSTANT;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -16,10 +18,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woowacourse.f12.application.auth.JwtProvider;
+import com.woowacourse.f12.application.auth.token.JwtProvider;
+import com.woowacourse.f12.application.auth.token.MemberPayload;
+import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.application.review.ReviewService;
+import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.presentation.PresentationTest;
+import com.woowacourse.f12.presentation.product.ProductController;
 import com.woowacourse.f12.presentation.review.ReviewController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +36,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(ReviewController.class)
+@WebMvcTest({ReviewController.class, ProductController.class})
 class AuthInterceptorTest extends PresentationTest {
 
     @Autowired
@@ -37,6 +44,9 @@ class AuthInterceptorTest extends PresentationTest {
 
     @MockBean
     private ReviewService reviewService;
+
+    @MockBean
+    private ProductService productService;
 
     @MockBean
     private JwtProvider jwtProvider;
@@ -52,7 +62,7 @@ class AuthInterceptorTest extends PresentationTest {
         // given
         ReviewRequest reviewRequest = new ReviewRequest("content", 5);
         String authorizationHeader = "Bearer Token";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(false);
         given(reviewService.saveReviewAndInventoryProduct(anyLong(), anyLong(), any(ReviewRequest.class)))
                 .willReturn(1L);
@@ -69,7 +79,7 @@ class AuthInterceptorTest extends PresentationTest {
 
         // then
         assertAll(
-                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(reviewService, times(0)).saveReviewAndInventoryProduct(eq(1L), eq(1L),
                         any(ReviewRequest.class))
         );
@@ -79,7 +89,7 @@ class AuthInterceptorTest extends PresentationTest {
     void 인증_인가가_필수가_아닌_경우에_만료된_액세스_토큰으로_요청보내면_예외발생() throws Exception {
         // given
         String authorizationHeader = "Bearer InvalidToken";
-        given(jwtProvider.validateToken(authorizationHeader))
+        given(jwtProvider.isValidToken(authorizationHeader))
                 .willReturn(false);
         given(reviewService.findPageByProductId(anyLong(), anyLong(), any()))
                 .willReturn(null);
@@ -94,7 +104,7 @@ class AuthInterceptorTest extends PresentationTest {
 
         // then
         assertAll(
-                () -> verify(jwtProvider).validateToken(authorizationHeader),
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(reviewService, times(0)).findPageByProductId(any(), any(), any())
         );
     }
@@ -102,7 +112,7 @@ class AuthInterceptorTest extends PresentationTest {
     @Test
     void 인증_인가가_필수인_경우에_토큰이_없는_경우_예외_발생() throws Exception {
         // given
-        given(jwtProvider.validateToken(any()))
+        given(jwtProvider.isValidToken(any()))
                 .willReturn(false);
         willDoNothing().given(reviewService).delete(anyLong(), anyLong());
 
@@ -114,8 +124,36 @@ class AuthInterceptorTest extends PresentationTest {
 
         // then
         assertAll(
-                () -> verify(jwtProvider, times(0)).validateToken(any()),
+                () -> verify(jwtProvider, times(0)).isValidToken(any()),
                 () -> verify(reviewService, times(0)).delete(any(), any())
+        );
+    }
+
+    @Test
+    void 일반_계정으로_관리자_자원에_접근하면_예외_발생() throws Exception {
+        // given
+        String authorizationHeader = "Bearer token";
+        given(jwtProvider.isValidToken(authorizationHeader))
+                .willReturn(true);
+        given(jwtProvider.getPayload(anyString()))
+                .willReturn(new MemberPayload(1L, Role.USER));
+
+        final ProductCreateRequest productCreateRequest = new ProductCreateRequest("keyboard", "keyboardUrl",
+                KEYBOARD_CONSTANT);
+
+        // when
+        mockMvc.perform(
+                        post("/api/v1/products")
+                                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(objectMapper.writeValueAsString(productCreateRequest))
+                ).andExpect(status().isForbidden())
+                .andDo(print());
+
+        // then
+        assertAll(
+                () -> verify(jwtProvider).isValidToken(authorizationHeader),
+                () -> verify(jwtProvider).getPayload(anyString())
         );
     }
 }

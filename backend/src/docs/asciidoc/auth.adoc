@@ -3,24 +3,16 @@
 
 === 로그인
 
-==== 발생 가능 에러
+operation::auth-login[snippets='error-code-table,http-request,http-response']
 
-- 40002, 50001
+=== 어드민 로그인
 
-operation::auth-login[snippets='http-request,http-response']
+operation::auth-admin-login[snippets='error-code-table,http-request,http-response']
 
 === 액세스 토큰 발급
 
-==== 발생 가능 에러
-
-- 40104, 40105
-
-operation::auth-issue-access-token[snippets='http-request,http-response']
+operation::auth-issue-access-token[snippets='error-code-table,http-request,http-response']
 
 === 로그아웃
 
-==== 발생 가능 에러
-
-- 40105
-
-operation::auth-logout[snippets='http-request,http-response']
+operation::auth-logout[snippets='error-code-table,http-request,http-response']

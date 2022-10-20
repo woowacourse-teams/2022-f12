@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-export const Container = styled.article<{ index: number }>`
+export const Container = styled.div<{ index: number }>`
   display: flex;
   gap: 1rem;
   border-radius: 0.375rem;
@@ -24,6 +24,14 @@ export const Container = styled.article<{ index: number }>`
         scale: 1.1;
         opacity: 0;
       }
+    }
+  `}
+
+  font-size: 0.8rem;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.desktop} {
+      font-size: 1rem;
     }
   `}
 `;
@@ -69,8 +77,15 @@ export const Title = styled.p`
 export const ReviewArea = styled.div<{ isFull: boolean }>`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+
   width: ${({ isFull }) => (isFull ? '100%' : '60%')};
+  gap: 0.5rem;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.desktop} {
+      gap: 1rem;
+    }
+  `}
 `;
 
 export const FlexColumnWrapper = styled(ReviewArea)`
@@ -114,8 +129,13 @@ export const ReviewModifyButton = styled.button`
   padding: 0.3rem 0.5rem;
   font-size: 0.8rem;
   background-color: ${({ theme }) => theme.colors.secondary};
+
+  &:hover {
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.25));
+  }
 `;
 
 export const Content = styled.p`
   line-height: 1.4;
+  word-break: break-all;
 `;

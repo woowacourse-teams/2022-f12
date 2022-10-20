@@ -3,7 +3,12 @@ package com.woowacourse.f12.application.member;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
-import com.woowacourse.f12.domain.member.*;
+import com.woowacourse.f12.domain.member.CareerLevel;
+import com.woowacourse.f12.domain.member.Following;
+import com.woowacourse.f12.domain.member.FollowingRepository;
+import com.woowacourse.f12.domain.member.JobType;
+import com.woowacourse.f12.domain.member.Member;
+import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
 import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.LoggedInMemberResponse;
@@ -14,15 +19,13 @@ import com.woowacourse.f12.exception.badrequest.NotFollowingException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -56,7 +59,7 @@ public class MemberService {
     }
 
     private boolean isNotLoggedIn(final Long loggedInId) {
-        return Objects.isNull(loggedInId);
+        return loggedInId == null;
     }
 
     private boolean isFollowing(final Long followerId, final Long followingId) {
@@ -74,9 +77,13 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    public MemberPageResponse findByContains(@Nullable final Long loggedInId,
-                                             final MemberSearchRequest memberSearchRequest, final Pageable pageable) {
+    public MemberPageResponse findBySearchConditions(@Nullable final Long loggedInId,
+                                                     final MemberSearchRequest memberSearchRequest,
+                                                     final Pageable pageable) {
         final Slice<Member> slice = findBySearchConditions(memberSearchRequest, pageable);
+        if (slice.isEmpty()) {
+            return MemberPageResponse.ofByFollowingCondition(slice, false);
+        }
         setInventoryProductsToMembers(slice);
         if (isNotLoggedIn(loggedInId)) {
             return MemberPageResponse.ofByFollowingCondition(slice, false);
@@ -110,7 +117,7 @@ public class MemberService {
 
     private JobType parseJobType(final MemberSearchRequest memberSearchRequest) {
         final JobTypeConstant jobTypeConstant = memberSearchRequest.getJobType();
-        if (Objects.isNull(jobTypeConstant)) {
+        if (jobTypeConstant == null) {
             return null;
         }
         return jobTypeConstant.toJobType();
@@ -118,7 +125,7 @@ public class MemberService {
 
     private CareerLevel parseCareerLevel(final MemberSearchRequest memberSearchRequest) {
         final CareerLevelConstant careerLevelConstant = memberSearchRequest.getCareerLevel();
-        if (Objects.isNull(careerLevelConstant)) {
+        if (careerLevelConstant == null) {
             return null;
         }
         return careerLevelConstant.toCareerLevel();
@@ -132,20 +139,19 @@ public class MemberService {
 
     @Transactional
     public void follow(final Long followerId, final Long followingId) {
-        final Member targetMember = memberRepository.findById(followingId)
-                .orElseThrow(MemberNotFoundException::new);
-        validateFollowingMembersExist(followerId);
+        validateMemberExists(followerId);
+        validateMemberExists(followingId);
         validateNotFollowing(followerId, followingId);
         final Following following = Following.builder()
                 .followerId(followerId)
                 .followingId(followingId)
                 .build();
         followingRepository.save(following);
-        targetMember.increaseFollowerCount();
+        memberRepository.increaseFollowerCount(followingId);
     }
 
-    private void validateFollowingMembersExist(final Long followerId) {
-        if (!memberRepository.existsById(followerId)) {
+    private void validateMemberExists(final Long memberId) {
+        if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException();
         }
     }
@@ -158,21 +164,25 @@ public class MemberService {
 
     @Transactional
     public void unfollow(final Long followerId, final Long followingId) {
-        final Member targetMember = memberRepository.findById(followingId)
-                .orElseThrow(MemberNotFoundException::new);
-        validateFollowingMembersExist(followerId);
+        validateMemberExists(followerId);
+        validateMemberExists(followingId);
         final Following following = findFollowingRelation(followerId, followingId);
         followingRepository.delete(following);
-        targetMember.decreaseFollowerCount();
+        memberRepository.decreaseFollowerCount(followingId);
     }
 
     private Following findFollowingRelation(final Long followerId, final Long followingId) {
         return followingRepository.findByFollowerIdAndFollowingId(followerId, followingId)
                 .orElseThrow(NotFollowingException::new);
     }
-    public MemberPageResponse findFollowingsByConditions(final Long loggedInId, final MemberSearchRequest memberSearchRequest,
+
+    public MemberPageResponse findFollowingsByConditions(final Long loggedInId,
+                                                         final MemberSearchRequest memberSearchRequest,
                                                          final Pageable pageable) {
         final Slice<Member> slice = findFollowingsBySearchConditions(loggedInId, memberSearchRequest, pageable);
+        if (slice.isEmpty()) {
+            return MemberPageResponse.ofByFollowingCondition(slice, false);
+        }
         setInventoryProductsToMembers(slice);
         return MemberPageResponse.ofByFollowingCondition(slice, true);
     }

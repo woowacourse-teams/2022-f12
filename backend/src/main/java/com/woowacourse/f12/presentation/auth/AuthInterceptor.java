@@ -1,6 +1,8 @@
 package com.woowacourse.f12.presentation.auth;
 
-import com.woowacourse.f12.application.auth.JwtProvider;
+import com.woowacourse.f12.application.auth.token.JwtProvider;
+import com.woowacourse.f12.application.auth.token.MemberPayload;
+import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.unauthorized.TokenExpiredException;
 import com.woowacourse.f12.exception.unauthorized.TokenNotExistsException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +30,35 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         if (hasAuthorization(request)) {
             validateAuthorization(request);
+            validateAdminRequired(request, handler);
             return true;
         }
+
         validateTokenRequired(handler);
         return true;
+    }
+
+    private boolean hasAuthorization(final HttpServletRequest request) {
+        return request.getHeader(HttpHeaders.AUTHORIZATION) != null;
+    }
+
+    private void validateAuthorization(final HttpServletRequest request) {
+        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (!jwtProvider.isValidToken(authorizationHeader)) {
+            throw new TokenExpiredException();
+        }
+    }
+
+    private void validateAdminRequired(final HttpServletRequest request, final Object handler) {
+        Login auth = getLoginAnnotation(handler);
+        if (auth != null && auth.admin() && isNotAdmin(request)) {
+            throw new NotAdminException();
+        }
+    }
+
+    private boolean isNotAdmin(final HttpServletRequest request) {
+        final MemberPayload payload = jwtProvider.getPayload(request.getHeader(HttpHeaders.AUTHORIZATION));
+        return !payload.isAdmin();
     }
 
     private void validateTokenRequired(final Object handler) {
@@ -44,16 +71,5 @@ public class AuthInterceptor implements HandlerInterceptor {
     private Login getLoginAnnotation(final Object handler) {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         return handlerMethod.getMethodAnnotation(Login.class);
-    }
-
-    private void validateAuthorization(final HttpServletRequest request) {
-        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (!jwtProvider.validateToken(authorizationHeader)) {
-            throw new TokenExpiredException();
-        }
-    }
-
-    private boolean hasAuthorization(final HttpServletRequest request) {
-        return request.getHeader(HttpHeaders.AUTHORIZATION) != null;
     }
 }

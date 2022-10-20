@@ -1,10 +1,13 @@
 spring:
   jpa:
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
-        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    url: jdbc:log4jdbc:h2:mem:testdb;MODE=MySQL;
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+  flyway:
+    enabled: true
 
 server:
   port: 8888
@@ -13,6 +16,8 @@ github:
   client:
     id: clientId
     secret: secret
+    admin-id: adminId
+    admin-secret: adminSecret
   url:
     accessToken: http://localhost:8888/login/oauth/access_token
     user: http://localhost:8888/user
@@ -26,3 +31,7 @@ security:
 
 logging:
   config: classpath:log4j2/log4j2-local.xml
+
+review-count: 2
+rating: 4.5
+products-maximum-size: 100

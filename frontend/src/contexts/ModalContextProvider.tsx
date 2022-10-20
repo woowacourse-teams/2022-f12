@@ -113,7 +113,9 @@ function ModalContextProvider({ children }: PropsWithChildren) {
               handleUnmount={handleAlertUnmount}
               animationTrigger={alertAnimationTrigger}
             >
-              <Modal.Body>{message}</Modal.Body>
+              <Modal.Body>
+                <p>{message}</p>
+              </Modal.Body>
             </Modal>
           )}
           {shouldRenderConfirm && (
@@ -123,7 +125,9 @@ function ModalContextProvider({ children }: PropsWithChildren) {
               handleUnmount={handleConfirmUnmount}
               animationTrigger={confirmAnimationTrigger}
             >
-              <Modal.Body>{message}</Modal.Body>
+              <Modal.Body>
+                <p>{message}</p>
+              </Modal.Body>
             </Modal>
           )}
           {shouldRenderReview && (
@@ -134,8 +138,8 @@ function ModalContextProvider({ children }: PropsWithChildren) {
             >
               <Modal.Body>
                 <Rating rating={review.rating} type={'정수'} size={'small'} />
-                <div>{dateFormatter(review.createdAt)}</div>
-                {review.content}
+                <p>{dateFormatter(review.createdAt)}</p>
+                <p>{review.content}</p>
               </Modal.Body>
             </Modal>
           )}

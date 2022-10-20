@@ -9,6 +9,7 @@ type Props = Partial<Pick<Review, 'id' | 'rating' | 'content'>> & {
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
   isEdit: boolean;
   handleUnmount?: () => void;
+  handleFocus?: () => void;
   animationTrigger?: boolean;
 };
 
@@ -21,6 +22,7 @@ function ReviewBottomSheet({
   rating,
   content,
   handleUnmount,
+  handleFocus,
   animationTrigger,
 }: Props) {
   const handleCloseWithSubmit = async (reviewInput: ReviewInput) => {
@@ -31,23 +33,25 @@ function ReviewBottomSheet({
         await handleSubmit(reviewInput);
       }
       handleClose();
+      handleFocus();
     } catch (error) {
       console.log(error);
     }
   };
+
   return (
     <BottomSheet
       handleClose={handleClose}
       handleUnmount={handleUnmount}
       animationTrigger={animationTrigger}
     >
-      <S.Button onClick={handleClose}>닫기</S.Button>
       <ReviewForm
         handleSubmit={handleCloseWithSubmit}
         isEdit={isEdit ? true : false}
         rating={rating}
         content={content}
       />
+      <S.Button onClick={handleClose}>닫기</S.Button>
     </BottomSheet>
   );
 }

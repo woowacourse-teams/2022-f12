@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Button = styled.button`
   position: absolute;
@@ -15,4 +15,11 @@ export const Button = styled.button`
   &:hover {
     text-decoration: underline;
   }
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+  `}
 `;

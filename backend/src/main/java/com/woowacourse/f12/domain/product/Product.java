@@ -14,8 +14,8 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Entity
-@Table(name = "product", uniqueConstraints = {
-        @UniqueConstraint(name = "NAME_UNIQUE", columnNames = {"name"})})
+@Table(name = "product",
+        uniqueConstraints = {@UniqueConstraint(name = "NAME_UNIQUE", columnNames = {"name"})})
 @Builder
 @Getter
 public class Product {
@@ -62,6 +62,31 @@ public class Product {
     public boolean isSameCategory(final Category category) {
         return this.category == category;
     }
+
+    public void update(final Product updateProduct) {
+        updateName(updateProduct.getName());
+        updateImageUrl(updateProduct.getImageUrl());
+        updateCategory(updateProduct.getCategory());
+    }
+
+    private void updateName(final String name) {
+        if (name != null) {
+            this.name = name;
+        }
+    }
+
+    private void updateImageUrl(final String imageUrl) {
+        if (imageUrl != null) {
+            this.imageUrl = imageUrl;
+        }
+    }
+
+    private void updateCategory(final Category category) {
+        if (category != null) {
+            this.category = category;
+        }
+    }
+
 
     public void increaseReviewCount() {
         reviewCount++;

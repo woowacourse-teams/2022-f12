@@ -5,7 +5,19 @@ export const Container = styled.div<{ index: number }>`
   display: flex;
   background-color: white;
   padding: 1rem;
-  width: 380px;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      width: 330px;
+    }
+    @media screen and ${device.tablet} {
+      width: 380px;
+    }
+    @media screen and ${device.desktop} {
+      width: 380px;
+    }
+  `}
+
   border-radius: 0.4rem;
   box-shadow: 4px 4px 10px ${({ theme }) => theme.colors.secondary};
   ${({ index }) => css`
@@ -29,29 +41,70 @@ export const Container = styled.div<{ index: number }>`
 
 export const LeftSection = styled.div`
   position: relative;
-  width: 20%;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      width: 0%;
+    }
+    @media screen and ${device.tablet} {
+      width: 20%;
+    }
+    @media screen and ${device.desktop} {
+      width: 20%;
+    }
+  `}
 `;
 
 export const RightSection = styled.div`
   position: relative;
-  width: 80%;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      width: 100%;
+    }
+    @media screen and ${device.tablet} {
+      width: 80%;
+    }
+    @media screen and ${device.desktop} {
+      width: 80%;
+    }
+  `}
 `;
 
 export const ProfileImageWrapper = styled.div`
   position: absolute;
-  left: -6rem;
-  top: 1.6rem;
-  width: 9.5rem;
-  height: 9.5rem;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      left: 0rem;
+      top: 0.4rem;
+      width: 3.5rem;
+      height: 3.5rem;
+      box-shadow: 2px 2px 4px ${({ theme }) => theme.colors.secondary};
+    }
+    @media screen and ${device.tablet} {
+      left: -6rem;
+      top: 2rem;
+      width: 9.5rem;
+      height: 9.5rem;
+      box-shadow: 5px 5px 10px ${({ theme }) => theme.colors.secondary};
+    }
+    @media screen and ${device.desktop} {
+      left: -6rem;
+      top: 2rem;
+      width: 9.5rem;
+      height: 9.5rem;
+      box-shadow: 5px 5px 10px ${({ theme }) => theme.colors.secondary};
+    }
+  `}
+
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: 5px 5px 10px ${({ theme }) => theme.colors.secondary};
 `;
 
 export const ProfileImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
 `;
 
 export const UserInfoWrapper = styled.div`
@@ -60,6 +113,12 @@ export const UserInfoWrapper = styled.div`
   justify-content: space-between;
   margin-bottom: 0.9rem;
   gap: 0.1rem;
+
+  ${({ theme: { device } }) => css`
+    @media screen and ${device.mobile} {
+      margin-left: 25%;
+    }
+  `}
 `;
 
 export const UserNameWrapper = styled.div`
@@ -79,7 +138,9 @@ export const UserName = styled.span``;
 
 export const InventoryWrapper = styled.div`
   display: flex;
+  width: 100%;
   justify-content: space-between;
+  margin-top: 1.5rem;
   height: 7rem;
 `;
 
@@ -87,11 +148,19 @@ export const LeftButton = styled.button`
   border: none;
   background: none;
   font-size: 1.5rem;
+
+  &:hover {
+    filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.25));
+  }
 `;
 export const RightButton = styled.button`
   border: none;
   background: none;
   font-size: 1.5rem;
+
+  &:hover {
+    filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.25));
+  }
 `;
 
 export const OuterLinkWrapper = styled.a``;
@@ -101,14 +170,18 @@ export const ProfileViewButton = styled.button`
   border: none;
   width: 100%;
   height: 1.8rem;
-  margin-top: 0.2rem;
+  margin-top: 0.8rem;
   border-radius: 0.25rem;
   background-color: ${({ theme }) => theme.colors.primary};
+
+  &:hover {
+    filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.25));
+  }
 `;
 
 export const InventoryListWrapper = styled.div`
   overflow: hidden;
-  height: 102px;
+  height: 104px;
 `;
 
 export const InventoryList = styled.div<{ positionX: number }>`
@@ -129,15 +202,25 @@ export const InventoryItem = styled.div`
 export const ProductImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  aspect-ratio: 1 / 1;
 `;
 
 export const ProductTitle = styled.p`
-  font-size: 0.3rem;
+  font-size: 0.75rem;
 `;
 
 export const ProductImageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 80px;
+  height: 80px;
+`;
+
+export const EmptyWrapper = styled.div`
+  display: flex;
+  width: 60px;
   height: 80px;
 `;
 
@@ -157,8 +240,10 @@ export const FollowingButton = styled.button<{ followed: boolean }>`
   padding: 0.3rem 0.6rem;
   font-size: 0.8rem;
   border-radius: 0.25rem;
-  box-shadow: 2px 2px 6px ${({ theme }) => theme.colors.secondary};
-  transition: linear 0.3s;
+
+  &:hover {
+    filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.25));
+  }
 
   background-color: ${({ theme, followed }) =>
     followed ? theme.colors.secondary : theme.colors.primary};

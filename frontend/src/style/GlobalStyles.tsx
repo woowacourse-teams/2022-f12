@@ -8,7 +8,9 @@ const GlobalStyles = createGlobalStyle`
 }
 
 body {
-  background-color: ${({ theme }) => theme.colors.white}
+  background-color: ${({ theme }) => theme.colors.white};
+  width: 100vw;
+  overflow-x: hidden;
 }
 
 button {
@@ -46,6 +48,20 @@ export const CustomNavLink = styled(NavLink)`
     margin-left: 0;
     transition: left 300ms ease-out;
   }
+`;
+
+export const SROnly = styled.div`
+  overflow: hidden;
+  white-space: no-wrap;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  top: 0;
+  left: 0;
 `;
 
 export default GlobalStyles;

@@ -14,10 +14,11 @@ import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_2;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.data.domain.Sort.Order.desc;
 
-import com.woowacourse.f12.config.JpaConfig;
+import com.woowacourse.f12.domain.RepositoryTest;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.product.Product;
@@ -28,15 +29,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 
-@DataJpaTest
-@Import(JpaConfig.class)
+@RepositoryTest
 class ReviewRepositoryTest {
 
     @Autowired
@@ -55,10 +54,11 @@ class ReviewRepositoryTest {
     void 특정_제품의_리뷰_목록을_최신순으로_페이징하여_조회한다() {
         // given
         Product product = productRepository.save(KEYBOARD_1.생성());
-        Member member = memberRepository.save(CORINNE.생성());
+        Member member1 = memberRepository.save(CORINNE.생성());
+        Member member2 = memberRepository.save(MINCHO.생성());
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("createdAt")));
-        리뷰_저장(REVIEW_RATING_5.작성(product, member));
-        Review review = 리뷰_저장(REVIEW_RATING_5.작성(product, member));
+        리뷰_저장(REVIEW_RATING_5.작성(product, member1));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(product, member2));
 
         // when
         Slice<Review> page = reviewRepository.findPageByProductId(product.getId(), pageable);
@@ -76,10 +76,11 @@ class ReviewRepositoryTest {
     void 특정_제품의_리뷰_목록을_평점순으로_페이징하여_조회한다() {
         // given
         Product product = productRepository.save(KEYBOARD_1.생성());
-        Member member = memberRepository.save(CORINNE.생성());
+        Member member1 = memberRepository.save(CORINNE.생성());
+        Member member2 = memberRepository.save(MINCHO.생성());
         Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("rating")));
-        Review review = 리뷰_저장(REVIEW_RATING_5.작성(product, member));
-        리뷰_저장(REVIEW_RATING_4.작성(product, member));
+        Review review = 리뷰_저장(REVIEW_RATING_5.작성(product, member1));
+        리뷰_저장(REVIEW_RATING_4.작성(product, member2));
 
         // when
         Slice<Review> page = reviewRepository.findPageByProductId(product.getId(), pageable);
@@ -289,12 +290,46 @@ class ReviewRepositoryTest {
         );
     }
 
+    @Test
+    void 특정_회원이_동일_제품에_대해_중복_리뷰를_남길_수_없다() {
+        // given
+        Product product = 제품_저장(KEYBOARD_1.생성());
+        Member corinne = memberRepository.save(CORINNE.생성());
+        Review review1 = REVIEW_RATING_1.작성(product, corinne);
+        Review review2 = REVIEW_RATING_1.작성(product, corinne);
+        reviewRepository.save(review1);
+
+        // when, then
+        assertThatThrownBy(() -> reviewRepository.save(review2))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void 특정_제품에_대한_리뷰를_모두_삭제한다() {
+        // given
+        Product product = 제품_저장(KEYBOARD_1.생성());
+        Member corinne = memberRepository.save(CORINNE.생성());
+        Member mincho = memberRepository.save(MINCHO.생성());
+        Review review1 = REVIEW_RATING_1.작성(product, corinne);
+        Review review2 = REVIEW_RATING_1.작성(product, mincho);
+        reviewRepository.save(review1);
+        reviewRepository.save(review2);
+
+        entityManager.clear();
+
+        // when
+        reviewRepository.deleteByProduct(product);
+
+        // then
+        long count = reviewRepository.count();
+        assertThat(count).isZero();
+    }
+
     private Product 제품_저장(Product product) {
         return productRepository.save(product);
     }
 
     private Review 리뷰_저장(Review review) {
-        review.reflectToProductWhenWritten();
         return reviewRepository.save(review);
     }
 }

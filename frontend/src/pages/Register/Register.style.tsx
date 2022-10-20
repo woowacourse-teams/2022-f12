@@ -38,9 +38,12 @@ export const SelectButton = styled.button<{ selected: boolean }>`
   border: 1px solid #cfcfcf;
   font-size: 1rem;
   cursor: pointer;
-  box-shadow: 8px 8px 3px -3px ${({ selected }) => (selected ? 'none' : '#cfcfcf')};
 
   transition: ease-in 0.2s;
+
+  &:hover {
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.25));
+  }
 `;
 
 export const ConfirmButton = styled.button`
@@ -51,7 +54,10 @@ export const ConfirmButton = styled.button`
   border: 2px solid #f6bebe;
   font-size: 1rem;
   cursor: pointer;
-  box-shadow: 8px 8px 3px -3px #cfcfcf;
+
+  &:hover {
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.25));
+  }
 `;
 
 export const EditButton = styled(ConfirmButton)`

@@ -45,4 +45,15 @@ public enum ProductFixture {
                 .imageUrl(this.imageUrl)
                 .build();
     }
+
+    public Product 생성(final Long id, final double rating, final int reviewCount) {
+        return Product.builder()
+                .id(id)
+                .category(category)
+                .name(this.name)
+                .imageUrl(this.imageUrl)
+                .rating(rating)
+                .reviewCount(reviewCount)
+                .build();
+    }
 }

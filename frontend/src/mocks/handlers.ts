@@ -15,6 +15,15 @@ import {
 
 // let errorCall = 0;
 
+// 인기 제품 목록 조회
+const getPopularKeyboards = (req, res, ctx) => {
+  const response = {
+    items: products.sort((a, b) => Math.random() - 0.5).slice(0, 4),
+  };
+
+  return res(ctx.status(200), ctx.json(response), ctx.delay());
+};
+
 // 제품 목록 조회
 const getKeyboards = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
@@ -131,22 +140,20 @@ const getReviewsByProductId = (req, res, ctx) => {
 
 // 리뷰 작성
 const postReviewByProductId = (req, res, ctx) => {
-  const userData: UserData | null =
-    JSON.parse(window.sessionStorage.getItem('userData')) || null;
+  const { shadowToken } = req.cookies;
 
-  if (!userData || !userData.token) {
+  if (!shadowToken) {
     return res(ctx.status(403));
   }
 
   return res(ctx.status(201));
 };
 
-// 리뷰 수정 기능
+// 리뷰 수정
 const updateReviewByReviewId = (req, res, ctx) => {
-  const userData: UserData | null =
-    JSON.parse(window.sessionStorage.getItem('userData')) || null;
+  const { shadowToken } = req.cookies;
 
-  if (!userData || !userData.token) {
+  if (!shadowToken) {
     return res(ctx.status(403));
   }
   return res(ctx.status(204));
@@ -154,10 +161,9 @@ const updateReviewByReviewId = (req, res, ctx) => {
 
 // 리뷰 삭제
 const deleteReviewByReviewId = (req, res, ctx) => {
-  const userData: UserData | null =
-    JSON.parse(window.sessionStorage.getItem('userData')) || null;
+  const { shadowToken } = req.cookies;
 
-  if (!userData || !userData.token) {
+  if (!shadowToken) {
     return res(ctx.status(403));
   }
   return res(ctx.status(204));
@@ -167,7 +173,16 @@ const deleteReviewByReviewId = (req, res, ctx) => {
 const handleLoginRequest = (req, res, ctx) => {
   return res(
     ctx.status(200),
-    ctx.json(myUserData),
+    ctx.json({
+      token: 'token',
+      registerCompleted: true,
+      member: {
+        id: 1,
+        gitHubId: 'hamcheeseburger',
+        name: '유현지',
+        imageUrl: 'https://avatars.githubusercontent.com/u/61769743?v=4',
+      },
+    }),
     ctx.delay(),
     ctx.cookie('shadowToken', 'true')
   );
@@ -298,6 +313,8 @@ export const handlers = [
     getOtherMemberInventory
   ),
 
+  rest.get(`${BASE_URL}${ENDPOINTS.POPULAR_PRODUCTS}`, getPopularKeyboards),
+  // 순서 주의! 이 핸들러가 아래에 위치하면 products/:id'로 연결됩니다.
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}`, getKeyboard),
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCTS}`, getKeyboards),
   rest.get(`${BASE_URL}${ENDPOINTS.PRODUCT(':id')}/statistics`, getStatistics),

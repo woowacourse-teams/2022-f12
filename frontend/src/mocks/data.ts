@@ -630,6 +630,45 @@ export const InventoryProducts: { items: InventoryProduct[] } = {
         category: 'software',
       },
     },
+    {
+      id: 10,
+      selected: false,
+      product: {
+        id: 10,
+        name: '키보드3',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
+        reviewCount: 0,
+        rating: 0.0,
+        category: 'keyboard',
+      },
+    },
+    {
+      id: 11,
+      selected: false,
+      product: {
+        id: 11,
+        name: '키보드4',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
+        reviewCount: 0,
+        rating: 0.0,
+        category: 'keyboard',
+      },
+    },
+    {
+      id: 12,
+      selected: false,
+      product: {
+        id: 12,
+        name: '키보드5',
+        imageUrl:
+          'http://img.danawa.com/prod_img/500000/578/350/img/16350578_1.jpg?shrink=500:500&_v=20220209090426',
+        reviewCount: 0,
+        rating: 0.0,
+        category: 'keyboard',
+      },
+    },
   ],
 };
 
@@ -664,8 +703,127 @@ export const reviewsWithProduct: Review[] = [
       imageUrl:
         'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
-    content:
-      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
+    content: `sdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflkvsdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflkvsdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlks
+
+
+
+    sdklfjasdfklsfndlkskaldflk
+    
+    
+    
+    
+    
+    
+    
+    
+    sdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflk
+    
+    sdklfjasdfklsfndlkskaldflk
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    sdklfjasdfklsfndlkskaldflk
+    
+    
+    
+    sdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflk
+    
+    
+    
+    
+    
+    
+    sdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflk
+    
+    
+    
+    
+    
+    
+    sdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflksdklfjasdfklsfndlkskaldflk
+    
+    
+    
+    
+    sdklfjasdfklsfndlkskaldflk
+    
+    
+    sdklfjasdfklsfndlkskaldflk
+    
+    
+    sdklfjasdfklsfndlkskaldflk
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    sdklfjasdfklsfndlkskaldflk
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    `,
     rating: 5,
     createdAt: '2022-07-03 14:23:23',
     authorMatch: false,
@@ -684,7 +842,7 @@ export const reviewsWithProduct: Review[] = [
         'http://img.danawa.com/prod_img/500000/784/731/img/11731784_1.jpg?shrink=330:330&_v=20220602181027',
     },
     content:
-      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다 아는 분은 아시겠지만 제품이 국내로 넘어온 후 관세청에서 문자로 제세액 3만원이상의 금액을 입금하라고 오더라구요 ',
+      '무접점은 처음 사용이라 바로 적응되진 않아요 그래도 검증된 제품이라 역시 좋긴 좋네요 작업용으로 마지막 키보드라 생각한거라 비싸도 확 질렀습니다',
     rating: 5,
     createdAt: '2022-07-03 14:23:23',
     authorMatch: false,

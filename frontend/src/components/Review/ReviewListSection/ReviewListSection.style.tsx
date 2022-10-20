@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.section`
   display: flex;
@@ -11,7 +11,15 @@ export const Container = styled.section`
 
 export const Wrapper = styled.div<{ columns: number }>`
   display: grid;
-  grid-template-columns: ${({ columns }) => `repeat(${columns}, 1fr)`};
   gap: 2rem 1rem;
   justify-items: center;
+
+  ${({ theme: { device }, columns }) => css`
+    @media screen and ${device.mobile} {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    @media screen and (min-width: 768px) {
+      grid-template-columns: ${`repeat(${columns}, 1fr)`};
+    }
+  `}
 `;

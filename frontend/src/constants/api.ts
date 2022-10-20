@@ -4,8 +4,12 @@ const githubClientId = __GITHUB_CLIENT_ID__;
 
 export const GITHUB_AUTH_URL = `https://github.com/login/oauth/authorize?client_id=${githubClientId}`;
 
+export const DANAWA_SEARCH_URL = 'https://search.danawa.com/dsearch.php?k1=';
+export const GOOGLE_SEARCH_URL = 'https://www.google.com/search?q=';
+
 export const ENDPOINTS = {
   PRODUCTS: '/products',
+  POPULAR_PRODUCTS: '/products/popular-list',
   PRODUCT: (id: number | ':id') => `/products/${id}`,
   REVIEWS: '/reviews',
   REVIEWS_BY_PRODUCT_ID: (id: number | ':id') => `/products/${id}/reviews`,

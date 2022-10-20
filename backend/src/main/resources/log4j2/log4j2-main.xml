@@ -47,10 +47,8 @@
         <Logger name="com.springframework" level="info" additivity="false">
             <AppenderRef ref="AsyncFileAppender"/>
         </Logger>
-        <Logger name="org.hibernate.SQL" level="debug" additivity="false">
-            <AppenderRef ref="AsyncDbAppender"/>
-        </Logger>
-        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace" additivity="false">
+        <Logger name="log4jdbc.log4j2" level="info" additivity="false">
+            <MarkerFilter marker="LOG4JDBC_SQL"/>
             <AppenderRef ref="AsyncDbAppender"/>
         </Logger>
         <Root level="error">

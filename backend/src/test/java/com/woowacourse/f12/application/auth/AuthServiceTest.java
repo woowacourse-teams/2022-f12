@@ -1,5 +1,6 @@
 package com.woowacourse.f12.application.auth;
 
+import static com.woowacourse.f12.support.fixture.MemberFixture.ADMIN_KLAY;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE_UPDATED;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,13 +12,20 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.verify;
 
+import com.woowacourse.f12.application.auth.token.JwtProvider;
+import com.woowacourse.f12.application.auth.token.RefreshToken;
+import com.woowacourse.f12.application.auth.token.RefreshTokenProvider;
+import com.woowacourse.f12.application.auth.token.RefreshTokenRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
+import com.woowacourse.f12.domain.member.Role;
+import com.woowacourse.f12.dto.response.auth.AdminLoginResponse;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
+import com.woowacourse.f12.exception.forbidden.NotAdminException;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenExpiredException;
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenInvalidException;
+import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -47,8 +55,8 @@ class AuthServiceTest {
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
 
-    private LocalDateTime expiredAt = LocalDateTime.now().plusDays(14);
-    private Long memberId = 1L;
+    private final LocalDateTime expiredAt = LocalDateTime.now().plusDays(14);
+    private final Long memberId = 1L;
 
     @Test
     void 깃허브_코드가_들어왔을때_회원정보가_없으면_새로_저장하고_회원정보와_토큰을_반환한다() {
@@ -68,7 +76,7 @@ class AuthServiceTest {
                 .willReturn(Optional.empty());
         given(memberRepository.save(gitHubProfile.toMember()))
                 .willReturn(member);
-        given(jwtProvider.createAccessToken(member.getId()))
+        given(jwtProvider.createAccessToken(member.getId(), member.getRole()))
                 .willReturn(expectedAccessToken);
         given(refreshTokenProvider.createToken(memberId))
                 .willReturn(new RefreshToken(refreshTokenValue, memberId, expiredAt));
@@ -86,7 +94,7 @@ class AuthServiceTest {
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
                 () -> verify(memberRepository).save(gitHubProfile.toMember()),
-                () -> verify(jwtProvider).createAccessToken(memberId),
+                () -> verify(jwtProvider).createAccessToken(memberId, member.getRole()),
                 () -> verify(refreshTokenProvider).createToken(memberId)
         );
     }
@@ -107,7 +115,7 @@ class AuthServiceTest {
                 .willReturn(gitHubProfile);
         given(memberRepository.findByGitHubId(gitHubProfile.getGitHubId()))
                 .willReturn(Optional.of(member));
-        given(jwtProvider.createAccessToken(member.getId()))
+        given(jwtProvider.createAccessToken(member.getId(), member.getRole()))
                 .willReturn(applicationToken);
         given(refreshTokenProvider.createToken(memberId))
                 .willReturn(new RefreshToken(refreshTokenValue, memberId, expiredAt));
@@ -123,8 +131,66 @@ class AuthServiceTest {
                 () -> verify(gitHubOauthClient).getAccessToken(code),
                 () -> verify(gitHubOauthClient).getProfile(accessToken),
                 () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
-                () -> verify(jwtProvider).createAccessToken(memberId),
+                () -> verify(jwtProvider).createAccessToken(memberId, member.getRole()),
                 () -> verify(refreshTokenProvider).createToken(memberId)
+        );
+    }
+
+    @Test
+    void 깃허브_코드가_들어왔을때_회원정보가_있고_롤이_어드민이면_어드민_로그인을_진행하고_토큰을_반환한다() {
+        // given
+        String code = "abcde";
+        String accessToken = "accessToken";
+        String applicationToken = "applicationToken";
+
+        GitHubProfileResponse gitHubProfile = CORINNE_UPDATED.깃허브_프로필();
+        Member member = ADMIN_KLAY.생성(memberId);
+
+        given(gitHubOauthClient.getAccessToken(code))
+                .willReturn(accessToken);
+        given(gitHubOauthClient.getProfile(accessToken))
+                .willReturn(gitHubProfile);
+        given(memberRepository.findByGitHubId(gitHubProfile.getGitHubId()))
+                .willReturn(Optional.of(member));
+        given(jwtProvider.createAccessToken(member.getId(), member.getRole()))
+                .willReturn(applicationToken);
+
+        // when
+        AdminLoginResponse adminLoginResponse = authService.loginAdmin(code);
+
+        // then
+        assertAll(
+                () -> assertThat(adminLoginResponse.getAccessToken()).isEqualTo(applicationToken),
+                () -> verify(gitHubOauthClient).getAccessToken(code),
+                () -> verify(gitHubOauthClient).getProfile(accessToken),
+                () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId()),
+                () -> verify(jwtProvider).createAccessToken(memberId, member.getRole())
+        );
+    }
+
+    @Test
+    void 깃허브_코드가_들어왔을때_어드민_롤이_아닌경우_어드민_로그인을_실패하고_예외가_발생한다() {
+        // given
+        String code = "abcde";
+        String accessToken = "accessToken";
+
+        GitHubProfileResponse gitHubProfile = CORINNE_UPDATED.깃허브_프로필();
+        Member member = CORINNE.생성(memberId);
+
+        given(gitHubOauthClient.getAccessToken(code))
+                .willReturn(accessToken);
+        given(gitHubOauthClient.getProfile(accessToken))
+                .willReturn(gitHubProfile);
+        given(memberRepository.findByGitHubId(gitHubProfile.getGitHubId()))
+                .willReturn(Optional.of(member));
+
+        // when, then
+        assertAll(
+                () -> assertThatThrownBy(() -> authService.loginAdmin(code))
+                        .isExactlyInstanceOf(NotAdminException.class),
+                () -> verify(gitHubOauthClient).getAccessToken(code),
+                () -> verify(gitHubOauthClient).getProfile(accessToken),
+                () -> verify(memberRepository).findByGitHubId(gitHubProfile.getGitHubId())
         );
     }
 
@@ -143,8 +209,10 @@ class AuthServiceTest {
                 .willReturn(newRefreshToken);
         given(refreshTokenRepository.save(eq(newRefreshToken)))
                 .willReturn(newRefreshToken);
-        given(jwtProvider.createAccessToken(1L))
+        given(jwtProvider.createAccessToken(1L, Role.USER))
                 .willReturn(newAccessTokenValue);
+        given(memberRepository.findById(1L))
+                .willReturn(Optional.of(Member.builder().id(1L).build()));
         willDoNothing().given(refreshTokenRepository).delete(refreshTokenValue);
 
         // when
@@ -157,7 +225,7 @@ class AuthServiceTest {
                 () -> verify(refreshTokenRepository).findToken(refreshTokenValue),
                 () -> verify(refreshTokenProvider).createToken(memberId),
                 () -> verify(refreshTokenRepository).save(eq(newRefreshToken)),
-                () -> verify(jwtProvider).createAccessToken(1L),
+                () -> verify(jwtProvider).createAccessToken(1L, Role.USER),
                 () -> verify(refreshTokenRepository).delete(refreshTokenValue)
         );
     }
@@ -166,11 +234,11 @@ class AuthServiceTest {
     void 저장되어_있지않은_리프레시_토큰으로_액세스_토큰_발급하려할_경우_예외_발생() {
         // given
         given(refreshTokenRepository.findToken(any()))
-                .willReturn(Optional.empty());
+                .willThrow(new RefreshTokenNotFoundException());
 
         // when, then
         assertThatThrownBy(() -> authService.issueAccessToken("refreshToken"))
-                .isExactlyInstanceOf(RefreshTokenInvalidException.class);
+                .isExactlyInstanceOf(RefreshTokenNotFoundException.class);
     }
 
     @Test
