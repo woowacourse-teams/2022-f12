@@ -137,4 +137,5 @@ export const ReviewModifyButton = styled.button`
 
 export const Content = styled.p`
   line-height: 1.4;
+  word-break: break-all;
 `;
