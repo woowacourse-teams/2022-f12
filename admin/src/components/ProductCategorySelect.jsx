@@ -7,6 +7,7 @@ const ProductCategorySelect = ({ productCategory, setProductCategory }) => {
     <select
       defaultValue={productCategory}
       onChange={handleProductCategoryChange}
+      style={{ height: "100%" }}
     >
       <option value="keyboard">키보드</option>
       <option value="mouse">마우스</option>

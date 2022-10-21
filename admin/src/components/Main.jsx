@@ -20,6 +20,7 @@ const Contents = styled.section`
 const Navigator = styled.section`
   display: flex;
   justify-content: center;
+  gap: 1rem;
 `;
 
 const Main = ({ accessToken, setAccessToken }) => {
@@ -53,15 +54,18 @@ const Main = ({ accessToken, setAccessToken }) => {
           onClick={() => {
             navigate("/insertProduct");
           }}
-          text="제품 추가"
-        />
+        >
+          제품 추가
+        </Button>
         <Button
           onClick={() => {
             setAccessToken();
             navigate("/");
           }}
-          text="로그아웃"
-        />
+          text=""
+        >
+          로그아웃
+        </Button>
       </Navigator>
       <SearchBar searchInput={searchInput} setSearchInput={setSearchInput} />
       {products?.map((product) => {
@@ -80,16 +84,18 @@ const Main = ({ accessToken, setAccessToken }) => {
             onClick={() => {
               setPageNumber(pageNumber - 1);
             }}
-            text="이전 페이지"
-          />
+          >
+            이전 페이지
+          </Button>
         )}
         {hasNext === false ? null : (
           <Button
             onClick={() => {
               setPageNumber(pageNumber + 1);
             }}
-            text="다음 페이지"
-          />
+          >
+            다음 페이지
+          </Button>
         )}
       </Navigator>
     </>

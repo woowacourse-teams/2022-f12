@@ -17,7 +17,7 @@ function App() {
           path="/login"
           element={<Login setAccessToken={setAccessToken} />}
         />
-        {accessToken && (
+        {!accessToken && (
           <>
             <Route
               path="/main"
