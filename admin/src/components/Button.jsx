@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 const ButtonLayout = styled.div`
   width: max-content;
-  /* margin: 20px; */
   padding: 10px;
   background-color: #f6bebe;
   border-radius: 10px;
