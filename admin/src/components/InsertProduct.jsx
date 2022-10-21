@@ -8,7 +8,7 @@ import ProductCategorySelect from "./ProductCategorySelect";
 const InsertProduct = ({ accessToken }) => {
   const [productName, setProductName] = useState();
   const [productCategory, setProductCategory] = useState("keyboard");
-  const [productImageUrl, setProdcutImageURL] = useState();
+  const [productImageUrl, setProductImageURL] = useState();
   const navigate = useNavigate();
 
   const requestInsertProduct = async () => {
@@ -43,14 +43,14 @@ const InsertProduct = ({ accessToken }) => {
         <label htmlFor="">카테고리</label>
         <ProductCategorySelect
           categoryInputValue={productCategory}
-          setCategoryInputValue={setProductCategory}
+          setProductCategory={setProductCategory}
         />
       </div>
       <div>
         <label htmlFor="">이미지 주소</label>
         <input
           onChange={(e) => {
-            setProdcutImageURL(e.target.value);
+            setProductImageURL(e.target.value);
           }}
           type="text"
         />
