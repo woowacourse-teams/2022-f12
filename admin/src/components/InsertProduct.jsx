@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { API_BASE_URL } from "../constants/urls";
 import Button from "./Button";
 import ProductCategorySelect from "./ProductCategorySelect";
@@ -8,7 +9,7 @@ import ProductCategorySelect from "./ProductCategorySelect";
 const InsertProduct = ({ accessToken }) => {
   const [productName, setProductName] = useState();
   const [productCategory, setProductCategory] = useState("keyboard");
-  const [productImageUrl, setProdcutImageURL] = useState();
+  const [productImageUrl, setProductImageURL] = useState();
   const navigate = useNavigate();
 
   const requestInsertProduct = async () => {
@@ -30,34 +31,60 @@ const InsertProduct = ({ accessToken }) => {
   };
   return (
     <>
-      <div>
-        <label htmlFor="">제품명</label>
-        <input
-          onChange={(e) => {
-            setProductName(e.target.value);
-          }}
-          type="text"
-        />
-      </div>
-      <div>
-        <label htmlFor="">카테고리</label>
-        <ProductCategorySelect
-          categoryInputValue={productCategory}
-          setCategoryInputValue={setProductCategory}
-        />
-      </div>
-      <div>
-        <label htmlFor="">이미지 주소</label>
-        <input
-          onChange={(e) => {
-            setProdcutImageURL(e.target.value);
-          }}
-          type="text"
-        />
-      </div>
-      <Button onClick={requestInsertProduct} text="제출"></Button>
+      <Container>
+        <FieldContainer>
+          <label htmlFor="">제품명</label>
+          <CustomInput
+            onChange={(e) => {
+              setProductName(e.target.value);
+            }}
+            type="text"
+          />
+        </FieldContainer>
+        <FieldContainer>
+          <label htmlFor="">카테고리</label>
+          <ProductCategorySelect
+            categoryInputValue={productCategory}
+            setProductCategory={setProductCategory}
+          />
+        </FieldContainer>
+        <FieldContainer>
+          <label htmlFor="">이미지 주소</label>
+          <CustomInput
+            onChange={(e) => {
+              setProductImageURL(e.target.value);
+            }}
+            type="text"
+          />
+        </FieldContainer>
+        <Button onClick={requestInsertProduct}>제출</Button>
+      </Container>
+      <h1>이미지 프리뷰</h1>
+      <PreviewImage src={productImageUrl} />
     </>
   );
 };
 
 export default InsertProduct;
+
+const Container = styled.section`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  height: 1.5rem;
+`;
+
+const FieldContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  height: 100%;
+`;
+
+const CustomInput = styled.input`
+  height: 100%;
+`;
+
+const PreviewImage = styled.img`
+  border: 1px solid black;
+`;

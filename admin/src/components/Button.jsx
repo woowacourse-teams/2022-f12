@@ -2,13 +2,12 @@ import styled from "styled-components";
 
 const ButtonLayout = styled.div`
   width: max-content;
-  margin: 20px;
   padding: 10px;
   background-color: #f6bebe;
   border-radius: 10px;
   border: none;
   box-shadow: 2px 2px 2px gray;
-  color: black;
+  cursor: pointer;
   &:active {
     position: relative;
     top: 2px;
@@ -17,8 +16,8 @@ const ButtonLayout = styled.div`
   }
 `;
 
-const Button = ({ onClick, text }) => {
-  return <ButtonLayout onClick={onClick}>{text}</ButtonLayout>;
+const Button = ({ onClick, children }) => {
+  return <ButtonLayout onClick={onClick}>{children}</ButtonLayout>;
 };
 
 export default Button;
