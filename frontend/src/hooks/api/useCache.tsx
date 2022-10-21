@@ -54,8 +54,8 @@ function useCache() {
     const searchParams = new URLSearchParams(config.params as Record<string, string>);
     const page = Number(searchParams.get('page'));
     searchParams.delete('page');
-    const cacheKey = `${url}?${searchParams.toString()}`;
-
+    const hasNoSearchParams = Array.from(searchParams).length === 0;
+    const cacheKey = `${url}${hasNoSearchParams ? '' : `?${searchParams.toString()}`}`;
     const cachedResponse = getCachedResponse(cacheKey, page);
     if (cachedResponse) {
       return cachedResponse;
