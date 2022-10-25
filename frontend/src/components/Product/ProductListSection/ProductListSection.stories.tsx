@@ -14,5 +14,5 @@ const Template: ComponentStory<typeof ProductListSection> = (args) => (
 );
 
 export const Default = () => (
-  <Template data={products} isLoading={false} isError={false} />
+  <Template title="제품 목록" data={products} isLoading={false} isError={false} />
 );

@@ -43,8 +43,10 @@
     "eslint-plugin-prettier": "^4.1.0",
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "fork-ts-checker-webpack-plugin": "^7.2.13",
     "msw": "^0.42.3",
     "prettier": "^2.7.1",
+    "ts-loader": "^9.4.1",
     "webpack-bundle-analyzer": "^4.6.1"
   },
   "dependencies": {

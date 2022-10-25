@@ -13,8 +13,13 @@ import GlobalStyles from '@/style/GlobalStyles';
 import ResetCss from '@/style/ResetCss';
 import theme from '@/style/theme';
 
-/* eslint-disable */
+declare global {
+  interface Window {
+    Cypress: unknown;
+  }
+}
 
+/* eslint-disable */
 if (process.env.NODE_ENV === 'development' && !window.Cypress) {
   const { worker } = require('@/mocks/browser');
   worker.start({
