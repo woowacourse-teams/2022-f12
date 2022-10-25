@@ -21,6 +21,10 @@ spring:
 
 server:
   port: 8080
+  tomcat:
+    threads:
+      max: 100
+    accept-count: 100
 
   servlet:
     session:
