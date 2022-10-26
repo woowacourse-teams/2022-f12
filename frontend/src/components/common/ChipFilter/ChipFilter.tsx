@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { MouseEventHandler, PropsWithChildren } from 'react';
 
 import * as S from '@/components/common/ChipFilter/ChipFilter.style';
 
@@ -6,7 +6,7 @@ type Props = {
   fontSize: number;
   value: string;
   filter?: string;
-  handleClick: (e) => void;
+  handleClick: MouseEventHandler;
 };
 
 function ChipFilter({

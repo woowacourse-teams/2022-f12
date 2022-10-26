@@ -30,11 +30,13 @@ function Modal({
 
   const handleFocusRemove = () => {
     const root = document.querySelector<HTMLElement>('#root');
+    if (root === null) return;
     root.setAttribute('inert', 'true');
   };
 
   const handleFocusRetrieve = () => {
     const root = document.querySelector<HTMLElement>('#root');
+    if (root === null) return;
     root.removeAttribute('inert');
   };
 
@@ -66,7 +68,7 @@ function Modal({
         <ActionButtons handleClose={handleClose} handleConfirm={handleConfirm} />
       </S.Content>
     </S.Container>,
-    document.querySelector('body')
+    document.body
   );
 }
 

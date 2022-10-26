@@ -1,4 +1,3 @@
-import { ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
 
 import ProfileSearchResult from '@/components/Profile/ProfileSearchResult/ProfileSearchResult';
@@ -14,10 +13,17 @@ const Container = styled.div`
   width: 500px;
 `;
 
-const Template: ComponentStory<typeof ProfileSearchResult> = (args) => (
+const Template = (data: ProfileSearchResult[]) => (
   <Container>
-    <ProfileSearchResult {...args} />
+    <ProfileSearchResult
+      isLoading={false}
+      isError={false}
+      data={data}
+      getNextPage={() => {
+        console.log('getting next page');
+      }}
+    />
   </Container>
 );
 
-export const Default = (args) => <Template data={members} {...args} />;
+export const Default = () => Template(members);

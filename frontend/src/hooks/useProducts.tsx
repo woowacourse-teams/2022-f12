@@ -11,7 +11,7 @@ type Props = {
 };
 
 type Return = DataFetchStatus & {
-  products: Product[];
+  products: Product[] | null;
   getNextPage: () => void;
 };
 

@@ -16,7 +16,7 @@ type Props = {
   url: string;
   params?: GetManyParams;
   body?: null | object;
-  headers?: null | AxiosRequestHeaders;
+  headers?: AxiosRequestHeaders;
 };
 
 type Data<T> = {
@@ -25,14 +25,14 @@ type Data<T> = {
 };
 
 type Return<T> = DataFetchStatus & {
-  data: T[];
+  data: T[] | null;
   getNextPage: () => void;
   refetch: () => void;
   hasNextPage: boolean;
 };
 
 function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
-  const [data, setData] = useState<T[]>(null);
+  const [data, setData] = useState<T[] | null>(null);
 
   const [page, setPage] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(true);
@@ -91,13 +91,15 @@ function useGetMany<T>({ url, params, body, headers }: Props): Return<T> {
     removeCache(`${url}?${searchParams.toString()}`);
   };
 
-  const getCurrentParamString = () =>
+  const getCurrentParamString = (params: Record<string, string>) =>
     Object.entries(params)
       .map(([key, value]) => `${key}: ${value}`)
       .join('\n    ');
 
   const getErrorStateMessage = () => {
-    return `@useGetMany\n상태:\n    url: ${url}\n    ${getCurrentParamString()}\n    page: ${page}`;
+    return `@useGetMany\n상태:\n    url: ${url}\n    ${
+      params ? getCurrentParamString(params) : ''
+    }\n    page: ${page}`;
   };
 
   useEffect(() => {

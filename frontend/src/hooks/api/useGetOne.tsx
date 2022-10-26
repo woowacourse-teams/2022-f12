@@ -10,11 +10,11 @@ import { CACHE_TIME } from '@/constants/cache';
 
 type Props = {
   url: string;
-  headers?: null | AxiosRequestHeaders;
+  headers?: AxiosRequestHeaders;
 };
 
 type Return<T> = Omit<DataFetchStatus, 'isLoading'> & {
-  data: T;
+  data: T | null;
   refetch: () => void;
 };
 

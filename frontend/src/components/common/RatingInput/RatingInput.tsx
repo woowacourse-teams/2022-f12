@@ -7,13 +7,13 @@ import theme from '@/style/theme';
 import Heart from '@/assets/heart.svg';
 
 type Props = {
-  rating: null | number;
+  rating: number;
   setRating: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const MAX_RATING = 5;
 
-function RatingInput({ rating = null, setRating }: Props) {
+function RatingInput({ rating = -1, setRating }: Props) {
   const [hoverRating, setHoverRating] = useState<null | number>(null);
 
   const handleClick: (ratingIndex: number) => React.MouseEventHandler =

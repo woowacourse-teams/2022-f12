@@ -13,10 +13,10 @@ type ErrorResponseBody = {
 };
 
 const handleAPIError = (error: AxiosError<ErrorResponseBody>) => {
-  const errorResponseBody = error.response.data;
-  if (!('errorCode' in errorResponseBody)) {
+  if (!error.response || !('errorCode' in error.response.data)) {
     throw new Error(API_ERROR_CODE_EXCEPTION_MESSAGES.NO_CODE);
   }
+  const errorResponseBody = error.response.data;
 
   const { errorCode } = errorResponseBody;
 

@@ -1,22 +1,39 @@
+import { useMemo } from 'react';
+
 import * as S from '@/pages/Register/Register.style';
 
 import useModal from '@/hooks/useModal';
 
 import { VALIDATION_ERROR_MESSAGES } from '@/constants/messages';
 
-type Props = {
-  options: Record<string, string>;
+type Entries<T> = {
+  [K in keyof T]: [K, T[K]];
+}[keyof T][];
+
+type Props<T extends string> = {
+  options: Record<T, string>;
   input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
-  setStep: React.Dispatch<React.SetStateAction<number>>;
+  setInput: React.Dispatch<React.SetStateAction<T>>;
+  setStep: React.Dispatch<React.SetStateAction<1 | 2 | 3>>;
 };
 
-function AdditionalInfoForm({ options, input, setInput, setStep }: Props) {
+const isValidValue = <T extends string>(
+  input: string,
+  options: Record<T, string>
+): input is T => input in options;
+
+function AdditionalInfoForm<T extends string>({
+  options,
+  input,
+  setInput,
+  setStep,
+}: Props<T>) {
   const { showAlert } = useModal();
 
   const handleSelectButtonClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
 
+    if (!isValidValue(e.target.value, options)) return;
     setInput(e.target.value);
   };
 
@@ -28,12 +45,20 @@ function AdditionalInfoForm({ options, input, setInput, setStep }: Props) {
       return;
     }
 
-    setStep((prev) => prev + 1);
+    setStep((prev) => {
+      const nextStep = prev + 1;
+      if (nextStep !== 1 && nextStep !== 2 && nextStep !== 3) return 1;
+      return nextStep;
+    });
   };
+
+  const optionEntries = useMemo(() => Object.entries(options), []) as Entries<
+    typeof options
+  >;
 
   return (
     <>
-      {Object.entries(options).map(([value, content], index: number) => (
+      {optionEntries.map(([value, content], index: number) => (
         <S.SelectButton
           key={index}
           onClick={handleSelectButtonClick}

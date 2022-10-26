@@ -20,10 +20,10 @@ const titles = {
   1: '경력을 선택해주세요',
   2: '직군을 선택해주세요',
   3: '입력한 정보를 확인해주세요',
-};
+} as const;
 
 function Register() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState<keyof typeof titles>(1);
   const [careerLevel, setCareerLevel] = useState<CareerLevel>(null);
   const [jobType, setJobType] = useState<JobType>(null);
   const navigate = useNavigate();
