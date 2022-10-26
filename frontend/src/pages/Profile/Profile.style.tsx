@@ -31,13 +31,6 @@ export const Title = styled.h1`
   font-size: 1.5rem;
 `;
 
-export const InventoryProductList = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-`;
-
 export const EditDeskSetupButton = styled.button`
   padding: 0.4rem 1.4rem;
   background-color: ${({ theme }) => theme.colors.primary};

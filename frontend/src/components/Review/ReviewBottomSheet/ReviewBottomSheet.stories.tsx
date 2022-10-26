@@ -16,14 +16,14 @@ const Container = styled.div`
   border: 1px solid #000;
 `;
 
-const Template = (args) => {
+const Template = () => {
   const [isOpen, toggleOpen] = useReducer((isOpen: boolean) => !isOpen, false);
   const containerRef = useRef();
 
   return (
     <Container ref={containerRef}>
       <button onClick={toggleOpen}>열기</button>
-      {isOpen && <ReviewBottomSheet {...args} handleClose={toggleOpen} />}
+      {isOpen && <ReviewBottomSheet handleClose={toggleOpen} />}
     </Container>
   );
 };

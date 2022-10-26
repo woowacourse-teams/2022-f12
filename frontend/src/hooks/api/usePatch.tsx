@@ -8,17 +8,20 @@ import useError from '@/hooks/useError';
 
 type Props = {
   url: string;
-  headers?: null | AxiosRequestHeaders;
+  headers?: AxiosRequestHeaders;
 };
 
 function usePatch<T>({
   url,
   headers,
-}: Props): (data: Record<string, unknown>) => Promise<AxiosResponse<T>> {
+}: Props): (data: Record<string, unknown>) => Promise<AxiosResponse<T> | undefined> {
   const { axiosInstance } = useAxios();
   const handleError = useError();
   const userData = useContext(UserDataContext);
   const setUserData = useContext(SetUserDataContext);
+  if (userData === null || setUserData === null) {
+    throw new Error('컨텍스트 안에서 사용할 수 있습니다.');
+  }
 
   const patchData = async (data: Record<string, unknown>) => {
     try {
@@ -39,7 +42,9 @@ function usePatch<T>({
       );
       await handleError(
         error as Error,
-        `data: ${requestBodyString},\n    token: ${headers.Authorization.toString()}`
+        `data: ${requestBodyString},\n    token: ${
+          headers ? headers.Authorization.toString() : '없음'
+        }`
       );
     }
   };

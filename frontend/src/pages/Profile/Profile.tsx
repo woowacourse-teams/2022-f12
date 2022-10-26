@@ -52,15 +52,18 @@ function Profile() {
     headers: isLoggedIn && { Authorization: `Bearer ${userData?.token}` },
   });
 
-  const inventoryList = items?.reduce((acc: Record<string, InventoryProduct[]>, curr) => {
-    const currCategory = curr.product.category;
-    if (acc[currCategory] === undefined) {
-      acc[currCategory] = [curr];
-    } else {
-      acc[currCategory].push(curr);
-    }
-    return acc;
-  }, {});
+  const inventoryList = items?.reduce(
+    (acc: Record<Category, InventoryProduct[]>, curr) => {
+      const currCategory = curr.product.category;
+      if (acc[currCategory] === undefined) {
+        acc[currCategory] = [curr];
+      } else {
+        acc[currCategory].push(curr);
+      }
+      return acc;
+    },
+    {} as Record<Category, InventoryProduct[]>
+  );
 
   return (
     <S.Container>

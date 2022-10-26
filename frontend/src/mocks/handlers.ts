@@ -1,4 +1,11 @@
-import { rest } from 'msw';
+import {
+  DefaultBodyType,
+  MockedRequest,
+  ResponseResolver,
+  rest,
+  RestContext,
+  RestRequest,
+} from 'msw';
 
 import { BASE_URL, ENDPOINTS } from '@/constants/api';
 
@@ -16,7 +23,11 @@ import {
 // let errorCall = 0;
 
 // 인기 제품 목록 조회
-const getPopularKeyboards = (req, res, ctx) => {
+const getPopularKeyboards: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   const response = {
     items: products.sort((a, b) => Math.random() - 0.5).slice(0, 4),
   };
@@ -25,7 +36,7 @@ const getPopularKeyboards = (req, res, ctx) => {
 };
 
 // 제품 목록 조회
-const getKeyboards = (req, res, ctx) => {
+const getKeyboards: ResponseResolver<RestRequest, RestContext> = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
   const startIndex = page * size;
@@ -40,7 +51,7 @@ const getKeyboards = (req, res, ctx) => {
 };
 
 // 제품 상세 조회
-const getKeyboard = (req, res, ctx) => {
+const getKeyboard: ResponseResolver<RestRequest, RestContext> = (req, res, ctx) => {
   const { id } = req.params;
 
   const response = products.find(({ id: productId }) => productId === Number(id));
@@ -49,7 +60,7 @@ const getKeyboard = (req, res, ctx) => {
 };
 
 // 제품 사용자 통계 조회
-const getStatistics = (req, res, ctx) => {
+const getStatistics: ResponseResolver<RestRequest, RestContext> = (req, res, ctx) => {
   const response = {
     careerLevel: {
       midlevel: 0.2,
@@ -68,7 +79,7 @@ const getStatistics = (req, res, ctx) => {
 };
 
 // 전체 리뷰 목록 조회
-const getReviews = (req, res, ctx) => {
+const getReviews: ResponseResolver<RestRequest, RestContext> = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
 
@@ -83,7 +94,11 @@ const getReviews = (req, res, ctx) => {
 };
 
 // 특정 사용자가 작성한 전체 리뷰 목록 조회
-const getReviewsByMemberId = (req, res, ctx) => {
+const getReviewsByMemberId: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
 
@@ -98,7 +113,7 @@ const getReviewsByMemberId = (req, res, ctx) => {
 };
 
 // 내가 작성한 전체 리뷰 목록 조회
-const getMyReviews = (req, res, ctx) => {
+const getMyReviews: ResponseResolver<RestRequest, RestContext> = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
 
@@ -113,7 +128,11 @@ const getMyReviews = (req, res, ctx) => {
 };
 
 // 제품 별 리뷰 목록 조회
-const getReviewsByProductId = (req, res, ctx) => {
+const getReviewsByProductId: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
 
@@ -139,7 +158,11 @@ const getReviewsByProductId = (req, res, ctx) => {
 };
 
 // 리뷰 작성
-const postReviewByProductId = (req, res, ctx) => {
+const postReviewByProductId: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   const { shadowToken } = req.cookies;
 
   if (!shadowToken) {
@@ -150,7 +173,11 @@ const postReviewByProductId = (req, res, ctx) => {
 };
 
 // 리뷰 수정
-const updateReviewByReviewId = (req, res, ctx) => {
+const updateReviewByReviewId: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   const { shadowToken } = req.cookies;
 
   if (!shadowToken) {
@@ -160,7 +187,11 @@ const updateReviewByReviewId = (req, res, ctx) => {
 };
 
 // 리뷰 삭제
-const deleteReviewByReviewId = (req, res, ctx) => {
+const deleteReviewByReviewId: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   const { shadowToken } = req.cookies;
 
   if (!shadowToken) {
@@ -170,7 +201,11 @@ const deleteReviewByReviewId = (req, res, ctx) => {
 };
 
 // 로그인
-const handleLoginRequest = (req, res, ctx) => {
+const handleLoginRequest: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   return res(
     ctx.status(200),
     ctx.json({
@@ -188,7 +223,7 @@ const handleLoginRequest = (req, res, ctx) => {
   );
 };
 
-const getAccessToken = (req, res, ctx) => {
+const getAccessToken: ResponseResolver<RestRequest, RestContext> = (req, res, ctx) => {
   const { shadowToken } = req.cookies;
 
   if (shadowToken !== 'true') {
@@ -207,11 +242,15 @@ const getAccessToken = (req, res, ctx) => {
   );
 };
 
-const logout = (req, res, ctx) => {
+const logout: ResponseResolver<RestRequest, RestContext> = (req, res, ctx) => {
   return res(ctx.cookie('shadowToken', 'false'));
 };
 
-const getInventoryProducts = (req, res, ctx) => {
+const getInventoryProducts: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   const token = req.headers.get('Authorization');
   if (token === undefined) {
     return res(ctx.status(401));
@@ -220,7 +259,10 @@ const getInventoryProducts = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(InventoryProducts), ctx.delay());
 };
 
-const patchInventoryProducts = (req, res, ctx) => {
+const patchInventoryProducts: ResponseResolver<
+  RestRequest<DefaultBodyType & { selectedInventoryProductIds: string[] }>,
+  RestContext
+> = (req, res, ctx) => {
   const token = req.headers.get('Authorization');
   if (token === undefined) {
     return res(ctx.status(401));
@@ -232,7 +274,7 @@ const patchInventoryProducts = (req, res, ctx) => {
   return res(ctx.status(200));
 };
 
-const getMyInfo = (req, res, ctx) => {
+const getMyInfo: ResponseResolver<RestRequest, RestContext> = (req, res, ctx) => {
   const token = req.headers.get('Authorization');
   if (token === undefined) {
     return res(ctx.status(401));
@@ -241,7 +283,11 @@ const getMyInfo = (req, res, ctx) => {
 };
 
 // 추가 정보 입력
-const submitAdditionalInfo = (req, res, ctx) => {
+const submitAdditionalInfo: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   const token = req.headers.get('Authorization');
   if (token === undefined) {
     return res(ctx.status(401));
@@ -249,11 +295,15 @@ const submitAdditionalInfo = (req, res, ctx) => {
   return res(ctx.status(200));
 };
 
-const getOtherMemberInfo = (req, res, ctx) => {
+const getOtherMemberInfo: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   return res(ctx.json(otherUserData));
 };
 
-const searchMember = (req, res, ctx) => {
+const searchMember: ResponseResolver<RestRequest, RestContext> = (req, res, ctx) => {
   const page = Number(req.url.searchParams.get('page'));
   const size = Number(req.url.searchParams.get('size'));
 
@@ -268,7 +318,11 @@ const searchMember = (req, res, ctx) => {
   return res(ctx.json(response));
 };
 
-const getOtherMemberInventory = (req, res, ctx) => {
+const getOtherMemberInventory: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   const token = req.headers.get('Authorization');
   if (token === undefined) {
     return res(ctx.status(401));
@@ -277,24 +331,28 @@ const getOtherMemberInventory = (req, res, ctx) => {
   return res(ctx.status(200), ctx.json(InventoryProducts), ctx.delay());
 };
 
-const getInventoryReview = (req, res, ctx) => {
+const getInventoryReview: ResponseResolver<RestRequest, RestContext> = (
+  req,
+  res,
+  ctx
+) => {
   return res(ctx.status(200), ctx.json(InventoryReview), ctx.delay());
 };
 
-const followUser = (req, res, ctx) => {
+const followUser: ResponseResolver<RestRequest, RestContext> = (req, res, ctx) => {
   const token = req.headers.get('Authorization');
   if (token === undefined) {
     return res(ctx.status(401));
   }
-  return res(ctx.status(204), ctx.json(), ctx.delay());
+  return res(ctx.status(204), ctx.delay());
 };
 
-const unfollowUser = (req, res, ctx) => {
+const unfollowUser: ResponseResolver<RestRequest, RestContext> = (req, res, ctx) => {
   const token = req.headers.get('Authorization');
   if (token === undefined) {
     return res(ctx.status(401));
   }
-  return res(ctx.status(204), ctx.json(), ctx.delay());
+  return res(ctx.status(204), ctx.delay());
 };
 
 export const handlers = [

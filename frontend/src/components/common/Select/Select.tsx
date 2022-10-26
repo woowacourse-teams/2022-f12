@@ -2,16 +2,22 @@ import React, { useMemo } from 'react';
 
 import * as S from '@/components/common/Select/Select.style';
 
-type Props = {
-  value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
-  options: { value: string; text: string }[];
+type Props<T extends string> = {
+  value: T;
+  setValue: React.Dispatch<React.SetStateAction<T>>;
+  options: { value: T; text: string }[];
 };
 
-function Select({ value, setValue, options }: Props) {
+const isValidValue = <T,>(
+  input: unknown,
+  options: { value: T; text: string }[]
+): input is T => options.some(({ value }) => value === input);
+
+function Select<T extends string>({ value, setValue, options }: Props<T>) {
   const handleOptionChange: React.ChangeEventHandler<HTMLSelectElement> = ({
     target: { value },
   }) => {
+    if (!isValidValue<T>(value, options)) return;
     setValue(value);
   };
 

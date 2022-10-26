@@ -27,6 +27,9 @@ function usePost<T, U>({
   headers,
 }: Props): (input?: T, includeToken?: boolean) => Promise<void> | Promise<U> {
   const userData = useContext(UserDataContext);
+  if (userData === null) {
+    throw new Error('컨텍스트 내부에서만 사용할 수 있습니다.');
+  }
 
   const { axiosInstance } = useAxios();
   const { showAlert } = useModal();

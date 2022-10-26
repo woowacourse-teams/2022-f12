@@ -5,10 +5,14 @@ import * as S from '@/components/Profile/InventoryProductList/InventoryProductLi
 
 import { CATEGORIES } from '@/constants/product';
 
+type Entries<T> = {
+  [K in keyof T]: [K, T[K]];
+}[keyof T][];
+
 type Props = {
-  refetchInventoryProducts?: () => void;
-  updateProfileProduct?: (array: number[]) => Promise<boolean>;
-  inventoryList: Record<string, InventoryProduct[]>;
+  refetchInventoryProducts: () => void;
+  updateProfileProduct: (array: number[]) => Promise<boolean>;
+  inventoryList: Record<Category, InventoryProduct[]>;
   editable: boolean;
 };
 
@@ -22,12 +26,10 @@ function InventoryProductList({
     .flat()
     .filter(({ selected }) => selected);
 
-  const selectedItemsIdsByCategory = Object.values(selectedItems).reduce(
-    (ids, { id, product: { category } }) => {
+  const selectedItemsIdsByCategory: { [category in Category]: InventoryProduct['id'] } =
+    Object.values(selectedItems).reduce((ids, { id, product: { category } }) => {
       return { ...ids, [category]: id };
-    },
-    {}
-  );
+    }, {} as { [category in Category]: InventoryProduct['id'] });
 
   const [isEditMode, setEditMode] = useState(false);
   const [selectedState, setSelectedState] = useState(selectedItemsIdsByCategory);
@@ -55,7 +57,7 @@ function InventoryProductList({
     setEditMode(true);
   };
 
-  const handleSelect = (key: string, id: number) => {
+  const handleSelect = (key: Category, id: number) => {
     if (Object.values(selectedState).includes(id)) {
       const newState = { ...selectedState };
       delete newState[key];
@@ -68,6 +70,13 @@ function InventoryProductList({
     });
   };
 
+  const productsByCategory = Object.entries(inventoryList) as Entries<
+    typeof inventoryList
+  >;
+  const editableProductsByCategory = productsByCategory.filter(
+    ([category]) => category !== 'software'
+  );
+
   return (
     <>
       <S.FlexWrapper>
@@ -78,37 +87,35 @@ function InventoryProductList({
         )}
       </S.FlexWrapper>
       {isEditMode ? (
-        Object.entries(inventoryList)
-          .filter(([category]) => category !== 'software')
-          .map(([category, items]) => (
-            <Fragment key={category}>
-              <S.CategoryTitle>{CATEGORIES[category]}</S.CategoryTitle>
-              <S.Container>
-                {items.map((item) => (
-                  <S.PseudoButton
+        editableProductsByCategory.map(([category, items]) => (
+          <Fragment key={category}>
+            <S.CategoryTitle>{CATEGORIES[category]}</S.CategoryTitle>
+            <S.Container>
+              {items.map((item) => (
+                <S.PseudoButton
+                  key={item?.product.id}
+                  onClick={() => {
+                    handleSelect(category, item.id);
+                  }}
+                >
+                  <DeskSetupCard
                     key={item?.product.id}
-                    onClick={() => {
-                      handleSelect(category, item.id);
-                    }}
-                  >
-                    <DeskSetupCard
-                      key={item?.product.id}
-                      item={item}
-                      borderType={
-                        selectedState[category] === item.id
-                          ? 'selectedAnimation'
-                          : 'default'
-                      }
-                      size={'s'}
-                      isEditMode={isEditMode}
-                    />
-                  </S.PseudoButton>
-                ))}
-              </S.Container>
-            </Fragment>
-          ))
+                    item={item}
+                    borderType={
+                      selectedState[category] === item.id
+                        ? 'selectedAnimation'
+                        : 'default'
+                    }
+                    size={'s'}
+                    isEditMode={isEditMode}
+                  />
+                </S.PseudoButton>
+              ))}
+            </S.Container>
+          </Fragment>
+        ))
       ) : Object.keys(inventoryList).length > 0 ? (
-        Object.entries(inventoryList).map(([category, items]) => (
+        productsByCategory.map(([category, items]) => (
           <Fragment key={category}>
             <S.CategoryTitle>{CATEGORIES[category]}</S.CategoryTitle>
             <S.Container>

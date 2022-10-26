@@ -7,7 +7,7 @@ type Props = {
 };
 
 type Return = DataFetchStatus & {
-  products: Product[];
+  products: Product[] | null;
 };
 
 function usePopularProducts({ size }: Props): Return {

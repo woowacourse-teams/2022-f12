@@ -10,12 +10,10 @@ function DeskSetup({ inventoryList }: Props) {
     .flat()
     .filter(({ selected }) => selected);
 
-  const selectedItemsByCategory = Object.values(selectedItems).reduce(
-    (products, { id, product }) => {
+  const selectedItemsByCategory: { [category in Category]: InventoryProduct } =
+    Object.values(selectedItems).reduce((products, { id, product }) => {
       return { ...products, [product.category]: { id, product } };
-    },
-    {}
-  );
+    }, {} as { [category in Category]: InventoryProduct });
 
   const deskSetupItems = Object.entries(selectedItemsByCategory)
     .filter(([category]) => category !== 'software')

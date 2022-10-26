@@ -17,7 +17,7 @@ type Props = {
   reviewData: Omit<Review, 'id'>;
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
-  handleFocus?: () => void;
+  handleFocus: () => void;
   index?: number;
   userNameVisible?: boolean;
 };
@@ -53,6 +53,7 @@ function ReviewCard({
   };
 
   const handleDeleteClick = () => {
+    if (!(handleDelete && handleFocus)) return;
     handleDelete(reviewId);
     handleFocus();
   };
@@ -106,6 +107,8 @@ function ReviewCard({
           content={content}
           handleUnmount={handleSheetUnmount}
           animationTrigger={sheetAnimationTrigger}
+          handleFocus={handleFocus}
+          handleSubmit={undefined}
         />
       )}
     </S.Container>

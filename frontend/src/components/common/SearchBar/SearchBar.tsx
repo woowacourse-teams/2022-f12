@@ -4,7 +4,7 @@ import SearchImage from '@/assets/search.svg';
 
 type Props = {
   searchInput: string;
-  setSearchInput: (string) => void;
+  setSearchInput: (input: string | null) => void;
 };
 
 function SearchBar({ searchInput, setSearchInput }: Props) {

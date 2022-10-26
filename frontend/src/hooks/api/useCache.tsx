@@ -11,7 +11,7 @@ import {
 type getWithCacheParams = {
   axiosInstance: AxiosInstance;
   url: string;
-  config?: AxiosRequestConfig;
+  config: AxiosRequestConfig;
   maxAge: number;
 };
 
@@ -20,11 +20,19 @@ function useCache() {
   const addCache = useContext(AddCacheContext);
   const addCacheArray = useContext(AddCacheArrayContext);
   const removeCache = useContext(RemoveCacheContext);
+  if (
+    getCache === null ||
+    addCache === null ||
+    addCacheArray === null ||
+    removeCache === null
+  ) {
+    throw new Error('컨텍스트 내부에서만 사용할 수 있습니다.');
+  }
 
   const getCachedResponse = (cacheKey: string, page?: number) => {
     const cachedResponse = getCache(cacheKey, page);
     const isCacheArray = cachedResponse instanceof Array;
-    if (isCacheArray && cachedResponse[page] !== undefined) {
+    if (isCacheArray && page && cachedResponse[page] !== undefined) {
       return cachedResponse[page];
     }
     if (!isCacheArray && cachedResponse) {
@@ -38,7 +46,7 @@ function useCache() {
     maxAge: number,
     page?: number
   ) => {
-    if (page !== undefined || page !== null) {
+    if (page) {
       addCacheArray(cacheKey, page, response, maxAge);
     } else {
       addCache(cacheKey, response, maxAge);

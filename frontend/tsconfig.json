@@ -7,10 +7,13 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "removeComments": false,
+    "strict": true,
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["cypress", "@testing-library/cypress"]
+    "types": ["cypress", "@testing-library/cypress"],
+    "strictNullChecks": false
   },
   "include": ["src", "src/types/*.d.ts", "./cypress/**/*.ts"]
+  // "exclude": ["**/*.stories.*"]
 }

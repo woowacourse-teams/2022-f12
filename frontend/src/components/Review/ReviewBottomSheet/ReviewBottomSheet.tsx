@@ -3,15 +3,25 @@ import BottomSheet from '@/components/common/BottomSheet/BottomSheet';
 import * as S from '@/components/Review/ReviewBottomSheet/ReviewBottomSheet.style';
 import ReviewForm from '@/components/Review/ReviewForm/ReviewForm';
 
-type Props = Partial<Pick<Review, 'id' | 'rating' | 'content'>> & {
+// @TODO: 구분된 타입 구조 완성하기
+type CommonProps = Partial<Pick<Review, 'id' | 'rating' | 'content'>> & {
   handleClose: () => void;
-  handleSubmit?: (reviewInput: ReviewInput) => Promise<void>;
-  handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
-  isEdit: boolean;
   handleUnmount?: () => void;
-  handleFocus?: () => void;
+  handleFocus: () => void;
   animationTrigger?: boolean;
 };
+interface NormalProps extends CommonProps {
+  isEdit: false;
+  handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
+  handleEdit: undefined;
+}
+interface EditableProps extends CommonProps {
+  isEdit: true;
+  handleSubmit: undefined;
+  handleEdit: (reviewInput: ReviewInput, id: number) => Promise<void>;
+}
+
+type Props = NormalProps | EditableProps;
 
 function ReviewBottomSheet({
   handleClose,
@@ -27,9 +37,9 @@ function ReviewBottomSheet({
 }: Props) {
   const handleCloseWithSubmit = async (reviewInput: ReviewInput) => {
     try {
-      if (isEdit) {
+      if (isEdit && handleEdit && id) {
         await handleEdit(reviewInput, id);
-      } else {
+      } else if (handleSubmit) {
         await handleSubmit(reviewInput);
       }
       handleClose();

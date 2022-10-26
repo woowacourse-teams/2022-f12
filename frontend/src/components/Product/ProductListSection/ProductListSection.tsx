@@ -67,7 +67,7 @@ function ProductListSection({
           <S.NoDataContainer>
             <NoDataPlaceholder />
           </S.NoDataContainer>
-        ) : displayType === 'flex' ? (
+        ) : displayType === 'flex' || getNextPage === undefined ? (
           <S.FlexWrapper>{productList}</S.FlexWrapper>
         ) : (
           <InfiniteScroll

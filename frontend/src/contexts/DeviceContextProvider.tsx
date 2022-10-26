@@ -3,12 +3,12 @@ import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 
 import { breakpoints } from '@/style/theme';
 
-export const DeviceContext = createContext<keyof Breakpoints>(null);
-export const DisplayWidthContext = createContext<number>(null);
+export const DeviceContext = createContext<keyof Breakpoints | null>(null);
+export const DisplayWidthContext = createContext<number | null>(null);
 
 function DeviceContextProvider({ children }: PropsWithChildren) {
-  const [device, setDevice] = useState<keyof Breakpoints>();
-  const [displayWidth, setDisplayWidth] = useState<number>();
+  const [device, setDevice] = useState<keyof Breakpoints | null>(null);
+  const [displayWidth, setDisplayWidth] = useState<number | null>(null);
 
   const handleWindowSize = () => {
     const { innerWidth } = window;
