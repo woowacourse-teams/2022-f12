@@ -137,6 +137,7 @@ function Product() {
             handleUnmount={handleSheetUnmount}
             animationTrigger={sheetAnimationTrigger}
             handleFocus={handleFocus}
+            handleEdit={undefined}
             isEdit={false}
           />
         )}
