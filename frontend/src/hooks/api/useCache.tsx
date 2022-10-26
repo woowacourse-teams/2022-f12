@@ -46,7 +46,7 @@ function useCache() {
     maxAge: number,
     page?: number
   ) => {
-    if (page) {
+    if (page !== undefined) {
       addCacheArray(cacheKey, page, response, maxAge);
     } else {
       addCache(cacheKey, response, maxAge);
