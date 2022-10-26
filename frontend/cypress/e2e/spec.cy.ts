@@ -1,5 +1,8 @@
 describe('비회원 사용자 기본 플로우', () => {
   beforeEach(() => {
+    cy.intercept({ method: 'GET', url: '**/api/v1/products/popular-list*' }).as(
+      'popularProductsRequest'
+    );
     cy.intercept({ method: 'GET', url: '**/api/v1/products*' }).as('productsRequest');
     cy.intercept({ method: 'GET', url: '**/api/v1/products/*' }).as('productRequest');
     cy.intercept({ method: 'GET', url: '**/api/v1/reviews*' }).as('reviewsRequest');
@@ -13,7 +16,7 @@ describe('비회원 사용자 기본 플로우', () => {
     });
 
     it('홈 페이지에 접속하면 제품을 조회할 수 있다.', () => {
-      cy.wait('@productsRequest');
+      cy.wait('@popularProductsRequest');
 
       cy.findByRole('region', { name: /제품/ })
         .findAllByRole('link')
@@ -101,7 +104,7 @@ describe('비회원 사용자 기본 플로우', () => {
         .should('be.visible');
     });
   });
-  it.only('제품 상세 페이지에 진입하면, 제품 사진과 리뷰와 통계정보를 볼 수 있다.', () => {
+  it('제품 상세 페이지에 진입하면, 제품 사진과 리뷰와 통계정보를 볼 수 있다.', () => {
     cy.visit('/product/1');
 
     // 후기는 없는 제품이 있을 수도 있기 때문에 삭제하거나 빈 데이터 이미지 표시 필요
