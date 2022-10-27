@@ -1,3 +1,4 @@
+import 'core-js/stable';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
