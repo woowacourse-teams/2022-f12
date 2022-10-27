@@ -30,8 +30,17 @@ function InfiniteScroll({
       endOfContentObserver.unobserve(endRef.current);
       return;
     }
-    endOfContentObserver.observe(endRef.current);
   }, [isError]);
+
+  useEffect(() => {
+    if (!endRef.current) return;
+    endOfContentObserver.observe(endRef.current);
+
+    return () => {
+      if (!endRef.current) return;
+      endOfContentObserver.unobserve(endRef.current);
+    };
+  }, [children]);
 
   return (
     <section role={'feed'} aria-busy={!isLoading}>
