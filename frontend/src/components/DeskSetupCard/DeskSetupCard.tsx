@@ -4,6 +4,7 @@ import useGet from '@/hooks/api/useGet';
 import useModal from '@/hooks/useModal';
 
 import { ENDPOINTS } from '@/constants/api';
+import { FAILURE_MESSAGES } from '@/constants/messages';
 import ROUTES from '@/constants/routes';
 
 type Props = {
@@ -25,7 +26,7 @@ function DeskSetupCard({ size, item, borderType, isEditMode = false, index = 0 }
     try {
       const review = await fetchData({});
       if (review === undefined) {
-        throw new Error('리뷰가 없습니다.');
+        throw new Error(FAILURE_MESSAGES.REVIEW_DELETED);
       }
       await showReview(review.content, review.rating, review.createdAt);
     } catch {
