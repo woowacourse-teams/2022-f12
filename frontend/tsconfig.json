@@ -5,15 +5,14 @@
     "moduleResolution": "node",
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "baseUrl": ".",
     "removeComments": false,
     "strict": true,
+    "strictNullChecks": false,
+    "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["cypress", "@testing-library/cypress"],
-    "strictNullChecks": false
+    "types": ["cypress", "@testing-library/cypress"]
   },
   "include": ["src", "src/types/*.d.ts", "./cypress/**/*.ts"]
-  // "exclude": ["**/*.stories.*"]
 }
