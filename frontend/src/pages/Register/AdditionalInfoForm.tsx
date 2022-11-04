@@ -48,6 +48,7 @@ function AdditionalInfoForm<T extends string>({
     setStep((prev) => {
       const nextStep = prev + 1;
       if (nextStep !== 1 && nextStep !== 2 && nextStep !== 3) return 1;
+
       return nextStep;
     });
   };
