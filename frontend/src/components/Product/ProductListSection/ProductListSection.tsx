@@ -60,6 +60,24 @@ function ProductListSection({
     </S.ProductCardLi>
   ));
 
+  const isSinglePage = displayType === 'flex' || getNextPage === undefined;
+
+  const Content = isSinglePage ? (
+    <S.FlexWrapper>{productList}</S.FlexWrapper>
+  ) : (
+    <InfiniteScroll
+      handleContentLoad={getNextPage}
+      isLoading={isLoading}
+      isError={isError}
+    >
+      <S.Grid
+        columnCount={displayType === 'masonry' ? ROW_COUNT(displayWidth) : pageSize}
+      >
+        {productList}
+      </S.Grid>
+    </InfiniteScroll>
+  );
+
   return (
     <S.Container aria-label={title}>
       <S.Wrapper>
@@ -67,20 +85,8 @@ function ProductListSection({
           <S.NoDataContainer>
             <NoDataPlaceholder />
           </S.NoDataContainer>
-        ) : displayType === 'flex' || getNextPage === undefined ? (
-          <S.FlexWrapper>{productList}</S.FlexWrapper>
         ) : (
-          <InfiniteScroll
-            handleContentLoad={getNextPage}
-            isLoading={isLoading}
-            isError={isError}
-          >
-            <S.Grid
-              columnCount={displayType === 'masonry' ? ROW_COUNT(displayWidth) : pageSize}
-            >
-              {productList}
-            </S.Grid>
-          </InfiniteScroll>
+          Content
         )}
       </S.Wrapper>
     </S.Container>
