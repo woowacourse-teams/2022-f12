@@ -19,9 +19,6 @@ function usePatch<T>({
   const handleError = useError();
   const userData = useContext(UserDataContext);
   const setUserData = useContext(SetUserDataContext);
-  if (userData === null || setUserData === null) {
-    throw new Error('컨텍스트 안에서 사용할 수 있습니다.');
-  }
 
   const patchData = async (data: Record<string, unknown>) => {
     try {

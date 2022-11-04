@@ -38,9 +38,9 @@ function ReviewBottomSheet({
 }: Props) {
   const handleCloseWithSubmit = async (reviewInput: ReviewInput) => {
     try {
-      if (isEdit && handleEdit && id) {
+      if (isEdit) {
         await handleEdit(reviewInput, id);
-      } else if (handleSubmit) {
+      } else {
         await handleSubmit(reviewInput);
       }
       handleClose();

@@ -53,7 +53,6 @@ function ReviewCard({
   };
 
   const handleDeleteClick = () => {
-    if (!(handleDelete && handleFocus)) return;
     handleDelete(reviewId);
     handleFocus();
   };

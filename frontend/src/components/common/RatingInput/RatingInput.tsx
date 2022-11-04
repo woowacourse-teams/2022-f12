@@ -13,7 +13,7 @@ type Props = {
 
 const MAX_RATING = 5;
 
-function RatingInput({ rating = -1, setRating }: Props) {
+function RatingInput({ rating = null, setRating }: Props) {
   const [hoverRating, setHoverRating] = useState<null | number>(null);
 
   const handleClick: (ratingIndex: number) => React.MouseEventHandler =

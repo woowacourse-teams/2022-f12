@@ -23,7 +23,7 @@ export const LogoutContext = createContext<(() => void) | null>(null);
 function LoginContextProvider({ children }: PropsWithChildren) {
   const [userData, setUserData] = useState<UserData | null>(null);
   const checkLoginStatus = () => {
-    return userData ? !!userData.token : false;
+    return userData && !!userData.token;
   };
 
   const [isLoggedIn, setLoggedIn] = useState<boolean>(checkLoginStatus());

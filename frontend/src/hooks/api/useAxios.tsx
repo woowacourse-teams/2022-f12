@@ -23,9 +23,6 @@ function useAxios(): Return {
   const [isError, setError] = useState(false);
   const logout = useContext(LogoutContext);
   const setUserData = useContext(SetUserDataContext);
-  if (logout === null || setUserData === null) {
-    throw new Error('컨텍스트 내에서만 이용할 수 있습니다.');
-  }
 
   const axiosInstance = axios.create({ baseURL: BASE_URL });
 

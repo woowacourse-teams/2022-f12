@@ -36,7 +36,7 @@ function BottomSheet({
       <S.Backdrop onClick={handleClose} />
       <S.Content>{children}</S.Content>
     </S.Container>,
-    document.querySelector('#root') || document.body
+    document.querySelector('#root')
   );
 }
 

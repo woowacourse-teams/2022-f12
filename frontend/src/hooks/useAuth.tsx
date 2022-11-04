@@ -32,10 +32,6 @@ function useAuth(): Return {
   const isLoggedIn = useContext(IsLoggedInContext);
   const { showAlert, getConfirm } = useModal();
 
-  if (setUserData === null || handleLogout === null || isLoggedIn === null) {
-    throw new Error('컨텍스트 내에서 사용할 수 있습니다.');
-  }
-
   const fetchUserData = useGet<UserData>({ url: ENDPOINTS.LOGIN });
   const fetchAccessToken = usePost<unknown, { accessToken: string }>({
     url: ENDPOINTS.ISSUE_ACCESS_TOKEN,
