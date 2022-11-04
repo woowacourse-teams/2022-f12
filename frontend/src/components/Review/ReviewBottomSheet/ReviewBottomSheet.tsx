@@ -10,16 +10,17 @@ type CommonProps = Partial<Pick<Review, 'id' | 'rating' | 'content'>> & {
   handleFocus: () => void;
   animationTrigger?: boolean;
 };
-interface NormalProps extends CommonProps {
+type NormalProps = CommonProps & {
   isEdit: false;
   handleSubmit: (reviewInput: ReviewInput) => Promise<void>;
   handleEdit: undefined;
-}
-interface EditableProps extends CommonProps {
+};
+
+type EditableProps = CommonProps & {
   isEdit: true;
   handleSubmit: undefined;
   handleEdit: (reviewInput: ReviewInput, id: number) => Promise<void>;
-}
+};
 
 type Props = NormalProps | EditableProps;
 
