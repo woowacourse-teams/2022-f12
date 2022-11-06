@@ -10,6 +10,7 @@ function useModal() {
   const showAlert = useContext(ShowAlertContext);
   const getConfirm = useContext(GetConfirmContext);
   const showReview = useContext(ShowReviewContext);
+
   return { showAlert, getConfirm, showReview };
 }
 

@@ -2,26 +2,26 @@ import { createContext, PropsWithChildren, useEffect, useMemo, useState } from '
 
 const initialState: UserData = {
   member: {
-    id: null,
-    gitHubId: null,
-    imageUrl: null,
-    name: null,
-    followerCount: null,
-    following: null,
+    id: 0,
+    gitHubId: '',
+    imageUrl: '',
+    name: '',
+    followerCount: 0,
+    following: false,
   },
   registerCompleted: false,
-  token: null,
+  token: '',
 };
 
 export const IsLoggedInContext = createContext<boolean>(false);
-export const UserDataContext = createContext(initialState);
+export const UserDataContext = createContext<UserData | null>(initialState);
 export const SetUserDataContext = createContext<React.Dispatch<
-  React.SetStateAction<UserData>
+  React.SetStateAction<UserData | null>
 > | null>(null);
-export const LogoutContext = createContext<() => void | null>(null);
+export const LogoutContext = createContext<(() => void) | null>(null);
 
 function LoginContextProvider({ children }: PropsWithChildren) {
-  const [userData, setUserData] = useState<UserData>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const checkLoginStatus = () => {
     return userData && !!userData.token;
   };

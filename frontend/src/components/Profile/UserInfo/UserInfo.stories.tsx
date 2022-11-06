@@ -24,6 +24,8 @@ const defaultArg: Member = {
   name: '아저씨',
   careerLevel: 'none',
   jobType: 'frontend',
+  followerCount: 0,
+  following: false,
 };
 
-export const Default = () => <Template userData={defaultArg} />;
+export const Default = () => <Template userData={defaultArg} isOwnProfile={false} />;

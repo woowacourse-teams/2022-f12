@@ -4,6 +4,7 @@ import useGet from '@/hooks/api/useGet';
 import useModal from '@/hooks/useModal';
 
 import { ENDPOINTS } from '@/constants/api';
+import { FAILURE_MESSAGES } from '@/constants/messages';
 import ROUTES from '@/constants/routes';
 
 type Props = {
@@ -14,7 +15,7 @@ type Props = {
   index?: number;
 };
 
-function DeskSetupCard({ size, item, borderType, isEditMode, index = 0 }: Props) {
+function DeskSetupCard({ size, item, borderType, isEditMode = false, index = 0 }: Props) {
   const { showReview } = useModal();
 
   const fetchData = useGet<InventoryReview>({
@@ -24,6 +25,9 @@ function DeskSetupCard({ size, item, borderType, isEditMode, index = 0 }: Props)
   const handleReviewButtonClick = async () => {
     try {
       const review = await fetchData({});
+      if (review === undefined) {
+        throw new Error(FAILURE_MESSAGES.REVIEW_DELETED);
+      }
       await showReview(review.content, review.rating, review.createdAt);
     } catch {
       return;

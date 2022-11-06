@@ -6,7 +6,7 @@ type Props = {
   id: number;
 };
 
-function useProduct({ id }: Props): [Product, boolean, boolean, () => void] {
+function useProduct({ id }: Props): [Product | null, boolean, boolean, () => void] {
   const {
     data: product,
     isReady,

@@ -54,6 +54,9 @@ function useAuth(): Return {
 
     try {
       const userData = await fetchUserData({ params: { code }, includeCookie: true });
+      if (userData === undefined) {
+        throw new Error('검색 결과가 없습니다.');
+      }
       setUserData(userData);
     } catch {
       throw new Error('로그인 오류');
@@ -78,7 +81,12 @@ function useAuth(): Return {
       const response = await fetchAccessToken('', false);
 
       const { accessToken: token } = response;
-      const { careerLevel, jobType, ...memberData } = await fetchMyData({ token });
+      const myData = await fetchMyData({ token });
+      if (myData === undefined) {
+        throw new Error('내 정보를 가져오지 못했습니다.');
+      }
+
+      const { careerLevel, jobType, ...memberData } = myData;
 
       const registerCompleted = careerLevel !== null && jobType !== null;
       const userData: UserData = { member: memberData, token, registerCompleted };

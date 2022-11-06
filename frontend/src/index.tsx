@@ -1,4 +1,5 @@
 import 'core-js/stable';
+import { MockedRequest } from 'msw';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
@@ -14,12 +15,17 @@ import GlobalStyles from '@/style/GlobalStyles';
 import ResetCss from '@/style/ResetCss';
 import theme from '@/style/theme';
 
-/* eslint-disable */
+declare global {
+  interface Window {
+    Cypress: unknown;
+  }
+}
 
+/* eslint-disable */
 if (process.env.NODE_ENV === 'development' && !window.Cypress) {
   const { worker } = require('@/mocks/browser');
   worker.start({
-    onUnhandledRequest(req) {
+    onUnhandledRequest(req: MockedRequest) {
       const urlPath = req.url.pathname;
 
       if (!urlPath.startsWith('http://localhost:8080')) return;

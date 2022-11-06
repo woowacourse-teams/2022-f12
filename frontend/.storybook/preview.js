@@ -1,7 +1,11 @@
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import ResetCss from '@/style/ResetCss';
+
+import LoginContextProvider from '@/contexts/LoginContextProvider';
+import ModalContextProvider from '@/contexts/ModalContextProvider';
+
 import GlobalStyles from '@/style/GlobalStyles';
+import ResetCss from '@/style/ResetCss';
 import theme from '@/style/theme';
 
 export const decorators = [
@@ -9,10 +13,14 @@ export const decorators = [
     <>
       <ResetCss />
       <ThemeProvider theme={theme}>
-        <GlobalStyles />
-        <BrowserRouter>
-          <Story />
-        </BrowserRouter>
+        <ModalContextProvider>
+          <LoginContextProvider>
+            <GlobalStyles />
+            <BrowserRouter>
+              <Story />
+            </BrowserRouter>
+          </LoginContextProvider>
+        </ModalContextProvider>
       </ThemeProvider>
     </>
   ),

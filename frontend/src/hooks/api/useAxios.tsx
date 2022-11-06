@@ -34,7 +34,10 @@ function useAxios(): Return {
       `${BASE_URL}${ENDPOINTS.ISSUE_ACCESS_TOKEN}`
     );
 
-    setUserData((prev) => ({ ...prev, token }));
+    setUserData((prev) => {
+      if (prev === null) return null;
+      return { ...prev, token };
+    });
 
     return await axiosInstance({
       ...originalConfig,

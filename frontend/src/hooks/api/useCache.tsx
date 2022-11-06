@@ -11,7 +11,7 @@ import {
 type getWithCacheParams = {
   axiosInstance: AxiosInstance;
   url: string;
-  config?: AxiosRequestConfig;
+  config: AxiosRequestConfig;
   maxAge: number;
 };
 
@@ -24,7 +24,7 @@ function useCache() {
   const getCachedResponse = (cacheKey: string, page?: number) => {
     const cachedResponse = getCache(cacheKey, page);
     const isCacheArray = cachedResponse instanceof Array;
-    if (isCacheArray && cachedResponse[page] !== undefined) {
+    if (isCacheArray && page && cachedResponse[page] !== undefined) {
       return cachedResponse[page];
     }
     if (!isCacheArray && cachedResponse) {
@@ -38,7 +38,7 @@ function useCache() {
     maxAge: number,
     page?: number
   ) => {
-    if (page !== undefined || page !== null) {
+    if (page !== undefined) {
       addCacheArray(cacheKey, page, response, maxAge);
     } else {
       addCache(cacheKey, response, maxAge);

@@ -5,8 +5,10 @@
     "moduleResolution": "node",
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "baseUrl": ".",
     "removeComments": false,
+    "strict": true,
+    "strictNullChecks": false,
+    "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },

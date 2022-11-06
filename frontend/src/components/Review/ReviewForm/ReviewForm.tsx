@@ -76,6 +76,7 @@ function ReviewForm({
   const modalRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
+    if (!modalRef.current) return;
     modalRef.current.focus();
   }, []);
 

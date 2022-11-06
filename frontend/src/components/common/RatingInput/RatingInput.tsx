@@ -7,7 +7,7 @@ import theme from '@/style/theme';
 import Heart from '@/assets/heart.svg';
 
 type Props = {
-  rating: null | number;
+  rating: number;
   setRating: React.Dispatch<React.SetStateAction<number>>;
 };
 

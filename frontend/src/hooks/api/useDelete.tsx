@@ -33,7 +33,10 @@ function useDelete({ url, headers }: Props): (id: number) => Promise<void> {
         headers: { ...headers, Authorization: `Bearer ${token}` },
       });
     } catch (error) {
-      await handleError(error as Error, `token: ${headers.Authorization.toString()}`);
+      await handleError(
+        error as Error,
+        `token: ${headers ? headers.Authorization.toString() : '없음'}`
+      );
     }
   };
 

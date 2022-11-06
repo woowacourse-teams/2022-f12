@@ -8,7 +8,7 @@ export default {
 };
 
 const Template = () => {
-  const [input, setInput] = useState();
+  const [input, setInput] = useState('');
   return <SearchBar searchInput={input} setSearchInput={setInput} />;
 };
 

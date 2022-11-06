@@ -5,20 +5,26 @@ import useError from '@/hooks/useError';
 
 type Props = {
   url: string;
-  headers?: null | AxiosRequestHeaders;
+  headers?: AxiosRequestHeaders;
 };
 
-type FetchDataArgs =
-  | { params?: Record<string, unknown>; token?: string; includeCookie?: boolean }
-  | undefined;
+type FetchDataArgs = {
+  params?: Record<string, unknown>;
+  token?: string;
+  includeCookie?: boolean;
+};
 
-type FetchData<T> = ({ params, token, includeCookie }?: FetchDataArgs) => Promise<T>;
+type FetchData<T> = ({
+  params,
+  token,
+  includeCookie,
+}?: FetchDataArgs) => Promise<T | undefined>;
 
 function useGet<T>({ url, headers }: Props): FetchData<T> {
   const { axiosInstance } = useAxios();
   const handleError = useError();
 
-  const fetchData = async (args: FetchDataArgs) => {
+  const fetchData: FetchData<T> = async (args) => {
     try {
       const { data }: AxiosResponse<T> = await axiosInstance.get(url, {
         headers:

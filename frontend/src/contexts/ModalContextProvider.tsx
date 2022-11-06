@@ -5,13 +5,15 @@ import Rating from '@/components/common/Rating/Rating';
 
 import useAnimation from '@/hooks/useAnimation';
 
-export const ShowAlertContext = createContext<(message: string) => Promise<void>>(null);
-export const GetConfirmContext =
-  createContext<(message: string) => Promise<boolean>>(null);
-export const ShowReviewContext =
-  createContext<(content: string, rating: number, createdAt: string) => Promise<void>>(
-    null
-  );
+export const ShowAlertContext = createContext<
+  ((message: string) => Promise<void>) | null
+>(null);
+export const GetConfirmContext = createContext<
+  ((message: string) => Promise<boolean>) | null
+>(null);
+export const ShowReviewContext = createContext<
+  ((content: string, rating: number, createdAt: string) => Promise<void>) | null
+>(null);
 
 let resolveAlert: () => void;
 let resolveConfirm: (value: boolean | PromiseLike<boolean>) => void;
@@ -24,9 +26,9 @@ function ModalContextProvider({ children }: PropsWithChildren) {
     createdAt: string;
     rating: number;
   }>({
-    content: null,
-    createdAt: null,
-    rating: null,
+    content: '',
+    createdAt: '',
+    rating: 0,
   });
   const [alertOpen, setAlertOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
