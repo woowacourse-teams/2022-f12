@@ -1,7 +1,6 @@
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
   entry: './src/index.tsx',
@@ -17,7 +16,12 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         exclude: /(node_modules)/,
-        use: 'ts-loader',
+        use: [
+          {
+            loader: 'ts-loader',
+            options: { transpileOnly: true }
+          }
+        ]
       },
       {
         test: /\.(png|jpe?g|gif|ico|webp)$/,
@@ -39,7 +43,6 @@ module.exports = {
         { from: 'public/manifest.webmanifest', to: '.' },
       ],
     }),
-    new ForkTsCheckerWebpackPlugin(),
     // new BundleAnalyzerPlugin(),
   ],
   resolve: {
