@@ -2,7 +2,7 @@ import { ComponentStory } from '@storybook/react';
 
 import ProductListSection from '@/components/Product/ProductListSection/ProductListSection';
 
-import { products } from '@/mocks/data';
+import { products } from '@/mocks/data/products';
 
 export default {
   component: ProductListSection,

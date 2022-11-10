@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import ProfileSearchResult from '@/components/Profile/ProfileSearchResult/ProfileSearchResult';
 
-import { members } from '@/mocks/data';
+import { members } from '@/mocks/data/member';
 
 export default {
   component: ProfileSearchResult,

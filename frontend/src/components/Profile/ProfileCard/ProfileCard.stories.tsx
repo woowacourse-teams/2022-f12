@@ -2,7 +2,7 @@ import { ComponentStory } from '@storybook/react';
 
 import ProfileCard from '@/components/Profile/ProfileCard/ProfileCard';
 
-import { members } from '@/mocks/data';
+import { members } from '@/mocks/data/member';
 
 export default {
   component: ProfileCard,
