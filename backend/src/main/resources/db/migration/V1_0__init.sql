@@ -81,3 +81,9 @@ CREATE TABLE IF NOT EXISTS `refresh_token`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
+
+alter table inventory_product add constraint inventory_product_ibfk_1 foreign key (member_id) references member (id);
+alter table inventory_product add constraint inventory_product_ibfk_2 foreign key (product_id) references product (id);
+
+alter table review add constraint review_ibfk_1 foreign key (member_id) references member (id);
+alter table review add constraint review_ibfk_2 foreign key (product_id) references product (id);
