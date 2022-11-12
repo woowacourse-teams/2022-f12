@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import ProductDetail from '@/components/Product/ProductDetail/ProductDetail';
 
-import { products } from '@/mocks/data';
+import { products } from '@/mocks/data/products';
 
 export default {
   component: ProductDetail,

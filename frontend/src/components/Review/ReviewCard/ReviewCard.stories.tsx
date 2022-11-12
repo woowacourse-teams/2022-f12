@@ -2,7 +2,7 @@ import { ComponentStory } from '@storybook/react';
 
 import ReviewCard from '@/components/Review/ReviewCard/ReviewCard';
 
-import { reviewsWithProduct } from '@/mocks/data';
+import { reviewsWithProduct } from '@/mocks/data/reviews';
 
 export default {
   component: ReviewCard,
@@ -14,5 +14,11 @@ const Template: ComponentStory<typeof ReviewCard> = (args) => <ReviewCard {...ar
 const reviewData = reviewsWithProduct[0];
 
 export const Default = () => (
-  <Template reviewId={1} reviewData={reviewData} handleFocus={() => {}} />
+  <Template
+    reviewId={1}
+    reviewData={reviewData}
+    handleFocus={() => {
+      console.log('focused');
+    }}
+  />
 );

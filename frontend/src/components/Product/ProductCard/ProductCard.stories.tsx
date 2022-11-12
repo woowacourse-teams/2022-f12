@@ -2,7 +2,7 @@ import { ComponentStory } from '@storybook/react';
 
 import ProductCard from '@/components/Product/ProductCard/ProductCard';
 
-import { products } from '@/mocks/data';
+import { products } from '@/mocks/data/products';
 
 export default {
   component: ProductCard,

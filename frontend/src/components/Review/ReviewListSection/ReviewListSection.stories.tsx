@@ -1,6 +1,6 @@
 import ReviewListSection from '@/components/Review/ReviewListSection/ReviewListSection';
 
-import { reviewsWithProduct } from '@/mocks/data';
+import { reviewsWithProduct } from '@/mocks/data/reviews';
 
 export default {
   component: ReviewListSection,
