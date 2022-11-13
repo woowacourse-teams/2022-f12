@@ -36,7 +36,7 @@ function CacheContextProvider({ children }: PropsWithChildren) {
   const addCache = (
     url: string,
     response: AxiosResponse<unknown>,
-    maxAge = CACHE_TIME.FIVE_MINS
+    maxAge = CACHE_TIME.ONE_MINS
   ) => {
     setCache((prev) => prev.set(url, { response, expires: Date.now() + maxAge }));
   };
@@ -45,7 +45,7 @@ function CacheContextProvider({ children }: PropsWithChildren) {
     url: string,
     page: number,
     response: AxiosResponse<unknown>,
-    maxAge = CACHE_TIME.FIVE_MINS
+    maxAge = CACHE_TIME.ONE_MINS
   ) => {
     setCache((prev) => {
       const prevCache = prev.get(url) || [];
