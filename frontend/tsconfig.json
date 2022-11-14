@@ -5,7 +5,6 @@
     "moduleResolution": "node",
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "removeComments": false,
     "strict": true,
     "strictNullChecks": false,
     "baseUrl": ".",
