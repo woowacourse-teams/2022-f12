@@ -11,6 +11,7 @@ type Props = Omit<DataFetchStatus, 'isReady'> & {
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
   handleFocus?: () => void;
   pageSize?: number;
+  productVisible?: boolean;
   userNameVisible?: boolean;
 };
 
@@ -24,6 +25,7 @@ function ReviewListSection({
   isError,
   pageSize = 10,
   userNameVisible,
+  productVisible,
   handleFocus,
 }: Props) {
   return (
@@ -34,18 +36,27 @@ function ReviewListSection({
         isError={isError}
       >
         <S.Wrapper columns={columns}>
-          {reviewData.map(({ id, ...reviewData }, index) => (
-            <ReviewCard
-              key={id}
-              reviewId={id}
-              reviewData={reviewData}
-              handleFocus={handleFocus}
-              handleDelete={handleDelete}
-              handleEdit={handleEdit}
-              index={index % pageSize}
-              userNameVisible={userNameVisible}
-            />
-          ))}
+          {reviewData.map((reviewData, index) => {
+            const shouldRenderAuthorControls =
+              reviewData.authorMatch && !reviewData.product;
+            return (
+              <ReviewCard
+                key={reviewData.id}
+                reviewData={reviewData}
+                index={index % pageSize}
+                productVisible={reviewData.product && productVisible}
+                userNameVisible={userNameVisible}
+              >
+                {shouldRenderAuthorControls && (
+                  <ReviewCard.AuthorControls
+                    handleFocus={handleFocus}
+                    handleDelete={handleDelete}
+                    handleEdit={handleEdit}
+                  />
+                )}
+              </ReviewCard>
+            );
+          })}
         </S.Wrapper>
       </InfiniteScroll>
     </S.Container>

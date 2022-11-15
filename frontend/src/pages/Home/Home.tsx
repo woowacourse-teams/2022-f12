@@ -65,6 +65,7 @@ function Home() {
             isLoading={isReviewLoading}
             isError={isReviewError}
             pageSize={HOME_REVIEW_SIZE}
+            productVisible={true}
           />
         </AsyncWrapper>
       </S.SectionWrapper>
