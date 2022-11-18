@@ -36,16 +36,12 @@ public class InventoryProductController {
 
     @GetMapping("/members/inventoryProducts")
     @Login
-    public ResponseEntity<InventoryProductsResponse> showMyInventoryProducts(
-            @VerifiedMember final MemberPayload memberPayload) {
-        final InventoryProductsResponse inventoryProductsResponse = inventoryProductService.findByMemberId(
-                memberPayload.getId());
-        return ResponseEntity.ok(inventoryProductsResponse);
+    public InventoryProductsResponse showMyInventoryProducts(@VerifiedMember final MemberPayload memberPayload) {
+        return inventoryProductService.findByMemberId(memberPayload.getId());
     }
 
     @GetMapping("/members/{memberId}/inventoryProducts")
-    public ResponseEntity<InventoryProductsResponse> show(@PathVariable final Long memberId) {
-        final InventoryProductsResponse inventoryProductsResponse = inventoryProductService.findByMemberId(memberId);
-        return ResponseEntity.ok(inventoryProductsResponse);
+    public InventoryProductsResponse show(@PathVariable final Long memberId) {
+        return inventoryProductService.findByMemberId(memberId);
     }
 }
