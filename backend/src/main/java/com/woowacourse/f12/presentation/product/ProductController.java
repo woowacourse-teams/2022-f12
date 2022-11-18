@@ -34,9 +34,9 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<ProductPageResponse> showPage(@ModelAttribute final ProductSearchRequest productSearchRequest,
-                                                        final Pageable pageable) {
-        return ResponseEntity.ok(productService.findBySearchConditions(productSearchRequest, pageable));
+    public ProductPageResponse showPage(@ModelAttribute final ProductSearchRequest productSearchRequest,
+                                        final Pageable pageable) {
+        return productService.findBySearchConditions(productSearchRequest, pageable);
     }
 
     @PostMapping
@@ -48,8 +48,8 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> show(@PathVariable final Long id) {
-        return ResponseEntity.ok(productService.findById(id));
+    public ProductResponse show(@PathVariable final Long id) {
+        return productService.findById(id);
     }
 
     @PatchMapping("/{id}")
@@ -70,12 +70,12 @@ public class ProductController {
     }
 
     @GetMapping("/{id}/statistics")
-    public ResponseEntity<ProductStatisticsResponse> showStatistics(@PathVariable final Long id) {
-        return ResponseEntity.ok(productService.calculateMemberStatisticsById(id));
+    public ProductStatisticsResponse showStatistics(@PathVariable final Long id) {
+        return productService.calculateMemberStatisticsById(id);
     }
 
     @GetMapping("/popular-list")
-    public ResponseEntity<PopularProductsResponse> showPopularProducts(@RequestParam final int size) {
-        return ResponseEntity.ok(productService.findPopularProducts(size));
+    public PopularProductsResponse showPopularProducts(@RequestParam final int size) {
+        return productService.findPopularProducts(size);
     }
 }
