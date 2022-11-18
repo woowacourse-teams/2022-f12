@@ -32,17 +32,16 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<LoginResponse> login(final HttpServletResponse response, @RequestParam final String code) {
+    public LoginResponse login(final HttpServletResponse response, @RequestParam final String code) {
         final LoginResult loginResult = authService.login(code);
         final String refreshToken = loginResult.getRefreshToken();
         refreshTokenCookieProvider.setCookie(response, refreshToken);
-        return ResponseEntity.ok(LoginResponse.from(loginResult));
+        return LoginResponse.from(loginResult);
     }
 
     @GetMapping("/login/admin")
-    public ResponseEntity<AdminLoginResponse> loginAdmin(@RequestParam final String code) {
-        final AdminLoginResponse adminLoginResponse = authService.loginAdmin(code);
-        return ResponseEntity.ok(adminLoginResponse);
+    public AdminLoginResponse loginAdmin(@RequestParam final String code) {
+        return authService.loginAdmin(code);
     }
 
     @GetMapping("/logout")
@@ -52,14 +51,14 @@ public class AuthController {
     }
 
     @PostMapping("/accessToken")
-    public ResponseEntity<AccessTokenResponse> issueAccessToken(final HttpServletRequest request,
-                                                                final HttpServletResponse response,
-                                                                @CookieValue(value = REFRESH_TOKEN, required = false) final String refreshToken) {
+    public AccessTokenResponse issueAccessToken(final HttpServletRequest request,
+                                                final HttpServletResponse response,
+                                                @CookieValue(value = REFRESH_TOKEN, required = false) final String refreshToken) {
         if (refreshToken == null) {
             throw new RefreshTokenNotExistException();
         }
         final IssuedTokensResponse issuedTokensResponse = authService.issueAccessToken(refreshToken);
         refreshTokenCookieProvider.setCookie(response, issuedTokensResponse.getRefreshToken());
-        return ResponseEntity.ok(new AccessTokenResponse(issuedTokensResponse.getAccessToken()));
+        return new AccessTokenResponse(issuedTokensResponse.getAccessToken());
     }
 }
