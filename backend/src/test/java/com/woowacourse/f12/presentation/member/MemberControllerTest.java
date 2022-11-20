@@ -37,10 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.woowacourse.f12.application.auth.token.JwtProvider;
 import com.woowacourse.f12.application.auth.token.MemberPayload;
-import com.woowacourse.f12.application.member.MemberService;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Following;
 import com.woowacourse.f12.domain.member.Member;
@@ -60,9 +57,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -70,22 +64,9 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-@WebMvcTest(MemberController.class)
 class MemberControllerTest extends PresentationTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private MemberService memberService;
-
-    @MockBean
-    private JwtProvider jwtProvider;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void 로그인된_상태에서_나의_회원정보를_조회_성공() throws Exception {

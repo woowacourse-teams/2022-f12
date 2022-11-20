@@ -8,22 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.exception.ErrorCode;
-import com.woowacourse.f12.presentation.product.ProductController;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(ProductController.class)
 class UrlLengthCheckInterceptorTest extends PresentationTest {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private ProductService productService;
 
     @Test
     void uri가_1000자_이상인_경우_예외가_발생() throws Exception {

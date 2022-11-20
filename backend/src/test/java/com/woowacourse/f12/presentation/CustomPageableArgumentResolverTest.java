@@ -10,29 +10,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
-import com.woowacourse.f12.presentation.product.ProductController;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(ProductController.class)
-public class CustomPageableArgumentResolverTest extends PresentationTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private ProductService productService;
+class CustomPageableArgumentResolverTest extends PresentationTest {
 
     @Test
     void 페이징_실패_페이지_번호_숫자_형식_아님() throws Exception {
