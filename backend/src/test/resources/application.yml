@@ -3,6 +3,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
   datasource:
     url: jdbc:log4jdbc:h2:mem:testdb;MODE=MySQL;
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
