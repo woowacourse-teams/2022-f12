@@ -1,7 +1,6 @@
 package com.woowacourse.f12.support;
 
 import static com.woowacourse.f12.support.DataSourceType.MASTER;
-import static com.woowacourse.f12.support.DataSourceType.SLAVE;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
@@ -9,6 +8,12 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 @Slf4j
 public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
+
+    private final DataSourceLoadBalancer dataSourceLoadBalancer;
+
+    public ReplicationRoutingDataSource(final DataSourceLoadBalancer dataSourceLoadBalancer) {
+        this.dataSourceLoadBalancer = dataSourceLoadBalancer;
+    }
 
     @Override
     protected Object determineCurrentLookupKey() {
@@ -18,8 +23,9 @@ public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
         }
         final boolean readOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
         if (readOnly) {
-            log.info("TRANSACTION_NAME : {}, DATASOURCE : {}", transactionName, SLAVE);
-            return SLAVE;
+            final DataSourceType dataSourceType = dataSourceLoadBalancer.getDataSource();
+            log.info("TRANSACTION_NAME : {}, DATASOURCE : {}", transactionName, dataSourceType);
+            return dataSourceType;
         }
         log.info("TRANSACTION_NAME : {}, DATASOURCE : {}", transactionName, MASTER);
         return MASTER;
