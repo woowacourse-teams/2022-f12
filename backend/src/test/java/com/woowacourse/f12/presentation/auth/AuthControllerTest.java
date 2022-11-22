@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.woowacourse.f12.application.auth.AuthService;
 import com.woowacourse.f12.dto.response.auth.AdminLoginResponse;
 import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
-import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.ErrorCode;
 import com.woowacourse.f12.exception.badrequest.InvalidGitHubLoginException;
@@ -44,19 +43,16 @@ import com.woowacourse.f12.support.ErrorCodeSnippet;
 import javax.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-@WebMvcTest(AuthController.class)
 class AuthControllerTest extends PresentationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     private AuthService authService;
 
     @Test
@@ -66,7 +62,6 @@ class AuthControllerTest extends PresentationTest {
         String token = "token";
         String refreshToken = "refreshTokenValue";
         LoginResult loginResult = new LoginResult(refreshToken, token, CORINNE.생성(1L));
-        LoginResponse loginResponse = LoginResponse.from(loginResult);
 
         given(authService.login(code))
                 .willReturn(loginResult);
