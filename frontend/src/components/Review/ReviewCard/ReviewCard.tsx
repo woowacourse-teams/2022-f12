@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { createContext, PropsWithChildren, useContext, useReducer } from 'react';
 
 import Rating from '@/components/common/Rating/Rating';
 import UserNameTag from '@/components/common/UserNameTag/UserNameTag';
@@ -13,27 +13,81 @@ import { GITHUB_IMAGE_SIZE_SEARCH_PARAM } from '@/constants/link';
 import ROUTES from '@/constants/routes';
 
 type Props = {
-  reviewId: Review['id'];
-  reviewData: Omit<Review, 'id'>;
+  reviewData: Review;
+  index?: number;
+  userNameVisible?: boolean;
+  productVisible?: boolean;
+};
+
+const ReviewContentContext = createContext<Review>(null);
+
+function ReviewCard({
+  reviewData,
+  index = 0,
+  productVisible = false,
+  userNameVisible = true,
+  children,
+}: PropsWithChildren<Props>) {
+  const { product, rating, content, author, createdAt } = reviewData;
+
+  const createAtDate = new Date(createdAt);
+  const formattedDate = `${createAtDate.getFullYear()}년 ${
+    createAtDate.getMonth() + 1
+  }월 ${createAtDate.getDate()}일`;
+
+  return (
+    <S.Container index={index}>
+      {productVisible && <ProductBlock product={product} />}
+      <S.ReviewArea isFull={!product}>
+        <S.Wrapper>
+          <S.UserWrapper>
+            {userNameVisible && <AuthorBlock author={author} />}
+            <ReviewContentContext.Provider value={reviewData}>
+              {children}
+            </ReviewContentContext.Provider>
+          </S.UserWrapper>
+        </S.Wrapper>
+        <div style={{ alignSelf: 'flex-end' }}>
+          <Rating type="정수" rating={rating} />
+        </div>
+        <S.CreatedAt>{formattedDate}</S.CreatedAt>
+        <S.Content>{content}</S.Content>
+      </S.ReviewArea>
+    </S.Container>
+  );
+}
+
+function ProductBlock({ product }: { product: Review['product'] }) {
+  return (
+    <S.ProductArea to={`${ROUTES.PRODUCT}/${product.id}`}>
+      <S.ImageWrapper>
+        <S.Image src={product.imageUrl} />
+      </S.ImageWrapper>
+      <S.Title>{product.name}</S.Title>
+    </S.ProductArea>
+  );
+}
+
+function AuthorBlock({ author }: { author: Review['author'] }) {
+  return (
+    <S.ProfileLink to={`${ROUTES.PROFILE}/${author.id}`}>
+      <UserNameTag
+        imageUrl={`${author.imageUrl}${GITHUB_IMAGE_SIZE_SEARCH_PARAM.small}`}
+        username={author.gitHubId}
+      />
+    </S.ProfileLink>
+  );
+}
+
+type AuthorControlsProps = {
   handleDelete?: (id: number) => void;
   handleEdit?: (reviewInput: ReviewInput, id: number) => Promise<void>;
   handleFocus: () => void;
-  index?: number;
-  userNameVisible?: boolean;
 };
 
-function ReviewCard({
-  reviewId,
-  handleDelete,
-  handleEdit,
-  handleFocus,
-  reviewData,
-  index = 0,
-  userNameVisible = true,
-}: Props) {
-  const { product, rating, content, author, createdAt, authorMatch = false } = reviewData;
+function AuthorControls({ handleDelete, handleEdit, handleFocus }: AuthorControlsProps) {
   const { isLoggedIn } = useAuth();
-
+  const { id: reviewId, rating, content } = useContext(ReviewContentContext);
   const [isEditSheetOpen, toggleEditSheetOpen] = useReducer((isSheetOpen: boolean) => {
     if (!isLoggedIn) return false;
 
@@ -42,11 +96,6 @@ function ReviewCard({
 
   const [shouldSheetRender, handleSheetUnmount, sheetAnimationTrigger] =
     useAnimation(isEditSheetOpen);
-
-  const createAtDate = new Date(createdAt);
-  const formattedDate = `${createAtDate.getFullYear()}년 ${
-    createAtDate.getMonth() + 1
-  }월 ${createAtDate.getDate()}일`;
 
   const handleEditClick = () => {
     toggleEditSheetOpen();
@@ -58,44 +107,11 @@ function ReviewCard({
   };
 
   return (
-    <S.Container index={index}>
-      {product && (
-        <S.ProductArea to={`${ROUTES.PRODUCT}/${product.id}`}>
-          <S.ImageWrapper>
-            <S.Image src={product.imageUrl} />
-          </S.ImageWrapper>
-          <S.Title>{product.name}</S.Title>
-        </S.ProductArea>
-      )}
-      <S.ReviewArea isFull={!product}>
-        <S.Wrapper>
-          <S.UserWrapper>
-            {userNameVisible && (
-              <S.ProfileLink to={`${ROUTES.PROFILE}/${author.id}`}>
-                <UserNameTag
-                  imageUrl={`${author.imageUrl}${GITHUB_IMAGE_SIZE_SEARCH_PARAM.small}`}
-                  username={author.gitHubId}
-                />
-              </S.ProfileLink>
-            )}
-            {!product && authorMatch && (
-              <S.ReviewModifyButtonWrapper>
-                <S.ReviewModifyButton onClick={handleEditClick}>
-                  수정
-                </S.ReviewModifyButton>
-                <S.ReviewModifyButton onClick={handleDeleteClick}>
-                  삭제
-                </S.ReviewModifyButton>
-              </S.ReviewModifyButtonWrapper>
-            )}
-          </S.UserWrapper>
-        </S.Wrapper>
-        <div style={{ alignSelf: 'flex-end' }}>
-          <Rating type="정수" rating={rating} />
-        </div>
-        <S.CreatedAt>{formattedDate}</S.CreatedAt>
-        <S.Content>{content}</S.Content>
-      </S.ReviewArea>
+    <>
+      <S.ReviewModifyButtonWrapper>
+        <S.ReviewModifyButton onClick={handleEditClick}>수정</S.ReviewModifyButton>
+        <S.ReviewModifyButton onClick={handleDeleteClick}>삭제</S.ReviewModifyButton>
+      </S.ReviewModifyButtonWrapper>
       {shouldSheetRender && (
         <ReviewBottomSheet
           handleClose={toggleEditSheetOpen}
@@ -110,8 +126,10 @@ function ReviewCard({
           handleSubmit={undefined}
         />
       )}
-    </S.Container>
+    </>
   );
 }
+
+ReviewCard.AuthorControls = AuthorControls;
 
 export default ReviewCard;

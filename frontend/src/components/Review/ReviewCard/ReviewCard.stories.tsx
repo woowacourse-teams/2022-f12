@@ -13,12 +13,4 @@ const Template: ComponentStory<typeof ReviewCard> = (args) => <ReviewCard {...ar
 
 const reviewData = reviewsWithProduct[0];
 
-export const Default = () => (
-  <Template
-    reviewId={1}
-    reviewData={reviewData}
-    handleFocus={() => {
-      console.log('focused');
-    }}
-  />
-);
+export const Default = () => <Template reviewData={reviewData} />;

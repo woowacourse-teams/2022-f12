@@ -130,6 +130,7 @@ function Profile() {
               isLoading={isReviewLoading}
               isError={isReviewError}
               pageSize={4}
+              productVisible={true}
               userNameVisible={false}
             />
           </AsyncWrapper>
