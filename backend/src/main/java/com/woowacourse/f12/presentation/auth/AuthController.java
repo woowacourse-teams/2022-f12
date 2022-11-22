@@ -9,8 +9,10 @@ import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotExistException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.WebUtils;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -32,11 +35,13 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public LoginResponse login(final HttpServletResponse response, @RequestParam final String code) {
+    public ResponseEntity<LoginResponse> login(@RequestParam final String code) {
         final LoginResult loginResult = authService.login(code);
         final String refreshToken = loginResult.getRefreshToken();
-        refreshTokenCookieProvider.setCookie(response, refreshToken);
-        return LoginResponse.from(loginResult);
+        ResponseCookie cookie = refreshTokenCookieProvider.createCookie(refreshToken);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(LoginResponse.from(loginResult));
     }
 
     @GetMapping("/login/admin")
@@ -45,20 +50,25 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<Void> logout(final HttpServletRequest request, final HttpServletResponse response) {
-        refreshTokenCookieProvider.removeCookie(request, response);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> logout(final HttpServletRequest request) {
+        final Cookie cookie = WebUtils.getCookie(request, REFRESH_TOKEN);
+        ResponseCookie responseCookie = refreshTokenCookieProvider.expireCookie(cookie);
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .build();
     }
 
     @PostMapping("/accessToken")
-    public AccessTokenResponse issueAccessToken(final HttpServletRequest request,
-                                                final HttpServletResponse response,
-                                                @CookieValue(value = REFRESH_TOKEN, required = false) final String refreshToken) {
+    public ResponseEntity<AccessTokenResponse> issueAccessToken(
+            @CookieValue(value = REFRESH_TOKEN, required = false) final String refreshToken) {
         if (refreshToken == null) {
             throw new RefreshTokenNotExistException();
         }
         final IssuedTokensResponse issuedTokensResponse = authService.issueAccessToken(refreshToken);
-        refreshTokenCookieProvider.setCookie(response, issuedTokensResponse.getRefreshToken());
-        return new AccessTokenResponse(issuedTokensResponse.getAccessToken());
+        final ResponseCookie responseCookie = refreshTokenCookieProvider.createCookie(
+                issuedTokensResponse.getRefreshToken());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .body(new AccessTokenResponse(issuedTokensResponse.getAccessToken()));
     }
 }
