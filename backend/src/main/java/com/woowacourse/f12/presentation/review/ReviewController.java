@@ -9,10 +9,14 @@ import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductResponse;
 import com.woowacourse.f12.presentation.auth.Login;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
+import com.woowacourse.f12.support.CursorPageable;
 import com.woowacourse.f12.support.MemberPayloadSupport;
 import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -55,10 +60,13 @@ public class ReviewController {
         return ResponseEntity.ok(reviewPageResponse);
     }
 
-    @GetMapping("/reviews")
-    public ResponseEntity<ReviewWithAuthorAndProductPageResponse> showPage(final Pageable pageable) {
-        final ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = reviewService.findPage(
-                pageable);
+    @GetMapping(value = "/reviews")
+    public ResponseEntity<ReviewWithAuthorAndProductPageResponse> showPageByCursor(
+            @RequestParam(required = false) final Long cursor, final Integer size,
+            @SortDefault(sort = "id", direction = Direction.DESC) final Sort sort) {
+        final CursorPageable cursorPageable = new CursorPageable(cursor, size, sort);
+        final ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse
+                = reviewService.findPage(cursorPageable);
         return ResponseEntity.ok(reviewWithAuthorAndProductPageResponse);
     }
 

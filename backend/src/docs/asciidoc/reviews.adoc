@@ -9,7 +9,7 @@ operation::reviews-create[snippets='error-code-table,http-request,http-response'
 
 ==== sort 조건
 
-- `createdAt,desc`(최신순)
+- 조건을 적지 않는 경우 (최신순)
 - `rating,desc`(평점순)
 
 operation::reviews-by-product-page-get[snippets='error-code-table,http-request,http-response']
@@ -18,7 +18,7 @@ operation::reviews-by-product-page-get[snippets='error-code-table,http-request,h
 
 ==== sort 조건
 
-- `createdAt,desc`(최신순)
+- 조건을 적지 않는 경우 (최신순)
 - `rating,desc`(평점순)
 
 operation::reviews-page-get[snippets='error-code-table,http-request,http-response']
@@ -27,7 +27,7 @@ operation::reviews-page-get[snippets='error-code-table,http-request,http-respons
 
 ==== sort 조건
 
-- `createdAt,desc`(최신순)
+- 조건을 적지 않는 경우 (최신순)
 - `rating,desc`(평점순)
 
 operation::reviews-page-get-own[snippets='error-code-table,http-request,http-response']
@@ -36,7 +36,7 @@ operation::reviews-page-get-own[snippets='error-code-table,http-request,http-res
 
 ==== sort 조건
 
-- `createdAt,desc`(최신순)
+- 조건을 적지 않는 경우 (최신순)
 - `rating,desc`(평점순)
 
 operation::reviews-page-get-by-memberId[snippets='error-code-table,http-request,http-response']

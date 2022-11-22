@@ -35,9 +35,14 @@ public class RepositorySupport {
     }
 
     public static <T> OrderSpecifier[] makeOrderSpecifiers(final EntityPathBase<T> qClass, final Pageable pageable) {
-        return pageable.getSort()
+        final Sort sort = pageable.getSort();
+        return makeOrderSpecifiers(qClass, sort);
+    }
+
+    public static <T> OrderSpecifier[] makeOrderSpecifiers(final EntityPathBase<T> qClass, final Sort sort) {
+        return sort
                 .stream()
-                .map(sort -> toOrderSpecifier(qClass, sort))
+                .map(sortOrder -> toOrderSpecifier(qClass, sortOrder))
                 .collect(Collectors.toList()).toArray(OrderSpecifier[]::new);
     }
 
@@ -60,5 +65,13 @@ public class RepositorySupport {
             return new SliceImpl<>(items, pageable, true);
         }
         return new SliceImpl<>(items, pageable, false);
+    }
+
+    public static <T> CursorSlice<T> toCursorSlice(final int pageSize, final List<T> items) {
+        if (items.size() > pageSize) {
+            items.remove(items.size() - 1);
+            return new CursorSlice<>(items, true);
+        }
+        return new CursorSlice<>(items, false);
     }
 }

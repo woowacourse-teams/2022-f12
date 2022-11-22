@@ -2,6 +2,7 @@ package com.woowacourse.f12.config;
 
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.web.SortHandlerMethodArgumentResolver;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -45,5 +46,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.addAll(this.resolvers);
+        resolvers.add(new SortHandlerMethodArgumentResolver());
     }
 }

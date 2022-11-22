@@ -1,12 +1,12 @@
 package com.woowacourse.f12.domain.review;
 
+import com.woowacourse.f12.support.CursorPageable;
+import com.woowacourse.f12.support.CursorSlice;
 import java.util.List;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 
 public interface ReviewRepositoryCustom {
 
-    Slice<Review> findPageBy(Pageable pageable);
+    CursorSlice<Review> findPageBy(CursorPageable cursorPageable);
 
     List<CareerLevelCount> findCareerLevelCountByProductId(Long productId);
 

@@ -14,7 +14,8 @@ public class UnauthorizedAction {
         return new UnauthorizedAction();
     }
 
-    public ExtractableResponse<Response> 리뷰_목록_페이지를_조회한다(final int page, final int size, final String sortCondition) {
-        return GET_요청을_보낸다(String.format("/api/v1/reviews?page=%d&size=%d&sort=%s,desc", page, size, sortCondition));
+    public ExtractableResponse<Response> 리뷰_목록_최초_페이지를_커서로_조회한다(final Integer size, final String sortCondition) {
+        return GET_요청을_보낸다(String.format("/api/v1/reviews?size=%d&sort=%s,desc", size, sortCondition));
     }
+
 }

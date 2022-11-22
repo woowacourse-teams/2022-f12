@@ -1,18 +1,21 @@
 package com.woowacourse.f12.domain.review;
 
 import static com.woowacourse.f12.domain.member.QMember.member;
-import static com.woowacourse.f12.domain.product.QProduct.product;
 import static com.woowacourse.f12.domain.review.QReview.review;
 import static com.woowacourse.f12.support.RepositorySupport.makeOrderSpecifiers;
-import static com.woowacourse.f12.support.RepositorySupport.toSlice;
+import static com.woowacourse.f12.support.RepositorySupport.toCursorSlice;
+import static java.util.Optional.ofNullable;
 
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.Collections;
+import com.woowacourse.f12.exception.badrequest.CursorMultipleOrderException;
+import com.woowacourse.f12.support.CursorPageable;
+import com.woowacourse.f12.support.CursorSlice;
+import java.util.ArrayList;
 import java.util.List;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 
 public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 
@@ -22,27 +25,41 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    @Override
-    public Slice<Review> findPageBy(final Pageable pageable) {
-        final JPAQuery<Long> coveringIndexQuery = jpaQueryFactory.select(review.id)
-                .from(review)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .orderBy(makeOrderSpecifiers(review, pageable));
-        final Slice<Long> reviewIds = toSlice(pageable, coveringIndexQuery.fetch());
-
-        if (reviewIds.isEmpty()) {
-            return new SliceImpl<>(Collections.emptyList(), pageable, false);
+    private static Order gerSingleOrder(final Sort sort) {
+        List<Order> orders = new ArrayList<>();
+        sort.iterator().forEachRemaining(orders::add);
+        if (orders.size() != 1) {
+            throw new CursorMultipleOrderException();
         }
+        return orders.iterator().next();
+    }
 
-        final JPAQuery<Review> query = jpaQueryFactory.selectFrom(review)
-                .where(review.id.in(reviewIds.getContent()))
-                .innerJoin(review.member, member)
-                .fetchJoin()
-                .innerJoin(review.product, product)
-                .fetchJoin()
-                .orderBy(makeOrderSpecifiers(review, pageable));
-        return new SliceImpl<>(query.fetch(), pageable, reviewIds.hasNext());
+    private static BooleanExpression isAfterByDirection(final Long cursor, final Order order) {
+        if (order.isAscending()) {
+            return review.id.gt(cursor);
+        }
+        return review.id.lt(cursor);
+    }
+
+    @Override
+    public CursorSlice<Review> findPageBy(final CursorPageable cursorPageable) {
+        final Long cursor = cursorPageable.getCursor();
+        final Integer size = cursorPageable.getSize();
+        final Sort sort = cursorPageable.getSort();
+        final List<Review> reviews = jpaQueryFactory.select(review)
+                .from(review)
+                .where(afterCursor(cursor, sort))
+                .limit(size)
+                .orderBy(makeOrderSpecifiers(review, sort))
+                .fetch();
+        return toCursorSlice(size, reviews);
+    }
+
+    private Predicate afterCursor(final Long cursor, final Sort sort) {
+        final Order order = gerSingleOrder(sort);
+        return ofNullable(cursor)
+                .map(value -> isAfterByDirection(cursor, order))
+                .orElse(null);
     }
 
     @Override
