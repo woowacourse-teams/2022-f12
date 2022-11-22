@@ -26,7 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.woowacourse.f12.application.auth.token.JwtProvider;
 import com.woowacourse.f12.application.auth.token.MemberPayload;
+import com.woowacourse.f12.application.inventoryproduct.InventoryProductService;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.Role;
@@ -40,11 +42,22 @@ import com.woowacourse.f12.presentation.PresentationTest;
 import com.woowacourse.f12.support.ErrorCodeSnippet;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 class InventoryProductControllerTest extends PresentationTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+    
+    @Autowired
+    private JwtProvider jwtProvider;
+
+    @Autowired
+    private InventoryProductService inventoryProductService;
 
     @Test
     void 대표_장비_등록_성공() throws Exception {
