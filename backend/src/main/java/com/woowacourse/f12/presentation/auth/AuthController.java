@@ -9,8 +9,6 @@ import com.woowacourse.f12.dto.response.auth.IssuedTokensResponse;
 import com.woowacourse.f12.dto.response.auth.LoginResponse;
 import com.woowacourse.f12.dto.result.LoginResult;
 import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotExistException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.WebUtils;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -50,25 +47,29 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<Void> logout(final HttpServletRequest request) {
-        final Cookie cookie = WebUtils.getCookie(request, REFRESH_TOKEN);
-        ResponseCookie responseCookie = refreshTokenCookieProvider.expireCookie(cookie);
+    public ResponseEntity<Void> logout(
+            @CookieValue(value = REFRESH_TOKEN, required = false) final String refreshToken) {
+        validateRefreshTokenExists(refreshToken);
         return ResponseEntity.noContent()
-                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookieProvider.createLogoutCookie().toString())
                 .build();
     }
 
     @PostMapping("/accessToken")
     public ResponseEntity<AccessTokenResponse> issueAccessToken(
             @CookieValue(value = REFRESH_TOKEN, required = false) final String refreshToken) {
-        if (refreshToken == null) {
-            throw new RefreshTokenNotExistException();
-        }
+        validateRefreshTokenExists(refreshToken);
         final IssuedTokensResponse issuedTokensResponse = authService.issueAccessToken(refreshToken);
         final ResponseCookie responseCookie = refreshTokenCookieProvider.createCookie(
                 issuedTokensResponse.getRefreshToken());
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(new AccessTokenResponse(issuedTokensResponse.getAccessToken()));
+    }
+
+    private void validateRefreshTokenExists(final String refreshToken) {
+        if (refreshToken == null) {
+            throw new RefreshTokenNotExistException();
+        }
     }
 }

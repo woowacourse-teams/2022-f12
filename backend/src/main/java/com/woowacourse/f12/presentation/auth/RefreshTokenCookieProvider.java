@@ -1,8 +1,6 @@
 package com.woowacourse.f12.presentation.auth;
 
-import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotExistException;
 import java.time.Duration;
-import javax.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.Cookie.SameSite;
 import org.springframework.http.ResponseCookie;
@@ -27,11 +25,8 @@ public class RefreshTokenCookieProvider {
                 .build();
     }
 
-    public ResponseCookie expireCookie(final Cookie cookie) {
-        if (cookie == null) {
-            throw new RefreshTokenNotExistException();
-        }
-        return createTokenCookieBuilder(cookie.getValue())
+    public ResponseCookie createLogoutCookie() {
+        return createTokenCookieBuilder("")
                 .maxAge(REMOVAL_MAX_AGE)
                 .build();
     }

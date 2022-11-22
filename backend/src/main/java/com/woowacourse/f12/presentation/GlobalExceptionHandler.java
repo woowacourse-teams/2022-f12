@@ -102,7 +102,7 @@ public class GlobalExceptionHandler {
         ExceptionResponse responseBody = ExceptionResponse.from(e);
         final Cookie cookie = WebUtils.getCookie(request, REFRESH_TOKEN);
         if (cookie != null) {
-            ResponseCookie responseCookie = refreshTokenCookieProvider.expireCookie(cookie);
+            ResponseCookie responseCookie = refreshTokenCookieProvider.createLogoutCookie();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                     .body(responseBody);
