@@ -35,12 +35,7 @@ public class RepositorySupport {
     }
 
     public static <T> OrderSpecifier[] makeOrderSpecifiers(final EntityPathBase<T> qClass, final Pageable pageable) {
-        final Sort sort = pageable.getSort();
-        return makeOrderSpecifiers(qClass, sort);
-    }
-
-    public static <T> OrderSpecifier[] makeOrderSpecifiers(final EntityPathBase<T> qClass, final Sort sort) {
-        return sort
+        return pageable.getSort()
                 .stream()
                 .map(sortOrder -> toOrderSpecifier(qClass, sortOrder))
                 .collect(Collectors.toList()).toArray(OrderSpecifier[]::new);

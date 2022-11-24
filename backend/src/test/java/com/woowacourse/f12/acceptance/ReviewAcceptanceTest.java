@@ -240,7 +240,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
                 requestBody);
 
         // then
-        ReviewWithAuthorAndProductResponse updatedReview = 로그인하지_않고().리뷰_목록_최초_페이지를_커서로_조회한다(2, "createdAt")
+        ReviewWithAuthorAndProductResponse updatedReview = 로그인하지_않고().최근_리뷰_목록_첫_페이지를_조회한다(2)
                 .as(ReviewWithAuthorAndProductPageResponse.class)
                 .getItems().get(0);
 
@@ -266,7 +266,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다("/api/v1/reviews/" + reviewId, loginToken);
 
         // then
-        List<ReviewWithAuthorAndProductResponse> reviews = 로그인하지_않고().리뷰_목록_최초_페이지를_커서로_조회한다(2, "id")
+        List<ReviewWithAuthorAndProductResponse> reviews = 로그인하지_않고().최근_리뷰_목록_첫_페이지를_조회한다(2)
                 .as(ReviewWithAuthorAndProductPageResponse.class)
                 .getItems();
         List<InventoryProductResponse> inventoryProducts = 코린.로그인한_상태로(loginToken).자신의_인벤토리를_조회한다()

@@ -469,7 +469,7 @@ class ReviewControllerTest extends PresentationTest {
                 new CursorSlice<>(List.of(review1, review2, review3, review4), false));
 
         final CursorPageable cursorPageable = new CursorPageable(review3.getId(), 10, Sort.by("id").descending());
-        given(reviewService.findPage(cursorPageable))
+        given(reviewService.findPage(review3.getId(), 10))
                 .willReturn(reviewWithAuthorAndProductPageResponse);
 
         // when
@@ -483,7 +483,7 @@ class ReviewControllerTest extends PresentationTest {
                                 new ErrorCodeSnippet(INVALID_PAGING_PARAM))
                 );
 
-        verify(reviewService).findPage(cursorPageable);
+        verify(reviewService).findPage(review3.getId(), 10);
     }
 
     @Test

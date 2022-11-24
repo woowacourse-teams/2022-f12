@@ -43,7 +43,6 @@ import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
-import com.woowacourse.f12.support.CursorPageable;
 import com.woowacourse.f12.support.CursorSlice;
 import java.util.List;
 import java.util.Optional;
@@ -313,18 +312,19 @@ class ReviewServiceTest {
     @Test
     void 전체_리뷰_목록을_커서를_활용해서_조회한다() {
         // given
-        CursorPageable cursorPageable = new CursorPageable(3L, 2, Sort.by(Order.desc("id")));
+        Long cursor = 3L;
+        Integer size = 2;
         Member member = CORINNE.생성(1L);
         Review review1 = REVIEW_RATING_5.작성(1L, KEYBOARD_1.생성(), member);
         Review review2 = REVIEW_RATING_5.작성(2L, KEYBOARD_2.생성(), member);
         CursorSlice<Review> slice = new CursorSlice<>(List.of(review1, review2), false);
 
-        given(reviewRepository.findPageBy(cursorPageable))
+        given(reviewRepository.findRecentPageBy(cursor, size))
                 .willReturn(slice);
 
         // when
         ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse
-                = reviewService.findPage(cursorPageable);
+                = reviewService.findPage(cursor, size);
 
         // then
         assertAll(
@@ -333,7 +333,7 @@ class ReviewServiceTest {
                         .containsOnly(ReviewWithAuthorAndProductResponse.from(review2),
                                 ReviewWithAuthorAndProductResponse.from(review1)),
                 () -> assertThat(reviewWithAuthorAndProductPageResponse.isHasNext()).isFalse(),
-                () -> verify(reviewRepository).findPageBy(cursorPageable)
+                () -> verify(reviewRepository).findRecentPageBy(cursor, size)
         );
     }
 
