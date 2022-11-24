@@ -18,6 +18,8 @@ import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
 import static com.woowacourse.f12.support.fixture.MemberFixture.MINCHO;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.fixture.ProductFixture.MONITOR_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.MONITOR_2;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_1;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
@@ -45,6 +47,7 @@ import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.domain.product.Product;
+import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
@@ -60,6 +63,7 @@ import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
+import com.woowacourse.f12.support.CursorSlice;
 import com.woowacourse.f12.support.ErrorCodeSnippet;
 import java.util.HashMap;
 import java.util.List;
@@ -451,20 +455,23 @@ class ReviewControllerTest extends PresentationTest {
     @Test
     void 전체_리뷰_페이지_조회_성공() throws Exception {
         // given
-        PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
         Product product1 = KEYBOARD_1.생성(1L);
         Product product2 = KEYBOARD_2.생성(2L);
+        Product product3 = MONITOR_1.생성(3L);
+        Product product4 = MONITOR_2.생성(4L);
         Member member = CORINNE.생성(1L);
+        Review review1 = REVIEW_RATING_5.작성(1L, product1, member);
+        Review review2 = REVIEW_RATING_4.작성(2L, product2, member);
+        Review review3 = REVIEW_RATING_5.작성(3L, product3, member);
+        Review review4 = REVIEW_RATING_5.작성(4L, product4, member);
         ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = ReviewWithAuthorAndProductPageResponse.from(
-                new SliceImpl<>(
-                        List.of(REVIEW_RATING_5.작성(1L, product1, member), REVIEW_RATING_4.작성(2L, product2, member)),
-                        pageable, false));
+                new CursorSlice<>(List.of(review1, review2, review3, review4), false));
 
-        given(reviewService.findPage(any(Pageable.class)))
+        given(reviewService.findPage(review3.getId(), 10))
                 .willReturn(reviewWithAuthorAndProductPageResponse);
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/reviews?page=0&size=10&sort=createdAt,desc"));
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/reviews?cursor=3&size=10"));
 
         // then
         resultActions.andExpect(status().isOk())
@@ -474,7 +481,7 @@ class ReviewControllerTest extends PresentationTest {
                                 new ErrorCodeSnippet(INVALID_PAGING_PARAM))
                 );
 
-        verify(reviewService).findPage(PageRequest.of(0, 10, Sort.by("createdAt", "id").descending()));
+        verify(reviewService).findPage(review3.getId(), 10);
     }
 
     @Test

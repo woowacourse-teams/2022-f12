@@ -11,6 +11,8 @@ import static com.woowacourse.f12.support.fixture.AcceptanceFixture.민초;
 import static com.woowacourse.f12.support.fixture.AcceptanceFixture.코린;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
 import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.fixture.ProductFixture.MONITOR_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.MONITOR_2;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_4;
 import static com.woowacourse.f12.support.fixture.ReviewFixture.REVIEW_RATING_5;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -189,6 +191,8 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         // given
         Product product1 = 제품을_저장한다(KEYBOARD_1.생성());
         Product product2 = 제품을_저장한다(KEYBOARD_2.생성());
+        Product product3 = 제품을_저장한다(MONITOR_1.생성());
+        Product product4 = 제품을_저장한다(MONITOR_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
         String loginToken = 코린.로그인을_한다().getToken();
@@ -198,9 +202,14 @@ class ReviewAcceptanceTest extends AcceptanceTest {
                 코린.로그인한_상태로(loginToken).리뷰를_작성한다(product1.getId(), REVIEW_RATING_4));
         Long reviewId2 = Location_헤더에서_id값을_꺼낸다(
                 코린.로그인한_상태로(loginToken).리뷰를_작성한다(product2.getId(), REVIEW_RATING_4));
+        Long reviewId3 = Location_헤더에서_id값을_꺼낸다(
+                코린.로그인한_상태로(loginToken).리뷰를_작성한다(product3.getId(), REVIEW_RATING_4));
+        Location_헤더에서_id값을_꺼낸다(
+                코린.로그인한_상태로(loginToken).리뷰를_작성한다(product4.getId(), REVIEW_RATING_4));
 
         // when
-        ExtractableResponse<Response> response = GET_요청을_보낸다("/api/v1/reviews?page=0&size=2&sort=id,desc");
+        ExtractableResponse<Response> response = GET_요청을_보낸다(
+                "/api/v1/reviews?cursor=" + reviewId3 + "&size=2");
 
         // then
         ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = response.as(
@@ -231,7 +240,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
                 requestBody);
 
         // then
-        ReviewWithAuthorAndProductResponse updatedReview = 로그인하지_않고().리뷰_목록_페이지를_조회한다(0, 2, "createdAt")
+        ReviewWithAuthorAndProductResponse updatedReview = 로그인하지_않고().최근_리뷰_목록_첫_페이지를_조회한다(2)
                 .as(ReviewWithAuthorAndProductPageResponse.class)
                 .getItems().get(0);
 
@@ -257,7 +266,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인된_상태로_DELETE_요청을_보낸다("/api/v1/reviews/" + reviewId, loginToken);
 
         // then
-        List<ReviewWithAuthorAndProductResponse> reviews = 로그인하지_않고().리뷰_목록_페이지를_조회한다(0, 2, "createdAt")
+        List<ReviewWithAuthorAndProductResponse> reviews = 로그인하지_않고().최근_리뷰_목록_첫_페이지를_조회한다(2)
                 .as(ReviewWithAuthorAndProductPageResponse.class)
                 .getItems();
         List<InventoryProductResponse> inventoryProducts = 코린.로그인한_상태로(loginToken).자신의_인벤토리를_조회한다()
@@ -287,7 +296,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
-                "/api/v1/members/" + loginResponse.getMember().getId() + "/reviews?page=0&size=2&sort=createdAt,desc");
+                "/api/v1/members/" + loginResponse.getMember().getId() + "/reviews?size=2&sort=id,desc");
 
         // then
         ReviewWithProductPageResponse reviewWithProductPageResponse = response.as(ReviewWithProductPageResponse.class);

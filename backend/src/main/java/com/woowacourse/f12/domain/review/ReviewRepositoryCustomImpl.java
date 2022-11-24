@@ -1,18 +1,14 @@
 package com.woowacourse.f12.domain.review;
 
 import static com.woowacourse.f12.domain.member.QMember.member;
-import static com.woowacourse.f12.domain.product.QProduct.product;
 import static com.woowacourse.f12.domain.review.QReview.review;
-import static com.woowacourse.f12.support.RepositorySupport.makeOrderSpecifiers;
-import static com.woowacourse.f12.support.RepositorySupport.toSlice;
+import static com.woowacourse.f12.support.RepositorySupport.toCursorSlice;
 
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.Collections;
+import com.woowacourse.f12.support.CursorSlice;
 import java.util.List;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 
 public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 
@@ -22,27 +18,22 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    @Override
-    public Slice<Review> findPageBy(final Pageable pageable) {
-        final JPAQuery<Long> coveringIndexQuery = jpaQueryFactory.select(review.id)
-                .from(review)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .orderBy(makeOrderSpecifiers(review, pageable));
-        final Slice<Long> reviewIds = toSlice(pageable, coveringIndexQuery.fetch());
-
-        if (reviewIds.isEmpty()) {
-            return new SliceImpl<>(Collections.emptyList(), pageable, false);
+    private static BooleanExpression afterThan(final Long cursor) {
+        if (cursor == null) {
+            return Expressions.TRUE.isTrue();
         }
+        return review.id.lt(cursor);
+    }
 
-        final JPAQuery<Review> query = jpaQueryFactory.selectFrom(review)
-                .where(review.id.in(reviewIds.getContent()))
-                .innerJoin(review.member, member)
-                .fetchJoin()
-                .innerJoin(review.product, product)
-                .fetchJoin()
-                .orderBy(makeOrderSpecifiers(review, pageable));
-        return new SliceImpl<>(query.fetch(), pageable, reviewIds.hasNext());
+    @Override
+    public CursorSlice<Review> findRecentPageBy(final Long cursor, final Integer size) {
+        final List<Review> reviews = jpaQueryFactory.select(review)
+                .from(review)
+                .where(afterThan(cursor))
+                .limit(size)
+                .orderBy(review.id.desc())
+                .fetch();
+        return toCursorSlice(size, reviews);
     }
 
     @Override

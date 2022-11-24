@@ -23,6 +23,7 @@ import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
+import com.woowacourse.f12.support.CursorSlice;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -95,24 +96,44 @@ class ReviewRepositoryTest {
     }
 
     @Test
-    void 리뷰_목록을_최신순으로_페이징하여_조회한다() {
+    void 리뷰_목록을_최신순으로_커서_페이징하여_조회한다() {
         // given
         Product product1 = productRepository.save(KEYBOARD_1.생성());
         Product product2 = productRepository.save(KEYBOARD_2.생성());
         Member member = memberRepository.save(CORINNE.생성());
-        Pageable pageable = PageRequest.of(0, 1, Sort.by(desc("id")));
+        Review review1 = 리뷰_저장(REVIEW_RATING_5.작성(product1, member));
+        Review review2 = 리뷰_저장(REVIEW_RATING_5.작성(product2, member));
+
+        // when
+        CursorSlice<Review> page = reviewRepository.findRecentPageBy(review2.getId(), 1);
+
+        // then
+        assertAll(
+                () -> assertThat(page.getContent()).hasSize(1)
+                        .extracting("id")
+                        .containsOnly(review1.getId()),
+                () -> assertThat(page.hasNext()).isFalse()
+        );
+    }
+
+    @Test
+    void 리뷰_목록을_최신순으로_첫_페이지를_조회한다() {
+        // given
+        Product product1 = productRepository.save(KEYBOARD_1.생성());
+        Product product2 = productRepository.save(KEYBOARD_2.생성());
+        Member member = memberRepository.save(CORINNE.생성());
         리뷰_저장(REVIEW_RATING_5.작성(product1, member));
         Review review = 리뷰_저장(REVIEW_RATING_5.작성(product2, member));
 
         // when
-        Slice<Review> page = reviewRepository.findPageBy(pageable);
+        CursorSlice<Review> page = reviewRepository.findRecentPageBy(null, 1);
 
         // then
         assertAll(
-                () -> assertThat(page).hasSize(1)
+                () -> assertThat(page.getContent()).hasSize(1)
                         .extracting("id")
                         .containsOnly(review.getId()),
-                () -> assertThat(page.hasNext()).isTrue()
+                () -> assertThat(page.hasNext()).isFalse()
         );
     }
 

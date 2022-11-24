@@ -20,6 +20,7 @@ import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
+import com.woowacourse.f12.support.CursorSlice;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -102,8 +103,8 @@ public class ReviewService {
         }
     }
 
-    public ReviewWithAuthorAndProductPageResponse findPage(final Pageable pageable) {
-        final Slice<Review> page = reviewRepository.findPageBy(pageable);
+    public ReviewWithAuthorAndProductPageResponse findPage(final Long cursor, final Integer size) {
+        final CursorSlice<Review> page = reviewRepository.findRecentPageBy(cursor, size);
         return ReviewWithAuthorAndProductPageResponse.from(page);
     }
 

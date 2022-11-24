@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -55,10 +56,11 @@ public class ReviewController {
         return ResponseEntity.ok(reviewPageResponse);
     }
 
-    @GetMapping("/reviews")
-    public ResponseEntity<ReviewWithAuthorAndProductPageResponse> showPage(final Pageable pageable) {
-        final ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = reviewService.findPage(
-                pageable);
+    @GetMapping(value = "/reviews")
+    public ResponseEntity<ReviewWithAuthorAndProductPageResponse> showPageByCursor(
+            @RequestParam(required = false) final Long cursor, final Integer size) {
+        final ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse
+                = reviewService.findPage(cursor, size);
         return ResponseEntity.ok(reviewWithAuthorAndProductPageResponse);
     }
 
