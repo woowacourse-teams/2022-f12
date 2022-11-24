@@ -209,7 +209,7 @@ class ReviewAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = GET_요청을_보낸다(
-                "/api/v1/reviews?cursor=" + reviewId3 + "&size=2&sort=id,desc");
+                "/api/v1/reviews?cursor=" + reviewId3 + "&size=2");
 
         // then
         ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = response.as(
