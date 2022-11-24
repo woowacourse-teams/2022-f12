@@ -14,12 +14,7 @@ operation::reviews-create[snippets='error-code-table,http-request,http-response'
 
 operation::reviews-by-product-page-get[snippets='error-code-table,http-request,http-response']
 
-=== 모든 리뷰 목록 페이지 조회
-
-==== sort 조건
-
-- 조건을 적지 않는 경우 (최신순)
-- `rating,desc`(평점순)
+=== 모든 최신 리뷰 목록 페이지 조회
 
 operation::reviews-page-get[snippets='error-code-table,http-request,http-response']
 
