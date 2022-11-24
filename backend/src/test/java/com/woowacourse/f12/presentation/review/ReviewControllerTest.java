@@ -63,7 +63,6 @@ import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import com.woowacourse.f12.presentation.PresentationTest;
-import com.woowacourse.f12.support.CursorPageable;
 import com.woowacourse.f12.support.CursorSlice;
 import com.woowacourse.f12.support.ErrorCodeSnippet;
 import java.util.HashMap;
@@ -468,7 +467,6 @@ class ReviewControllerTest extends PresentationTest {
         ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = ReviewWithAuthorAndProductPageResponse.from(
                 new CursorSlice<>(List.of(review1, review2, review3, review4), false));
 
-        final CursorPageable cursorPageable = new CursorPageable(review3.getId(), 10, Sort.by("id").descending());
         given(reviewService.findPage(review3.getId(), 10))
                 .willReturn(reviewWithAuthorAndProductPageResponse);
 
