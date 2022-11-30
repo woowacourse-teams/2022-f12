@@ -46,20 +46,16 @@ public class ReviewController {
 
     @GetMapping("/products/{productId}/reviews")
     @Login(required = false)
-    public ResponseEntity<ReviewWithAuthorPageResponse> showPageByProductId(@PathVariable final Long productId,
-                                                                            @VerifiedMember @Nullable MemberPayload memberPayload,
-                                                                            final Pageable pageable) {
+    public ReviewWithAuthorPageResponse showPageByProductId(@PathVariable final Long productId,
+                                                            @VerifiedMember @Nullable MemberPayload memberPayload,
+                                                            final Pageable pageable) {
         final Long loggedInMemberId = MemberPayloadSupport.getLoggedInMemberId(memberPayload);
-        final ReviewWithAuthorPageResponse reviewPageResponse = reviewService.findPageByProductId(productId,
-                loggedInMemberId, pageable);
-        return ResponseEntity.ok(reviewPageResponse);
+        return reviewService.findPageByProductId(productId, loggedInMemberId, pageable);
     }
 
     @GetMapping("/reviews")
-    public ResponseEntity<ReviewWithAuthorAndProductPageResponse> showPage(final Pageable pageable) {
-        final ReviewWithAuthorAndProductPageResponse reviewWithAuthorAndProductPageResponse = reviewService.findPage(
-                pageable);
-        return ResponseEntity.ok(reviewWithAuthorAndProductPageResponse);
+    public ReviewWithAuthorAndProductPageResponse showPage(final Pageable pageable) {
+        return reviewService.findPage(pageable);
     }
 
     @PutMapping("/reviews/{reviewId}")
@@ -82,26 +78,20 @@ public class ReviewController {
     }
 
     @GetMapping("/members/{memberId}/reviews")
-    public ResponseEntity<ReviewWithProductPageResponse> showPageByMemberId(@PathVariable final Long memberId,
-                                                                            final Pageable pageable) {
-        final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPageByMemberId(memberId,
-                pageable);
-        return ResponseEntity.ok(reviewWithProductPageResponse);
+    public ReviewWithProductPageResponse showPageByMemberId(@PathVariable final Long memberId,
+                                                            final Pageable pageable) {
+        return reviewService.findPageByMemberId(memberId, pageable);
     }
 
     @GetMapping("/members/me/reviews")
     @Login
-    public ResponseEntity<ReviewWithProductPageResponse> showMyReviewPage(
-            @VerifiedMember final MemberPayload memberPayload,
-            final Pageable pageable) {
-        final ReviewWithProductPageResponse reviewWithProductPageResponse = reviewService.findPageByMemberId(
-                memberPayload.getId(), pageable);
-        return ResponseEntity.ok(reviewWithProductPageResponse);
+    public ReviewWithProductPageResponse showMyReviewPage(@VerifiedMember final MemberPayload memberPayload,
+                                                          final Pageable pageable) {
+        return reviewService.findPageByMemberId(memberPayload.getId(), pageable);
     }
 
     @GetMapping("/inventoryProducts/{inventoryProductId}/reviews")
-    public ResponseEntity<ReviewWithProductResponse> showReview(@PathVariable final Long inventoryProductId) {
-        final ReviewWithProductResponse reviewResponse = reviewService.findByInventoryProductId(inventoryProductId);
-        return ResponseEntity.ok(reviewResponse);
+    public ReviewWithProductResponse showReview(@PathVariable final Long inventoryProductId) {
+        return reviewService.findByInventoryProductId(inventoryProductId);
     }
 }

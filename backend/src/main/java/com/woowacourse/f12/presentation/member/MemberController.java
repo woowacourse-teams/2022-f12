@@ -36,18 +36,16 @@ public class MemberController {
 
     @GetMapping("/me")
     @Login
-    public ResponseEntity<LoggedInMemberResponse> showLoggedIn(@VerifiedMember final MemberPayload memberPayload) {
-        final LoggedInMemberResponse loggedInMemberResponse = memberService.findLoggedInMember(memberPayload.getId());
-        return ResponseEntity.ok(loggedInMemberResponse);
+    public LoggedInMemberResponse showLoggedIn(@VerifiedMember final MemberPayload memberPayload) {
+        return memberService.findLoggedInMember(memberPayload.getId());
     }
 
     @GetMapping("/{memberId}")
     @Login(required = false)
-    public ResponseEntity<MemberResponse> show(@PathVariable final Long memberId,
-                                               @VerifiedMember @Nullable final MemberPayload loggedInMemberPayload) {
+    public MemberResponse show(@PathVariable final Long memberId,
+                               @VerifiedMember @Nullable final MemberPayload loggedInMemberPayload) {
         Long loggedInMemberId = MemberPayloadSupport.getLoggedInMemberId(loggedInMemberPayload);
-        final MemberResponse memberResponse = memberService.find(memberId, loggedInMemberId);
-        return ResponseEntity.ok(memberResponse);
+        return memberService.find(memberId, loggedInMemberId);
     }
 
     @PatchMapping("/me")
@@ -60,14 +58,11 @@ public class MemberController {
 
     @GetMapping
     @Login(required = false)
-    public ResponseEntity<MemberPageResponse> searchMembers(
-            @VerifiedMember @Nullable final MemberPayload loggedInMemberPayload,
-            @ModelAttribute final MemberSearchRequest memberSearchRequest,
-            final Pageable pageable) {
+    public MemberPageResponse searchMembers(@VerifiedMember @Nullable final MemberPayload loggedInMemberPayload,
+                                            @ModelAttribute final MemberSearchRequest memberSearchRequest,
+                                            final Pageable pageable) {
         Long loggedInMemberId = MemberPayloadSupport.getLoggedInMemberId(loggedInMemberPayload);
-        final MemberPageResponse memberPageResponse = memberService.findBySearchConditions(loggedInMemberId,
-                memberSearchRequest, pageable);
-        return ResponseEntity.ok(memberPageResponse);
+        return memberService.findBySearchConditions(loggedInMemberId, memberSearchRequest, pageable);
     }
 
     @PostMapping("/{memberId}/following")
@@ -90,11 +85,9 @@ public class MemberController {
 
     @GetMapping("/me/followings")
     @Login
-    public ResponseEntity<MemberPageResponse> searchFollowings(
-            @VerifiedMember final MemberPayload loggedInMemberPayload,
-            @ModelAttribute final MemberSearchRequest memberSearchRequest,
-            final Pageable pageable) {
-        return ResponseEntity.ok(
-                memberService.findFollowingsByConditions(loggedInMemberPayload.getId(), memberSearchRequest, pageable));
+    public MemberPageResponse searchFollowings(@VerifiedMember final MemberPayload loggedInMemberPayload,
+                                               @ModelAttribute final MemberSearchRequest memberSearchRequest,
+                                               final Pageable pageable) {
+        return memberService.findFollowingsByConditions(loggedInMemberPayload.getId(), memberSearchRequest, pageable);
     }
 }

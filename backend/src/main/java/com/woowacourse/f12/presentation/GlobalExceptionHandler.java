@@ -19,11 +19,13 @@ import com.woowacourse.f12.exception.unauthorized.RefreshTokenNotFoundException;
 import com.woowacourse.f12.exception.unauthorized.TooManyRefreshTokenAffectedException;
 import com.woowacourse.f12.exception.unauthorized.UnauthorizedException;
 import com.woowacourse.f12.presentation.auth.RefreshTokenCookieProvider;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -31,11 +33,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.util.WebUtils;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String REFRESH_TOKEN = "refreshToken";
     private static final String REQUEST_DUPLICATED_MESSAGE = "요청이 중복될 수 없습니다";
     private static final String REQUEST_DATA_FORMAT_ERROR_MESSAGE = "요청으로 넘어온 값이 형식에 맞지 않습니다.";
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "서버 오류가 발생했습니다";
@@ -93,10 +97,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({RefreshTokenNotFoundException.class, DuplicatedRefreshTokenSavedException.class,
             RefreshTokenExpiredException.class, TooManyRefreshTokenAffectedException.class})
     public ResponseEntity<ExceptionResponse> handleRefreshTokenException(final UnauthorizedException e,
-                                                                         final HttpServletRequest request,
-                                                                         final HttpServletResponse response) {
-        refreshTokenCookieProvider.removeCookie(request, response);
-        return handleUnauthorizedException(e);
+                                                                         final HttpServletRequest request) {
+        log.info(LOG_FORMAT, e.getClass().getSimpleName(), e.getErrorCode().getValue(), e.getMessage());
+        ExceptionResponse responseBody = ExceptionResponse.from(e);
+        final Cookie cookie = WebUtils.getCookie(request, REFRESH_TOKEN);
+        if (cookie != null) {
+            ResponseCookie responseCookie = refreshTokenCookieProvider.createLogoutCookie();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                    .body(responseBody);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(responseBody);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
