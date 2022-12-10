@@ -11,6 +11,19 @@ public enum DataSourceType {
     SLAVE(true, 1),
     SLAVE_SUB(true, 1);
 
+    private static final List<DataSourceType> slaveDataSources = new ArrayList<>();
+
+    static {
+        final List<DataSourceType> dataSourceTypes = Arrays.stream(DataSourceType.values())
+                .filter(it -> it.isSlave)
+                .collect(Collectors.toList());
+        for (DataSourceType dataSourceType : dataSourceTypes) {
+            for (int i = 0; i < dataSourceType.getRatio(); i++) {
+                slaveDataSources.add(dataSourceType);
+            }
+        }
+    }
+
     private final boolean isSlave;
     private final int ratio;
 
@@ -20,16 +33,7 @@ public enum DataSourceType {
     }
 
     public static List<DataSourceType> getSlaveDataSourcePool() {
-        final List<DataSourceType> dataSourceTypes = Arrays.stream(DataSourceType.values())
-                .filter(it -> it.isSlave)
-                .collect(Collectors.toList());
-        List<DataSourceType> dataSources = new ArrayList<>();
-        for (DataSourceType dataSourceType : dataSourceTypes) {
-            for (int i = 0; i < dataSourceType.getRatio(); i++) {
-                dataSources.add(dataSourceType);
-            }
-        }
-        return dataSources;
+        return slaveDataSources;
     }
 
     public int getRatio() {
