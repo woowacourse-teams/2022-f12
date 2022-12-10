@@ -34,17 +34,15 @@ class DataSourceLoadBalancerTest {
                 final DataSourceType dataSource = dataSourceLoadBalancer.getDataSource();
                 if (dataSource == DataSourceType.SLAVE) {
                     slaveCount.getAndIncrement();
-                    countDownLatch.countDown();
                     return;
                 }
                 if (dataSource == DataSourceType.SLAVE_SUB) {
                     slaveSubCount.getAndIncrement();
-                    countDownLatch.countDown();
                     return;
                 }
                 errorCount.getAndIncrement();
-                countDownLatch.countDown();
             });
+            countDownLatch.countDown();
         }
         countDownLatch.await();
 
