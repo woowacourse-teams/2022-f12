@@ -2,6 +2,9 @@ name: backend
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - issue887
   pull_request:
     branches:
       - main
