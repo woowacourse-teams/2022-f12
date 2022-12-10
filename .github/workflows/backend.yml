@@ -35,6 +35,7 @@ jobs:
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
+          gradle-version: wrapper
           arguments: build
 #       - name: grant execute permission for gradlew
 #         run: chmod +x gradlew
