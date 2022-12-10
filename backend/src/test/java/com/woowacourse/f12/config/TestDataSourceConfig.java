@@ -2,7 +2,10 @@ package com.woowacourse.f12.config;
 
 import static com.woowacourse.f12.support.DataSourceType.MASTER;
 import static com.woowacourse.f12.support.DataSourceType.SLAVE;
+import static com.woowacourse.f12.support.DataSourceType.SLAVE_SUB;
 
+import com.woowacourse.f12.support.DataSourceLoadBalancer;
+import com.woowacourse.f12.support.DataSourceType;
 import com.woowacourse.f12.support.ReplicationRoutingDataSource;
 import com.zaxxer.hikari.HikariDataSource;
 import java.util.Map;
@@ -24,6 +27,7 @@ public class TestDataSourceConfig {
 
     private static final String MASTER_URL = "jdbc:h2:mem:master;MODE=MySQL;";
     private static final String SLAVE_URL = "jdbc:h2:mem:slave;MODE=MySQL;";
+    private static final String SLAVE_SUB_URL = "jdbc:h2:mem:slave-sub;MODE=MySQL;";
 
     @Bean(name = "masterDataSource")
     public DataSource masterDataSource() {
@@ -45,11 +49,24 @@ public class TestDataSourceConfig {
                 .build();
     }
 
+    @Bean(name = "slaveSubDataSource")
+    public DataSource slaveSubDataSource() {
+        return DataSourceBuilder.create()
+                .type(HikariDataSource.class)
+                .url(SLAVE_SUB_URL)
+                .username("sa")
+                .password("")
+                .build();
+    }
+
     @Bean(name = "routeDataSource")
     public DataSource routeDataSource(@Qualifier("masterDataSource") final DataSource masterDataSource,
-                                      @Qualifier("slaveDataSource") final DataSource slaveDataSource) {
-        final ReplicationRoutingDataSource replicationRoutingDataSource = new ReplicationRoutingDataSource();
-        final Map<Object, Object> dataSources = Map.of(MASTER, masterDataSource, SLAVE, slaveDataSource);
+                                      @Qualifier("slaveDataSource") final DataSource slaveDataSource,
+                                      @Qualifier("slaveSubDataSource") final DataSource slaveSubDataSource) {
+        final ReplicationRoutingDataSource replicationRoutingDataSource = new ReplicationRoutingDataSource(
+                new DataSourceLoadBalancer(DataSourceType.getSlaveDataSourcePool()));
+        final Map<Object, Object> dataSources = Map.of(MASTER, masterDataSource, SLAVE, slaveDataSource, SLAVE_SUB,
+                slaveSubDataSource);
         replicationRoutingDataSource.setTargetDataSources(dataSources);
         replicationRoutingDataSource.setDefaultTargetDataSource(masterDataSource);
         return replicationRoutingDataSource;

@@ -19,7 +19,7 @@ class DatasourceConfigTest {
     void transaction이_readOnly라면_slave_datasource를_선택한다() throws SQLException {
         String url = transactionTestService.readOnly();
 
-        assertThat(url).isEqualTo("jdbc:h2:mem:slave");
+        assertThat(url).startsWith("jdbc:h2:mem:slave");
     }
 
     @Test
