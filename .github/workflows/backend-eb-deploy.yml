@@ -44,6 +44,7 @@ jobs:
 
     - name: Generate deployment package
       run: |
+        ls
         mkdir -p deploy
         cp build/libs/*.jar deploy/application.jar
         cp Procfile deploy/Procfile
