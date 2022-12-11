@@ -16,10 +16,10 @@ jobs:
     steps:
     
     - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
 
     - name: Checkout source code
       uses: actions/checkout@v2
