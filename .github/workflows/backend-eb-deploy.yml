@@ -63,3 +63,8 @@ jobs:
         version_label: github-action-${{steps.current-time.outputs.formattedTime}}
         region: ap-northeast-2
         deployment_package: deploy/deploy.zip
+    - name: add comments to a pull request
+      uses: mikepenz/action-junit-report@v3
+      if: always()
+      with:
+          report_paths: backend/build/test-results/test/TEST-*.xml
