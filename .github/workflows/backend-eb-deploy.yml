@@ -46,6 +46,7 @@ jobs:
       run: |
         ls
         mkdir -p deploy
+        ls
         cp build/libs/*.jar deploy/application.jar
         cp Procfile deploy/Procfile
         cp -r .ebextensions deploy/.ebextensions
