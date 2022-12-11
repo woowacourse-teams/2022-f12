@@ -52,6 +52,7 @@ jobs:
         cp -r .ebextensions deploy/.ebextensions
         cp -r .platform deploy/.platform
         cd deploy && zip -r deploy.zip .
+        ls
     
     - name: Deploy to EB
       uses: einaregilsson/beanstalk-deploy@v21
@@ -62,7 +63,7 @@ jobs:
         environment_name: F12prodbackend-env-2
         version_label: github-action-${{steps.current-time.outputs.formattedTime}}
         region: ap-northeast-2
-        deployment_package: deploy/deploy.zip
+        deployment_package: deploy.zip
     - name: add comments to a pull request
       uses: mikepenz/action-junit-report@v3
       if: always()
