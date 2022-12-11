@@ -56,8 +56,8 @@ jobs:
       with:
         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: freelec-springboot2-webervice
-        environment_name: freelec-springboot2-webervice
+        application_name: f12-prod-backend
+        environment_name: F12prodbackend-env-2
         version_label: github-action-${{steps.current-time.outputs.formattedTime}}
         region: ap-northeast-2
         deployment_package: deploy/deploy.zip
