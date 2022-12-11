@@ -47,7 +47,7 @@ jobs:
         ls
         mkdir -p deploy
         cd build/libs && ls && cd ../..
-        cp build/libs/*.jar deploy/application.jar
+        cp build/libs/f12-(!plain).jar deploy/application.jar
         cp Procfile deploy/Procfile
         cp -r .ebextensions deploy/.ebextensions
         cp -r .platform deploy/.platform
