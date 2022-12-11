@@ -1,0 +1,63 @@
+name: deploy eb backend
+on:
+  workflow_dispatch:
+  push:
+    branches:
+#     - main
+    - issue892
+    
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+    - name: Checkout source code
+      uses: actions/checkout@v2
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Execute Gradle build
+      run: ./gradlew build
+          
+    - name: Get current time
+      uses: 1466587594/get-current-time@v2.0.2
+      id: current-time
+      with:
+        format: YYYY-MM-DDTHH-mm-ss
+        utcOffset: "+09:00"
+
+    - name: Generate deployment package
+      run: |
+        mkdir -p deploy
+        cp build/libs/*.jar deploy/application.jar
+        cp Procfile deploy/Procfile
+        cp -r .ebextensions deploy/.ebextensions
+        cp -r .platform deploy/.platform
+        cd deploy && zip -r deploy.zip .
+    
+    - name: Deploy to EB
+      uses: einaregilsson/beanstalk-deploy@v21
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: freelec-springboot2-webervice
+        environment_name: freelec-springboot2-webervice
+        version_label: github-action-${{steps.current-time.outputs.formattedTime}}
+        region: ap-northeast-2
+        deployment_package: deploy/deploy.zip
