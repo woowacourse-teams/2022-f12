@@ -23,6 +23,9 @@ jobs:
 
     - name: Checkout source code
       uses: actions/checkout@v2
+      with:
+        submodules: 'true'
+        token: ${{ secrets.GH_ACCESS_TOKEN }}
 
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
@@ -33,7 +36,7 @@ jobs:
       run: chmod +x gradlew
       
     - name: Execute Gradle build
-      run: ./gradlew build
+      run: ./gradlew bootJar
           
     - name: Get current time
       uses: 1466587594/get-current-time@v2.0.2
@@ -44,12 +47,15 @@ jobs:
 
     - name: Generate deployment package
       run: |
+        ls
         mkdir -p deploy
-        cp build/libs/*.jar deploy/application.jar
+        cd build/libs && ls && cd ../..
+        cp build/libs/f12-0.0.1-SNAPSHOT.jar deploy/application.jar
         cp Procfile deploy/Procfile
         cp -r .ebextensions deploy/.ebextensions
         cp -r .platform deploy/.platform
         cd deploy && zip -r deploy.zip .
+        ls
     
     - name: Deploy to EB
       uses: einaregilsson/beanstalk-deploy@v21
@@ -60,4 +66,9 @@ jobs:
         environment_name: F12prodbackend-env-2
         version_label: github-action-${{steps.current-time.outputs.formattedTime}}
         region: ap-northeast-2
-        deployment_package: deploy/deploy.zip
+        deployment_package: backend/deploy/deploy.zip
+    - name: add comments to a pull request
+      uses: mikepenz/action-junit-report@v3
+      if: always()
+      with:
+          report_paths: backend/build/test-results/test/TEST-*.xml
