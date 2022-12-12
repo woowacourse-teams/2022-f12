@@ -23,6 +23,9 @@ jobs:
 
     - name: Checkout source code
       uses: actions/checkout@v2
+      with:
+        submodules: 'true'
+        token: ${{ secrets.GH_ACCESS_TOKEN }}
 
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
