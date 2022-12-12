@@ -11,11 +11,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class DataSourceLoadBalancerTest {
 
     @Test
+    @Disabled
     void 요청에_대해서_비율_따라_부하_분산되는_동시성_테스트() throws InterruptedException {
         int slaveRatio = 1;
         int slaveSubRatio = 1;
