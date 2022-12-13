@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
     <Properties>
-        <Property name="log">/var/log/tomcat/log</Property>
-        <Property name="db-log">/var/log/tomcat/db</Property>
+        <Property name="log">logs/log</Property>
+        <Property name="db-log">logs/db</Property>
         <Property name="log-pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %m%n</Property>
         <Property name="file-pattern">%d{yyyy-MM-dd}-%i.log.gz</Property>
     </Properties>
