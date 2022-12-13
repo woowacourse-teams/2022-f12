@@ -3,8 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-#     - main
-    - issue892
+    - main
     
 defaults:
   run:
