@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+    - issue892
     
 defaults:
   run:
@@ -59,7 +60,7 @@ jobs:
         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         application_name: f12-prod-backend
-        environment_name: F12prodbackend-env-2
+        environment_name: F12prodbackend-env
         version_label: github-action-${{steps.current-time.outputs.formattedTime}}
         region: ap-northeast-2
         deployment_package: backend/deploy/deploy.zip
