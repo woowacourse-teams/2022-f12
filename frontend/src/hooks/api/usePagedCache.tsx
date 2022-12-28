@@ -28,9 +28,6 @@ function usePagedCache() {
     }
 
     const response = await axiosInstance.get(url, config);
-    if (response.status >= 400) {
-      return cache;
-    }
 
     addCache(key, response);
 
