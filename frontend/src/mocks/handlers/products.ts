@@ -43,7 +43,6 @@ export const getKeyboard: ResponseResolver<RestRequest, RestContext> = (
   const { id } = req.params;
 
   const response = products.find(({ id: productId }) => productId === Number(id));
-  console.log(products, id);
 
   return res(ctx.status(200), ctx.json(response), ctx.delay());
 };
