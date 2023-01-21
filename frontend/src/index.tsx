@@ -9,6 +9,7 @@ import CacheContextProvider from '@/contexts/CacheContextProvider';
 import DeviceContextProvider from '@/contexts/DeviceContextProvider';
 import LoginContextProvider from '@/contexts/LoginContextProvider';
 import ModalContextProvider from '@/contexts/ModalContextProvider';
+import PagedCacheContextProvider from '@/contexts/PagedCacheContextProvider';
 
 import GlobalStyles from '@/style/GlobalStyles';
 import ResetCss from '@/style/ResetCss';
@@ -44,11 +45,13 @@ root.render(
       <DeviceContextProvider>
         <BrowserRouter>
           <CacheContextProvider>
-            <LoginContextProvider>
-              <ModalContextProvider>
-                <App />
-              </ModalContextProvider>
-            </LoginContextProvider>
+            <PagedCacheContextProvider>
+              <LoginContextProvider>
+                <ModalContextProvider>
+                  <App />
+                </ModalContextProvider>
+              </LoginContextProvider>
+            </PagedCacheContextProvider>
           </CacheContextProvider>
         </BrowserRouter>
       </DeviceContextProvider>

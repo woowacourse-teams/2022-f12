@@ -42,12 +42,7 @@ function ProductListSection({
 
   const productList = data.map(({ id, imageUrl, name, rating, reviewCount }, index) => (
     <S.ProductCardLi key={id}>
-      <Link
-        to={`${ROUTES.PRODUCT}/${id}`}
-        key={id}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <Link to={`${ROUTES.PRODUCT}/${id}`} key={id}>
         <ProductCard
           imageUrl={imageUrl}
           name={name}

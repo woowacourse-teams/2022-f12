@@ -2,7 +2,6 @@ import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { useContext } from 'react';
 
 import {
-  AddCacheArrayContext,
   AddCacheContext,
   GetCacheContext,
   RemoveCacheContext,
@@ -18,16 +17,11 @@ type getWithCacheParams = {
 function useCache() {
   const getCache = useContext(GetCacheContext);
   const addCache = useContext(AddCacheContext);
-  const addCacheArray = useContext(AddCacheArrayContext);
   const removeCache = useContext(RemoveCacheContext);
 
-  const getCachedResponse = (cacheKey: string, page?: number) => {
-    const cachedResponse = getCache(cacheKey, page);
-    const isCacheArray = cachedResponse instanceof Array;
-    if (isCacheArray && page && cachedResponse[page] !== undefined) {
-      return cachedResponse[page];
-    }
-    if (!isCacheArray && cachedResponse) {
+  const getCachedResponse = (cacheKey: string) => {
+    const cachedResponse = getCache(cacheKey);
+    if (cachedResponse) {
       return cachedResponse;
     }
   };
@@ -35,14 +29,9 @@ function useCache() {
   const saveCacheResponse = (
     cacheKey: string,
     response: AxiosResponse,
-    maxAge: number,
-    page?: number
+    maxAge: number
   ) => {
-    if (page !== undefined) {
-      addCacheArray(cacheKey, page, response, maxAge);
-    } else {
-      addCache(cacheKey, response, maxAge);
-    }
+    addCache(cacheKey, response, maxAge);
   };
 
   const getWithCache = async ({
@@ -52,18 +41,16 @@ function useCache() {
     maxAge,
   }: getWithCacheParams) => {
     const searchParams = new URLSearchParams(config.params as Record<string, string>);
-    const page = Number(searchParams.get('page'));
-    searchParams.delete('page');
     const hasNoSearchParams = Array.from(searchParams).length === 0;
     const cacheKey = `${url}${hasNoSearchParams ? '' : `?${searchParams.toString()}`}`;
-    const cachedResponse = getCachedResponse(cacheKey, page);
+    const cachedResponse = getCachedResponse(cacheKey);
     if (cachedResponse) {
       return cachedResponse;
     }
 
     const response = await axiosInstance.get(url, config);
 
-    saveCacheResponse(cacheKey, response, maxAge, page);
+    saveCacheResponse(cacheKey, response, maxAge);
     return response;
   };
 
