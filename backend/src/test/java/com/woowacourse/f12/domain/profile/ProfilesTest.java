@@ -75,4 +75,19 @@ class ProfilesTest {
                 () -> assertThat(profiles.getProfiles().get(0).getProfileProducts()).isEmpty()
         );
     }
+
+    @Test
+    void 팔로잉하는_프로필을_팔로잉_관계를_생략하고_생성한다() {
+        // given
+        final InventoryProduct inventoryProduct =
+                InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT.생성(1L, member, product);
+
+        // when
+        final Profiles profiles = Profiles.ofFollowings(List.of(member), List.of(inventoryProduct));
+
+        assertAll(
+                () -> assertThat(profiles.getProfiles()).hasSize(1),
+                () -> assertThat(profiles.getProfiles().get(0).isFollowing()).isTrue()
+        );
+    }
 }
