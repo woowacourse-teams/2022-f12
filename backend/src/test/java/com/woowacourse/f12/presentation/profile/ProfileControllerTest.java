@@ -29,7 +29,7 @@ import com.woowacourse.f12.domain.member.Following;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.domain.profile.Profiles;
-import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.request.profile.ProfileSearchRequest;
 import com.woowacourse.f12.dto.response.profile.PagedProfilesResponse;
 import com.woowacourse.f12.presentation.PresentationTest;
 import com.woowacourse.f12.support.ErrorCodeSnippet;
@@ -52,7 +52,7 @@ class ProfileControllerTest extends PresentationTest {
     @Test
     void 회원이_키워드와_옵션으로_프로필_목록을_조회한다() throws Exception {
         // given
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE_CONSTANT, BACKEND_CONSTANT);
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest("cheese", NONE_CONSTANT, BACKEND_CONSTANT);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
                 KEYBOARD_1.생성(1L));
@@ -71,7 +71,7 @@ class ProfileControllerTest extends PresentationTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(new MemberPayload(loggedInId, Role.USER));
-        given(profileService.findBySearchConditions(eq(loggedInId), any(MemberSearchRequest.class),
+        given(profileService.findBySearchConditions(eq(loggedInId), any(ProfileSearchRequest.class),
                 any(PageRequest.class)))
                 .willReturn(memberPageResponse);
 
@@ -88,7 +88,7 @@ class ProfileControllerTest extends PresentationTest {
         assertAll(
                 () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(profileService).findBySearchConditions(eq(loggedInId), refEq(memberSearchRequest),
+                () -> verify(profileService).findBySearchConditions(eq(loggedInId), refEq(profileSearchRequest),
                         refEq(pageable))
         );
     }
@@ -104,14 +104,14 @@ class ProfileControllerTest extends PresentationTest {
         resultActions.andExpect(status().isBadRequest())
                 .andDo(print());
 
-        verify(profileService, times(0)).findBySearchConditions(isNull(), any(MemberSearchRequest.class),
+        verify(profileService, times(0)).findBySearchConditions(isNull(), any(ProfileSearchRequest.class),
                 any(PageRequest.class));
     }
 
     @Test
     void 비회원이_키워드와_옵션으로_프로필_목록을_조회한다() throws Exception {
         // given
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", NONE_CONSTANT, BACKEND_CONSTANT);
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest("cheese", NONE_CONSTANT, BACKEND_CONSTANT);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
                 KEYBOARD_1.생성(1L));
@@ -120,7 +120,7 @@ class ProfileControllerTest extends PresentationTest {
         PagedProfilesResponse pagedProfilesResponse
                 = PagedProfilesResponse.of(false,
                 Profiles.of(List.of(member), List.of(inventoryProduct), Collections.emptyList()));
-        given(profileService.findBySearchConditions(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
+        given(profileService.findBySearchConditions(isNull(), any(ProfileSearchRequest.class), any(PageRequest.class)))
                 .willReturn(pagedProfilesResponse);
 
         // when
@@ -134,13 +134,13 @@ class ProfileControllerTest extends PresentationTest {
                         new ErrorCodeSnippet(INVALID_SEARCH_PARAM, INVALID_PAGING_PARAM)))
                 .andDo(print());
 
-        verify(profileService).findBySearchConditions(isNull(), refEq(memberSearchRequest), refEq(pageable));
+        verify(profileService).findBySearchConditions(isNull(), refEq(profileSearchRequest), refEq(pageable));
     }
 
     @Test
     void 프로필_목록_조회_성공_키워드와_옵션값이_주어지지_않을때() throws Exception {
         // given
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest(null, null, null);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
                 KEYBOARD_1.생성(1L));
@@ -149,7 +149,7 @@ class ProfileControllerTest extends PresentationTest {
         PagedProfilesResponse pagedProfilesResponse
                 = PagedProfilesResponse.of(false,
                 Profiles.of(List.of(member), List.of(inventoryProduct), Collections.emptyList()));
-        given(profileService.findBySearchConditions(isNull(), any(MemberSearchRequest.class), any(PageRequest.class)))
+        given(profileService.findBySearchConditions(isNull(), any(ProfileSearchRequest.class), any(PageRequest.class)))
                 .willReturn(pagedProfilesResponse);
 
         // when
@@ -161,14 +161,14 @@ class ProfileControllerTest extends PresentationTest {
         resultActions.andExpect(status().isOk())
                 .andDo(print());
 
-        verify(profileService).findBySearchConditions(isNull(), refEq(memberSearchRequest), refEq(pageable));
+        verify(profileService).findBySearchConditions(isNull(), refEq(profileSearchRequest), refEq(pageable));
     }
 
     @Test
     void 팔로잉하는_프로필_목록_조회_성공() throws Exception {
         // given
         Long loggedInId = 1L;
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest(null, null, null);
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(2L),
                 KEYBOARD_1.생성(1L));
@@ -187,7 +187,7 @@ class ProfileControllerTest extends PresentationTest {
                 .willReturn(true);
         given(jwtProvider.getPayload(authorizationHeader))
                 .willReturn(new MemberPayload(loggedInId, Role.USER));
-        given(profileService.findFollowingsByConditions(eq(loggedInId), refEq(memberSearchRequest), eq(pageable)))
+        given(profileService.findFollowingsByConditions(eq(loggedInId), refEq(profileSearchRequest), eq(pageable)))
                 .willReturn(pagedProfilesResponse);
 
         // when
@@ -205,7 +205,7 @@ class ProfileControllerTest extends PresentationTest {
         assertAll(
                 () -> verify(jwtProvider).isValidToken(authorizationHeader),
                 () -> verify(jwtProvider).getPayload(authorizationHeader),
-                () -> verify(profileService).findFollowingsByConditions(eq(loggedInId), refEq(memberSearchRequest),
+                () -> verify(profileService).findFollowingsByConditions(eq(loggedInId), refEq(profileSearchRequest),
                         eq(pageable))
         );
     }

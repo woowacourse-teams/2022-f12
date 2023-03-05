@@ -2,7 +2,7 @@ package com.woowacourse.f12.presentation.profile;
 
 import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.application.profile.ProfileService;
-import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.request.profile.ProfileSearchRequest;
 import com.woowacourse.f12.dto.response.profile.PagedProfilesResponse;
 import com.woowacourse.f12.presentation.auth.Login;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
@@ -27,17 +27,17 @@ public class ProfileController {
     @GetMapping
     @Login(required = false)
     public PagedProfilesResponse search(@VerifiedMember @Nullable final MemberPayload loggedInMemberPayload,
-                                        @ModelAttribute final MemberSearchRequest memberSearchRequest,
+                                        @ModelAttribute final ProfileSearchRequest profileSearchRequest,
                                         final Pageable pageable) {
         Long loggedInMemberId = MemberPayloadSupport.getLoggedInMemberId(loggedInMemberPayload);
-        return profileService.findBySearchConditions(loggedInMemberId, memberSearchRequest, pageable);
+        return profileService.findBySearchConditions(loggedInMemberId, profileSearchRequest, pageable);
     }
 
     @GetMapping("/me/followings")
     @Login
     public PagedProfilesResponse searchByFollowings(@VerifiedMember final MemberPayload loggedInMemberPayload,
-                                                    @ModelAttribute final MemberSearchRequest memberSearchRequest,
+                                                    @ModelAttribute final ProfileSearchRequest profileSearchRequest,
                                                     final Pageable pageable) {
-        return profileService.findFollowingsByConditions(loggedInMemberPayload.getId(), memberSearchRequest, pageable);
+        return profileService.findFollowingsByConditions(loggedInMemberPayload.getId(), profileSearchRequest, pageable);
     }
 }

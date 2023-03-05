@@ -27,7 +27,7 @@ import com.woowacourse.f12.domain.member.FollowingRepository;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.profile.Profile;
-import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.request.profile.ProfileSearchRequest;
 import com.woowacourse.f12.dto.response.profile.PagedProfilesResponse;
 import com.woowacourse.f12.dto.response.profile.ProfileResponse;
 import java.util.Collections;
@@ -72,8 +72,8 @@ class ProfileServiceTest {
                 .willReturn(inventoryProducts);
 
         // when
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
-        PagedProfilesResponse pagedProfilesResponse = profileService.findBySearchConditions(null, memberSearchRequest,
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest(null, null, null);
+        PagedProfilesResponse pagedProfilesResponse = profileService.findBySearchConditions(null, profileSearchRequest,
                 pageable);
 
         // then
@@ -102,8 +102,8 @@ class ProfileServiceTest {
                 .willReturn(inventoryProducts);
 
         // when
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
-        PagedProfilesResponse memberPageResponse = profileService.findBySearchConditions(null, memberSearchRequest,
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
+        PagedProfilesResponse memberPageResponse = profileService.findBySearchConditions(null, profileSearchRequest,
                 pageable);
 
         // then
@@ -131,8 +131,9 @@ class ProfileServiceTest {
                 .willReturn(inventoryProducts);
 
         // when
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", SENIOR_CONSTANT, BACKEND_CONSTANT);
-        PagedProfilesResponse pagedProfilesResponse = profileService.findBySearchConditions(null, memberSearchRequest,
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest("cheese", SENIOR_CONSTANT,
+                BACKEND_CONSTANT);
+        PagedProfilesResponse pagedProfilesResponse = profileService.findBySearchConditions(null, profileSearchRequest,
                 pageable);
 
         // then
@@ -169,9 +170,10 @@ class ProfileServiceTest {
                 .willReturn(List.of(following));
 
         // when
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("cheese", SENIOR_CONSTANT, BACKEND_CONSTANT);
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest("cheese", SENIOR_CONSTANT,
+                BACKEND_CONSTANT);
         PagedProfilesResponse pagedProfilesResponse = profileService.findBySearchConditions(loggedInId,
-                memberSearchRequest,
+                profileSearchRequest,
                 pageable);
 
         // then
@@ -196,10 +198,10 @@ class ProfileServiceTest {
                 .willReturn(new SliceImpl<>(Collections.emptyList(), pageable, false));
 
         // when
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("invalid", JUNIOR_CONSTANT,
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest("invalid", JUNIOR_CONSTANT,
                 FRONTEND_CONSTANT);
         PagedProfilesResponse pagedProfilesResponse = profileService.findBySearchConditions(loggedInId,
-                memberSearchRequest,
+                profileSearchRequest,
                 pageable);
 
         // then
@@ -217,7 +219,7 @@ class ProfileServiceTest {
         // given
         Long loggedInId = 1L;
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest(null, null, null);
         Member member = CORINNE.생성(2L);
         final Profile profile = new Profile(member, new InventoryProducts(Collections.emptyList()), true);
 
@@ -228,7 +230,7 @@ class ProfileServiceTest {
 
         // when
         PagedProfilesResponse pagedProfilesResponse = profileService.findFollowingsByConditions(loggedInId,
-                memberSearchRequest, pageable);
+                profileSearchRequest, pageable);
 
         // then
         assertAll(
@@ -245,7 +247,7 @@ class ProfileServiceTest {
         // given
         Long loggedInId = 1L;
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
         Member member = CORINNE.생성(2L);
         final Profile profile = new Profile(member, new InventoryProducts(Collections.emptyList()), true);
 
@@ -256,7 +258,7 @@ class ProfileServiceTest {
 
         // when
         PagedProfilesResponse pagedProfilesResponse = profileService.findFollowingsByConditions(loggedInId,
-                memberSearchRequest, pageable);
+                profileSearchRequest, pageable);
 
         // then
         assertAll(
@@ -275,7 +277,7 @@ class ProfileServiceTest {
         Long loggedInId = 1L;
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         Member member = CORINNE.생성(2L);
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("ham", SENIOR_CONSTANT, null);
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest("ham", SENIOR_CONSTANT, null);
         final Profile profile = new Profile(member, new InventoryProducts(Collections.emptyList()), true);
 
         given(memberRepository.findFollowingsWithSearchConditions(loggedInId, "ham", SENIOR, null, pageable))
@@ -285,7 +287,7 @@ class ProfileServiceTest {
 
         // when
         PagedProfilesResponse pagedProfilesResponse = profileService.findFollowingsByConditions(loggedInId,
-                memberSearchRequest, pageable);
+                profileSearchRequest, pageable);
 
         // then
         assertAll(
@@ -303,7 +305,7 @@ class ProfileServiceTest {
         // given
         Long loggedInId = 1L;
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
-        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("invalid", JUNIOR_CONSTANT,
+        ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest("invalid", JUNIOR_CONSTANT,
                 FRONTEND_CONSTANT);
 
         given(memberRepository.findFollowingsWithSearchConditions(loggedInId, "invalid", JUNIOR, FRONTEND, pageable))
@@ -311,7 +313,7 @@ class ProfileServiceTest {
 
         // when
         PagedProfilesResponse pagedProfilesResponse = profileService.findFollowingsByConditions(loggedInId,
-                memberSearchRequest, pageable);
+                profileSearchRequest, pageable);
 
         // then
         assertAll(

@@ -9,7 +9,7 @@ import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.profile.Profiles;
-import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
+import com.woowacourse.f12.dto.request.profile.ProfileSearchRequest;
 import com.woowacourse.f12.dto.response.profile.PagedProfilesResponse;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
@@ -45,9 +45,9 @@ public class ProfileService {
     }
 
     public PagedProfilesResponse findBySearchConditions(@Nullable final Long loggedInId,
-                                                        final MemberSearchRequest memberSearchRequest,
+                                                        final ProfileSearchRequest profileSearchRequest,
                                                         final Pageable pageable) {
-        final Slice<Member> slice = findBySearchConditions(memberSearchRequest, pageable);
+        final Slice<Member> slice = findBySearchConditions(profileSearchRequest, pageable);
         if (slice.isEmpty()) {
             return PagedProfilesResponse.empty();
         }
@@ -64,27 +64,27 @@ public class ProfileService {
         return Profiles.of(members, mixedInventoryProducts, followingRelations);
     }
 
-    private Slice<Member> findBySearchConditions(final MemberSearchRequest memberSearchRequest,
+    private Slice<Member> findBySearchConditions(final ProfileSearchRequest profileSearchRequest,
                                                  final Pageable pageable) {
-        final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
-        final JobType jobType = parseJobType(memberSearchRequest);
-        if (memberSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
+        final CareerLevel careerLevel = parseCareerLevel(profileSearchRequest);
+        final JobType jobType = parseJobType(profileSearchRequest);
+        if (profileSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
             return memberRepository.findWithOutSearchConditions(pageable);
         }
-        return memberRepository.findWithSearchConditions(memberSearchRequest.getQuery(), careerLevel,
+        return memberRepository.findWithSearchConditions(profileSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
     }
 
-    private JobType parseJobType(final MemberSearchRequest memberSearchRequest) {
-        final JobTypeConstant jobTypeConstant = memberSearchRequest.getJobType();
+    private JobType parseJobType(final ProfileSearchRequest profileSearchRequest) {
+        final JobTypeConstant jobTypeConstant = profileSearchRequest.getJobType();
         if (jobTypeConstant == null) {
             return null;
         }
         return jobTypeConstant.toJobType();
     }
 
-    private CareerLevel parseCareerLevel(final MemberSearchRequest memberSearchRequest) {
-        final CareerLevelConstant careerLevelConstant = memberSearchRequest.getCareerLevel();
+    private CareerLevel parseCareerLevel(final ProfileSearchRequest profileSearchRequest) {
+        final CareerLevelConstant careerLevelConstant = profileSearchRequest.getCareerLevel();
         if (careerLevelConstant == null) {
             return null;
         }
@@ -92,9 +92,9 @@ public class ProfileService {
     }
 
     public PagedProfilesResponse findFollowingsByConditions(final Long loggedInId,
-                                                            final MemberSearchRequest memberSearchRequest,
+                                                            final ProfileSearchRequest profileSearchRequest,
                                                             final Pageable pageable) {
-        final Slice<Member> slice = findFollowingsBySearchConditions(loggedInId, memberSearchRequest, pageable);
+        final Slice<Member> slice = findFollowingsBySearchConditions(loggedInId, profileSearchRequest, pageable);
         if (slice.isEmpty()) {
             return PagedProfilesResponse.empty();
         }
@@ -109,14 +109,14 @@ public class ProfileService {
     }
 
     private Slice<Member> findFollowingsBySearchConditions(final Long loggedInId,
-                                                           final MemberSearchRequest memberSearchRequest,
+                                                           final ProfileSearchRequest profileSearchRequest,
                                                            final Pageable pageable) {
-        final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
-        final JobType jobType = parseJobType(memberSearchRequest);
-        if (memberSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
+        final CareerLevel careerLevel = parseCareerLevel(profileSearchRequest);
+        final JobType jobType = parseJobType(profileSearchRequest);
+        if (profileSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
             return memberRepository.findFollowingsWithOutSearchConditions(loggedInId, pageable);
         }
-        return memberRepository.findFollowingsWithSearchConditions(loggedInId, memberSearchRequest.getQuery(),
+        return memberRepository.findFollowingsWithSearchConditions(loggedInId, profileSearchRequest.getQuery(),
                 careerLevel, jobType, pageable);
     }
 }
