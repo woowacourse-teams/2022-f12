@@ -90,4 +90,33 @@ public class ProfileService {
         }
         return careerLevelConstant.toCareerLevel();
     }
+
+    public PagedProfilesResponse findFollowingsByConditions(final Long loggedInId,
+                                                            final MemberSearchRequest memberSearchRequest,
+                                                            final Pageable pageable) {
+        final Slice<Member> slice = findFollowingsBySearchConditions(loggedInId, memberSearchRequest, pageable);
+        if (slice.isEmpty()) {
+            return PagedProfilesResponse.empty();
+        }
+        final Profiles followingProfiles = createFollowingProfiles(slice);
+        return PagedProfilesResponse.of(slice.hasNext(), followingProfiles);
+    }
+
+    private Profiles createFollowingProfiles(final Slice<Member> slice) {
+        final List<InventoryProduct> mixedInventoryProducts =
+                inventoryProductRepository.findWithProductByMembers(slice.getContent());
+        return Profiles.ofFollowings(slice.getContent(), mixedInventoryProducts);
+    }
+
+    private Slice<Member> findFollowingsBySearchConditions(final Long loggedInId,
+                                                           final MemberSearchRequest memberSearchRequest,
+                                                           final Pageable pageable) {
+        final CareerLevel careerLevel = parseCareerLevel(memberSearchRequest);
+        final JobType jobType = parseJobType(memberSearchRequest);
+        if (memberSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
+            return memberRepository.findFollowingsWithOutSearchConditions(loggedInId, pageable);
+        }
+        return memberRepository.findFollowingsWithSearchConditions(loggedInId, memberSearchRequest.getQuery(),
+                careerLevel, jobType, pageable);
+    }
 }

@@ -40,6 +40,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 
 @ExtendWith(MockitoExtension.class)
 class ProfileServiceTest {
@@ -57,7 +58,7 @@ class ProfileServiceTest {
     private ProfileService profileService;
 
     @Test
-    void 비회원이_검색_조건_없이_회원을_조회한다() {
+    void 비회원이_검색_조건_없이_프로필을_조회한다() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
@@ -87,7 +88,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void 비회원이_옵션으로만_회원을_조회한다() {
+    void 비회원이_옵션으로만_프로필을_조회한다() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
@@ -116,7 +117,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void 비회원이_키워드와_옵션으로_회원을_조회한다() {
+    void 비회원이_키워드와_옵션으로_프로필을_조회한다() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
@@ -146,7 +147,7 @@ class ProfileServiceTest {
     }
 
     @Test
-    void 회원이_키워드와_옵션으로_회원을_조회한다() {
+    void 회원이_키워드와_옵션으로_프로필을_조회한다() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
@@ -206,6 +207,117 @@ class ProfileServiceTest {
                 () -> verify(memberRepository).findWithSearchConditions("invalid", JUNIOR, FRONTEND, pageable),
                 () -> verify(inventoryProductRepository, times(0)).findWithProductByMembers(any()),
                 () -> verify(followingRepository, times(0)).findByFollowerIdAndFollowingIdIn(anyLong(), any()),
+                () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
+                () -> assertThat(pagedProfilesResponse.getItems()).isEmpty()
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원을_키워드와_옵션_없이_조회한다() {
+        // given
+        Long loggedInId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, null, null);
+        Member member = CORINNE.생성(2L);
+        final Profile profile = new Profile(member, new InventoryProducts(Collections.emptyList()), true);
+
+        given(memberRepository.findFollowingsWithOutSearchConditions(loggedInId, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(Collections.emptyList());
+
+        // when
+        PagedProfilesResponse pagedProfilesResponse = profileService.findFollowingsByConditions(loggedInId,
+                memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findFollowingsWithOutSearchConditions(loggedInId, pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
+                () -> assertThat(pagedProfilesResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(ProfileResponse.from(profile))
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원을_옵션으로만_조회한다() {
+        // given
+        Long loggedInId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
+        Member member = CORINNE.생성(2L);
+        final Profile profile = new Profile(member, new InventoryProducts(Collections.emptyList()), true);
+
+        given(memberRepository.findFollowingsWithSearchConditions(loggedInId, null, SENIOR, BACKEND, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(Collections.emptyList());
+
+        // when
+        PagedProfilesResponse pagedProfilesResponse = profileService.findFollowingsByConditions(loggedInId,
+                memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, null, SENIOR, BACKEND,
+                        pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
+                () -> assertThat(pagedProfilesResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(ProfileResponse.from(profile))
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원을_키워드와_옵션으로_조회한다() {
+        // given
+        Long loggedInId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        Member member = CORINNE.생성(2L);
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("ham", SENIOR_CONSTANT, null);
+        final Profile profile = new Profile(member, new InventoryProducts(Collections.emptyList()), true);
+
+        given(memberRepository.findFollowingsWithSearchConditions(loggedInId, "ham", SENIOR, null, pageable))
+                .willReturn(new SliceImpl<>(List.of(member), pageable, false));
+        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+                .willReturn(Collections.emptyList());
+
+        // when
+        PagedProfilesResponse pagedProfilesResponse = profileService.findFollowingsByConditions(loggedInId,
+                memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, "ham", SENIOR, null,
+                        pageable),
+                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
+                () -> assertThat(pagedProfilesResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
+                        .containsOnly(ProfileResponse.from(profile))
+        );
+    }
+
+    @Test
+    void 팔로잉하는_회원목록을_검색할때_결과가_없으면_다음_로직이_실행되지_않는다() {
+        // given
+        Long loggedInId = 1L;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        MemberSearchRequest memberSearchRequest = new MemberSearchRequest("invalid", JUNIOR_CONSTANT,
+                FRONTEND_CONSTANT);
+
+        given(memberRepository.findFollowingsWithSearchConditions(loggedInId, "invalid", JUNIOR, FRONTEND, pageable))
+                .willReturn(new SliceImpl<>(Collections.emptyList(), pageable, false));
+
+        // when
+        PagedProfilesResponse pagedProfilesResponse = profileService.findFollowingsByConditions(loggedInId,
+                memberSearchRequest, pageable);
+
+        // then
+        assertAll(
+                () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, "invalid", JUNIOR,
+                        FRONTEND, pageable),
+                () -> verify(inventoryProductRepository, times(0)).findWithProductByMembers(any()),
                 () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
                 () -> assertThat(pagedProfilesResponse.getItems()).isEmpty()
         );

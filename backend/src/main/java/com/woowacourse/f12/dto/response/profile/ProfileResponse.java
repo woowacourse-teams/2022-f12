@@ -1,7 +1,6 @@
 package com.woowacourse.f12.dto.response.profile;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.profile.Profile;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
@@ -61,17 +60,5 @@ public class ProfileResponse {
         return profileProducts.stream()
                 .map(it -> ProductResponse.from(it.getProduct()))
                 .collect(Collectors.toList());
-    }
-
-    public static ProfileResponse of(final Member member, final List<InventoryProduct> profileProducts,
-                                     final boolean following) {
-        final List<ProductResponse> profileProductsResponse = profileProducts.stream()
-                .map(InventoryProduct::getProduct)
-                .map(ProductResponse::from)
-                .collect(Collectors.toList());
-        return new ProfileResponse(member.getId(), member.getGitHubId(), member.getName(), member.getImageUrl(),
-                CareerLevelConstant.from(member.getCareerLevel()),
-                JobTypeConstant.from(member.getJobType()),
-                profileProductsResponse, member.getFollowerCount(), following);
     }
 }

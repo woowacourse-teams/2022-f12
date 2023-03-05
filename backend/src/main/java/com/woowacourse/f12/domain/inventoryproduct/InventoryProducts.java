@@ -4,15 +4,14 @@ import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
-import lombok.Getter;
-
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
+import lombok.Getter;
 
 @Getter
 @Embeddable
@@ -25,8 +24,10 @@ public class InventoryProducts {
     }
 
     public InventoryProducts(final List<InventoryProduct> items) {
-        validateProfileProducts(items);
-        this.items = items;
+        if (items != null) {
+            validateProfileProducts(items);
+            this.items = items;
+        }
     }
 
     private void validateProfileProducts(final List<InventoryProduct> items) {
@@ -72,8 +73,12 @@ public class InventoryProducts {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof InventoryProducts)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof InventoryProducts)) {
+            return false;
+        }
         InventoryProducts that = (InventoryProducts) o;
         return Objects.equals(items, that.items);
     }
