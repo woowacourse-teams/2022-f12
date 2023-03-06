@@ -49,21 +49,6 @@ public class ProfileService {
         return PagedProfilesResponse.of(slice.hasNext(), profiles);
     }
 
-    private static List<Long> extractIds(final List<Member> members) {
-        return members.stream()
-                .map(Member::getId)
-                .collect(Collectors.toList());
-    }
-
-    private Profiles createProfiles(final Long loggedInId, final List<Member> members) {
-        final List<Long> memberIds = extractIds(members);
-        final List<InventoryProduct> mixedInventoryProducts =
-                inventoryProductRepository.findWithProductByMemberIds(memberIds);
-        final List<Following> followingRelations
-                = followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId, memberIds);
-        return Profiles.of(members, mixedInventoryProducts, followingRelations);
-    }
-
     private Slice<Member> findBySearchConditions(final ProfileSearchRequest profileSearchRequest,
                                                  final Pageable pageable) {
         final CareerLevel careerLevel = parseCareerLevel(profileSearchRequest);
@@ -73,6 +58,12 @@ public class ProfileService {
         }
         return memberRepository.findWithSearchConditions(profileSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
+    }
+
+    private static List<Long> extractIds(final List<Member> members) {
+        return members.stream()
+                .map(Member::getId)
+                .collect(Collectors.toList());
     }
 
     private JobType parseJobType(final ProfileSearchRequest profileSearchRequest) {
@@ -89,6 +80,15 @@ public class ProfileService {
             return null;
         }
         return careerLevelConstant.toCareerLevel();
+    }
+
+    private Profiles createProfiles(final Long loggedInId, final List<Member> members) {
+        final List<Long> memberIds = extractIds(members);
+        final List<InventoryProduct> mixedInventoryProducts =
+                inventoryProductRepository.findWithProductByMemberIds(memberIds);
+        final List<Following> followingRelations
+                = followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId, memberIds);
+        return Profiles.of(members, mixedInventoryProducts, followingRelations);
     }
 
     public PagedProfilesResponse findFollowingsByConditions(final Long loggedInId,

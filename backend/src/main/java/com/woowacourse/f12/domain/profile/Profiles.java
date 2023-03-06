@@ -41,8 +41,7 @@ public class Profiles {
         if (followingRelations == null) {
             return new Profile(member, inventoryProducts, true);
         }
-        return new Profile(member, inventoryProducts,
-                isFollowing(followingRelations, member.getId()));
+        return new Profile(member, inventoryProducts, isFollowing(followingRelations, member.getId()));
     }
 
     private static boolean isFollowing(final List<Following> followingRelations, final Long memberId) {

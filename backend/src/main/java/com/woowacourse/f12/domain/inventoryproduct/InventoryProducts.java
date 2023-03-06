@@ -60,19 +60,11 @@ public class InventoryProducts {
                 .collect(Collectors.toList());
     }
 
-    public boolean contains(final InventoryProducts inventoryProducts) {
-        return new HashSet<>(items).containsAll(inventoryProducts.getItems());
-    }
-
-    public int size() {
-        return items.size();
-    }
-
-    public void validateUpdateSelected(final InventoryProducts selectedInventoryProducts) {
-        if (!new HashSet<>(this.items).containsAll(selectedInventoryProducts.items)) {
+    public void validateUpdateSelected(final InventoryProducts profileProductCandidates) {
+        if (!new HashSet<>(this.items).containsAll(profileProductCandidates.items)) {
             throw new InvalidProfileProductUpdateException();
         }
-        validateCategoryNotDuplicated(selectedInventoryProducts.items);
+        validateCategoryNotDuplicated(profileProductCandidates.items);
     }
 
     @Override

@@ -23,7 +23,8 @@ class InventoryProductsTest {
         List<InventoryProduct> items = List.of(SELECTED_INVENTORY_PRODUCT.생성(1L, 1L, software));
 
         // when, then
-        assertThatThrownBy(() -> new InventoryProducts(items)).isExactlyInstanceOf(InvalidProfileProductCategoryException.class);
+        assertThatThrownBy(() -> new InventoryProducts(items)).isExactlyInstanceOf(
+                InvalidProfileProductCategoryException.class);
     }
 
     @Test
@@ -35,7 +36,8 @@ class InventoryProductsTest {
                 SELECTED_INVENTORY_PRODUCT.생성(1L, product2));
 
         // when, then
-        assertThatThrownBy(() -> new InventoryProducts(items)).isExactlyInstanceOf(DuplicatedProfileProductCategoryException.class);
+        assertThatThrownBy(() -> new InventoryProducts(items)).isExactlyInstanceOf(
+                DuplicatedProfileProductCategoryException.class);
     }
 
     @Test
@@ -52,37 +54,5 @@ class InventoryProductsTest {
         // then
         assertThat(profileProducts).hasSize(1)
                 .containsExactly(selectedInventoryProduct);
-    }
-
-    @Test
-    void 인벤토리_장비에_포함되는지_확인한다() {
-        // given
-        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, 1L, KEYBOARD_1.생성(1L));
-        InventoryProduct unselectedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(2L, 1L, KEYBOARD_2.생성(2L));
-        List<InventoryProduct> items = List.of(selectedInventoryProduct, unselectedInventoryProduct);
-        InventoryProducts inventoryProducts = new InventoryProducts(items);
-
-        // when
-        boolean contains = inventoryProducts.contains(
-                new InventoryProducts(List.of(selectedInventoryProduct, unselectedInventoryProduct)));
-
-        // then
-        assertThat(contains).isTrue();
-    }
-
-    @Test
-    void 인벤토리_장비의_개수를_확인한다() {
-        // given
-        Product product1 = KEYBOARD_1.생성(1L);
-        Product product2 = KEYBOARD_2.생성(2L);
-        List<InventoryProduct> items = List.of(SELECTED_INVENTORY_PRODUCT.생성(1L, 1L, product1),
-                UNSELECTED_INVENTORY_PRODUCT.생성(2L, 1L, product2));
-        InventoryProducts inventoryProducts = new InventoryProducts(items);
-
-        // when
-        int size = inventoryProducts.size();
-
-        // then
-        assertThat(size).isEqualTo(2);
     }
 }
