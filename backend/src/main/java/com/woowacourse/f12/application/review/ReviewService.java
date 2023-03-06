@@ -2,13 +2,19 @@ package com.woowacourse.f12.application.review;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
+import com.woowacourse.f12.domain.member.CareerLevel;
+import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
+import com.woowacourse.f12.domain.review.CareerLevelCount;
+import com.woowacourse.f12.domain.review.JobTypeCount;
+import com.woowacourse.f12.domain.review.MemberInfoStatistics;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
+import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
@@ -20,6 +26,8 @@ import com.woowacourse.f12.exception.notfound.InventoryProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
+import java.util.List;
+import java.util.Map;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -172,5 +180,27 @@ public class ReviewService {
                 .orElseThrow(ReviewNotFoundException::new);
 
         return ReviewWithProductResponse.from(review);
+    }
+
+    public ProductStatisticsResponse calculateMemberStatisticsById(final Long productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new ProductNotFoundException();
+        }
+        final Map<CareerLevel, Double> careerLevel = calculateWithCareerLevel(productId);
+        final Map<JobType, Double> jobType = calculateWithJobType(productId);
+        return ProductStatisticsResponse.of(careerLevel, jobType);
+    }
+
+    private Map<CareerLevel, Double> calculateWithCareerLevel(final Long productId) {
+        final List<CareerLevelCount> careerLevelCounts = reviewRepository.findCareerLevelCountByProductId(productId);
+        final MemberInfoStatistics<CareerLevelCount, CareerLevel> careerLevelStatistics = new MemberInfoStatistics<>(
+                careerLevelCounts);
+        return careerLevelStatistics.calculateStatistics(CareerLevel.values());
+    }
+
+    private Map<JobType, Double> calculateWithJobType(final Long productId) {
+        final List<JobTypeCount> jobTypeCounts = reviewRepository.findJobTypeCountByProductId(productId);
+        final MemberInfoStatistics<JobTypeCount, JobType> jobTypeStatistics = new MemberInfoStatistics<>(jobTypeCounts);
+        return jobTypeStatistics.calculateStatistics(JobType.values());
     }
 }

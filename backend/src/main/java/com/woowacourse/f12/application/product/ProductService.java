@@ -1,14 +1,9 @@
 package com.woowacourse.f12.application.product;
 
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
-import com.woowacourse.f12.domain.member.CareerLevel;
-import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
-import com.woowacourse.f12.domain.review.CareerLevelCount;
-import com.woowacourse.f12.domain.review.JobTypeCount;
-import com.woowacourse.f12.domain.review.MemberInfoStatistics;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
@@ -16,11 +11,9 @@ import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
 import com.woowacourse.f12.dto.response.PopularProductsResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
-import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.presentation.product.CategoryConstant;
 import java.util.List;
-import java.util.Map;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -77,28 +70,6 @@ public class ProductService {
             return null;
         }
         return categoryConstant.toCategory();
-    }
-
-    public ProductStatisticsResponse calculateMemberStatisticsById(final Long productId) {
-        if (!productRepository.existsById(productId)) {
-            throw new ProductNotFoundException();
-        }
-        final Map<CareerLevel, Double> careerLevel = calculateWithCareerLevel(productId);
-        final Map<JobType, Double> jobType = calculateWithJobType(productId);
-        return ProductStatisticsResponse.of(careerLevel, jobType);
-    }
-
-    private Map<CareerLevel, Double> calculateWithCareerLevel(final Long productId) {
-        final List<CareerLevelCount> careerLevelCounts = reviewRepository.findCareerLevelCountByProductId(productId);
-        final MemberInfoStatistics<CareerLevelCount, CareerLevel> careerLevelStatistics = new MemberInfoStatistics<>(
-                careerLevelCounts);
-        return careerLevelStatistics.calculateStatistics(CareerLevel.values());
-    }
-
-    private Map<JobType, Double> calculateWithJobType(final Long productId) {
-        final List<JobTypeCount> jobTypeCounts = reviewRepository.findJobTypeCountByProductId(productId);
-        final MemberInfoStatistics<JobTypeCount, JobType> jobTypeStatistics = new MemberInfoStatistics<>(jobTypeCounts);
-        return jobTypeStatistics.calculateStatistics(JobType.values());
     }
 
     @Transactional

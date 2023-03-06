@@ -7,7 +7,6 @@ import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
 import com.woowacourse.f12.dto.response.PopularProductsResponse;
 import com.woowacourse.f12.dto.response.product.ProductPageResponse;
 import com.woowacourse.f12.dto.response.product.ProductResponse;
-import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.presentation.auth.Login;
 import java.net.URI;
 import org.springframework.data.domain.Pageable;
@@ -67,11 +66,6 @@ public class ProductController {
         productService.delete(id);
         return ResponseEntity.noContent()
                 .build();
-    }
-
-    @GetMapping("/{id}/statistics")
-    public ProductStatisticsResponse showStatistics(@PathVariable final Long id) {
-        return productService.calculateMemberStatisticsById(id);
     }
 
     @GetMapping("/popular-list")

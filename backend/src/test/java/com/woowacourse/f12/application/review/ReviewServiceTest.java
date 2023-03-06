@@ -1,5 +1,17 @@
 package com.woowacourse.f12.application.review;
 
+import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
+import static com.woowacourse.f12.domain.member.CareerLevel.MID_LEVEL;
+import static com.woowacourse.f12.domain.member.JobType.BACKEND;
+import static com.woowacourse.f12.domain.member.JobType.ETC;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.JUNIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.MID_LEVEL_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.NONE_CONSTANT;
+import static com.woowacourse.f12.presentation.member.CareerLevelConstant.SENIOR_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.BACKEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.ETC_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.FRONTEND_CONSTANT;
+import static com.woowacourse.f12.presentation.member.JobTypeConstant.MOBILE_CONSTANT;
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
 import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
@@ -27,9 +39,12 @@ import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
+import com.woowacourse.f12.domain.review.CareerLevelCount;
+import com.woowacourse.f12.domain.review.JobTypeCount;
 import com.woowacourse.f12.domain.review.Review;
 import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
+import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
@@ -44,6 +59,7 @@ import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.exception.notfound.ReviewNotFoundException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -656,6 +672,34 @@ class ReviewServiceTest {
                         .isInstanceOf(ReviewNotFoundException.class),
                 () -> verify(inventoryProductRepository).findById(1L),
                 () -> verify(reviewRepository).findByMemberIdAndProduct(refEq(1L), refEq(KEYBOARD_1.생성(1L)))
+        );
+    }
+
+    @Test
+    void 특정_제품의_사용자의_연차와_직군의_비율을_반환한다() {
+        // given
+        Long productId = 1L;
+        given(productRepository.existsById(productId))
+                .willReturn(true);
+        given(reviewRepository.findCareerLevelCountByProductId(productId))
+                .willReturn(List.of(new CareerLevelCount(JUNIOR, 1), new CareerLevelCount(MID_LEVEL, 1)));
+        given(reviewRepository.findJobTypeCountByProductId(productId))
+                .willReturn(List.of(new JobTypeCount(BACKEND, 1), new JobTypeCount(ETC, 1)));
+
+        // when
+        ProductStatisticsResponse productStatisticsResponse = reviewService.calculateMemberStatisticsById(productId);
+
+        // then
+        assertAll(
+                () -> verify(productRepository).existsById(productId),
+                () -> verify(reviewRepository).findCareerLevelCountByProductId(productId),
+                () -> verify(reviewRepository).findJobTypeCountByProductId(productId),
+                () -> assertThat(productStatisticsResponse.getCareerLevel()).usingRecursiveComparison()
+                        .isEqualTo(Map.of(NONE_CONSTANT, 0.0, JUNIOR_CONSTANT, 0.5, MID_LEVEL_CONSTANT, 0.5,
+                                SENIOR_CONSTANT, 0.0)),
+                () -> assertThat(productStatisticsResponse.getJobType()).usingRecursiveComparison()
+                        .isEqualTo(Map.of(FRONTEND_CONSTANT, 0.0, BACKEND_CONSTANT, 0.5, MOBILE_CONSTANT, 0.0,
+                                ETC_CONSTANT, 0.5))
         );
     }
 }

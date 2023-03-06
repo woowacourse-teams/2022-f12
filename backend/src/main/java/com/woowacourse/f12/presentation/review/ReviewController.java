@@ -3,6 +3,7 @@ package com.woowacourse.f12.presentation.review;
 import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.application.review.ReviewService;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
+import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
@@ -42,6 +43,11 @@ public class ReviewController {
         final Long id = reviewService.saveReviewAndInventoryProduct(productId, memberPayload.getId(), reviewRequest);
         return ResponseEntity.created(URI.create("/api/v1/reviews/" + id))
                 .build();
+    }
+
+    @GetMapping("/products/{productId}/statistics")
+    public ProductStatisticsResponse showStatistics(@PathVariable final Long productId) {
+        return reviewService.calculateMemberStatisticsById(productId);
     }
 
     @GetMapping("/products/{productId}/reviews")
