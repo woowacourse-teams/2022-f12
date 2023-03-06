@@ -76,11 +76,11 @@ public class ReviewService {
     }
 
     private void saveInventoryProduct(final Member member, final Product product) {
-        if (inventoryProductRepository.existsByMemberAndProduct(member, product)) {
+        if (inventoryProductRepository.existsByMemberIdAndProduct(member.getId(), product)) {
             return;
         }
         final InventoryProduct inventoryProduct = InventoryProduct.builder()
-                .member(member)
+                .memberId(member.getId())
                 .product(product)
                 .build();
         inventoryProductRepository.save(inventoryProduct);
@@ -119,8 +119,8 @@ public class ReviewService {
     @Transactional
     public void delete(final Long reviewId, final Long memberId) {
         final Review review = findTarget(reviewId, memberId);
-        final InventoryProduct inventoryProduct = inventoryProductRepository.findWithProductByMemberAndProduct(
-                        review.getMember(), review.getProduct())
+        final InventoryProduct inventoryProduct = inventoryProductRepository.findWithProductByMemberIdAndProduct(
+                        memberId, review.getProduct())
                 .orElseThrow(InventoryProductNotFoundException::new);
         inventoryProductRepository.delete(inventoryProduct);
         reviewRepository.delete(review);
@@ -167,8 +167,8 @@ public class ReviewService {
         final InventoryProduct inventoryProduct = inventoryProductRepository.findById(inventoryProductId)
                 .orElseThrow(InventoryProductNotFoundException::new);
 
-        final Review review = reviewRepository.findByMemberAndProduct(
-                        inventoryProduct.getMember(), inventoryProduct.getProduct())
+        final Review review = reviewRepository.findByMemberIdAndProduct(
+                        inventoryProduct.getMemberId(), inventoryProduct.getProduct())
                 .orElseThrow(ReviewNotFoundException::new);
 
         return ReviewWithProductResponse.from(review);

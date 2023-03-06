@@ -30,7 +30,7 @@ public class Profiles {
     private static Map<Long, List<InventoryProduct>> groupByMemberId(final List<InventoryProduct> inventoryProducts) {
         return inventoryProducts.stream()
                 .collect(Collectors.groupingBy(
-                        it -> it.getMember().getId(),
+                        InventoryProduct::getMemberId,
                         Collectors.toList()));
     }
 

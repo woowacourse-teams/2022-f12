@@ -21,6 +21,10 @@ public class Profile {
         this.isFollowing = isFollowing;
     }
 
+    public Profile(final Member member, final boolean isFollowing) {
+        this(member, new InventoryProducts(), isFollowing);
+    }
+
     public List<InventoryProduct> getProfileProducts() {
         return inventoryProducts.getProfileProducts();
     }

@@ -262,7 +262,7 @@ class ReviewRepositoryTest {
         Review savedReview = 리뷰_저장(REVIEW_RATING_1.작성(product, corinne));
 
         // when
-        Optional<Review> review = reviewRepository.findByMemberAndProduct(corinne, product);
+        Optional<Review> review = reviewRepository.findByMemberIdAndProduct(corinne.getId(), product);
 
         // then
         assertThat(review.get()).usingRecursiveComparison()

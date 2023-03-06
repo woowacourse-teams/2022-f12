@@ -60,9 +60,9 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
         Member member2 = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
 
         ProfileResponse expectedProfileResponse1 =
-                ProfileResponse.from(new Profile(member1, new InventoryProducts(), false));
+                ProfileResponse.from(new Profile(member1, false));
         ProfileResponse expectedProfileResponse2 =
-                ProfileResponse.from(new Profile(member2, new InventoryProducts(), false));
+                ProfileResponse.from(new Profile(member2, false));
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -92,7 +92,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
 
         Member member = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
         ProfileResponse expectedProfileResponse = ProfileResponse.from(
-                new Profile(member, new InventoryProducts(), false));
+                new Profile(member, false));
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -125,9 +125,9 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
         Member member1 = 민초.엔티티를().추가정보를_입력하여_생성(firstLoginResponse.getMember().getId(), SENIOR, BACKEND);
         Member member2 = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
         ProfileResponse expectedProfileResponse1 = ProfileResponse.from(
-                new Profile(member1, new InventoryProducts(), false));
+                new Profile(member1, false));
         ProfileResponse expectedProfileResponse2 = ProfileResponse.from(
-                new Profile(member2, new InventoryProducts(), false));
+                new Profile(member2, false));
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -155,7 +155,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
         PagedProfilesResponse pagedProfilesResponse = response.as(PagedProfilesResponse.class);
 
         Member member = 코린.엔티티를().추가정보를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        ProfileResponse profileResponse = ProfileResponse.from(new Profile(member, new InventoryProducts(), false));
+        ProfileResponse profileResponse = ProfileResponse.from(new Profile(member, false));
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -191,8 +191,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
         PagedProfilesResponse pagedProfilesResponse = response.as(PagedProfilesResponse.class);
 
         final List<InventoryProduct> inventoryProducts = List.of(인벤토리_엔티티로_변환한다(inventoryProductResponse, corinneId));
-        Member member = 코린.엔티티를().추가정보와_인벤토리를_추가해서_생성(corinneId, SENIOR, BACKEND,
-                inventoryProducts);
+        Member member = 코린.엔티티를().추가정보를_입력하여_생성(corinneId, SENIOR, BACKEND);
         ProfileResponse profileResponse = ProfileResponse.from(
                 new Profile(member, new InventoryProducts(inventoryProducts), false));
 
@@ -231,9 +230,9 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
         Member member1 = 민초.엔티티를().추가정보와_팔로워_카운트를_입력하여_생성(secondLoginResponse.getMember().getId(), SENIOR, BACKEND, 1);
         Member member2 = 코린.엔티티를().추가정보를_입력하여_생성(thirdLoginResponse.getMember().getId(), SENIOR, BACKEND);
         ProfileResponse expectedMemberResponse1 = ProfileResponse.from(
-                new Profile(member1, new InventoryProducts(), true));
+                new Profile(member1, true));
         ProfileResponse expectedMemberResponse2 = ProfileResponse.from(
-                new Profile(member2, new InventoryProducts(), false));
+                new Profile(member2, false));
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -302,7 +301,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
 
         Member following = 오찌.엔티티를()
                 .추가정보와_팔로워_카운트를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND, 1);
-        ProfileResponse followingResponse = ProfileResponse.from(new Profile(following, new InventoryProducts(), true));
+        ProfileResponse followingResponse = ProfileResponse.from(new Profile(following, true));
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -341,7 +340,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
         PagedProfilesResponse pagedProfilesResponse = response.as(PagedProfilesResponse.class);
 
         Member following = 오찌.엔티티를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
-        ProfileResponse followingResponse = ProfileResponse.from(new Profile(following, new InventoryProducts(), true));
+        ProfileResponse followingResponse = ProfileResponse.from(new Profile(following, true));
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -380,7 +379,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
 
         Member following = 오찌.엔티티를()
                 .추가정보와_팔로워_카운트를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND, 1);
-        ProfileResponse followingResponse = ProfileResponse.from(new Profile(following, new InventoryProducts(), true));
+        ProfileResponse followingResponse = ProfileResponse.from(new Profile(following, true));
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -423,8 +422,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
         PagedProfilesResponse profilesResponse = response.as(PagedProfilesResponse.class);
 
         final List<InventoryProduct> inventoryProducts = List.of(인벤토리_엔티티로_변환한다(inventoryProductResponse, followingId));
-        Member following = 오찌.엔티티를().추가정보와_인벤토리를_추가해서_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND,
-                inventoryProducts);
+        Member following = 오찌.엔티티를().추가정보를_입력하여_생성(followingLoginResponse.getMember().getId(), SENIOR, BACKEND);
         ProfileResponse followingResponse = ProfileResponse.from(
                 new Profile(following, new InventoryProducts(inventoryProducts), true));
 
@@ -446,9 +444,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
         return InventoryProduct.builder()
                 .product(제품_엔티티로_변환한다(inventoryProductResponse.getProduct()))
                 .selected(true)
-                .member(Member.builder()
-                        .id(memberId)
-                        .build())
+                .memberId(memberId)
                 .build();
     }
 

@@ -63,12 +63,12 @@ class ProfileServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
         final List<InventoryProduct> inventoryProducts = List.of(inventoryProduct);
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProducts);
+        Member member = CORINNE.생성(1L);
         final Profile profile = new Profile(member, new InventoryProducts(inventoryProducts), false);
 
         given(memberRepository.findWithOutSearchConditions(pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
-        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+        given(inventoryProductRepository.findWithProductByMemberIds(List.of(member.getId())))
                 .willReturn(inventoryProducts);
 
         // when
@@ -80,7 +80,7 @@ class ProfileServiceTest {
         final ProfileResponse expect = ProfileResponse.from(profile);
         assertAll(
                 () -> verify(memberRepository).findWithOutSearchConditions(pageable),
-                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> verify(inventoryProductRepository).findWithProductByMemberIds(List.of(member.getId())),
                 () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
                 () -> assertThat(pagedProfilesResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(expect)
@@ -93,12 +93,12 @@ class ProfileServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
         final List<InventoryProduct> inventoryProducts = List.of(inventoryProduct);
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProducts);
+        Member member = CORINNE.생성(1L);
         final Profile profile = new Profile(member, new InventoryProducts(inventoryProducts), false);
 
         given(memberRepository.findWithSearchConditions(null, SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
-        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+        given(inventoryProductRepository.findWithProductByMemberIds(List.of(member.getId())))
                 .willReturn(inventoryProducts);
 
         // when
@@ -110,7 +110,7 @@ class ProfileServiceTest {
         final ProfileResponse expect = ProfileResponse.from(profile);
         assertAll(
                 () -> verify(memberRepository).findWithSearchConditions(null, SENIOR, BACKEND, pageable),
-                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> verify(inventoryProductRepository).findWithProductByMemberIds(List.of(member.getId())),
                 () -> assertThat(memberPageResponse.isHasNext()).isFalse(),
                 () -> assertThat(memberPageResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(expect));
@@ -122,12 +122,12 @@ class ProfileServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
         final List<InventoryProduct> inventoryProducts = List.of(inventoryProduct);
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProducts);
+        Member member = CORINNE.생성(1L);
         final Profile profile = new Profile(member, new InventoryProducts(inventoryProducts), false);
 
         given(memberRepository.findWithSearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
-        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+        given(inventoryProductRepository.findWithProductByMemberIds(List.of(member.getId())))
                 .willReturn(inventoryProducts);
 
         // when
@@ -140,7 +140,7 @@ class ProfileServiceTest {
         final ProfileResponse expect = ProfileResponse.from(profile);
         assertAll(
                 () -> verify(memberRepository).findWithSearchConditions("cheese", SENIOR, BACKEND, pageable),
-                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> verify(inventoryProductRepository).findWithProductByMemberIds(List.of(member.getId())),
                 () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
                 () -> assertThat(pagedProfilesResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(expect)
@@ -153,7 +153,7 @@ class ProfileServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L));
         final List<InventoryProduct> inventoryProducts = List.of(inventoryProduct);
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, inventoryProducts);
+        Member member = CORINNE.생성(1L);
         final Profile profile = new Profile(member, new InventoryProducts(inventoryProducts), true);
 
         Long loggedInId = 2L;
@@ -164,7 +164,7 @@ class ProfileServiceTest {
 
         given(memberRepository.findWithSearchConditions("cheese", SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
-        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+        given(inventoryProductRepository.findWithProductByMemberIds(List.of(member.getId())))
                 .willReturn(inventoryProducts);
         given(followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId, List.of(member.getId())))
                 .willReturn(List.of(following));
@@ -180,7 +180,7 @@ class ProfileServiceTest {
         final ProfileResponse expect = ProfileResponse.from(profile);
         assertAll(
                 () -> verify(memberRepository).findWithSearchConditions("cheese", SENIOR, BACKEND, pageable),
-                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> verify(inventoryProductRepository).findWithProductByMemberIds(List.of(member.getId())),
                 () -> verify(followingRepository).findByFollowerIdAndFollowingIdIn(loggedInId, List.of(member.getId())),
                 () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
                 () -> assertThat(pagedProfilesResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
@@ -207,7 +207,7 @@ class ProfileServiceTest {
         // then
         assertAll(
                 () -> verify(memberRepository).findWithSearchConditions("invalid", JUNIOR, FRONTEND, pageable),
-                () -> verify(inventoryProductRepository, times(0)).findWithProductByMembers(any()),
+                () -> verify(inventoryProductRepository, times(0)).findWithProductByMemberIds(any()),
                 () -> verify(followingRepository, times(0)).findByFollowerIdAndFollowingIdIn(anyLong(), any()),
                 () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
                 () -> assertThat(pagedProfilesResponse.getItems()).isEmpty()
@@ -221,11 +221,11 @@ class ProfileServiceTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest(null, null, null);
         Member member = CORINNE.생성(2L);
-        final Profile profile = new Profile(member, new InventoryProducts(Collections.emptyList()), true);
+        final Profile profile = new Profile(member, true);
 
         given(memberRepository.findFollowingsWithOutSearchConditions(loggedInId, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
-        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+        given(inventoryProductRepository.findWithProductByMemberIds(List.of(member.getId())))
                 .willReturn(Collections.emptyList());
 
         // when
@@ -235,7 +235,7 @@ class ProfileServiceTest {
         // then
         assertAll(
                 () -> verify(memberRepository).findFollowingsWithOutSearchConditions(loggedInId, pageable),
-                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> verify(inventoryProductRepository).findWithProductByMemberIds(List.of(member.getId())),
                 () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
                 () -> assertThat(pagedProfilesResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(ProfileResponse.from(profile))
@@ -249,11 +249,11 @@ class ProfileServiceTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest(null, SENIOR_CONSTANT, BACKEND_CONSTANT);
         Member member = CORINNE.생성(2L);
-        final Profile profile = new Profile(member, new InventoryProducts(Collections.emptyList()), true);
+        final Profile profile = new Profile(member, true);
 
         given(memberRepository.findFollowingsWithSearchConditions(loggedInId, null, SENIOR, BACKEND, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
-        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+        given(inventoryProductRepository.findWithProductByMemberIds(List.of(member.getId())))
                 .willReturn(Collections.emptyList());
 
         // when
@@ -264,7 +264,7 @@ class ProfileServiceTest {
         assertAll(
                 () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, null, SENIOR, BACKEND,
                         pageable),
-                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> verify(inventoryProductRepository).findWithProductByMemberIds(List.of(member.getId())),
                 () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
                 () -> assertThat(pagedProfilesResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(ProfileResponse.from(profile))
@@ -278,11 +278,11 @@ class ProfileServiceTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         Member member = CORINNE.생성(2L);
         ProfileSearchRequest profileSearchRequest = new ProfileSearchRequest("ham", SENIOR_CONSTANT, null);
-        final Profile profile = new Profile(member, new InventoryProducts(Collections.emptyList()), true);
+        final Profile profile = new Profile(member, true);
 
         given(memberRepository.findFollowingsWithSearchConditions(loggedInId, "ham", SENIOR, null, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
-        given(inventoryProductRepository.findWithProductByMembers(List.of(member)))
+        given(inventoryProductRepository.findWithProductByMemberIds(List.of(member.getId())))
                 .willReturn(Collections.emptyList());
 
         // when
@@ -293,7 +293,7 @@ class ProfileServiceTest {
         assertAll(
                 () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, "ham", SENIOR, null,
                         pageable),
-                () -> verify(inventoryProductRepository).findWithProductByMembers(List.of(member)),
+                () -> verify(inventoryProductRepository).findWithProductByMemberIds(List.of(member.getId())),
                 () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
                 () -> assertThat(pagedProfilesResponse.getItems()).usingRecursiveFieldByFieldElementComparator()
                         .containsOnly(ProfileResponse.from(profile))
@@ -319,7 +319,7 @@ class ProfileServiceTest {
         assertAll(
                 () -> verify(memberRepository).findFollowingsWithSearchConditions(loggedInId, "invalid", JUNIOR,
                         FRONTEND, pageable),
-                () -> verify(inventoryProductRepository, times(0)).findWithProductByMembers(any()),
+                () -> verify(inventoryProductRepository, times(0)).findWithProductByMemberIds(any()),
                 () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
                 () -> assertThat(pagedProfilesResponse.getItems()).isEmpty()
         );

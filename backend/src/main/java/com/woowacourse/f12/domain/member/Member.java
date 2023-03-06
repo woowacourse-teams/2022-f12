@@ -1,11 +1,7 @@
 package com.woowacourse.f12.domain.member;
 
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -55,10 +51,6 @@ public class Member {
     private int followerCount;
 
     @Builder.Default
-    @Embedded
-    private InventoryProducts inventoryProducts = new InventoryProducts();
-
-    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role = Role.USER;
@@ -68,7 +60,7 @@ public class Member {
 
     private Member(final Long id, final String gitHubId, final String name, final String imageUrl,
                    final boolean registered, final CareerLevel careerLevel, final JobType jobType,
-                   final int followerCount, final InventoryProducts inventoryProducts, final Role role) {
+                   final int followerCount, final Role role) {
         this.id = id;
         this.gitHubId = gitHubId;
         this.name = name;
@@ -77,7 +69,6 @@ public class Member {
         this.careerLevel = careerLevel;
         this.jobType = jobType;
         this.followerCount = followerCount;
-        this.inventoryProducts = inventoryProducts;
         this.role = role;
     }
 
@@ -120,20 +111,8 @@ public class Member {
         this.registered = registered;
     }
 
-    public List<InventoryProduct> getProfileProduct() {
-        return this.inventoryProducts.getProfileProducts();
-    }
-
-    public boolean contains(final InventoryProducts inventoryProducts) {
-        return this.inventoryProducts.contains(inventoryProducts);
-    }
-
     public boolean isSameId(final Long id) {
         return Objects.equals(id, this.id);
-    }
-
-    public void updateInventoryProducts(final List<InventoryProduct> values) {
-        this.inventoryProducts = new InventoryProducts(values);
     }
 
     public boolean isAdmin() {

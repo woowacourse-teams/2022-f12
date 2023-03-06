@@ -1,13 +1,20 @@
 package com.woowacourse.f12.domain.inventoryproduct;
 
-import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.domain.product.Product;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
-
-import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "inventory_product",
@@ -24,9 +31,8 @@ public class InventoryProduct {
     @Column(name = "selected")
     private boolean selected;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Column(name = "member_id")
+    private Long memberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
@@ -35,10 +41,10 @@ public class InventoryProduct {
     protected InventoryProduct() {
     }
 
-    private InventoryProduct(final Long id, final boolean selected, final Member member, final Product product) {
+    private InventoryProduct(final Long id, final boolean selected, final Long memberId, final Product product) {
         this.id = id;
         this.selected = selected;
-        this.member = member;
+        this.memberId = memberId;
         this.product = product;
     }
 

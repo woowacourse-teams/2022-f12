@@ -26,11 +26,19 @@ public enum InventoryProductFixtures {
         return 생성(null, member, product);
     }
 
+    public InventoryProduct 생성(final Long memberId, final Product product) {
+        return 생성(null, memberId, product);
+    }
+
     public InventoryProduct 생성(final Long id, final Member member, final Product product) {
+        return 생성(id, member.getId(), product);
+    }
+
+    public InventoryProduct 생성(final Long id, final Long memberId, final Product product) {
         return InventoryProduct.builder()
                 .id(id)
                 .selected(this.selected)
-                .member(member)
+                .memberId(memberId)
                 .product(product)
                 .build();
     }

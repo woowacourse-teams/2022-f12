@@ -56,7 +56,7 @@ class ProfileControllerTest extends PresentationTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
                 KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
+        Member member = CORINNE.생성(1L);
         Long loggedInId = 2L;
         Following following = Following.builder()
                 .followerId(loggedInId)
@@ -115,7 +115,7 @@ class ProfileControllerTest extends PresentationTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
                 KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
+        Member member = CORINNE.생성(1L);
 
         PagedProfilesResponse pagedProfilesResponse
                 = PagedProfilesResponse.of(false,
@@ -144,7 +144,7 @@ class ProfileControllerTest extends PresentationTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L),
                 KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
+        Member member = CORINNE.생성(1L);
 
         PagedProfilesResponse pagedProfilesResponse
                 = PagedProfilesResponse.of(false,
@@ -172,7 +172,7 @@ class ProfileControllerTest extends PresentationTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(2L),
                 KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(2L, List.of(inventoryProduct));
+        Member member = CORINNE.생성(2L);
 
         Following following = Following.builder()
                 .followerId(loggedInId)

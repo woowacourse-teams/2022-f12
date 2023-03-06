@@ -3,16 +3,13 @@ package com.woowacourse.f12.application.inventoryproduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
-import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.dto.request.inventoryproduct.ProfileProductRequest;
 import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsResponse;
-import com.woowacourse.f12.exception.badrequest.InvalidProfileProductUpdateException;
 import com.woowacourse.f12.exception.notfound.MemberNotFoundException;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,27 +26,30 @@ public class InventoryProductService {
 
     @Transactional
     public void updateProfileProducts(final Long memberId, final ProfileProductRequest profileProductRequest) {
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+        validateMember(memberId);
         final List<Long> selectedInventoryProductIds = profileProductRequest.getSelectedInventoryProductIds();
-        validateUpdatable(member, selectedInventoryProductIds);
-        cancelProfileProducts(member);
-        registerProfileProducts(member, selectedInventoryProductIds);
+        validateUpdateSelected(memberId, selectedInventoryProductIds);
+        cancelProfileProducts(memberId);
+        registerProfileProducts(memberId, selectedInventoryProductIds);
     }
 
-    private void validateUpdatable(final Member member, final List<Long> selectedInventoryProductIds) {
-        final InventoryProducts selectedInventoryProducts = new InventoryProducts(inventoryProductRepository.findAllById(selectedInventoryProductIds));
-        if (!member.contains(selectedInventoryProducts)) {
-            throw new InvalidProfileProductUpdateException();
-        }
+    private void validateUpdateSelected(final Long memberId, final List<Long> selectedInventoryProductIds) {
+        final List<InventoryProduct> memberInventoryProducts = inventoryProductRepository.findWithProductByMemberId(
+                memberId);
+        final InventoryProducts inventoryProducts = new InventoryProducts(memberInventoryProducts);
+        final List<InventoryProduct> selectedInventoryProductList = inventoryProductRepository.findAllById(
+                selectedInventoryProductIds);
+        final InventoryProducts selectedInventoryProducts = new InventoryProducts(selectedInventoryProductList);
+        inventoryProducts.validateUpdateSelected(selectedInventoryProducts);
     }
 
-    private void cancelProfileProducts(final Member member) {
-        inventoryProductRepository.updateBulkProfileProductByMember(member, false);
+    private void cancelProfileProducts(final Long memberId) {
+        inventoryProductRepository.updateBulkProfileProductByMemberId(memberId, false);
     }
 
-    private void registerProfileProducts(final Member member, final List<Long> selectedInventoryProductIds) {
-        inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member, selectedInventoryProductIds, true);
+    private void registerProfileProducts(final Long memberId, final List<Long> selectedInventoryProductIds) {
+        inventoryProductRepository.updateBulkProfileProductByMemberIdAndIds(memberId, selectedInventoryProductIds,
+                true);
     }
 
     public InventoryProductsResponse findByMemberId(final Long memberId) {

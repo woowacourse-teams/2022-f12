@@ -4,20 +4,17 @@ import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
+import com.woowacourse.f12.exception.badrequest.InvalidProfileProductUpdateException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 import lombok.Getter;
 
 @Getter
-@Embeddable
 public class InventoryProducts {
 
-    @OneToMany(mappedBy = "member")
     private List<InventoryProduct> items = new ArrayList<>();
 
     public InventoryProducts() {
@@ -69,6 +66,13 @@ public class InventoryProducts {
 
     public int size() {
         return items.size();
+    }
+
+    public void validateUpdateSelected(final InventoryProducts selectedInventoryProducts) {
+        if (!new HashSet<>(this.items).containsAll(selectedInventoryProducts.items)) {
+            throw new InvalidProfileProductUpdateException();
+        }
+        validateCategoryNotDuplicated(selectedInventoryProducts.items);
     }
 
     @Override

@@ -38,12 +38,6 @@ public class ProfileService {
         this.followingRepository = followingRepository;
     }
 
-    private static List<Long> extractIds(final List<Member> members) {
-        return members.stream()
-                .map(Member::getId)
-                .collect(Collectors.toList());
-    }
-
     public PagedProfilesResponse findBySearchConditions(@Nullable final Long loggedInId,
                                                         final ProfileSearchRequest profileSearchRequest,
                                                         final Pageable pageable) {
@@ -55,10 +49,16 @@ public class ProfileService {
         return PagedProfilesResponse.of(slice.hasNext(), profiles);
     }
 
+    private static List<Long> extractIds(final List<Member> members) {
+        return members.stream()
+                .map(Member::getId)
+                .collect(Collectors.toList());
+    }
+
     private Profiles createProfiles(final Long loggedInId, final List<Member> members) {
-        final List<InventoryProduct> mixedInventoryProducts =
-                inventoryProductRepository.findWithProductByMembers(members);
         final List<Long> memberIds = extractIds(members);
+        final List<InventoryProduct> mixedInventoryProducts =
+                inventoryProductRepository.findWithProductByMemberIds(memberIds);
         final List<Following> followingRelations
                 = followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId, memberIds);
         return Profiles.of(members, mixedInventoryProducts, followingRelations);
@@ -103,8 +103,9 @@ public class ProfileService {
     }
 
     private Profiles createFollowingProfiles(final Slice<Member> slice) {
+        final List<Long> memberIds = extractIds(slice.getContent());
         final List<InventoryProduct> mixedInventoryProducts =
-                inventoryProductRepository.findWithProductByMembers(slice.getContent());
+                inventoryProductRepository.findWithProductByMemberIds(memberIds);
         return Profiles.ofFollowings(slice.getContent(), mixedInventoryProducts);
     }
 

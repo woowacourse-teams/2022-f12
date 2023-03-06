@@ -88,7 +88,7 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(member));
         given(productRepository.findById(productId))
                 .willReturn(Optional.of(product));
-        given(inventoryProductRepository.existsByMemberAndProduct(member, product))
+        given(inventoryProductRepository.existsByMemberIdAndProduct(member.getId(), product))
                 .willReturn(false);
         given(inventoryProductRepository.save(inventoryProduct))
                 .willReturn(inventoryProduct);
@@ -106,7 +106,7 @@ class ReviewServiceTest {
                 () -> verify(productRepository).findById(productId),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).save(any(Review.class)),
-                () -> verify(inventoryProductRepository).existsByMemberAndProduct(member, product),
+                () -> verify(inventoryProductRepository).existsByMemberIdAndProduct(member.getId(), product),
                 () -> verify(inventoryProductRepository).save(inventoryProduct),
                 () -> verify(productRepository).updateProductStatisticsForReviewInsert(productId,
                         reviewRequest.getRating())
@@ -451,7 +451,7 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(review));
         willDoNothing().given(reviewRepository)
                 .delete(any(Review.class));
-        given(inventoryProductRepository.findWithProductByMemberAndProduct(member, product))
+        given(inventoryProductRepository.findWithProductByMemberIdAndProduct(member.getId(), product))
                 .willReturn(Optional.of(inventoryProduct));
         willDoNothing().given(inventoryProductRepository)
                 .delete(any(InventoryProduct.class));
@@ -463,7 +463,7 @@ class ReviewServiceTest {
                 () -> assertDoesNotThrow(() -> reviewService.delete(reviewId, memberId)),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId),
-                () -> verify(inventoryProductRepository).findWithProductByMemberAndProduct(member, product),
+                () -> verify(inventoryProductRepository).findWithProductByMemberIdAndProduct(member.getId(), product),
                 () -> verify(inventoryProductRepository).delete(inventoryProduct),
                 () -> verify(reviewRepository).delete(review),
                 () -> verify(productRepository).updateProductStatisticsForReviewDelete(productId, review.getRating())
@@ -547,7 +547,7 @@ class ReviewServiceTest {
                 .willReturn(Optional.of(member));
         given(reviewRepository.findById(reviewId))
                 .willReturn(Optional.of(review));
-        given(inventoryProductRepository.findWithProductByMemberAndProduct(member, product))
+        given(inventoryProductRepository.findWithProductByMemberIdAndProduct(member.getId(), product))
                 .willReturn(Optional.empty());
 
         // when, then
@@ -556,7 +556,7 @@ class ReviewServiceTest {
                         .isExactlyInstanceOf(InventoryProductNotFoundException.class),
                 () -> verify(memberRepository).findById(memberId),
                 () -> verify(reviewRepository).findById(reviewId),
-                () -> verify(inventoryProductRepository).findWithProductByMemberAndProduct(member, product),
+                () -> verify(inventoryProductRepository).findWithProductByMemberIdAndProduct(member.getId(), product),
                 () -> verify(inventoryProductRepository, times(0)).delete(any(InventoryProduct.class)),
                 () -> verify(reviewRepository, times(0)).delete(any(Review.class))
         );
@@ -612,7 +612,7 @@ class ReviewServiceTest {
         Review review = REVIEW_RATING_1.작성(1L, KEYBOARD_1.생성(1L), CORINNE.생성(1L));
         given(inventoryProductRepository.findById(any(Long.class)))
                 .willReturn(Optional.of(SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L))));
-        given(reviewRepository.findByMemberAndProduct(any(Member.class), any(Product.class)))
+        given(reviewRepository.findByMemberIdAndProduct(any(Long.class), any(Product.class)))
                 .willReturn(Optional.of(review));
 
         // when
@@ -623,7 +623,7 @@ class ReviewServiceTest {
                 () -> assertThat(reviewResponse).usingRecursiveComparison()
                         .isEqualTo(ReviewWithProductResponse.from(review)),
                 () -> verify(inventoryProductRepository).findById(1L),
-                () -> verify(reviewRepository).findByMemberAndProduct(refEq(CORINNE.생성(1L)), refEq(KEYBOARD_1.생성(1L)))
+                () -> verify(reviewRepository).findByMemberIdAndProduct(refEq(1L), refEq(KEYBOARD_1.생성(1L)))
         );
     }
 
@@ -638,7 +638,7 @@ class ReviewServiceTest {
                 () -> assertThatThrownBy(() -> reviewService.findByInventoryProductId(1L))
                         .isInstanceOf(InventoryProductNotFoundException.class),
                 () -> verify(inventoryProductRepository).findById(1L),
-                () -> verify(reviewRepository, times(0)).findByMemberAndProduct(any(Member.class), any(Product.class))
+                () -> verify(reviewRepository, times(0)).findByMemberIdAndProduct(any(Long.class), any(Product.class))
         );
     }
 
@@ -647,7 +647,7 @@ class ReviewServiceTest {
         //given
         given(inventoryProductRepository.findById(any(Long.class)))
                 .willReturn(Optional.of(SELECTED_INVENTORY_PRODUCT.생성(CORINNE.생성(1L), KEYBOARD_1.생성(1L))));
-        given(reviewRepository.findByMemberAndProduct(any(Member.class), any(Product.class)))
+        given(reviewRepository.findByMemberIdAndProduct(any(Long.class), any(Product.class)))
                 .willReturn(Optional.empty());
 
         // when, then
@@ -655,7 +655,7 @@ class ReviewServiceTest {
                 () -> assertThatThrownBy(() -> reviewService.findByInventoryProductId(1L))
                         .isInstanceOf(ReviewNotFoundException.class),
                 () -> verify(inventoryProductRepository).findById(1L),
-                () -> verify(reviewRepository).findByMemberAndProduct(refEq(CORINNE.생성(1L)), refEq(KEYBOARD_1.생성(1L)))
+                () -> verify(reviewRepository).findByMemberIdAndProduct(refEq(1L), refEq(KEYBOARD_1.생성(1L)))
         );
     }
 }
