@@ -22,6 +22,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
     Slice<Review> findPageByMemberId(Long memberId, Pageable pageable);
 
     @Modifying(clearAutomatically = true)
-    @Query("delete from Review r where r.product=:product")
-    void deleteByProduct(Product product);
+    @Query("delete from Review r where r.product.id=:productId")
+    void deleteByProductId(Long productId);
 }

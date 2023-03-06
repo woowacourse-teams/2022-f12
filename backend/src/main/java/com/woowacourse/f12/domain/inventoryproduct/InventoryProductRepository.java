@@ -31,6 +31,6 @@ public interface InventoryProductRepository extends JpaRepository<InventoryProdu
     List<InventoryProduct> findWithProductByMemberIds(List<Long> memberIds);
 
     @Modifying(clearAutomatically = true)
-    @Query("delete from InventoryProduct i where i.product=:product")
-    void deleteByProduct(Product product);
+    @Query("delete from InventoryProduct i where i.product.id=:productId")
+    void deleteByProductId(Long productId);
 }

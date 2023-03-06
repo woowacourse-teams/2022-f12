@@ -1,10 +1,8 @@
 package com.woowacourse.f12.application.product;
 
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.product.Category;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
-import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
@@ -14,6 +12,7 @@ import com.woowacourse.f12.dto.response.product.ProductResponse;
 import com.woowacourse.f12.exception.notfound.ProductNotFoundException;
 import com.woowacourse.f12.presentation.product.CategoryConstant;
 import java.util.List;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -24,17 +23,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ReviewRepository reviewRepository;
-    private final InventoryProductRepository inventoryProductRepository;
     private final PopularProductsCreator popularProductCreator;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public ProductService(final ProductRepository productRepository, final ReviewRepository reviewRepository,
-                          final InventoryProductRepository inventoryProductRepository,
-                          final PopularProductsCreator popularProductCreator) {
+    public ProductService(final ProductRepository productRepository,
+                          final PopularProductsCreator popularProductCreator,
+                          final ApplicationEventPublisher eventPublisher) {
         this.productRepository = productRepository;
-        this.reviewRepository = reviewRepository;
-        this.inventoryProductRepository = inventoryProductRepository;
         this.popularProductCreator = popularProductCreator;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -83,9 +80,9 @@ public class ProductService {
     public void delete(final Long productId) {
         final Product target = productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
-        reviewRepository.deleteByProduct(target);
-        inventoryProductRepository.deleteByProduct(target);
         productRepository.delete(target);
+        final ProductDeletedEvent event = new ProductDeletedEvent(this, productId);
+        eventPublisher.publishEvent(event);
     }
 
     public PopularProductsResponse findPopularProducts(final int size) {

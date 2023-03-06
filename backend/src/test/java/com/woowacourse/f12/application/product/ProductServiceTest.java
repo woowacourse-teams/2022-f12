@@ -15,10 +15,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.domain.product.ProductRepository;
-import com.woowacourse.f12.domain.review.ReviewRepository;
 import com.woowacourse.f12.dto.request.product.ProductCreateRequest;
 import com.woowacourse.f12.dto.request.product.ProductSearchRequest;
 import com.woowacourse.f12.dto.request.product.ProductUpdateRequest;
@@ -32,6 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
@@ -43,10 +42,7 @@ class ProductServiceTest {
     private ProductRepository productRepository;
 
     @Mock
-    private ReviewRepository reviewRepository;
-
-    @Mock
-    private InventoryProductRepository inventoryProductRepository;
+    private ApplicationEventPublisher eventPublisher;
 
     @Mock
     private PopularProductsCreator popularProductsCreator;
@@ -211,8 +207,7 @@ class ProductServiceTest {
         assertAll(
                 () -> verify(productRepository).findById(1L),
                 () -> verify(productRepository).delete(target),
-                () -> verify(reviewRepository).deleteByProduct(target),
-                () -> verify(inventoryProductRepository).deleteByProduct(target)
+                () -> verify(eventPublisher).publishEvent(any(ProductDeletedEvent.class))
         );
     }
 

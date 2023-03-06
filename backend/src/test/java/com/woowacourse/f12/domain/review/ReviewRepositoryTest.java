@@ -318,7 +318,7 @@ class ReviewRepositoryTest {
         entityManager.clear();
 
         // when
-        reviewRepository.deleteByProduct(product);
+        reviewRepository.deleteByProductId(product.getId());
 
         // then
         long count = reviewRepository.count();

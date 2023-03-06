@@ -153,7 +153,7 @@ class InventoryProductRepositoryTest {
         inventoryProductRepository.save(inventoryProduct2);
 
         // when
-        inventoryProductRepository.deleteByProduct(product);
+        inventoryProductRepository.deleteByProductId(product.getId());
 
         // then
         long count = inventoryProductRepository.count();
