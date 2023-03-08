@@ -186,7 +186,7 @@ class MemberRepositoryTest {
                 .build();
 
         // when
-        Slice<Member> slice = memberRepository.findFollowingsWithOutSearchConditions(corinne.getId(),
+        Slice<Member> slice = memberRepository.findFollowingsWithoutSearchConditions(corinne.getId(),
                 PageRequest.of(0, 1, Sort.by("id").descending()));
 
         // then

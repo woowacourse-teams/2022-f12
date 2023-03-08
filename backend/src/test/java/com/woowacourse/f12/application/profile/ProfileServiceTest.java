@@ -223,7 +223,7 @@ class ProfileServiceTest {
         Member member = CORINNE.생성(2L);
         final Profile profile = new Profile(member, true);
 
-        given(memberRepository.findFollowingsWithOutSearchConditions(loggedInId, pageable))
+        given(memberRepository.findFollowingsWithoutSearchConditions(loggedInId, pageable))
                 .willReturn(new SliceImpl<>(List.of(member), pageable, false));
         given(inventoryProductRepository.findWithProductByMemberIds(List.of(member.getId())))
                 .willReturn(Collections.emptyList());
@@ -234,7 +234,7 @@ class ProfileServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findFollowingsWithOutSearchConditions(loggedInId, pageable),
+                () -> verify(memberRepository).findFollowingsWithoutSearchConditions(loggedInId, pageable),
                 () -> verify(inventoryProductRepository).findWithProductByMemberIds(List.of(member.getId())),
                 () -> assertThat(pagedProfilesResponse.isHasNext()).isFalse(),
                 () -> assertThat(pagedProfilesResponse.getItems()).usingRecursiveFieldByFieldElementComparator()

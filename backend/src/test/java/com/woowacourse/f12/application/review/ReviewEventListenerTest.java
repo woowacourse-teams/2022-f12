@@ -31,5 +31,4 @@ class ReviewEventListenerTest {
         // then
         verify(reviewEventListener).handle(event);
     }
-
 }

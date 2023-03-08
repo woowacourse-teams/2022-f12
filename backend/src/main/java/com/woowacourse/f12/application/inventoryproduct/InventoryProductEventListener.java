@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class InventoryProductEventListener {
+
     private final InventoryProductRepository inventoryProductRepository;
 
     public InventoryProductEventListener(final InventoryProductRepository inventoryProductRepository) {

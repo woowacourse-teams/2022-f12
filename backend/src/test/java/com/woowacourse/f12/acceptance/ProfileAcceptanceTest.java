@@ -40,7 +40,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
     private ProductRepository productRepository;
 
     @Test
-    void 로그인_하지_않고_회원목록을_키워드와_옵션을_입력하지않고_조회한다() {
+    void 로그인_하지_않고_프로필_목록을_키워드와_옵션을_입력하지않고_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -75,7 +75,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하지_않고_회원목록을_키워드와_옵션을_입력하지않고_조회할때_추가정보가_입력되지않은_회원은_포함되지_않는다() {
+    void 로그인_하지_않고_프로필_목록을_키워드와_옵션을_입력하지않고_조회할때_추가정보가_입력되지않은_프로은_포함되지_않는다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -105,7 +105,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하지_않고_회원목록을_옵션으로_검색하여_조회한다() {
+    void 로그인_하지_않고_프로필_목록을_옵션으로_검색하여_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -139,7 +139,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하지_않고_회원목록을_키워드와_옵션으로_검색하여_조회한다() {
+    void 로그인_하지_않고_프로필_목록을_키워드와_옵션으로_검색하여_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
         민초.로그인을_하고().추가정보를_입력한다(memberRequest);
@@ -168,7 +168,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하지_않고_회원목록을_대표장비를_포함하여_키워드로_조회한다() {
+    void 로그인_하지_않고_프로필_목록을_대표장비를_포함하여_키워드로_조회한다() {
         // given
         Product product = 제품을_저장한다(ProductFixture.KEYBOARD_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
@@ -206,7 +206,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하고_한명을_팔로우한_뒤_회원목록을_검색한다() {
+    void 로그인_하고_한명을_팔로우한_뒤_프로필_목록을_검색한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -245,7 +245,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 회원목록은_id의_역순으로_조회된다() {
+    void 프로필_목록은_id의_역순으로_조회된다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -275,7 +275,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하고_팔로우하는_회원의_목록을_키워드와_옵션_없이_조회한다() {
+    void 로그인_하고_팔로우하는_프로의_목록을_키워드와_옵션_없이_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -314,7 +314,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하고_팔로우하는_회원의_목록을_옵션으로만_조회한다() {
+    void 로그인_하고_팔로우하는_프로의_목록을_옵션으로만_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -353,7 +353,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하고_팔로우하는_회원의_목록을_키워드와_옵션으로_조회한다() {
+    void 로그인_하고_팔로우하는_프로의_목록을_키워드와_옵션으로_조회한다() {
         // given
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);
 
@@ -392,7 +392,7 @@ public class ProfileAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 로그인_하고_팔로우하는_회원의_목록을_대표장비를_포함하여_검색조건을_설정하여_조회한다() {
+    void 로그인_하고_팔로우하는_프로필의_목록을_대표장비를_포함하여_검색조건을_설정하여_조회한다() {
         // given
         Product product = 제품을_저장한다(ProductFixture.KEYBOARD_2.생성());
         MemberRequest memberRequest = new MemberRequest(SENIOR_CONSTANT, BACKEND_CONSTANT);

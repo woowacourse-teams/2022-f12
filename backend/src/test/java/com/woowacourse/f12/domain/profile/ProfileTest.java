@@ -15,11 +15,10 @@ import org.junit.jupiter.api.Test;
 
 class ProfileTest {
 
-
     @Test
     void 프로필을_생성해서_정보를_조회한다() {
         // given
-        Member member = MemberFixture.CORINNE.생성(1L);
+        final Member member = MemberFixture.CORINNE.생성(1L);
         final Product product = ProductFixture.KEYBOARD_1.생성(1L);
         final InventoryProduct inventoryProduct =
                 InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT.생성(1L, member, product);

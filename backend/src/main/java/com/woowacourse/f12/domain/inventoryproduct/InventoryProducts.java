@@ -17,9 +17,6 @@ public class InventoryProducts {
 
     private List<InventoryProduct> items = new ArrayList<>();
 
-    public InventoryProducts() {
-    }
-
     public InventoryProducts(final List<InventoryProduct> items) {
         if (items != null) {
             validateProfileProducts(items);

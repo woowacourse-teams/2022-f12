@@ -74,7 +74,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return member.jobType.eq(jobType);
     }
 
-    public Slice<Member> findFollowingsWithOutSearchConditions(final Long loggedInId, final Pageable pageable) {
+    public Slice<Member> findFollowingsWithoutSearchConditions(final Long loggedInId, final Pageable pageable) {
         final List<Long> followingMemberIds = findFollowingMemberIds(loggedInId);
         final JPAQuery<Member> jpaQuery = jpaQueryFactory.selectFrom(member)
                 .where(

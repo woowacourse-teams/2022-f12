@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 class ProfilesTest {
 
     final Product product = ProductFixture.KEYBOARD_1.생성(1L);
-    Member member = MemberFixture.CORINNE.생성(1L);
+    final Member member = MemberFixture.CORINNE.생성(1L);
 
     @Test
     void 대표장비가_있고_팔로잉하는_프로필들을_생성한다() {

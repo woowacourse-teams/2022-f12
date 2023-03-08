@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class InventoryProductService {
-
     private final InventoryProductRepository inventoryProductRepository;
+
     private final MemberRepository memberRepository;
 
     public InventoryProductService(final InventoryProductRepository inventoryProductRepository,
@@ -31,6 +31,12 @@ public class InventoryProductService {
         validateUpdateSelected(memberId, selectedInventoryProductIds);
         cancelProfileProducts(memberId);
         registerProfileProducts(memberId, selectedInventoryProductIds);
+    }
+
+    private void validateMember(final Long memberId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
     }
 
     private void validateUpdateSelected(final Long memberId, final List<Long> selectedInventoryProductIds) {
@@ -56,11 +62,5 @@ public class InventoryProductService {
         validateMember(memberId);
         final List<InventoryProduct> inventoryProducts = inventoryProductRepository.findWithProductByMemberId(memberId);
         return InventoryProductsResponse.from(inventoryProducts);
-    }
-
-    private void validateMember(final Long memberId) {
-        if (!memberRepository.existsById(memberId)) {
-            throw new MemberNotFoundException();
-        }
     }
 }

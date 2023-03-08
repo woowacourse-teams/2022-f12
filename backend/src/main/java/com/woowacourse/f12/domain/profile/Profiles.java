@@ -18,9 +18,9 @@ public class Profiles {
         this.profiles = profiles;
     }
 
-    public static Profiles of(final List<Member> members, final List<InventoryProduct> mixedInventoryProducts,
+    public static Profiles of(final List<Member> members, final List<InventoryProduct> inventoryProductsOfMembers,
                               final List<Following> followingRelations) {
-        final Map<Long, List<InventoryProduct>> inventoryProductsGroups = groupByMemberId(mixedInventoryProducts);
+        final Map<Long, List<InventoryProduct>> inventoryProductsGroups = groupByMemberId(inventoryProductsOfMembers);
         final List<Profile> profiles = members.stream()
                 .map(member -> createProfile(member, inventoryProductsGroups, followingRelations))
                 .collect(Collectors.toList());
