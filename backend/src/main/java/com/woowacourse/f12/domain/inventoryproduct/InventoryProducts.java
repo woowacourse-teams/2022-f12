@@ -58,10 +58,14 @@ public class InventoryProducts {
     }
 
     public void validateUpdateSelected(final InventoryProducts profileProductCandidates) {
-        if (!new HashSet<>(this.items).containsAll(profileProductCandidates.items)) {
+        if (isNotContains(profileProductCandidates)) {
             throw new InvalidProfileProductUpdateException();
         }
         validateCategoryNotDuplicated(profileProductCandidates.items);
+    }
+
+    private boolean isNotContains(final InventoryProducts profileProductCandidates) {
+        return !new HashSet<>(this.items).containsAll(profileProductCandidates.items);
     }
 
     @Override
