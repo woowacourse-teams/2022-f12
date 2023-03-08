@@ -1,13 +1,5 @@
 package com.woowacourse.f12.presentation.review;
 
-import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
-import static com.woowacourse.f12.domain.member.CareerLevel.MID_LEVEL;
-import static com.woowacourse.f12.domain.member.CareerLevel.NONE;
-import static com.woowacourse.f12.domain.member.CareerLevel.SENIOR;
-import static com.woowacourse.f12.domain.member.JobType.BACKEND;
-import static com.woowacourse.f12.domain.member.JobType.ETC;
-import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
-import static com.woowacourse.f12.domain.member.JobType.MOBILE;
 import static com.woowacourse.f12.exception.ErrorCode.ALREADY_WRITTEN_REVIEW;
 import static com.woowacourse.f12.exception.ErrorCode.BLANK_REVIEW_CONTENT;
 import static com.woowacourse.f12.exception.ErrorCode.EXPIRED_ACCESS_TOKEN;
@@ -19,7 +11,6 @@ import static com.woowacourse.f12.exception.ErrorCode.INVENTORY_PRODUCT_NOT_FOUN
 import static com.woowacourse.f12.exception.ErrorCode.MEMBER_NOT_FOUND;
 import static com.woowacourse.f12.exception.ErrorCode.NOT_EXIST_ACCESS_TOKEN;
 import static com.woowacourse.f12.exception.ErrorCode.PERMISSION_DENIED;
-import static com.woowacourse.f12.exception.ErrorCode.PRODUCT_NOT_FOUND;
 import static com.woowacourse.f12.exception.ErrorCode.REGISTER_NOT_COMPLETED;
 import static com.woowacourse.f12.exception.ErrorCode.REQUEST_DUPLICATED;
 import static com.woowacourse.f12.exception.ErrorCode.REVIEW_NOT_FOUND;
@@ -51,13 +42,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.woowacourse.f12.application.auth.token.JwtProvider;
 import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.application.review.ReviewService;
-import com.woowacourse.f12.domain.member.CareerLevel;
-import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.domain.product.Product;
 import com.woowacourse.f12.dto.request.review.ReviewRequest;
-import com.woowacourse.f12.dto.response.product.ProductStatisticsResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorAndProductPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithAuthorPageResponse;
 import com.woowacourse.f12.dto.response.review.ReviewWithProductPageResponse;
@@ -911,44 +899,5 @@ class ReviewControllerTest extends PresentationTest {
                 .andDo(document("reviews-get-by-inventoryProductId",
                         new ErrorCodeSnippet(INVENTORY_PRODUCT_NOT_FOUND)));
         verify(reviewService).findByInventoryProductId(inventoryId);
-    }
-
-    @Test
-    void 특정_제품에_대한_사용자_통계_조회_성공() throws Exception {
-        // given
-        Map<CareerLevel, Double> careerLevel = Map.of(NONE, 0.0, JUNIOR, 0.5,
-                MID_LEVEL, 0.0, SENIOR, 0.5);
-        Map<JobType, Double> jobType = Map.of(FRONTEND, 0.33, BACKEND,
-                0.33, MOBILE, 0.33, ETC, 0.0);
-        given(reviewService.calculateMemberStatisticsById(anyLong()))
-                .willReturn(ProductStatisticsResponse.of(careerLevel, jobType));
-
-        // when
-        ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/products/1/statistics")
-        );
-
-        // then
-        resultActions.andExpect(status().isOk())
-                .andDo(document("products-member-statistics-get", new ErrorCodeSnippet(PRODUCT_NOT_FOUND)))
-                .andDo(print());
-
-        verify(reviewService).calculateMemberStatisticsById(1L);
-    }
-
-    @Test
-    void 특정_제품에_대한_사용자_통계_조회_실패_제품이_존재하지_않을_경우() throws Exception {
-        // given
-        given(reviewService.calculateMemberStatisticsById(anyLong()))
-                .willThrow(new ProductNotFoundException());
-
-        // when
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/products/1/statistics"));
-
-        // then
-        resultActions.andExpect(status().isNotFound())
-                .andDo(print());
-
-        verify(reviewService).calculateMemberStatisticsById(1L);
     }
 }

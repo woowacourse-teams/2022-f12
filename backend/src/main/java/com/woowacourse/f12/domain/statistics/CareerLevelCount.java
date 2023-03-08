@@ -1,4 +1,4 @@
-package com.woowacourse.f12.domain.review;
+package com.woowacourse.f12.domain.statistics;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.woowacourse.f12.domain.member.CareerLevel;

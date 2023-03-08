@@ -1,4 +1,4 @@
-package com.woowacourse.f12.domain.review;
+package com.woowacourse.f12.domain.statistics;
 
 import static com.woowacourse.f12.domain.member.CareerLevel.JUNIOR;
 import static com.woowacourse.f12.domain.member.CareerLevel.MID_LEVEL;

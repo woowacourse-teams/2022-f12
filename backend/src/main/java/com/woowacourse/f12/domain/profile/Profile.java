@@ -5,6 +5,7 @@ import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
+import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 
@@ -22,7 +23,7 @@ public class Profile {
     }
 
     public Profile(final Member member, final boolean isFollowing) {
-        this(member, new InventoryProducts(), isFollowing);
+        this(member, new InventoryProducts(Collections.emptyList()), isFollowing);
     }
 
     public List<InventoryProduct> getProfileProducts() {

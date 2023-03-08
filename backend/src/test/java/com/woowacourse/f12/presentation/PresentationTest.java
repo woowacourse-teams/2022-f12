@@ -8,6 +8,7 @@ import com.woowacourse.f12.application.member.MemberService;
 import com.woowacourse.f12.application.product.ProductService;
 import com.woowacourse.f12.application.profile.ProfileService;
 import com.woowacourse.f12.application.review.ReviewService;
+import com.woowacourse.f12.application.statistics.StatisticsService;
 import com.woowacourse.f12.config.LoggingConfig;
 import com.woowacourse.f12.logging.ApiQueryCounter;
 import com.woowacourse.f12.presentation.auth.RefreshTokenCookieProvider;
@@ -46,6 +47,9 @@ public class PresentationTest {
 
     @MockBean
     protected ProfileService profileService;
+
+    @MockBean
+    protected StatisticsService statisticsService;
 
     protected final ObjectMapper objectMapper;
 
