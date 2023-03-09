@@ -4,8 +4,8 @@ import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.presentation.member.CareerLevelConstant;
 import com.woowacourse.f12.presentation.member.JobTypeConstant;
+import javax.annotation.Nullable;
 import lombok.Getter;
-import org.springframework.lang.Nullable;
 
 @Getter
 public class ProfileSearchRequest {
@@ -19,13 +19,14 @@ public class ProfileSearchRequest {
     private ProfileSearchRequest() {
     }
 
-    public ProfileSearchRequest(final String query, final CareerLevelConstant careerLevel,
-                                final JobTypeConstant jobType) {
+    public ProfileSearchRequest(final String query, @Nullable final CareerLevelConstant careerLevel,
+                                @Nullable final JobTypeConstant jobType) {
         this.query = query;
         this.careerLevel = careerLevel;
         this.jobType = jobType;
     }
 
+    @Nullable
     public CareerLevel parseCareerLevel() {
         if (careerLevel == null) {
             return null;
@@ -33,6 +34,7 @@ public class ProfileSearchRequest {
         return careerLevel.toCareerLevel();
     }
 
+    @Nullable
     public JobType parseJobType() {
         if (jobType == null) {
             return null;

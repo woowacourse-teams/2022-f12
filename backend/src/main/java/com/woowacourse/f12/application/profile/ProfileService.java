@@ -11,6 +11,8 @@ import com.woowacourse.f12.domain.member.MemberRepository;
 import com.woowacourse.f12.domain.profile.Profiles;
 import com.woowacourse.f12.dto.request.profile.ProfileSearchRequest;
 import com.woowacourse.f12.dto.response.profile.PagedProfilesResponse;
+import com.woowacourse.f12.presentation.member.CareerLevelConstant;
+import com.woowacourse.f12.presentation.member.JobTypeConstant;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
@@ -62,13 +64,20 @@ public class ProfileService {
         return Profiles.of(members, mixedInventoryProducts, followingRelations);
     }
 
+    private static boolean allSearchConditionIsEmpty(final ProfileSearchRequest profileSearchRequest) {
+        final String query = profileSearchRequest.getQuery();
+        final CareerLevelConstant careerLevel = profileSearchRequest.getCareerLevel();
+        final JobTypeConstant jobType = profileSearchRequest.getJobType();
+        return query == null && careerLevel == null && jobType == null;
+    }
+
     private Slice<Member> findBySearchConditions(final ProfileSearchRequest profileSearchRequest,
                                                  final Pageable pageable) {
-        final CareerLevel careerLevel = profileSearchRequest.parseCareerLevel();
-        final JobType jobType = profileSearchRequest.parseJobType();
-        if (profileSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
+        if (allSearchConditionIsEmpty(profileSearchRequest)) {
             return memberRepository.findWithOutSearchConditions(pageable);
         }
+        final CareerLevel careerLevel = profileSearchRequest.parseCareerLevel();
+        final JobType jobType = profileSearchRequest.parseJobType();
         return memberRepository.findWithSearchConditions(profileSearchRequest.getQuery(), careerLevel,
                 jobType, pageable);
     }
@@ -87,11 +96,11 @@ public class ProfileService {
     private Slice<Member> findFollowingsBySearchConditions(final Long loggedInId,
                                                            final ProfileSearchRequest profileSearchRequest,
                                                            final Pageable pageable) {
-        final CareerLevel careerLevel = profileSearchRequest.parseCareerLevel();
-        final JobType jobType = profileSearchRequest.parseJobType();
-        if (profileSearchRequest.getQuery() == null && careerLevel == null && jobType == null) {
+        if (allSearchConditionIsEmpty(profileSearchRequest)) {
             return memberRepository.findFollowingsWithoutSearchConditions(loggedInId, pageable);
         }
+        final CareerLevel careerLevel = profileSearchRequest.parseCareerLevel();
+        final JobType jobType = profileSearchRequest.parseJobType();
         return memberRepository.findFollowingsWithSearchConditions(loggedInId, profileSearchRequest.getQuery(),
                 careerLevel, jobType, pageable);
     }
