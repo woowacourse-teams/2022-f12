@@ -57,11 +57,11 @@ public class ProfileService {
 
     private Profiles createProfiles(final Long loggedInId, final List<Member> members) {
         final List<Long> memberIds = extractIds(members);
-        final List<InventoryProduct> mixedInventoryProducts =
+        final List<InventoryProduct> inventoryProductsOfMembers =
                 inventoryProductRepository.findWithProductByMemberIds(memberIds);
         final List<Following> followingRelations
                 = followingRepository.findByFollowerIdAndFollowingIdIn(loggedInId, memberIds);
-        return Profiles.of(members, mixedInventoryProducts, followingRelations);
+        return Profiles.of(members, inventoryProductsOfMembers, followingRelations);
     }
 
     private static boolean allSearchConditionIsEmpty(final ProfileSearchRequest profileSearchRequest) {
