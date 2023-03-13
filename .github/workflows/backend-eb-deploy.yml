@@ -1,0 +1,71 @@
+name: deploy eb backend
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+    
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+
+    - name: Checkout source code
+      uses: actions/checkout@v2
+      with:
+        submodules: 'true'
+        token: ${{ secrets.GH_ACCESS_TOKEN }}
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Execute Gradle build
+      run: ./gradlew bootJar
+          
+    - name: Get current time
+      uses: 1466587594/get-current-time@v2.0.2
+      id: current-time
+      with:
+        format: YYYY-MM-DDTHH-mm-ss
+        utcOffset: "+09:00"
+
+    - name: Generate deployment package
+      run: |
+        mkdir -p deploy
+        cp build/libs/f12-0.0.1-SNAPSHOT.jar deploy/application.jar
+        cp Procfile deploy/Procfile
+        cp -r .ebextensions deploy/.ebextensions
+        cp -r .platform deploy/.platform
+        cd deploy && zip -r deploy.zip .
+    
+    - name: Deploy to EB
+      uses: einaregilsson/beanstalk-deploy@v21
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: f12-prod-backend
+        environment_name: F12prodbackend-env
+        version_label: github-action-${{steps.current-time.outputs.formattedTime}}
+        region: ap-northeast-2
+        deployment_package: backend/deploy/deploy.zip
+        wait_for_environment_recovery: 180
+    - name: add comments to a pull request
+      uses: mikepenz/action-junit-report@v3
+      if: always()
+      with:
+          report_paths: backend/build/test-results/test/TEST-*.xml
