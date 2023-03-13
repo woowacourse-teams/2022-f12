@@ -9,7 +9,7 @@ public interface MemberRepositoryCustom {
 
     Slice<Member> findWithSearchConditions(String keyword, CareerLevel careerLevel, JobType jobType, Pageable pageable);
 
-    Slice<Member> findFollowingsWithOutSearchConditions(Long loggedInId, Pageable pageable);
+    Slice<Member> findFollowingsWithoutSearchConditions(Long loggedInId, Pageable pageable);
 
     Slice<Member> findFollowingsWithSearchConditions(Long loggedInId, String keyword, CareerLevel careerLevel,
                                                      JobType jobType,

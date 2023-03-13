@@ -3,20 +3,16 @@ package com.woowacourse.f12.presentation.member;
 import com.woowacourse.f12.application.auth.token.MemberPayload;
 import com.woowacourse.f12.application.member.MemberService;
 import com.woowacourse.f12.dto.request.member.MemberRequest;
-import com.woowacourse.f12.dto.request.member.MemberSearchRequest;
 import com.woowacourse.f12.dto.response.member.LoggedInMemberResponse;
-import com.woowacourse.f12.dto.response.member.MemberPageResponse;
 import com.woowacourse.f12.dto.response.member.MemberResponse;
 import com.woowacourse.f12.presentation.auth.Login;
 import com.woowacourse.f12.presentation.auth.VerifiedMember;
 import com.woowacourse.f12.support.MemberPayloadSupport;
 import javax.validation.Valid;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,15 +52,6 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
-    @Login(required = false)
-    public MemberPageResponse searchMembers(@VerifiedMember @Nullable final MemberPayload loggedInMemberPayload,
-                                            @ModelAttribute final MemberSearchRequest memberSearchRequest,
-                                            final Pageable pageable) {
-        Long loggedInMemberId = MemberPayloadSupport.getLoggedInMemberId(loggedInMemberPayload);
-        return memberService.findBySearchConditions(loggedInMemberId, memberSearchRequest, pageable);
-    }
-
     @PostMapping("/{memberId}/following")
     @Login
     public ResponseEntity<Void> follow(@VerifiedMember final MemberPayload followerPayload,
@@ -81,13 +68,5 @@ public class MemberController {
         memberService.unfollow(followerPayload.getId(), followingId);
         return ResponseEntity.noContent()
                 .build();
-    }
-
-    @GetMapping("/me/followings")
-    @Login
-    public MemberPageResponse searchFollowings(@VerifiedMember final MemberPayload loggedInMemberPayload,
-                                               @ModelAttribute final MemberSearchRequest memberSearchRequest,
-                                               final Pageable pageable) {
-        return memberService.findFollowingsByConditions(loggedInMemberPayload.getId(), memberSearchRequest, pageable);
     }
 }

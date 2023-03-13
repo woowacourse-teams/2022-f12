@@ -58,7 +58,7 @@ class InventoryProductRepositoryTest {
         장비를_등록한다(SELECTED_INVENTORY_PRODUCT.생성(member, product));
 
         // when
-        boolean actual = inventoryProductRepository.existsByMemberAndProduct(member, product);
+        boolean actual = inventoryProductRepository.existsByMemberIdAndProduct(member.getId(), product);
 
         // then
         assertThat(actual).isTrue();
@@ -72,7 +72,7 @@ class InventoryProductRepositoryTest {
         장비를_등록한다(UNSELECTED_INVENTORY_PRODUCT.생성(member, product));
 
         // when
-        int actual = inventoryProductRepository.updateBulkProfileProductByMember(member, false);
+        int actual = inventoryProductRepository.updateBulkProfileProductByMemberId(member.getId(), false);
 
         // then
         assertThat(actual).isOne();
@@ -86,7 +86,7 @@ class InventoryProductRepositoryTest {
         InventoryProduct inventoryProduct = 장비를_등록한다(UNSELECTED_INVENTORY_PRODUCT.생성(member, product));
 
         // when
-        int actual = inventoryProductRepository.updateBulkProfileProductByMemberAndIds(member,
+        int actual = inventoryProductRepository.updateBulkProfileProductByMemberIdAndIds(member.getId(),
                 List.of(inventoryProduct.getId()), true);
 
         // then
@@ -101,7 +101,8 @@ class InventoryProductRepositoryTest {
         장비를_등록한다(UNSELECTED_INVENTORY_PRODUCT.생성(member, product));
 
         // when
-        Optional<InventoryProduct> actual = inventoryProductRepository.findWithProductByMemberAndProduct(member,
+        Optional<InventoryProduct> actual = inventoryProductRepository.findWithProductByMemberIdAndProduct(
+                member.getId(),
                 product);
 
         // then
@@ -117,7 +118,8 @@ class InventoryProductRepositoryTest {
         InventoryProduct inventoryProduct = 장비를_등록한다(UNSELECTED_INVENTORY_PRODUCT.생성(corinne, product));
 
         // when
-        List<InventoryProduct> actual = inventoryProductRepository.findWithProductByMembers(List.of(corinne, mincho));
+        List<InventoryProduct> actual =
+                inventoryProductRepository.findWithProductByMemberIds(List.of(corinne.getId(), mincho.getId()));
 
         // then
         assertThat(actual).usingRecursiveFieldByFieldElementComparator()
@@ -151,7 +153,7 @@ class InventoryProductRepositoryTest {
         inventoryProductRepository.save(inventoryProduct2);
 
         // when
-        inventoryProductRepository.deleteByProduct(product);
+        inventoryProductRepository.deleteByProductId(product.getId());
 
         // then
         long count = inventoryProductRepository.count();

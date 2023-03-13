@@ -1,5 +1,19 @@
 package com.woowacourse.f12.application.inventoryproduct;
 
+import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
+import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
+import static com.woowacourse.f12.support.fixture.MemberFixture.OHZZI;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_1;
+import static com.woowacourse.f12.support.fixture.ProductFixture.KEYBOARD_2;
+import static com.woowacourse.f12.support.fixture.ProductFixture.SOFTWARE_1;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.verify;
+import static org.mockito.Mockito.times;
+
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
 import com.woowacourse.f12.domain.inventoryproduct.InventoryProductRepository;
 import com.woowacourse.f12.domain.member.Member;
@@ -10,25 +24,13 @@ import com.woowacourse.f12.dto.response.inventoryproduct.InventoryProductsRespon
 import com.woowacourse.f12.exception.badrequest.DuplicatedProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductCategoryException;
 import com.woowacourse.f12.exception.badrequest.InvalidProfileProductUpdateException;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-import java.util.Optional;
-
-import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.SELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.fixture.InventoryProductFixtures.UNSELECTED_INVENTORY_PRODUCT;
-import static com.woowacourse.f12.support.fixture.MemberFixture.CORINNE;
-import static com.woowacourse.f12.support.fixture.ProductFixture.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.verify;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class InventoryProductServiceTest {
@@ -47,10 +49,11 @@ class InventoryProductServiceTest {
         // given
         List<Long> selectedInventoryProductIds = List.of(2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
-        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct));
-        given(memberRepository.findById(1L))
-                .willReturn(Optional.of(member));
+        Member member = CORINNE.생성(1L);
+        InventoryProduct inventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(2L, member, KEYBOARD_1.생성(1L));
+        given(memberRepository.existsById(1L))
+                .willReturn(true);
+        given(inventoryProductRepository.findWithProductByMemberId(1L)).willReturn(List.of(inventoryProduct));
         given(inventoryProductRepository.findAllById(selectedInventoryProductIds))
                 .willReturn(List.of(inventoryProduct));
 
@@ -59,9 +62,9 @@ class InventoryProductServiceTest {
 
         // then
         assertAll(
-                () -> verify(memberRepository).findById(1L),
-                () -> verify(inventoryProductRepository).updateBulkProfileProductByMember(member, false),
-                () -> verify(inventoryProductRepository).updateBulkProfileProductByMemberAndIds(member,
+                () -> verify(memberRepository).existsById(1L),
+                () -> verify(inventoryProductRepository).updateBulkProfileProductByMemberId(member.getId(), false),
+                () -> verify(inventoryProductRepository).updateBulkProfileProductByMemberIdAndIds(member.getId(),
                         selectedInventoryProductIds, true)
         );
     }
@@ -72,19 +75,24 @@ class InventoryProductServiceTest {
         List<Long> selectedInventoryProductIds = List.of(2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
         Member member = CORINNE.생성(1L);
-        given(memberRepository.findById(1L))
-                .willReturn(Optional.of(member));
+        Member otherMember = OHZZI.생성(2L);
+        given(memberRepository.existsById(1L))
+                .willReturn(true);
+        given(inventoryProductRepository.findWithProductByMemberId(member.getId()))
+                .willReturn(Collections.emptyList());
         given(inventoryProductRepository.findAllById(selectedInventoryProductIds))
-                .willReturn(List.of(UNSELECTED_INVENTORY_PRODUCT.생성(2L, member, KEYBOARD_1.생성(1L))));
+                .willReturn(List.of(UNSELECTED_INVENTORY_PRODUCT.생성(2L, otherMember, KEYBOARD_1.생성(1L))));
 
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> inventoryProductService.updateProfileProducts(1L, profileProductRequest))
                         .isExactlyInstanceOf(InvalidProfileProductUpdateException.class),
-                () -> verify(memberRepository).findById(1L),
+                () -> verify(memberRepository).existsById(1L),
                 () -> verify(inventoryProductRepository).findAllById(selectedInventoryProductIds),
-                () -> verify(inventoryProductRepository, times(0)).updateBulkProfileProductByMember(member, false),
-                () -> verify(inventoryProductRepository, times(0)).updateBulkProfileProductByMemberAndIds(member,
+                () -> verify(inventoryProductRepository, times(0)).updateBulkProfileProductByMemberId(member.getId(),
+                        false),
+                () -> verify(inventoryProductRepository, times(0)).updateBulkProfileProductByMemberIdAndIds(
+                        member.getId(),
                         selectedInventoryProductIds, true)
         );
     }
@@ -94,23 +102,27 @@ class InventoryProductServiceTest {
         // given
         List<Long> selectedInventoryProductIds = List.of(1L, 2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
-        InventoryProduct inventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(1L, null, KEYBOARD_1.생성());
-        InventoryProduct duplicatedCategoryInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(2L, null,
+        Member member = CORINNE.생성(1L);
+        InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, member, KEYBOARD_1.생성());
+        InventoryProduct inventoryProduct2 = UNSELECTED_INVENTORY_PRODUCT.생성(2L, member,
                 KEYBOARD_2.생성());
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(inventoryProduct, duplicatedCategoryInventoryProduct));
-        duplicatedCategoryInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_2.생성());
+        InventoryProduct duplicatedInventoryProduct = UNSELECTED_INVENTORY_PRODUCT.생성(2L, member,
+                KEYBOARD_2.생성());
 
-        given(memberRepository.findById(1L))
-                .willReturn(Optional.of(member));
-        given(inventoryProductRepository.findAllById(selectedInventoryProductIds))
-                .willReturn(List.of(inventoryProduct, duplicatedCategoryInventoryProduct));
+        given(memberRepository.existsById(member.getId()))
+                .willReturn(true);
+        given(inventoryProductRepository.findWithProductByMemberId(member.getId()))
+                .willReturn(List.of(inventoryProduct1, inventoryProduct2));
+        given(inventoryProductRepository.findAllById(
+                List.of(inventoryProduct1.getId(), duplicatedInventoryProduct.getId())))
+                .willReturn(List.of(inventoryProduct1, duplicatedInventoryProduct));
 
         // when, then
         assertAll(
                 () -> assertThatThrownBy(() -> inventoryProductService.updateProfileProducts(1L, profileProductRequest))
                         .isExactlyInstanceOf(DuplicatedProfileProductCategoryException.class),
-                () -> verify(memberRepository).findById(1L),
-                () -> verify(inventoryProductRepository).findAllById(selectedInventoryProductIds)
+                () -> verify(memberRepository).existsById(1L),
+                () -> verify(inventoryProductRepository).findWithProductByMemberId(member.getId())
         );
     }
 
@@ -119,13 +131,12 @@ class InventoryProductServiceTest {
         // given
         List<Long> selectedInventoryProductIds = List.of(1L, 2L);
         ProfileProductRequest profileProductRequest = new ProfileProductRequest(selectedInventoryProductIds);
-        InventoryProduct selectedInventoryProduct = SELECTED_INVENTORY_PRODUCT.생성(2L, null, KEYBOARD_1.생성(1L));
-        Member member = CORINNE.인벤토리를_추가해서_생성(1L, List.of(selectedInventoryProduct));
+        Member member = CORINNE.생성(1L);
         InventoryProduct inventoryProduct1 = SELECTED_INVENTORY_PRODUCT.생성(1L, member, SOFTWARE_1.생성());
         InventoryProduct inventoryProduct2 = UNSELECTED_INVENTORY_PRODUCT.생성(2L, member, KEYBOARD_2.생성());
 
-        given(memberRepository.findById(1L))
-                .willReturn(Optional.of(member));
+        given(memberRepository.existsById(1L))
+                .willReturn(true);
         given(inventoryProductRepository.findAllById(selectedInventoryProductIds))
                 .willReturn(List.of(inventoryProduct1, inventoryProduct2));
 
@@ -133,7 +144,7 @@ class InventoryProductServiceTest {
         assertAll(
                 () -> assertThatThrownBy(() -> inventoryProductService.updateProfileProducts(1L, profileProductRequest))
                         .isExactlyInstanceOf(InvalidProfileProductCategoryException.class),
-                () -> verify(memberRepository).findById(1L),
+                () -> verify(memberRepository).existsById(1L),
                 () -> verify(inventoryProductRepository).findAllById(selectedInventoryProductIds)
         );
     }

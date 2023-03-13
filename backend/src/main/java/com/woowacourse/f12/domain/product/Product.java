@@ -87,33 +87,6 @@ public class Product {
         }
     }
 
-
-    public void increaseReviewCount() {
-        reviewCount++;
-    }
-
-    public void decreaseReviewCount() {
-        reviewCount--;
-    }
-
-    public void increaseRating(final int rating) {
-        this.totalRating += rating;
-        calculateRating();
-    }
-
-    public void decreaseRating(final int rating) {
-        this.totalRating -= rating;
-        calculateRating();
-    }
-
-    private void calculateRating() {
-        if (reviewCount == 0) {
-            rating = 0;
-            return;
-        }
-        rating = (double) totalRating / reviewCount;
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

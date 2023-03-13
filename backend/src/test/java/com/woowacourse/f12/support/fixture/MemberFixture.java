@@ -7,15 +7,12 @@ import static com.woowacourse.f12.domain.member.JobType.FRONTEND;
 import static com.woowacourse.f12.domain.member.Role.ADMIN;
 import static com.woowacourse.f12.domain.member.Role.USER;
 
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProduct;
-import com.woowacourse.f12.domain.inventoryproduct.InventoryProducts;
 import com.woowacourse.f12.domain.member.CareerLevel;
 import com.woowacourse.f12.domain.member.JobType;
 import com.woowacourse.f12.domain.member.Member;
 import com.woowacourse.f12.domain.member.Member.MemberBuilder;
 import com.woowacourse.f12.domain.member.Role;
 import com.woowacourse.f12.dto.response.auth.GitHubProfileResponse;
-import java.util.List;
 
 public enum MemberFixture {
 
@@ -72,20 +69,6 @@ public enum MemberFixture {
 
     public GitHubProfileResponse 깃허브_프로필() {
         return new GitHubProfileResponse(this.gitHubId, this.name, this.imageUrl);
-    }
-
-    public Member 인벤토리를_추가해서_생성(final Long id, final List<InventoryProduct> inventoryProducts) {
-        return 기본_정보_빌더_생성(id)
-                .inventoryProducts(new InventoryProducts(inventoryProducts))
-                .build();
-    }
-
-    public Member 추가정보와_인벤토리를_추가해서_생성(final Long id, final CareerLevel careerLevel, final JobType jobType, final List<InventoryProduct> inventoryProducts) {
-        return 기본_정보_빌더_생성(id)
-                .careerLevel(careerLevel)
-                .jobType(jobType)
-                .inventoryProducts(new InventoryProducts(inventoryProducts))
-                .build();
     }
 
     public Member 추가정보_없이_생성(final Long id) {
